@@ -1,0 +1,11 @@
+{
+  "phase": "逐卡按文字檢查引擎發動與結算；暫停情境測試",
+  "totalCards": 1276,
+  "reviewedCards": 217,
+  "remainingCards": 1059,
+  "totalEffectFields": 1746,
+  "reviewedFields": 347,
+  "remainingFields": 1399,
+  "validation": "hBP01-073～088 無問題卡及無問題效果欄位已標記；node --check 與 vinext build 通過；未執行情境測試",
+  "warning": "本階段為文字到程式的逐項檢查，不宣稱已完成所有互動驗證。"
+}

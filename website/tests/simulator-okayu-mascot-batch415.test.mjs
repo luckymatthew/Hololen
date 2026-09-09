@@ -1,0 +1,5 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {applyAction} from '../lib/simulator/engine.mjs';
+import {pool,state,unit,inst,fund,attack} from './fixtures/simulator-audit.mjs';
+test('Okayu mascot substitutes one blue Cheer in her Arts ability cost',()=>{let s=state('hSD03-009');fund(s.players[0].zones.center,['藍','藍','無色','無色']);s.players[0].zones.center.attachments=[inst('hSD03-013','mascot')];s.players[1].zones.back1=unit('AUDIT-DUMMY');s=applyAction(s,0,{...attack,artIndex:1},pool,()=>0);assert.ok(s.pendingChoice.cheerOptions.some(c=>c.id==='mascot'));s=applyAction(s,0,{type:'choose',cheerId:'mascot'},pool,()=>0);assert.equal(s.pendingChoice.optional,false);s=applyAction(s,0,{type:'choose',cheerId:'cheer0'},pool,()=>0);while(s.pendingChoice)s=applyAction(s,s.pendingChoice.playerIndex,{type:'choose',zone:'back1'},pool,()=>0);assert.equal(s.players[0].zones.center.cheer.length,3);assert.equal(s.players[0].zones.center.attachments.length,0);assert.equal(s.players[0].turnEvents.cheerArchived,1);assert.equal(s.players[1].zones.back1.damage,30);});

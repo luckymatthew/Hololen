@@ -1,0 +1,5 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {applyAction} from '../lib/simulator/engine.mjs';
+import {cards,pool,state,inst,unit} from './fixtures/simulator-audit.mjs';
+for(const valid of [true,false])test('Ao searches only ReGLOSS center colors '+valid,()=>{const ao=cards.find(c=>c.jpName==='火威青'&&c.stage==='Debut');let s=state(valid?'hSD05-006':'AUDIT-DUMMY');s.phase='main';s.players[0].zones.back1=unit(ao.number);s.players[0].hand=[inst('hBP03-049','bloom')];s.players[0].cheerDeck=[inst('hY01-001','white'),inst('hY04-001','blue')];s=applyAction(s,0,{type:'play',cardId:'bloom'},pool,()=>0);s=applyAction(s,0,{type:'choose',zone:'back1'},pool,()=>0);if(valid){assert.equal(s.pendingChoice.optional,false);assert.deepEqual(s.pendingChoice.selectableIds,['white']);s=applyAction(s,0,{type:'choose',cardIds:['white']},pool,()=>0);assert.ok(s.pendingChoice.options.includes('back1'));s=applyAction(s,0,{type:'choose',zone:'back1'},pool,()=>0);assert.equal(s.players[0].zones.back1.cheer[0].id,'white');}else assert.equal(s.pendingChoice,null);});

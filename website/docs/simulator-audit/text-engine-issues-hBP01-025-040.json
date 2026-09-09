@@ -1,0 +1,205 @@
+{
+  "checkedAt": "2026-09-06",
+  "scope": "hBP01-025 through hBP01-040; text-only engine checking; no scenario testing",
+  "cardsChecked": 16,
+  "effectFieldsChecked": 18,
+  "issueCards": 9,
+  "issueEffectFields": 9,
+  "noIssueFullyReviewedCards": 7,
+  "noIssueEffectFields": 9,
+  "status": "checking_only",
+  "officialSource": "https://hololive-official-card-game.com/cardlist/cardsearch/?expansion=hBP01&view=text",
+  "implementation": "lib/simulator/engine.mjs",
+  "mainProgressBeforeNoIssueMark": {
+    "cardsReviewed": 184,
+    "effectFieldsReviewed": 305,
+    "cardsRemaining": 1092,
+    "effectFieldsRemaining": 1441
+  },
+  "mainProgressAfterNoIssueMark": {
+    "cardsReviewed": 191,
+    "effectFieldsReviewed": 314,
+    "cardsRemaining": 1085,
+    "effectFieldsRemaining": 1432
+  },
+  "issues": [
+    {
+      "number": "hBP01-026",
+      "name": "Vestia Zeta",
+      "fields": [
+        "keyword.effect"
+      ],
+      "sourceText": "從Debut Bloom時，從自己的牌庫中公開1張持有#ID3期生且不是Buzz的[Debut Holomen或1st Holomen]，將其加入手牌。然後將牌庫洗牌。",
+      "problem": "通用牌庫搜尋 queueDeckToHand 預設 optional=true；有合法卡時仍可略過，未符合文字的必選公開加入手牌。",
+      "anchors": [
+        "queueBloomEffects",
+        "queueSimpleTriggeredKeyword",
+        "queueDeckToHand"
+      ],
+      "astraAction": "限制 #ID3期生、非 Buzz、Debut 或 1st；有合法卡時必選 1 張加入手牌並洗牌。"
+    },
+    {
+      "number": "hBP01-027",
+      "name": "Vestia Zeta",
+      "fields": [
+        "extra"
+      ],
+      "sourceText": "當這位Holomen倒下時，自身生命 -2。",
+      "problem": "擊倒流程沒有發現針對 hBP01-027 Extra 的生命 -2 處理；目前只看到其 Gift 傷害反應分支。",
+      "anchors": [
+        "knockOutUnit",
+        "queueKnockoutAttachmentEffects",
+        "queueGiftKnockoutEffects"
+      ],
+      "astraAction": "在這位 Holomen 作為目前頂牌倒下時，令其持有者生命額外減少 2，並正確處理生命附加與防護。"
+    },
+    {
+      "number": "hBP01-031",
+      "name": "IRyS",
+      "fields": [
+        "keyword.effect"
+      ],
+      "sourceText": "查看自己的Holopower，從中公開1張並加入手牌。然後將自己牌庫頂的1張牌放入Holopower。",
+      "problem": "專用分支只在 Holo Power 原本有牌時建立選擇；Holo Power 為空時，後半句牌庫頂 1 張放入 Holo Power 也完全跳過。",
+      "anchors": [
+        "queueCollabEffects",
+        "powerToHandThenDeckTop"
+      ],
+      "astraAction": "即使 Holo Power 原本為空，也要繼續處理牌庫頂 1 張放入 Holo Power；若無可公開卡，依規則完成可完成的後半句。"
+    },
+    {
+      "number": "hBP01-033",
+      "name": "亞綺·羅森塔爾",
+      "fields": [
+        "keyword.effect"
+      ],
+      "sourceText": "可以擲一次骰子：若為奇數，讓自己的一位綠色Holo成員回復20點HP。",
+      "problem": "通用條件 simpleKeywordCondition 會自動擲骰，沒有提供文字中的可選發動；成功後回復目標也走 optional=true。",
+      "anchors": [
+        "simpleKeywordCondition",
+        "queueSimpleTriggeredKeyword"
+      ],
+      "astraAction": "先提供可選骰子；奇數時若有合法綠色 Holomen，必須選 1 位回復 20 HP。"
+    },
+    {
+      "number": "hBP01-035",
+      "name": "亞綺·羅森塔爾",
+      "fields": [
+        "arts.0.effect"
+      ],
+      "sourceText": "當這位Holomen裝備有工具時，從自己的艾爾牌庫頂抽1張，送給自己的Holomen。",
+      "problem": "通用艾爾／應援牌庫處理沒有鎖定牌庫頂，會從整個牌庫選；送牌的 eventCheerTarget 也預設 optional=true，合法時可略過。",
+      "anchors": [
+        "queueSimpleTriggeredKeyword",
+        "queueCheerDeckSearch",
+        "eventCheerTarget"
+      ],
+      "astraAction": "條件成立且應援牌庫有牌時，必須取牌庫頂 1 張並指定自己 1 位 Holomen 附加。"
+    },
+    {
+      "number": "hBP01-036",
+      "name": "亞綺·羅森塔爾",
+      "fields": [
+        "keyword.effect"
+      ],
+      "sourceText": "我方一位Holomen回復20點HP。",
+      "problem": "通用回復流程把目標設成 optional=true；有合法受傷 Holomen 時仍可略過，文字沒有「可以」。",
+      "anchors": [
+        "queueSimpleTriggeredKeyword",
+        "heal"
+      ],
+      "astraAction": "有合法受傷目標時必須選 1 位回復 20 HP；沒有合法目標才正常結束。"
+    },
+    {
+      "number": "hBP01-037",
+      "name": "亞綺·羅森塔爾",
+      "fields": [
+        "keyword.effect"
+      ],
+      "sourceText": "從自己應援牌庫頂抽1張牌，送給自己的Holomen。之後，若這位Holomen裝備有工具，回復該Holomen 40點HP。",
+      "problem": "專用分支把 afterZone 固定成 Bloom 發動者；若玩家把牌庫頂應援送給另一位 Holomen，回復仍錯誤地作用於發動者。",
+      "anchors": [
+        "queueBloomEffects",
+        "eventCheerTarget",
+        "afterEffect=healSource"
+      ],
+      "astraAction": "保存實際接收應援的目標 ID／位置；只有該目標裝備工具時回復該目標 40 HP。"
+    },
+    {
+      "number": "hBP01-038",
+      "name": "兔田佩克拉",
+      "fields": [
+        "arts.0.effect"
+      ],
+      "sourceText": "可以擲一次骰子：若為偶數，這個Arts的力量+20。",
+      "problem": "resolveDiceArtEffects 目前自動擲骰；文字是可選骰子，玩家應能選擇不發動。",
+      "anchors": [
+        "resolveDiceArtEffects",
+        "resolveGenericArtEffects"
+      ],
+      "astraAction": "建立可選骰子；只在玩家選用且結果為偶數時令本次 Arts +20。"
+    },
+    {
+      "number": "hBP01-039",
+      "name": "兔田佩克拉",
+      "fields": [
+        "keyword.effect"
+      ],
+      "sourceText": "當你的推しHolomen是〈兎田ぺこら〉時，可以擲一次骰子：若為偶數，將你應援牌庫頂的1張牌，送給你的Holomen。",
+      "problem": "推し條件雖有通用檢查，但骰子被自動擲；成功後 queueCheerDeckSearch 搜尋整個牌庫而非牌庫頂，附加也可被 optional=true 略過。",
+      "anchors": [
+        "simpleKeywordCondition",
+        "queueSimpleTriggeredKeyword",
+        "queueCheerDeckSearch"
+      ],
+      "astraAction": "提供可選骰子；偶數時取應援牌庫頂 1 張，若有合法 Holomen 必須附加。"
+    }
+  ],
+  "checkedNoIssueFields": [
+    {
+      "number": "hBP01-027",
+      "path": "keyword.effect",
+      "note": "Gift 限定合作位置、對手回合受傷時的可選反應、每回合限次及奇數骰免除該次傷害已有處理。"
+    },
+    {
+      "number": "hBP01-027",
+      "path": "arts.0.effect",
+      "note": "中央 #ID 條件的 Arts +50 已由通用條件及固定加傷處理。"
+    },
+    {
+      "number": "hBP01-028",
+      "path": "extra",
+      "note": "Debut 任意張數規則已有通用處理。"
+    },
+    {
+      "number": "hBP01-030",
+      "path": "keyword.effect",
+      "note": "Bloom 後會對自己中央及合作位置、且具有 #Promise 的 Holomen 加 Arts +30；通用區域與標籤匹配已涵蓋。"
+    },
+    {
+      "number": "hBP01-031",
+      "path": "arts.0.effect",
+      "note": "每有 1 位 #Promise Holomen，Arts +20 的通用逐位加傷已涵蓋。"
+    },
+    {
+      "number": "hBP01-032",
+      "path": "extra",
+      "note": "Debut 任意張數規則已有通用處理。"
+    },
+    {
+      "number": "hBP01-035",
+      "path": "keyword.effect",
+      "note": "可選存檔區工具附加到自己 Holomen 的通用流程與可選語意已有處理。"
+    },
+    {
+      "number": "hBP01-037",
+      "path": "arts.0.effect",
+      "note": "來源 Holomen 裝備工具時，Arts +50 的條件與固定加傷已有處理。"
+    },
+    {
+      "number": "hBP01-038",
+      "path": "extra",
+      "note": "Debut 任意張數規則已有通用處理。"
+    }
+  ]
+}

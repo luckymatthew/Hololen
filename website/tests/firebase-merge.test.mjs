@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { clean, content, mergeDecision } from '../lib/firebase/merge.mjs';
+const deck = { id: 'deck-a', name: 'Koyori', deck: { oshi: { a: 1 }, main: { b: 4 }, cheer: { c: 20 }, printings: { b: { rarity1: 4 } } }, notes: 'Preserve me', tags: ['white'], createdAt: 100, updatedAt: 200, schemaVersion: 1 };
+test('local-only deck is uploaded intact including printings and extended metadata', () => { const result = mergeDecision({ ...deck, _dirty: true }, null); assert.equal(result.upload, true); assert.deepEqual(clean(result.winner), deck); });
+test('remote-only deck is downloaded', () => assert.equal(mergeDecision(null, deck).winner, deck));
+test('unchanged local record receives newer remote changes', () => { const remote = { ...deck, name: 'Remote', updatedAt: 300 }; assert.equal(mergeDecision({ ...deck, _dirty: false }, remote).winner, remote); });
+test('ordinary local edit uploads when remote still matches last sync', () => { const local = { ...deck, name: 'Edited', _dirty: true, _base: content(deck), updatedAt: 300 }; const result = mergeDecision(local, deck); assert.equal(result.winner, local); assert.equal(result.conflict, null); });
+test('concurrent remote and local edits preserve the older copy', () => { const local = { ...deck, name: 'Local', updatedAt: 500, _base: content(deck), _dirty: true }, remote = { ...deck, name: 'Remote', updatedAt: 400 }; const result = mergeDecision(local, remote); assert.equal(result.winner, local); assert.equal(result.conflict, remote); });
+test('clock skew or equal timestamp never drops divergent local data', () => { const local = { ...deck, name: 'Local', _dirty: true }, remote = { ...deck, name: 'Remote' }; const result = mergeDecision(local, remote); assert.equal(result.winner, remote); assert.equal(result.conflict, local); });
+test('archiving on one device and editing on another retains both versions', () => { const local = { ...deck, archived: true, _dirty: true }, remote = { ...deck, name: 'Edited elsewhere' }; assert.ok(mergeDecision(local, remote).conflict); });
+test('identical content does not cause a write or a conflict', () => { const result = mergeDecision({ ...deck, _dirty: true }, { ...deck, updatedAt: 300 }); assert.equal(result.upload, false); assert.equal(result.conflict, null); });

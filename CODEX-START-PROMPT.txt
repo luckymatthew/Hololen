@@ -1,0 +1,5 @@
+請接手這個 Hololive OCG 專案。先讀 START-HERE.md（若目前目錄是 website，讀 ../START-HERE.md），然後讀 docs/simulator-audit/batch-05.md、summary.json、scenario-evidence.json 及 ledger.json。最新為 Sites Version 60，第五批，原始 commit 63c811b119e52688da44f2e7213a4260d1c0a9c7。
+
+目前目標是「完整逐卡校對模擬器實際效果和傷害」，不是只改譯文。先跑 node --test tests/simulator*.test.mjs tests/oshi-skill-regression.test.mjs 建立基線（上次 492 項通過），再從 hBP01-005 X 費用替代手牌存檔及 hBP02-102 受傷前存檔時機接續。核對官方日文及裁定，建立能重現錯誤的正反情境，修正並保存逐卡證據與未決事項。基礎傷害矩陣／局部案例不得當成全卡已驗證。目前 77 卡有局部證據、完整行為驗證 0 卡。
+
+保留既有手機／桌面 UI、同步、牌組及對戰；手機 App 原本沒有模擬器，不要加回。遇到缺依賴先按 package-lock 安裝，Mac 避免直接使用需要 GNU timeout 的 Linux helper。先完成程式與驗證；沿用既有 Sites 才能更新原網站，沒有 Sites 連線時請保留可審核的本機成果並說明部署限制。請用繁中廣東話報告具體進度及未完成範圍。

@@ -1,0 +1,12 @@
+{
+  "date": "2026-09-05",
+  "cards": 1276,
+  "effectFields": 1746,
+  "baseCases": 6643,
+  "plainCases": 483,
+  "failures": 0,
+  "fullBehaviorVerifiedCards": 0,
+  "scopedScenarioCards": 90,
+  "latestBatch": 10,
+  "warning": "文字校對不等於引擎校對；程式引用或測試提及亦不代表該卡完整效果已驗證。"
+}

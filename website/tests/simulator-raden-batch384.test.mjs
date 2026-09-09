@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {applyAction} from '../lib/simulator/engine.mjs';
+import {cards,pool,state,inst,unit,fund,attack} from './fixtures/simulator-audit.mjs';
+test('Raden mandatory mushroom event',()=>{let s=state();s.phase='main';s.players[0].zones.back1=unit('hBP04-025');const card=cards.find(c=>c.tags?.includes('#きのこ')&&c.typeCode?.includes('Event'));s.players[0].mainDeck=[inst('AUDIT-DUMMY','power'),inst(card.number,'event')];s=applyAction(s,0,{type:'collab',zone:'back1'},pool,()=>0);assert.equal(s.pendingChoice.optional,false);s=applyAction(s,0,{type:'choose',cardIds:['event']},pool,()=>0);assert.equal(s.players[0].hand[0].id,'event');});
+test('Raden transfer requires Raden Oshi',()=>{let s=state('hBP04-025');fund(s.players[0].zones.center,['綠','綠','無色','無色']);s.players[0].zones.back1=unit('AUDIT-DUMMY');s.players[0].zones.back2=unit('AUDIT-DUMMY');s=applyAction(s,0,attack,pool,()=>0);assert.equal(s.pendingChoice,null);assert.equal(s.players[0].zones.center.cheer.length,4);assert.equal(s.players[1].zones.center.damage,140);});
+
+test('Raden accepted cost requires two different back recipients',()=>{
+ let s=state('hBP04-025');fund(s.players[0].zones.center,['綠','綠','無色','無色']);s.players[0].oshi=inst(cards.find(c=>c.group==='oshi'&&c.jpName==='儒烏風亭らでん').number);s.players[0].zones.back1=unit('AUDIT-DUMMY');s.players[0].zones.back2=unit('AUDIT-DUMMY');s=applyAction(s,0,attack,pool,()=>0);s=applyAction(s,0,{type:'choose',zone:'center',cheerId:'cheer0'},pool,()=>0);s=applyAction(s,0,{type:'choose',zone:'back1'},pool,()=>0);assert.equal(s.pendingChoice.optional,false);assert.throws(()=>applyAction(s,0,{type:'choose',skip:true},pool,()=>0));s=applyAction(s,0,{type:'choose',zone:'center',cheerId:'cheer1'},pool,()=>0);assert.deepEqual(s.pendingChoice.options,['back2']);s=applyAction(s,0,{type:'choose',zone:'back2'},pool,()=>0);assert.equal(s.players[1].zones.center.damage,170);assert.equal(s.players[0].zones.center.cheer.length,2);
+});

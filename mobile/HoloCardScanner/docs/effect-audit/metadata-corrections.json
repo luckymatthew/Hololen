@@ -1,0 +1,50 @@
+[
+  {
+    "card": "hBP01-005",
+    "path": "oshiSkill.timing",
+    "original": "Holo Power -2",
+    "replacement": "Holo Power -X",
+    "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=30&%2Fcardlist%2Fcardsearch_ex=&view=text",
+    "reason": "官方是可變X，不是固定2。"
+  },
+  {
+    "card": "hBP01-083",
+    "path": "arts.0.damage",
+    "original": null,
+    "replacement": 10,
+    "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=123&%2Fcardlist%2Fcardsearch_ex=&view=text",
+    "reason": "原始解析器將含全形空格的藝能名誤當結尾，遺漏基礎傷害。"
+  },
+  {
+    "card": "hBP02-033",
+    "path": "arts.0.damage",
+    "original": null,
+    "replacement": 80,
+    "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=300&%2Fcardlist%2Fcardsearch_ex=&view=text",
+    "reason": "原始解析器將含全形空格的藝能名誤當結尾，遺漏基礎傷害。"
+  },
+  {
+    "card": "hBP04-037",
+    "path": "arts.0.damage",
+    "original": null,
+    "replacement": 80,
+    "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=899&%2Fcardlist%2Fcardsearch_ex=&view=text",
+    "reason": "原始解析器將含全形空格的藝能名誤當結尾，遺漏基礎傷害。"
+  },
+  {
+    "card": "hBP08-030",
+    "path": "arts.0.damage",
+    "original": null,
+    "replacement": 10,
+    "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2233&%2Fcardlist%2Fcardsearch_ex=&view=text",
+    "reason": "原始解析器將含全形空格的藝能名誤當結尾，遺漏基礎傷害。"
+  },
+  {
+    "card": "hSD14-004",
+    "path": "arts.0.damage",
+    "original": null,
+    "replacement": 20,
+    "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2068&%2Fcardlist%2Fcardsearch_ex=&view=text",
+    "reason": "原始解析器將含全形空格的藝能名誤當結尾，遺漏基礎傷害。"
+  }
+]

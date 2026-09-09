@@ -1,0 +1,5 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {applyAction} from '../lib/simulator/engine.mjs';
+import {pool,state,inst,unit,attack} from './fixtures/simulator-audit.mjs';
+for(const stage of ['Debut','2nd'])test('Noel SP down '+stage,()=>{const c={...pool.find(c=>c.number==='AUDIT-DUMMY'),number:'NOEL-TARGET',stage,tags:['#3期生']};const deck=[...pool,c];let s=state('AUDIT-DUMMY',c.number);s.players[1].oshi=inst('hBP05-001');s.players[1].holoPower=[inst('AUDIT-DUMMY','p1'),inst('AUDIT-DUMMY','p2')];s.players[1].zones.center.damage=9990;s.players[1].zones.back1=unit('AUDIT-DUMMY');s=applyAction(s,0,attack,deck,()=>0);assert.equal(s.pendingChoice.meta.trigger,'noelDown');assert.equal(s.players[1].life.length,5);s=applyAction(s,1,{type:'choose',optionId:'use'},deck,()=>0);assert.equal(s.players[1].life.length,4);s=applyAction(s,1,{type:'choose',zone:'back1'},deck,()=>0);assert.equal(s.players[1].life.length,3);assert.equal(s.players[1].hand.length,stage==='2nd'?2:0);assert.equal(s.players[1].spOshiSkillUsed,true);});

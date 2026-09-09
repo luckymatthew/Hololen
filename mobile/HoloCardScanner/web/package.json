@@ -1,0 +1,1 @@
+{"name":"holo-pocket-lab-client","private":true,"type":"module","scripts":{"build":"node ../scripts/build-web.mjs"},"dependencies":{"react":"19.2.6","react-dom":"19.2.6"},"devDependencies":{"esbuild":"0.25.12","typescript":"5.9.3","@types/react":"19.2.14","@types/react-dom":"19.2.3"}}

@@ -1,0 +1,38 @@
+{
+  "version": "0.2.0-preview",
+  "androidPackage": "com.holocard.pocketlab",
+  "legacyPackage": "com.holocard.scanner",
+  "installation": "Side by side; export each legacy local deck and import before removing the old app",
+  "gradle": "assembleDebug, testDebugUnitTest, lintDebug passed",
+  "javaTests": 21,
+  "nodeTests": 13,
+  "typescript": "passed",
+  "lint": "0 errors, 2 warnings (existing dependency version and text formatting)",
+  "originalArtworkSample": {
+    "card": "hBP01-060",
+    "originalPixels": [
+      400,
+      559
+    ],
+    "offlineThumbnailPixels": [
+      240,
+      335
+    ],
+    "httpStatus": 200
+  },
+  "ios": {
+    "sourcePrepared": true,
+    "swiftSyntaxParsed": true,
+    "projectPlistsSchemeParsed": true,
+    "cppSyntaxCheckedWithOfficialOpenCV": "4.12.0",
+    "xcodeCompiled": false,
+    "signed": false,
+    "testFlightUploaded": false,
+    "physicalDeviceTested": false
+  },
+  "newAndroidPhysicalDeviceTested": false,
+  "oldAndroidUserFeedback": "User reports installation and scanning work in 0.1",
+  "photoRegression": "0.1 historical only; no new photo accuracy or latency claim",
+  "websiteChanged": false,
+  "signingKey": "Preserved separately; excluded from source and APK"
+}

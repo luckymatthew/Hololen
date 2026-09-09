@@ -1,0 +1,5 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {applyAction} from '../lib/simulator/engine.mjs';
+import {cards,pool,state,inst} from './fixtures/simulator-audit.mjs';
+for(const valid of [true,false])test('Chihaya SP requires FLOW GLOW '+valid,()=>{const member=cards.find(c=>c.group==='holomem'&&c.tags?.includes('#FLOW GLOW'));let s=state(valid?member.number:'AUDIT-DUMMY');s.phase='main';s.players[0].oshi=inst('hSD10-001');s.players[0].holoPower=[inst('AUDIT-DUMMY','p1'),inst('AUDIT-DUMMY','p2')];s.players[0].cheerDeck=[inst('hY01-001','cheer')];if(!valid){assert.throws(()=>applyAction(s,0,{type:'spOshiSkill'},pool,()=>0));assert.equal(s.players[0].holoPower.length,2);return;}s=applyAction(s,0,{type:'spOshiSkill'},pool,()=>0);s=applyAction(s,0,{type:'choose',zone:'center'},pool,()=>0);assert.equal(s.pendingChoice.effect,'oshiFlowGlowBuff');assert.deepEqual(s.pendingChoice.options,['center']);s=applyAction(s,0,{type:'choose',zone:'center'},pool,()=>0);assert.equal(s.players[0].zones.center.cheer[0].id,'cheer');});

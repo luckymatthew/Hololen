@@ -1,0 +1,5 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {applyAction} from '../lib/simulator/engine.mjs';
+import {cards,pool,state,inst} from './fixtures/simulator-audit.mjs';
+test('Required yellow cheer to Bloom source',()=>{const c=cards.find(c=>c.number==='hBP04-081'),prior=cards.find(p=>p.jpName===c.jpName&&p.stage===(c.stage==='2nd'?'1st':'Debut'));let s=state(prior.number);s.phase='main';s.players[0].hand=[inst(c.number,'bloom')];s.players[0].cheerDeck=[inst('hY06-001','yellow'),inst('hY01-001','white')];s=applyAction(s,0,{type:'play',cardId:'bloom'},pool,()=>0);s=applyAction(s,0,{type:'choose',zone:'center'},pool,()=>0);assert.equal(s.pendingChoice.optional,false);assert.deepEqual(s.pendingChoice.selectableIds,['yellow']);s=applyAction(s,0,{type:'choose',cardIds:['yellow']},pool,()=>0);assert.deepEqual(s.pendingChoice.options,['center']);s=applyAction(s,0,{type:'choose',zone:'center'},pool,()=>0);assert.equal(s.players[0].zones.center.cheer[0].id,'yellow');});

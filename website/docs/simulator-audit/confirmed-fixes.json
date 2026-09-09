@@ -1,0 +1,72 @@
+[
+  {
+    "number": "hBP01-070",
+    "scope": "藝能使用條件",
+    "change": "必須附有〈座員〉才可使用；修正先前判反條件。",
+    "officialSource": "https://hololive-official-cardgame.com/cardlist/?id=108&%2Fcardlist%2Fcardsearch_ex=&view=text",
+    "status": "限定案例通過，非整張卡完整驗證"
+  },
+  {
+    "number": "hBP02-093",
+    "scope": "後備區免傷",
+    "change": "只在附有此卡的白上フブキ位於後備區，且受到對手傷害時適用。",
+    "officialSource": "https://hololive-official-cardgame.com/cardlist/?id=360&%2Fcardlist%2Fcardsearch_ex=&view=text",
+    "status": "限定案例通過，非整張卡完整驗證"
+  },
+  {
+    "number": "hBP04-102",
+    "scope": "後備區免傷",
+    "change": "同時檢查 #5期生、1st／2nd、後備區及對手傷害。",
+    "officialSource": "https://hololive-official-cardgame.com/cardlist/?id=966&%2Fcardlist%2Fcardsearch_ex=&view=text",
+    "status": "限定案例通過，非整張卡完整驗證"
+  },
+  {
+    "number": "hBP07-103",
+    "scope": "不可減傷",
+    "change": "附於桃鈴ねね 1st／2nd 時，藝能傷害忽略減傷；保留原有加傷。",
+    "officialSource": "https://hololive-official-cardgame.com/cardlist/?id=1889&%2Fcardlist%2Fcardsearch_ex=&view=text",
+    "status": "限定案例通過，非整張卡完整驗證"
+  },
+  {
+    "number": "hBP01-117",
+    "scope": "可選存檔減傷",
+    "change": "略過時不減傷；支付一張附加卡後該次傷害 −30。",
+    "officialSource": "https://hololive-official-cardgame.com/cardlist/?id=158&%2Fcardlist%2Fcardsearch_ex=&view=text",
+    "status": "限定案例通過，非整張卡完整驗證"
+  },
+  {
+    "number": "hBP03-105",
+    "scope": "可選存檔減傷",
+    "change": "略過時不減傷；支付一張附加卡後該次傷害 −30。多張連續支付另列待核對。",
+    "officialSource": "https://hololive-official-cardgame.com/cardlist/?id=669&%2Fcardlist%2Fcardsearch_ex=&view=text",
+    "status": "限定案例通過，非整張卡完整驗證"
+  },
+  {
+    "number": "hBP01-121",
+    "scope": "被動減傷位置",
+    "change": "中央／合作位置才 −10；後備區不減。",
+    "officialSource": "https://hololive-official-cardgame.com/cardlist/?id=162&%2Fcardlist%2Fcardsearch_ex=&view=text",
+    "status": "限定案例通過，非整張卡完整驗證"
+  },
+  {
+    "number": "hSD03-013",
+    "scope": "被動減傷位置",
+    "change": "中央／合作位置才 −10；後備區不減。",
+    "officialSource": "https://hololive-official-cardgame.com/cardlist/?id=251&%2Fcardlist%2Fcardsearch_ex=&view=text",
+    "status": "限定案例通過，非整張卡完整驗證"
+  },
+  {
+    "number": "hBP02-086",
+    "scope": "被動受傷增加",
+    "change": "無 #お酒 才增加受到的傷害 10；有標籤不增加。",
+    "officialSource": "https://hololive-official-cardgame.com/cardlist/?id=353&%2Fcardlist%2Fcardsearch_ex=&view=text",
+    "status": "限定案例通過，非整張卡完整驗證"
+  },
+  {
+    "number": "hBP01-005",
+    "scope": "費用目錄",
+    "change": "費用顯示使用 X；反應技能實際支付仍待逐情境驗證。",
+    "officialSource": "https://hololive-official-cardgame.com/cardlist/?id=30&%2Fcardlist%2Fcardsearch_ex=&view=text",
+    "status": "限定案例通過，非整張卡完整驗證"
+  }
+]

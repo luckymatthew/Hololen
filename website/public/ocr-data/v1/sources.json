@@ -1,0 +1,13 @@
+{
+  "description": "Unmodified gzip integer LSTM models for Tesseract, served locally to avoid the discontinued projectnaptha best_int path. Model data derives from Tesseract tessdata_best (Apache-2.0).",
+  "jpn": {
+    "source": "https://cdn.jsdelivr.net/npm/@tesseract.js-data/jpn@1.0.0/4.0.0_best_int/jpn.traineddata.gz",
+    "bytes": 2030256,
+    "sha256": "2b63ebfbf1484de4a08ce53b29ef98a1c17658a93cbd38acb665d7d316d0be88"
+  },
+  "eng": {
+    "source": "https://cdn.jsdelivr.net/npm/@tesseract.js-data/eng@1.0.0/4.0.0_best_int/eng.traineddata.gz",
+    "bytes": 2952873,
+    "sha256": "45b4cb346724ac1774f1c36f42f182b887bcdb28ebe63e6fff90ac41f3fcff91"
+  }
+}

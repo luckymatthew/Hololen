@@ -1,0 +1,982 @@
+{
+  "hBP01-002": [
+    {
+      "batch": 2,
+      "path": "oshiSkill.effect",
+      "scope": "一般推し：足夠／不足費用、由最新 Holo Power 支付、自己的傷害不觸發、藝能與特殊傷害減 50。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-reaction-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=24&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP04-006": [
+    {
+      "batch": 2,
+      "path": "oshiSkill.effect",
+      "scope": "一般推し：費用與傷害來源、單一目標減 30。多目標同時受傷尚未驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-reaction-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=866&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    },
+    {
+      "batch": 5,
+      "path": "oshiSkill.effect",
+      "scope": "同一傷害事件的全體昴減30，只支付一次；非昴不減、略過整個同次窗口、不同事件不延續、費用不足、序列化、不可減傷。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-subaru-batch-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=866&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP04-001": [
+    {
+      "batch": 2,
+      "path": "spOshiSkill.effect",
+      "scope": "SP 推し：費用、傷害來源、附有助手君時減 100。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-reaction-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=861&view=text"
+    }
+  ],
+  "hSD05-001": [
+    {
+      "batch": 2,
+      "path": "spOshiSkill.effect",
+      "scope": "SP 推し：費用、傷害來源、白色目標減 20。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-reaction-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=517&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hSD08-001": [
+    {
+      "batch": 2,
+      "path": "spOshiSkill.effect",
+      "scope": "SP 推し：費用、傷害來源、白色目標減 20。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-reaction-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1138&view=text"
+    }
+  ],
+  "hYS01-001": [
+    {
+      "batch": 2,
+      "path": "spOshiSkill.effect",
+      "scope": "SP 推し：費用、傷害來源、白色目標減 20。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-reaction-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=172&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP03-008": [
+    {
+      "batch": 2,
+      "path": "oshiSkill.effect",
+      "scope": "擊倒反應：費用不足不顯示；支付 2 後抽一張。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-reaction-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=572&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP06-006": [
+    {
+      "batch": 2,
+      "path": "oshiSkill.effect",
+      "scope": "造成特殊傷害後：費用不足不顯示；支付 1 後中央追加 20，不重複觸發。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-reaction-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1483&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    },
+    {
+      "batch": 5,
+      "path": "oshiSkill.effect",
+      "scope": "反應技能造成中央與聯動20特殊傷害為同一事件；昴支付一次同時減傷。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-subaru-batch-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1483&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP07-108": [
+    {
+      "batch": 2,
+      "path": "abilityText",
+      "scope": "自己的回合、原始零傷害、減至零時保留；對手回合實際受傷後存檔。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-reaction-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1894&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP01-116": [
+    {
+      "batch": 2,
+      "path": "abilityText",
+      "scope": "藝能／特殊傷害反擊：零傷害不觸發；來源擊倒仍保留；最後生命耗盡不反擊。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-reaction-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=157&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    },
+    {
+      "batch": 4,
+      "path": "abilityText",
+      "scope": "正常攻擊流程中的致命受傷反擊在擊倒及最後生命檢查後執行。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-resolution-order-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=157&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hSD06-011": [
+    {
+      "batch": 2,
+      "path": "abilityText",
+      "scope": "藝能／特殊傷害反擊：零傷害不觸發；來源擊倒仍保留；最後生命耗盡不反擊。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-reaction-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=544&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP03-105": [
+    {
+      "batch": 2,
+      "path": "abilityText",
+      "scope": "同次傷害可逐張支付三張，−90；支付一張後略過，保留餘下兩張。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-reaction-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=669&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    },
+    {
+      "batch": 3,
+      "path": "abilityText",
+      "scope": "對手回合中央ルーナイト支付減傷或擊倒存檔可改附；可略過；多張逐次處理；錯誤位置、角色、自己的回合及無目標不改附。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-lunaite-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=669&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP01-126": [
+    {
+      "batch": 2,
+      "path": "abilityText",
+      "scope": "通用加減傷合計後才取零：30 −50 +10 應為 0。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-reaction-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=167&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP01-027": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=60&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP01-051": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=87&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP01-071": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=109&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP01-091": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=131&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP02-017": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=284&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP02-027": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=294&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP02-034": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=301&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP02-041": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=308&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP02-060": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=327&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP02-064": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=331&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP03-022": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=586&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP03-023": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=587&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP03-034": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=598&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP03-035": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=599&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP03-039": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=603&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP03-045": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=609&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP03-049": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=613&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP03-079": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=643&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP03-083": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=647&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP04-015": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=877&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP04-042": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=904&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP04-053": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=915&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP04-060": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=922&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP04-062": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=924&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP05-017": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1195&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP05-024": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1202&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP05-028": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1206&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP05-029": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1207&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP05-039": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1217&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP05-050": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1228&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP05-072": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1250&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP06-013": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1490&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP06-026": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1503&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP06-052": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1529&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP06-065": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1542&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP06-076": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1553&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP07-019": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1805&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP07-031": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1817&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP07-045": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1831&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP07-048": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1834&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP07-054": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1840&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP07-076": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1862&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP08-031": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2234&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP08-040": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2243&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP08-043": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2246&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hEB01-015": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2490&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hSD01-006": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=6&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hSD02-008": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=232&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hSD03-008": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=246&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hSD04-008": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=260&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hSD05-008": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=524&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hSD06-006": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=539&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hSD07-008": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=553&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hSD09-003": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1149&view=text"
+    }
+  ],
+  "hSD12-006": [
+    {
+      "batch": 3,
+      "path": "extra",
+      "scope": "隔離其他技能：藝能／特殊傷害擊倒扣兩點生命；不扣生命特殊傷害不扣生命。其他效果未由這些案例驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1755&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP06-030": [
+    {
+      "batch": 3,
+      "path": "keyword.effect",
+      "scope": "對手回合中央ルーナイト支付減傷或擊倒存檔可改附；可略過；多張逐次處理；錯誤位置、角色、自己的回合及無目標不改附。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-lunaite-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1507&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP07-044": [
+    {
+      "batch": 3,
+      "path": "keyword.effect",
+      "scope": "對手回合聯動來源、正確推し與粉絲時 Buzz 由扣2變扣1；非聯動後備來源、錯誤推し、無粉絲、自己回合不減免。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1830&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hSD09-007": [
+    {
+      "batch": 3,
+      "path": "keyword.effect",
+      "scope": "聯動位置且生命少於對手時擊倒少扣1；中央、生命相同與自己的回合不減免。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-buzz-life-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1153&view=text"
+    }
+  ],
+  "hBP07-029": [
+    {
+      "batch": 4,
+      "path": "keyword.effect",
+      "scope": "受傷回復50延後至擊倒檢查後；兩張同卡各自一次、新實例不承接舊實例次數；零傷害、無支援卡、自己回合不觸發；完整藝能含特殊傷害後的存活／擊倒。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-resolution-order-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1815&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP08-029": [
+    {
+      "batch": 4,
+      "path": "keyword.effect",
+      "scope": "中央holoX受到藝能傷害、聯動來源才產生待機Holo Power；特殊傷害、後備受傷、來源後備、非holoX、零傷害不觸發；最後生命敗北後不再執行。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-resolution-order-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2232&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hSD09-004": [
+    {
+      "batch": 4,
+      "path": "arts.1.effect",
+      "scope": "附帶特殊傷害已致命時仍完成藝能傷害才擊倒；與hBP07-029受傷回復的存活／致命條件。未包含全卡藝能費用與所有多目標交互。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-resolution-order-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1150&view=text"
+    },
+    {
+      "batch": 5,
+      "path": "arts.1.effect",
+      "scope": "附帶同次兩目標特殊傷害與後續藝能為不同事件；可減特殊或略過後減藝能。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-subaru-batch-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1150&view=text"
+    }
+  ],
+  "hBP04-043": [
+    {
+      "batch": 4,
+      "path": "arts.0.effect",
+      "scope": "選擇後備目標造成10特殊傷害，先於20藝能傷害結算；特殊伤害擊倒不扣生命；JSON暫存後續選擇與禁止插入第二次攻擊。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-resolution-order-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=905&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP07-081": [
+    {
+      "batch": 5,
+      "path": "arts.0.effect",
+      "scope": "附有hBP07-103的雙目標藝能共用事件；忽略減傷效果保留。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-subaru-batch-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1867&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP07-103": [
+    {
+      "batch": 5,
+      "path": "abilityText",
+      "scope": "配合hBP07-081雙目標藝能時，不可減傷不受昴技能覆蓋。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-subaru-batch-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1889&%2Fcardlist%2Fcardsearch_ex=&view=text"
+    }
+  ],
+  "hBP01-005": [
+    {
+      "batch": 6,
+      "path": "oshiSkill.effect",
+      "scope": "X 費用替代：空手牌、混合支付、Q34/Q35、費用不足、每回合限制、取消、JSON 續接及非紅色來源；非完整驗證。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-lui-payment-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=30"
+    },
+    {
+      "batch": 7,
+      "path": "spOshiSkill.effect",
+      "scope": "Q33/Q36/Q37/Q38/Q220/Q289：生效回合、重置不退聯動、接力／互換禁止、擊倒與下層卡存檔仍可、費用與每局限制；額外回合及 JSON 續接。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-lui-hawkeye-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=30"
+    },
+    {
+      "batch": 8,
+      "path": "oshiSkill.effect",
+      "scope": "波爾卡 hBP05-034 專用 Bloom 路徑：空手牌三張 Holo Power 與混合支付，按總數強制回收。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-polka-return-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=30"
+    }
+  ],
+  "hBP01-062": [
+    {
+      "batch": 6,
+      "path": "arts.0.effect",
+      "scope": "支付一張手牌或琉依替代後 +20；略過不加傷。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-lui-payment-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=99"
+    }
+  ],
+  "hBP01-061": [
+    {
+      "batch": 6,
+      "path": "arts.0.effect",
+      "scope": "琉依混合／全 Holo Power 支付四張，選擇目標後先造成 80 特殊傷害再造成 60 藝能傷害。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-lui-payment-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?faq=&id=2520"
+    }
+  ],
+  "hBP01-060": [
+    {
+      "batch": 6,
+      "path": "keyword.effect",
+      "scope": "由 Debut Bloom 並用琉依代付後才抽二；其他條件仍待補。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-lui-payment-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=97"
+    }
+  ],
+  "hBP01-063": [
+    {
+      "batch": 6,
+      "path": "keyword.effect",
+      "scope": "中央 #トリ 條件有／無、琉依替代成本後完整搜尋吉祥物。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-lui-payment-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=100"
+    }
+  ],
+  "hBP06-042": [
+    {
+      "batch": 6,
+      "path": "arts.0.effect",
+      "scope": "兩張手牌成本接受琉依混合支付；費用不足／取消不加傷。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-lui-payment-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/cardsearch/?keyword=%E3%83%8F%E3%82%B3%E3%82%B9&view=text"
+    },
+    {
+      "batch": 6,
+      "path": "keyword.effect",
+      "scope": "先存檔再抽牌；強制存檔不能略過，有／無手牌與琉依代付或拒絕代付。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-lui-payment-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/cardsearch/?keyword=%E3%83%8F%E3%82%B3%E3%82%B9&view=text"
+    }
+  ],
+  "hBP06-041": [
+    {
+      "batch": 6,
+      "path": "keyword.effect",
+      "scope": "後攻首回合 GYM RAT 抽三後才處理手牌二張存檔，琉依混合支付。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-lui-payment-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/cardsearch/?keyword=%E3%83%8F%E3%82%B3%E3%82%B9&view=text"
+    }
+  ],
+  "hBP01-106": [
+    {
+      "batch": 7,
+      "path": "abilityText",
+      "scope": "琉依 SP 生效時不能互換中央；支援結算完成，不留下無法完成的選擇。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-lui-hawkeye-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/cardsearch/?expansion=hSD04&view=text"
+    }
+  ],
+  "hSD07-001": [
+    {
+      "batch": 7,
+      "path": "spOshiSkill.effect",
+      "scope": "琉依 SP 生效時中央不能互換，沒有移到後排的成員不回復。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-lui-hawkeye-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/cardsearch/?expansion=hSD07&view=text"
+    }
+  ],
+  "hBP01-066": [
+    {
+      "batch": 7,
+      "path": "arts.1.effect",
+      "scope": "Q38：中央受琉依移動鎖時仍可存檔下層卡，對聯動造成 40 特殊傷害。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-lui-hawkeye-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=30"
+    }
+  ],
+  "hBP05-034": [
+    {
+      "batch": 8,
+      "path": "keyword.effect",
+      "scope": "Q449/Q450：中央限定、超過現有座員支付、無座員、支付手上座員再回收、強制回收、取消、琉依空手牌和混合代付。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-polka-return-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?expansion=hPR&id=857&view=image"
+    },
+    {
+      "batch": 8,
+      "path": "arts.0.effect",
+      "scope": "0/9/10/19/20/30 存檔張數，波爾卡與其他推し條件；應援亦計入。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-polka-return-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/deck/hbp05_003/"
+    }
+  ],
+  "hBP02-097": [
+    {
+      "batch": 9,
+      "path": "abilityText",
+      "scope": "Bloom 後抽牌再存檔：空手、新抽牌可選、不可略過、Q255 空牌庫、有無附加卡及持有者姓名；兩種持有者 Arts +10。JSON 待決存續。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-udin-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=364"
+    }
+  ],
+  "hBP06-058": [
+    {
+      "batch": 10,
+      "path": "arts.0.effect",
+      "scope": "紫色應援有／無及他人成員；牌庫 0/1/2/3/5 張，僅抽牌受條件限制，後段頂二存檔仍執行；傷害30。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-calli-chef-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/cardsearch/?expansion=hCO01&sort=new&view=text"
+    },
+    {
+      "batch": 10,
+      "path": "keyword.effect",
+      "scope": "Yes Chef 聯動抽三後強制存檔二；牌庫不足及只有一張手牌時盡量執行，不能略過。",
+      "status": "限定情境已通過；非完整卡牌驗證",
+      "testFile": "tests/simulator-calli-chef-audit.test.mjs",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/cardsearch/?expansion=hCO01&sort=new&view=text"
+    }
+  ]
+}

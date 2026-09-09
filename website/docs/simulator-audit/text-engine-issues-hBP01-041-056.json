@@ -1,0 +1,202 @@
+{
+  "checkedAt": "2026-09-06",
+  "scope": "hBP01-041 through hBP01-056; text-only engine checking; no scenario testing",
+  "cardsChecked": 16,
+  "effectFieldsChecked": 19,
+  "issueCards": 8,
+  "issueEffectFields": 8,
+  "noIssueFullyReviewedCards": 8,
+  "noIssueEffectFields": 11,
+  "status": "checking_only",
+  "officialSource": "https://hololive-official-card-game.com/cardlist/cardsearch/?expansion=hBP01&view=text",
+  "implementation": "lib/simulator/engine.mjs",
+  "mainProgressBeforeNoIssueMark": {
+    "cardsReviewed": 191,
+    "effectFieldsReviewed": 314,
+    "cardsRemaining": 1085,
+    "effectFieldsRemaining": 1432
+  },
+  "mainProgressAfterNoIssueMark": {
+    "cardsReviewed": 199,
+    "effectFieldsReviewed": 325,
+    "cardsRemaining": 1077,
+    "effectFieldsRemaining": 1421
+  },
+  "issues": [
+    {
+      "number": "hBP01-041",
+      "name": "兔田佩克拉",
+      "fields": [
+        "keyword.effect"
+      ],
+      "sourceText": "將自己的應援牌庫頂的1張牌，送到自己的中場Holomen或合作Holomen。",
+      "problem": "通用 eventCheerTarget 預設 optional=true；文字沒有「可以」，有應援牌庫頂及合法中央／合作目標時仍可略過附加。",
+      "anchors": [
+        "queueSimpleTriggeredKeyword",
+        "cheerTargetRuleFromText",
+        "eventCheerTarget"
+      ],
+      "astraAction": "有牌庫頂應援及合法中央／合作 Holomen 時必須取頂牌並附加；沒有合法目標才結束。"
+    },
+    {
+      "number": "hBP01-042",
+      "name": "兔田佩克拉",
+      "fields": [
+        "arts.1.effect"
+      ],
+      "sourceText": "可以擲一次骰子：每擲出1個點數，此技能+10。",
+      "problem": "resolveDiceArtEffects 會直接自動擲骰；文字是可選骰子，玩家應可選擇不擲。骰子結果乘 10 的計算方向正確。",
+      "anchors": [
+        "resolveDiceArtEffects",
+        "resolveGenericArtEffects"
+      ],
+      "astraAction": "先提供可選骰子；玩家選用後按單次骰面 ×10 加到本次 Arts。"
+    },
+    {
+      "number": "hBP01-043",
+      "name": "兔田佩克拉",
+      "fields": [
+        "arts.0.effect"
+      ],
+      "sourceText": "可以擲 3 次骰子：每當擲出的合計點數為 1，本藝術+10。",
+      "problem": "現行分支將 3 顆骰子的點數總和乘 10，應是只計算結果為 1 的骰子數量再乘 10；同時可選骰子被自動擲。",
+      "anchors": [
+        "resolveDiceArtEffects",
+        "resolveGenericArtEffects"
+      ],
+      "astraAction": "提供可選的 3 次骰子；只計算骰面等於 1 的次數，每次 +10。"
+    },
+    {
+      "number": "hBP01-047",
+      "name": "AZKi",
+      "fields": [
+        "keyword.effect"
+      ],
+      "sourceText": "這位Holomen的HP回復40。之後可以擲1次骰子：若是奇數，可以將自己檔案區域中的1～3張綠色應援送給這位Holomen。",
+      "problem": "專用 Bloom 分支在回復後無條件自動擲骰；「之後可以擲1次骰子」應先讓玩家選擇是否發動。奇數後的 1～3 張綠色應援選擇本身已有可選處理。",
+      "anchors": [
+        "queueBloomEffects",
+        "hBP01-047",
+        "rollDie"
+      ],
+      "astraAction": "回復 40 後先提供可選骰子；只有選擇擲骰且結果為奇數時，才提供可選 1～3 張綠色存檔應援。"
+    },
+    {
+      "number": "hBP01-050",
+      "name": "風真伊呂波",
+      "fields": [
+        "arts.0.effect"
+      ],
+      "sourceText": "從自己的應援牌庫頂抽1張，送給自己場上持有#秘密結社holoX且不是〈風真いろは〉的任意一位Holomen。",
+      "problem": "通用 eventCheerTarget 預設 optional=true；有牌庫頂應援及合法 #秘密結社holoX（排除風真いろは）目標時，文字要求附加但仍可略過。",
+      "anchors": [
+        "queueSimpleTriggeredKeyword",
+        "cheerTargetRuleFromText",
+        "eventCheerTarget"
+      ],
+      "astraAction": "有合法目標時必須取應援牌庫頂 1 張並附加；維持 #秘密結社holoX 及排除〈風真いろは〉的目標規則。"
+    },
+    {
+      "number": "hBP01-051",
+      "name": "風真伊呂波",
+      "fields": [
+        "extra"
+      ],
+      "sourceText": "當此成員被擊倒時，自身生命-2。",
+      "problem": "擊倒流程及現有 Extra 觸發搜尋沒有 hBP01-051 的生命 -2 分支；倒下時只會按一般生命減少處理。",
+      "anchors": [
+        "knockOutUnit",
+        "queueKnockoutAttachmentEffects",
+        "queueGiftKnockoutEffects"
+      ],
+      "astraAction": "當目前頂牌 hBP01-051 倒下時，令持有者生命額外減少 2，並按生命應援公開／附加及防護規則結算。"
+    },
+    {
+      "number": "hBP01-054",
+      "name": "Airani Iofifteen",
+      "fields": [
+        "keyword.effect"
+      ],
+      "sourceText": "將自己應援牌庫頂的1張牌，送給自己場上擁有#ID且不是〈アイラニ・イオフィフティーン〉的成員。",
+      "problem": "通用 eventCheerTarget 預設 optional=true；有牌庫頂應援及合法 #ID（排除 Iofi）目標時仍可略過，文字沒有「可以」。",
+      "anchors": [
+        "queueSimpleTriggeredKeyword",
+        "cheerTargetRuleFromText",
+        "eventCheerTarget"
+      ],
+      "astraAction": "有合法 #ID 且排除自身的目標時必須取牌庫頂 1 張並附加。"
+    },
+    {
+      "number": "hBP01-055",
+      "name": "Airani Iofifteen",
+      "fields": [
+        "arts.0.effect"
+      ],
+      "sourceText": "當自己的舞台上有持有#ID且不是〈アイラニ・イオフィフティーン〉的Holomen時，此Arts力量+50。",
+      "problem": "artConditionApplies 的舞台標籤條件只檢查是否存在 #ID，沒有套用「不是〈アイラニ・イオフィフティーン〉」排除名；舞台只有 Iofi 時也會錯誤加成。",
+      "anchors": [
+        "artConditionApplies",
+        "stageTag",
+        "resolveGenericArtEffects"
+      ],
+      "astraAction": "條件必須尋找舞台上持有 #ID 且卡名不是〈アイラニ・イオフィフティーン〉的 Holomen；只有被排除的 Iofi 時不得 +50。"
+    }
+  ],
+  "checkedNoIssueFields": [
+    {
+      "number": "hBP01-043",
+      "path": "keyword.effect",
+      "note": "「使這位 Holomen 回復 50 HP」直接回復效果來源，沒有額外目標選擇缺口。"
+    },
+    {
+      "number": "hBP01-044",
+      "path": "extra",
+      "note": "Debut 任意張數規則已有通用處理。"
+    },
+    {
+      "number": "hBP01-045",
+      "path": "keyword.effect",
+      "note": "生命 3 或以下、手牌 2nd AZKi、Bloom 時機及一次發動限制已有專用 Gift 流程；無視 Bloom 等級的替換也有檢查。"
+    },
+    {
+      "number": "hBP01-046",
+      "path": "keyword.effect",
+      "note": "通用舞台應援改附流程支援「可以」及 1～3 張，並讓每張應援選擇自己的 Holomen。"
+    },
+    {
+      "number": "hBP01-048",
+      "path": "extra",
+      "note": "Debut 任意張數規則已有通用處理。"
+    },
+    {
+      "number": "hBP01-050",
+      "path": "keyword.effect",
+      "note": "Gift 的合作位置限定由 defenderForcesCollabTarget 強制 Arts 只能指定對手合作位置；特殊傷害不受該限制。"
+    },
+    {
+      "number": "hBP01-051",
+      "path": "arts.0.effect",
+      "note": "合作位置限定由 artConditionApplies 檢查；每張此成員應援 +20、最多 5 張由 perCheer 解析。"
+    },
+    {
+      "number": "hBP01-052",
+      "path": "extra",
+      "note": "Debut 任意張數規則已有通用處理。"
+    },
+    {
+      "number": "hBP01-052",
+      "path": "arts.0.effect",
+      "note": "通用舞台應援改附流程支援可選 1 張，並以 #ID Holomen 作為接收目標。"
+    },
+    {
+      "number": "hBP01-055",
+      "path": "keyword.effect",
+      "note": "可選的存檔區應援分配支援 1～3 位 #ID Holomen；hBP01-055 專用每位最多 1 張標記已在候選及確認時限制。"
+    },
+    {
+      "number": "hBP01-056",
+      "path": "extra",
+      "note": "Debut 任意張數規則已有通用處理。"
+    }
+  ]
+}

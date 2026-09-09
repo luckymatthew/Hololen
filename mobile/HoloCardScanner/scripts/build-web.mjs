@@ -1,0 +1,15 @@
+import { createRequire } from 'node:module';
+import { readFile, writeFile, mkdir, copyFile } from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const dependencies=process.env.HOLO_NODE_MODULES||path.join(root,'web/node_modules');
+const require=createRequire(path.join(dependencies,'../package.json'));
+const esbuild=require('esbuild');
+const out=path.join(root,'app/src/main/assets/app');
+await mkdir(out,{recursive:true});
+await esbuild.build({entryPoints:[path.join(root,'web/main.tsx')],bundle:true,minify:true,platform:'browser',format:'iife',target:'chrome100',jsx:'automatic',outfile:path.join(out,'app.js'),nodePaths:[dependencies],alias:{'@':path.join(root,'web'),'next/link':path.join(root,'web/Link.tsx')},define:{'process.env.NODE_ENV':'"production"'}});
+const css=await Promise.all(['app/globals.css','app/studio.css','app.css'].map(f=>readFile(path.join(root,'web',f),'utf8')));
+await writeFile(path.join(out,'app.css'),css.join('\n').replace('@import "tailwindcss";',''));
+await copyFile(path.join(root,'web/index.html'),path.join(out,'index.html'));
+console.log('Bundled card library, deck builder, local/cloud storage. No simulator module.');

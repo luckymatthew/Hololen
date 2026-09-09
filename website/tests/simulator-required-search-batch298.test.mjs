@@ -1,0 +1,6 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {applyAction} from '../lib/simulator/engine.mjs';
+import {cards,pool,state,inst,unit} from './fixtures/simulator-audit.mjs';
+test('Choco required food event search',()=>{const food=cards.find(c=>c.typeCode?.startsWith('supportEvent')&&c.tags?.includes('#食べ物'));assert.ok(food);let s=state();s.phase='main';s.players[0].oshi=inst('hBP05-005');s.players[0].holoPower=[inst('AUDIT-DUMMY','hp')];s.players[0].mainDeck=[inst(food.number,'yes')];s=applyAction(s,0,{type:'oshiSkill'},pool,()=>0);assert.equal(s.pendingChoice.optional,false);s=applyAction(s,0,{type:'choose',cardIds:['yes']},pool,()=>0);assert.equal(s.players[0].hand[0].id,'yes');});
+for(const valid of [true,false])test('Noel required first-turn search '+valid,()=>{const noel=cards.find(c=>c.jpName==='白銀ノエル'&&c.stage==='1st');let s=state();s.phase='main';s.firstPlayer=valid?1:0;s.players[0].turnsTaken=1;s.players[0].zones.back1=unit('hBP05-009');s.players[0].mainDeck=[inst('AUDIT-DUMMY','hp'),inst(noel.number,'yes')];s=applyAction(s,0,{type:'collab',zone:'back1'},pool,()=>0);if(valid){assert.equal(s.pendingChoice.optional,false);assert.deepEqual(s.pendingChoice.cards.map(c=>c.id),['yes']);}else assert.equal(s.pendingChoice,null);});

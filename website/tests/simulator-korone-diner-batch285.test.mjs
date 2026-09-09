@@ -1,0 +1,5 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {applyAction} from '../lib/simulator/engine.mjs';
+import {cards,pool,state,inst,unit} from './fixtures/simulator-audit.mjs';
+for(const paid of [true,false])test('Korone diner mandatory cheer cost and search '+paid,()=>{const target=cards.find(c=>c.stage==='Debut'&&c.tags?.includes('#ゲーマーズ'));let s=state();s.phase='main';s.players[0].zones.back1=unit('hBP03-062',{cheer:paid?[inst('hY01-001','cost')]:[]});s.players[0].mainDeck=[inst('AUDIT-DUMMY','power'),inst(target.number,'yes'),inst('AUDIT-DUMMY','wrong')];s=applyAction(s,0,{type:'collab',zone:'back1'},pool,()=>0);if(!paid){assert.equal(s.pendingChoice,null);return;}assert.equal(s.pendingChoice.optional,false);s=applyAction(s,0,{type:'choose',zone:'collab',cheerId:'cost'},pool,()=>0);assert.equal(s.pendingChoice.optional,false);assert.deepEqual(s.pendingChoice.cards.map(c=>c.id),['yes']);s=applyAction(s,0,{type:'choose',cardIds:['yes']},pool,()=>0);assert.ok(s.players[0].archive.some(c=>c.id==='cost'));assert.ok(s.players[0].hand.some(c=>c.id==='yes'));});

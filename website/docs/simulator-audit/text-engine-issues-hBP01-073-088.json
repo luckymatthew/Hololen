@@ -1,0 +1,174 @@
+{
+  "checkedAt": "2026-09-06",
+  "scope": "hBP01-073 through hBP01-088; text-only engine checking; no scenario testing",
+  "cardsChecked": 16,
+  "effectFieldsChecked": 17,
+  "issueCards": 6,
+  "issueEffectFields": 6,
+  "noIssueFullyReviewedCards": 10,
+  "noIssueEffectFields": 11,
+  "status": "checking_only",
+  "officialSource": "https://hololive-official-card-game.com/cardlist/cardsearch/?expansion=hBP01&view=text",
+  "implementation": "lib/simulator/engine.mjs",
+  "mainProgressBeforeNoIssueMark": {
+    "cardsReviewed": 207,
+    "effectFieldsReviewed": 336,
+    "cardsRemaining": 1069,
+    "effectFieldsRemaining": 1410
+  },
+  "mainProgressAfterNoIssueMark": {
+    "cardsReviewed": 217,
+    "effectFieldsReviewed": 347,
+    "cardsRemaining": 1059,
+    "effectFieldsRemaining": 1399
+  },
+  "issues": [
+    {
+      "number": "hBP01-076",
+      "name": "星街彗星",
+      "fields": [
+        "arts.0.effect"
+      ],
+      "sourceText": "對對手的後排holo成員1人造成10點特殊傷害（即使該成員倒下，對手的生命值也不會減少）。",
+      "problem": "通用後排特殊傷害分支把 stageTarget 設成 optional=true；有對手後排時，文字要求選 1 位但仍可略過。",
+      "anchors": [
+        "queueSimpleTriggeredKeyword",
+        "specialDamage",
+        "stageTarget"
+      ],
+      "astraAction": "有合法對手後排時必須選 1 位，造成 10 點特殊傷害且 loseLife=false。"
+    },
+    {
+      "number": "hBP01-079",
+      "name": "星街彗星",
+      "fields": [
+        "keyword.effect"
+      ],
+      "sourceText": "對對手的1位後排Holomen造成20點特殊傷害（即使使其倒下，也不會減少對手的生命值）。",
+      "problem": "通用後排特殊傷害分支把目標設成 optional=true；有合法對手後排時仍可略過，文字沒有「可以」。",
+      "anchors": [
+        "queueSimpleTriggeredKeyword",
+        "specialDamage",
+        "stageTarget"
+      ],
+      "astraAction": "有合法對手後排時必須選 1 位，造成 20 點特殊傷害且倒下不減生命。"
+    },
+    {
+      "number": "hBP01-080",
+      "name": "星街彗星",
+      "fields": [
+        "keyword.effect"
+      ],
+      "sourceText": "可擲一次骰子：若為奇數，讓一名對手HP已減少40以上的後排Holo成員倒下（即使倒下也不會減少對手的生命值）。",
+      "problem": "專用 hBP01-080 分支在發動合作效果時直接自動擲骰；奇數後的倒下目標也設成 optional=true，但文字只把骰子寫成可選，成功後有合法目標應執行。",
+      "anchors": [
+        "queueCollabEffects",
+        "hBP01-080",
+        "rollDie",
+        "knockOutNoLife"
+      ],
+      "astraAction": "先提供可選骰子；選用且為奇數時，有 HP 已減少至少 40 的對手後排便必須選 1 位使其倒下，且不減生命。"
+    },
+    {
+      "number": "hBP01-081",
+      "name": "星街彗星",
+      "fields": [
+        "keyword.effect"
+      ],
+      "sourceText": "從自己加油牌庫頂抽1張，送到自己的藍色Holomen。",
+      "problem": "通用 eventCheerTarget 預設 optional=true；有牌庫頂應援及合法藍色 Holomen 時仍可略過附加，文字沒有「可以」。",
+      "anchors": [
+        "queueSimpleTriggeredKeyword",
+        "cheerTargetRuleFromText",
+        "eventCheerTarget"
+      ],
+      "astraAction": "有合法藍色 Holomen 時必須取應援牌庫頂 1 張並附加；沒有合法目標才結束。"
+    },
+    {
+      "number": "hBP01-083",
+      "name": "Kobo Kanaeru",
+      "fields": [
+        "keyword.effect"
+      ],
+      "sourceText": "當自己的中央Holomen擁有#ID時，可以擲一次骰子：若結果為3以上，將自己應援牌庫頂的1張牌送給自己的Holomen。",
+      "problem": "通用 simpleKeywordCondition 會自動擲骰，沒有文字中的可選發動；成功後 eventCheerTarget 仍預設 optional=true，有合法 Holomen 時可略過牌庫頂附加。",
+      "anchors": [
+        "simpleKeywordCondition",
+        "queueSimpleTriggeredKeyword",
+        "eventCheerTarget"
+      ],
+      "astraAction": "先檢查中央 #ID，再提供可選骰子；結果 3 以上且有合法自己 Holomen 時必須取牌庫頂 1 張並附加。"
+    },
+    {
+      "number": "hBP01-088",
+      "name": "Moona Hoshinova",
+      "fields": [
+        "arts.0.effect"
+      ],
+      "sourceText": "可以擲一次骰子：若為偶數，對對手的一位後排Holomen造成20點特殊傷害。不過，即使該角色倒下，對手的生命值也不會減少。",
+      "problem": "resolveDiceArtEffects 的 hBP01-088:0 直接自動擲骰；文字是可選骰子，玩家應能選擇不擲。偶數後的後排目標已是必選。",
+      "anchors": [
+        "resolveDiceArtEffects",
+        "hBP01-088:0"
+      ],
+      "astraAction": "提供可選骰子；只在玩家選用且為偶數時，若有合法後排便必須選 1 位造成 20 點特殊傷害且不減生命。"
+    }
+  ],
+  "checkedNoIssueFields": [
+    {
+      "number": "hBP01-074",
+      "path": "keyword.effect",
+      "note": "可選返回存檔區 1 張 Debut／1st Holomen；若返回卡帶 #EN 才對手合作造成 20 點特殊傷害，專用流程已涵蓋。"
+    },
+    {
+      "number": "hBP01-075",
+      "path": "keyword.effect",
+      "note": "專用混沌洗牌流程保存雙方原手牌數量，雙方按次序把全部手牌放牌庫底後各自抽回相同張數。"
+    },
+    {
+      "number": "hBP01-076",
+      "path": "extra",
+      "note": "Debut 任意張數規則已有通用處理。"
+    },
+    {
+      "number": "hBP01-077",
+      "path": "keyword.effect",
+      "note": "推し星街すいせい條件、可選來源藍色應援成本及支付後抽 2 張由通用條件／成本流程處理。"
+    },
+    {
+      "number": "hBP01-081",
+      "path": "arts.0.effect",
+      "note": "可選攻擊者身上 2 張藍色應援成本、每張重疊 Holomen +60，以及支付後可指定後排的攻擊權限已有專用流程。"
+    },
+    {
+      "number": "hBP01-082",
+      "path": "extra",
+      "note": "Debut 任意張數規則已有通用處理。"
+    },
+    {
+      "number": "hBP01-085",
+      "path": "arts.1.effect",
+      "note": "對手 3 位後排各 10 點特殊傷害且倒下不減生命；通用多目標特殊傷害流程使用 3 個不同後排目標並設定 loseLife=false。"
+    },
+    {
+      "number": "hBP01-086",
+      "path": "keyword.effect",
+      "note": "可選 #ID Holomen 應援成本；支付後對手所有後排各 10 點特殊傷害且不減生命，通用成本及全後排流程已涵蓋。"
+    },
+    {
+      "number": "hBP01-087",
+      "path": "arts.0.effect",
+      "note": "可選此成員 1 張應援成本；支付後對手所有後排各 20 點特殊傷害且不減生命，通用成本及全後排流程已涵蓋。"
+    },
+    {
+      "number": "hBP01-087",
+      "path": "arts.1.effect",
+      "note": "可選此成員 2 張應援成本；專用 hBP01-087:1 以對手後排現有傷害總和對中央造成特殊傷害，目標及先後順序符合文字。"
+    },
+    {
+      "number": "hBP01-088",
+      "path": "extra",
+      "note": "Debut 任意張數規則已有通用處理."
+    }
+  ]
+}

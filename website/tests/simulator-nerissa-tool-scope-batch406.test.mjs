@@ -1,0 +1,5 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {applyAction} from '../lib/simulator/engine.mjs';
+import {pool,state,inst,fund,attack,unit} from './fixtures/simulator-audit.mjs';
+for(const [zone,skip,used] of [['collab',false,false],['center',true,false],['center',false,true]])test(`Nerissa tool ${zone} skip ${skip} used ${used}`,()=>{let s=state('hBP05-061');if(zone==='collab'){s.players[0].zones.collab=s.players[0].zones.center;s.players[0].zones.center=unit('AUDIT-DUMMY');}fund(s.players[0].zones[zone],['紫','無色','無色']);s.players[0].zones[zone].attachments=[inst('hBP05-083','tool')];s.players[0].hand=[inst('AUDIT-DUMMY','discard')];if(used)s.players[0].namedUsageTurns={'tool:hBP05-083:tool':3};s=applyAction(s,0,{...attack,sourceZone:zone},pool,()=>0);s=applyAction(s,0,skip?{type:'choose',skip:true}:{type:'choose',cardIds:['discard']},pool,()=>0);assert.equal(s.pendingChoice?.effect==='specialDamage',!skip&&!used);if(!skip&&!used)assert.equal(s.players[0].namedUsageTurns['tool:hBP05-083:tool'],3);});

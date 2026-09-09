@@ -1,0 +1,19 @@
+{
+  "verifiedAt": "2026-09-09",
+  "source": "Owner-supplied Hololens-0.7.2-Install.zip / Hololens-0.7.2.apk",
+  "publishedFilename": "HoloLens.apk",
+  "versionName": "0.7.2-native-preview",
+  "versionCode": 13,
+  "packageName": "com.holocard.pocketlab.preview06",
+  "minSdk": 35,
+  "targetSdk": 36,
+  "abis": ["arm64-v8a"],
+  "bytes": 576750232,
+  "sha256": "927f06dec1e727a07f4a74a3a65d9c856e5ab9fc94a301a29b272a0079285ca1",
+  "apksignerVerify": "PASS (APK Signature Scheme v3)",
+  "certificateSha256": "92a20ef4e5e7a93e96865577fc90978ba085c0723a0145bcda58c848f5b84f4a",
+  "debuggable": true,
+  "recompiledOrResigned": false,
+  "physicalDeviceInstallationTested": false,
+  "sourceMatchesBundledAndroidProject": false
+}

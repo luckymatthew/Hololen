@@ -1,0 +1,224 @@
+{
+  "scope": "Host OpenCV visual-only regression; no Android ML Kit OCR, no real-device performance measurement",
+  "referenceCount": 2319,
+  "results": [
+    {
+      "photo": "01-7340.jpg",
+      "expected": "hBP01-060",
+      "automatic": "hBP01-060",
+      "correctAutomatic": true,
+      "wrongAutomatic": false,
+      "candidateCorrect": true,
+      "foundCard": false,
+      "hostVisualMilliseconds": 1429,
+      "candidates": [
+        {
+          "number": "hBP01-060",
+          "inliers": 34,
+          "ratio": 0.9444444444444444,
+          "coverage": 0.49090457256461234,
+          "key": "d598b61f000a05f7dc60"
+        }
+      ]
+    },
+    {
+      "photo": "02-7341.jpg",
+      "expected": "hBP01-061",
+      "automatic": "hBP01-061",
+      "correctAutomatic": true,
+      "wrongAutomatic": false,
+      "candidateCorrect": true,
+      "foundCard": false,
+      "hostVisualMilliseconds": 1123,
+      "candidates": [
+        {
+          "number": "hBP01-061",
+          "inliers": 23,
+          "ratio": 0.92,
+          "coverage": 0.29430638391870995,
+          "key": "f858ec0ecd4678cab0c4"
+        }
+      ]
+    },
+    {
+      "photo": "03-7342.jpg",
+      "expected": "hSD01-018",
+      "automatic": "hSD01-018",
+      "correctAutomatic": true,
+      "wrongAutomatic": false,
+      "candidateCorrect": true,
+      "foundCard": false,
+      "hostVisualMilliseconds": 1184,
+      "candidates": [
+        {
+          "number": "hSD01-018",
+          "inliers": 18,
+          "ratio": 0.75,
+          "coverage": 0.28431632427656284,
+          "key": "ca5da26baa761b7aec69"
+        },
+        {
+          "number": "hBP01-104",
+          "inliers": 9,
+          "ratio": 0.47368421052631576,
+          "coverage": 0.017981002871658935,
+          "key": "e4db1c1f0f31aff3d615"
+        }
+      ]
+    },
+    {
+      "photo": "04-7344.jpg",
+      "expected": "hBP04-105",
+      "automatic": null,
+      "correctAutomatic": false,
+      "wrongAutomatic": false,
+      "candidateCorrect": true,
+      "foundCard": false,
+      "hostVisualMilliseconds": 1449,
+      "candidates": [
+        {
+          "number": "hBP04-105",
+          "inliers": 16,
+          "ratio": 0.8,
+          "coverage": 0.07841837861718577,
+          "key": "e808929a1cb523dbc3bb"
+        }
+      ]
+    },
+    {
+      "photo": "05-7345.jpg",
+      "expected": "hEB01-019",
+      "automatic": "hEB01-019",
+      "correctAutomatic": true,
+      "wrongAutomatic": false,
+      "candidateCorrect": true,
+      "foundCard": false,
+      "hostVisualMilliseconds": 1500,
+      "candidates": [
+        {
+          "number": "hEB01-019",
+          "inliers": 25,
+          "ratio": 0.8928571428571429,
+          "coverage": 0.4902474044621162,
+          "key": "d4230c9a8d2554a2067b"
+        },
+        {
+          "number": "hBP02-060",
+          "inliers": 13,
+          "ratio": 0.7222222222222222,
+          "coverage": 0.004484205875855975,
+          "key": "d6ba084b83036a668bf7"
+        },
+        {
+          "number": "hBP06-057",
+          "inliers": 7,
+          "ratio": 0.7,
+          "coverage": 0.0025182239893969515,
+          "key": "9d5ee174552b56469601"
+        },
+        {
+          "number": "hBP05-069",
+          "inliers": 7,
+          "ratio": 0.875,
+          "coverage": 0.002899271040424122,
+          "key": "d129c2a70686aa79348b"
+        }
+      ]
+    },
+    {
+      "photo": "06-7343.jpg",
+      "expected": "hBP07-094",
+      "automatic": "hBP07-094",
+      "correctAutomatic": true,
+      "wrongAutomatic": false,
+      "candidateCorrect": true,
+      "foundCard": false,
+      "hostVisualMilliseconds": 1381,
+      "candidates": [
+        {
+          "number": "hBP07-094",
+          "inliers": 42,
+          "ratio": 0.8235294117647058,
+          "coverage": 0.3603158824828805,
+          "key": "8a8be9567337ad00a825"
+        }
+      ]
+    },
+    {
+      "photo": "07-7346.jpg",
+      "expected": "hSD01-016",
+      "automatic": "hSD01-016",
+      "correctAutomatic": true,
+      "wrongAutomatic": false,
+      "candidateCorrect": true,
+      "foundCard": false,
+      "hostVisualMilliseconds": 1438,
+      "candidates": [
+        {
+          "number": "hSD01-016",
+          "inliers": 51,
+          "ratio": 0.9272727272727272,
+          "coverage": 0.3594819969074442,
+          "key": "6abefc098218b0767bab"
+        }
+      ]
+    },
+    {
+      "photo": "08-7347.jpg",
+      "expected": "hEB01-024",
+      "automatic": "hEB01-024",
+      "correctAutomatic": true,
+      "wrongAutomatic": false,
+      "candidateCorrect": true,
+      "foundCard": false,
+      "hostVisualMilliseconds": 1229,
+      "candidates": [
+        {
+          "number": "hEB01-024",
+          "inliers": 40,
+          "ratio": 0.975609756097561,
+          "coverage": 0.6757234371548487,
+          "key": "d1fb1e6d433e60fea375"
+        }
+      ]
+    },
+    {
+      "photo": "09-7348.jpg",
+      "expected": "hBP01-104",
+      "automatic": "hBP01-104",
+      "correctAutomatic": true,
+      "wrongAutomatic": false,
+      "candidateCorrect": true,
+      "foundCard": false,
+      "hostVisualMilliseconds": 1608,
+      "candidates": [
+        {
+          "number": "hBP01-104",
+          "inliers": 32,
+          "ratio": 0.8205128205128205,
+          "coverage": 0.3867627567925779,
+          "key": "7c698c8f84a1ef2b8d76"
+        }
+      ]
+    },
+    {
+      "photo": "10-7349.jpg",
+      "expected": "hEB01-023",
+      "automatic": "hEB01-023",
+      "correctAutomatic": true,
+      "wrongAutomatic": false,
+      "candidateCorrect": true,
+      "foundCard": false,
+      "hostVisualMilliseconds": 1300,
+      "candidates": [
+        {
+          "number": "hEB01-023",
+          "inliers": 32,
+          "ratio": 0.8205128205128205,
+          "coverage": 0.4620002208968412,
+          "key": "05a342228d11210f6398"
+        }
+      ]
+    }
+  ]
+}

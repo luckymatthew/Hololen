@@ -1,0 +1,44 @@
+{
+  "apk": "Holo-Pocket-Lab-0.2-Android16.apk",
+  "sha256": "f48a94de024b4859634210e0d053056000eec78db914e2a39c5844c23e9bae87",
+  "bytes": 162033606,
+  "targetSdk": 36,
+  "minimumSdk": 35,
+  "abi": "arm64-v8a",
+  "signatureVerified": true,
+  "signing": "Debug-signed preview, not production release",
+  "zipAligned16KiB": true,
+  "nativeLoadSegmentAlignment": {
+    "lib/arm64-v8a/libc++_shared.so": [
+      16384,
+      16384,
+      16384,
+      16384
+    ],
+    "lib/arm64-v8a/libimage_processing_util_jni.so": [
+      16384,
+      16384,
+      16384
+    ],
+    "lib/arm64-v8a/libmlkit_google_ocr_pipeline.so": [
+      16384,
+      16384,
+      16384
+    ],
+    "lib/arm64-v8a/libopencv_java4.so": [
+      16384,
+      16384,
+      16384
+    ],
+    "lib/arm64-v8a/libsurface_util_jni.so": [
+      16384,
+      16384
+    ]
+  },
+  "bundledCards": 1276,
+  "bundledImageReferences": 2319,
+  "cardsWithOfflineArtwork": 1134,
+  "snapshot": "2026-08-22",
+  "privatePhotosInApk": false,
+  "deviceTest": "Not established by this packaging check"
+}

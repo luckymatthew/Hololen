@@ -1,0 +1,5 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {applyAction} from '../lib/simulator/engine.mjs';
+import {pool,state,inst,unit} from './fixtures/simulator-audit.mjs';
+test('DOWN Cheer transfers before archive and excludes defeated recipient',()=>{let s=state();const cheer=inst('hY01-001','transfer');s.players[0].zones.center.cheer=[cheer];s.players[0].zones.center.downPending=true;s.players[0].zones.back1=unit('AUDIT-DUMMY');s.pendingChoice={type:'cardSelection',playerIndex:0,cards:[cheer],selectableIds:['transfer'],min:1,max:1,effect:'koTransferCheer',source:'archive',meta:{targetRule:{}}};s=applyAction(s,0,{type:'choose',cardIds:['transfer']},pool,()=>0);assert.equal(s.pendingChoice.effect,'attachArchiveCheer');assert.ok(!s.pendingChoice.options.includes('center'));s=applyAction(s,0,{type:'choose',zone:'back1'},pool,()=>0);assert.equal(s.players[0].zones.center.cheer.length,0);assert.equal(s.players[0].zones.back1.cheer[0].id,'transfer');assert.equal(s.players[0].archive.length,0);});

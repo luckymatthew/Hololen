@@ -1,0 +1,60 @@
+{
+  "name": "hololive-ocg-zh-deck-studio",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "install:ci": "bash scripts/install-ci.sh",
+    "dev": "vite --config vite.firebase.config.ts",
+    "build": "vite build --config vite.firebase.config.ts",
+    "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
+    "test": "npm run test:sync && npm run test:regression && tsc --noEmit && npm run build",
+    "validate:artifact": "bash scripts/validate-artifact.sh",
+    "lint": "bash scripts/sites-env.sh -- eslint . --ignore-pattern dist --ignore-pattern .next",
+    "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate",
+    "test:scanner": "node --test tests/card-scanner.test.mjs tests/ocr-initialization.test.mjs",
+    "dev:sites": "vite",
+    "build:sites": "vinext build",
+    "preview": "vite preview --config vite.firebase.config.ts",
+    "emulators": "firebase emulators:start --project demo-holo-ocg --only auth,firestore,database,hosting",
+    "test:rules": "firebase emulators:exec --project demo-holo-ocg --only auth,firestore,database \"node --test tests/firebase-rules.test.mjs\"",
+    "test:sync": "node --test tests/firebase-merge.test.mjs tests/releases.test.mjs",
+    "test:regression": "node scripts/test-regression.mjs",
+    "deploy:firebase": "firebase deploy",
+    "deploy:preview": "firebase hosting:channel:deploy migration --expires 7d",
+    "test:integration": "firebase emulators:exec --project demo-holo-ocg --only auth,firestore,database \"node scripts/test-integration.mjs\"",
+    "test:sites": "npm run build:sites && node --experimental-loader=./tests/cloudflare-loader.mjs --test tests/rendered-html.test.mjs"
+  },
+  "dependencies": {
+    "drizzle-orm": "0.45.2",
+    "firebase": "12.18.0",
+    "next": "16.2.6",
+    "react": "19.2.6",
+    "react-dom": "19.2.6"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "1.37.1",
+    "@firebase/rules-unit-testing": "5.0.2",
+    "@tailwindcss/postcss": "4.2.1",
+    "@types/node": "22.19.19",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.2",
+    "@vitejs/plugin-rsc": "0.5.26",
+    "drizzle-kit": "0.31.10",
+    "esbuild": "0.28.0",
+    "eslint": "9.39.4",
+    "eslint-config-next": "16.2.6",
+    "firebase-tools": "15.29.0",
+    "react-server-dom-webpack": "19.2.6",
+    "tailwindcss": "4.2.1",
+    "typescript": "5.9.3",
+    "vinext": "0.0.50",
+    "vite": "8.0.13",
+    "wrangler": "4.92.0"
+  },
+  "type": "module",
+  "displayName": "Hololive OCG Traditional Chinese Deck Studio"
+}

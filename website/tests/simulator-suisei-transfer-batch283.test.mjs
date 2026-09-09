@@ -1,0 +1,6 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {applyAction} from '../lib/simulator/engine.mjs';
+import {cards,pool,state,inst,unit,fund,attack} from './fixtures/simulator-audit.mjs';
+test('Suisei mandatory top-four search',()=>{const prior=cards.find(c=>c.jpName==='星街すいせい'&&c.stage==='Debut');let s=state(prior.number);s.phase='main';s.players[0].hand=[inst('hBP03-044','bloom')];s.players[0].mainDeck=[inst(prior.number,'yes'),inst('AUDIT-DUMMY','no')];s=applyAction(s,0,{type:'play',cardId:'bloom'},pool,()=>0);s=applyAction(s,0,{type:'choose',zone:'center'},pool,()=>0);assert.equal(s.pendingChoice.optional,false);assert.equal(s.pendingChoice.min,1);});
+test('Suisei blue cheer moves to back Suisei',()=>{const oshi=cards.find(c=>c.group==='oshi'&&c.jpName==='星街すいせい');let s=state('hBP03-044');s.players[0].oshi=inst(oshi.number);fund(s.players[0].zones.center,['藍','無色']);s.players[0].zones.back1=unit('hBP03-044');s.players[0].zones.back2=unit('AUDIT-DUMMY');s=applyAction(s,0,attack,pool,()=>0);assert.equal(s.pendingChoice.effect,'genericMoveCheer');s=applyAction(s,0,{type:'choose',zone:'center',cheerId:'cheer0'},pool,()=>0);assert.deepEqual(s.pendingChoice.options,['back1']);s=applyAction(s,0,{type:'choose',zone:'back1'},pool,()=>0);assert.equal(s.players[0].zones.back1.cheer[0].id,'cheer0');});

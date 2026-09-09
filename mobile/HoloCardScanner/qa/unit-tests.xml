@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites><testsuite name="com.holocard.scanner.OriginalArtStoreTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-09-05T09:30:44" hostname="localhost" time="0.002">
+  <properties />
+  <testcase name="acceptsOnlyOfficialArtwork" classname="com.holocard.scanner.OriginalArtStoreTest" time="0.002" />
+  <system-out />
+  <system-err />
+</testsuite><testsuite name="com.holocard.scanner.ScanGeometryTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-09-05T09:30:44" hostname="localhost" time="0.003">
+  <properties />
+  <testcase name="portraitCropContainsGuideWithMargin" classname="com.holocard.scanner.ScanGeometryTest" time="0.0" />
+  <testcase name="letterboxedLandscapeCropStaysWithinFrame" classname="com.holocard.scanner.ScanGeometryTest" time="0.0" />
+  <testcase name="hardwareZoomLimitIsRespected" classname="com.holocard.scanner.ScanGeometryTest" time="0.0" />
+  <testcase name="guideLetsCardStayFartherAway" classname="com.holocard.scanner.ScanGeometryTest" time="0.001" />
+  <testcase name="missingPreviewSizeUsesFullFrame" classname="com.holocard.scanner.ScanGeometryTest" time="0.001" />
+  <system-out />
+  <system-err />
+</testsuite><testsuite name="com.holocard.scanner.ScannerLogicTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2026-09-05T09:30:44" hostname="localhost" time="0.066">
+  <properties />
+  <testcase name="normalizesJapaneseAndFullwidth" classname="com.holocard.scanner.ScannerLogicTest" time="0.001" />
+  <testcase name="cardSnapshotPresent" classname="com.holocard.scanner.ScannerLogicTest" time="0.0" />
+  <testcase name="unknownTextDoesNotAutoSelect" classname="com.holocard.scanner.ScannerLogicTest" time="0.015" />
+  <testcase name="geometryCanIdentifyWithoutText" classname="com.holocard.scanner.ScannerLogicTest" time="0.006" />
+  <testcase name="conflictingHpBlocksTextOnlyAuto" classname="com.holocard.scanner.ScannerLogicTest" time="0.008" />
+  <testcase name="consensusRequiresConsecutiveObservations" classname="com.holocard.scanner.ScannerLogicTest" time="0.0" />
+  <testcase name="disagreementRequiresUserSelection" classname="com.holocard.scanner.ScannerLogicTest" time="0.005" />
+  <testcase name="exactNumberIdentifiesCard" classname="com.holocard.scanner.ScannerLogicTest" time="0.004" />
+  <testcase name="whitespaceNumberAccepted" classname="com.holocard.scanner.ScannerLogicTest" time="0.004" />
+  <testcase name="commonEffectNeverAutoSelect" classname="com.holocard.scanner.ScannerLogicTest" time="0.006" />
+  <testcase name="twoNumbersNeverAutoSelect" classname="com.holocard.scanner.ScannerLogicTest" time="0.003" />
+  <testcase name="weakAndStaleFramesResetConsensus" classname="com.holocard.scanner.ScannerLogicTest" time="0.0" />
+  <testcase name="closeVisualCandidatesRequireSelection" classname="com.holocard.scanner.ScannerLogicTest" time="0.003" />
+  <testcase name="nameHpStageNotSufficient" classname="com.holocard.scanner.ScannerLogicTest" time="0.004" />
+  <testcase name="uniqueLuiSkillAndName" classname="com.holocard.scanner.ScannerLogicTest" time="0.004" />
+  <system-out />
+  <system-err />
+</testsuite></testsuites>

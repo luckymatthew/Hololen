@@ -1,0 +1,216 @@
+{
+  "checkedAt": "2026-09-06",
+  "scope": "hBP01-057 through hBP01-072; text-only engine checking; no scenario testing",
+  "cardsChecked": 16,
+  "effectFieldsChecked": 20,
+  "issueCards": 8,
+  "issueEffectFields": 9,
+  "noIssueFullyReviewedCards": 8,
+  "noIssueEffectFields": 11,
+  "status": "checking_only",
+  "officialSource": "https://hololive-official-card-game.com/cardlist/cardsearch/?expansion=hBP01&view=text",
+  "implementation": "lib/simulator/engine.mjs",
+  "mainProgressBeforeNoIssueMark": {
+    "cardsReviewed": 199,
+    "effectFieldsReviewed": 325,
+    "cardsRemaining": 1077,
+    "effectFieldsRemaining": 1421
+  },
+  "mainProgressAfterNoIssueMark": {
+    "cardsReviewed": 207,
+    "effectFieldsReviewed": 336,
+    "cardsRemaining": 1069,
+    "effectFieldsRemaining": 1410
+  },
+  "issues": [
+    {
+      "number": "hBP01-059",
+      "name": "鷹嶺琉依",
+      "fields": [
+        "arts.1.effect"
+      ],
+      "sourceText": "你可以將自己的一張手牌放進檔案區域：從自己的牌庫中公開一張非Buzz的1st Holo成員卡，加入手牌。然後將牌庫洗牌。",
+      "problem": "支付手牌存檔成本後，通用 queueDeckToHand 預設 optional=true；有合法非 Buzz、1st Holomen 時仍可略過加入手牌。",
+      "anchors": [
+        "queueGenericKeywordCostEffects",
+        "resolveGenericKeywordRemainder",
+        "queueDeckToHand"
+      ],
+      "astraAction": "成本可選；一旦支付成本且牌庫有合法非 Buzz、1st Holomen，必須公開 1 張加入手牌並洗牌。"
+    },
+    {
+      "number": "hBP01-061",
+      "name": "鷹嶺琉依",
+      "fields": [
+        "arts.0.effect"
+      ],
+      "sourceText": "可以將自己手牌中的1～5張牌放進檔案區域：對對手的中心Holomen或合作Holomen其中之一，按每張放進檔案區域的卡牌造成20點特殊傷害。",
+      "problem": "手牌成本可選且 1～5 張的計算可進入通用餘效；但成本支付後，中心／合作目標沿用 queueSimpleTriggeredKeyword 的 optional=true，有合法目標仍可略過。",
+      "anchors": [
+        "queueGenericKeywordCostEffects",
+        "resolveGenericKeywordRemainder",
+        "queueSimpleTriggeredKeyword"
+      ],
+      "astraAction": "成本可選；支付 1～5 張後，若對手中央或合作存在合法目標，必須選其中一位，按支付張數造成每張 20 點特殊傷害。"
+    },
+    {
+      "number": "hBP01-063",
+      "name": "Takanashi Kiara",
+      "fields": [
+        "keyword.effect"
+      ],
+      "sourceText": "當自己的中心Holomen具有#トリ時，可以將自己手牌中的1張牌放進檔案區域：從自己的牌庫中公開1張吉祥物，將其加入手牌。然後將牌庫洗牌。",
+      "problem": "中心 #トリ 條件及手牌成本可選；成本支付後的吉祥物搜尋仍使用 queueDeckToHand 預設 optional=true，有合法吉祥物時可略過。",
+      "anchors": [
+        "simpleKeywordCondition",
+        "queueGenericKeywordCostEffects",
+        "resolveGenericKeywordRemainder",
+        "queueDeckToHand"
+      ],
+      "astraAction": "保留中心 #トリ 及可選手牌成本；支付後有合法吉祥物時必須公開 1 張加入手牌並洗牌。"
+    },
+    {
+      "number": "hBP01-065",
+      "name": "Takanashi Kiara",
+      "fields": [
+        "keyword.effect"
+      ],
+      "sourceText": "查看自己牌庫頂的3張牌，從中公開1張Holomen並加入手牌，將剩下的牌存檔。",
+      "problem": "queueGenericTopLook 以 Holomen 群組建立候選後仍令 min=0、optional=true；查看的 3 張中有合法 Holomen 時仍可略過，未符合必須公開 1 張加入手牌。",
+      "anchors": [
+        "queueGenericTopLook",
+        "genericTopLook"
+      ],
+      "astraAction": "查看 3 張後，若其中有 Holomen 必須公開 1 張加入手牌，其餘全部存檔；沒有合法 Holomen 時才將 3 張全部存檔。"
+    },
+    {
+      "number": "hBP01-067",
+      "name": "Takanashi Kiara",
+      "fields": [
+        "arts.1.effect"
+      ],
+      "sourceText": "自己的檔案區域中每有1張Holomen，此技能+10。然後將自己檔案區域中的6張Holomen放回牌庫並洗牌。",
+      "problem": "通用 Arts 只解析存檔區 Holomen 數量的 +10；引擎找不到 hBP01-067 的 6 張 Holomen 放回牌庫並洗牌處理。",
+      "anchors": [
+        "resolveGenericArtEffects",
+        "perArchiveHolomem",
+        "hBP01-067"
+      ],
+      "astraAction": "先按發動時存檔區 Holomen 數量每張 +10；之後必須選擇存檔區 6 張 Holomen 放回牌庫並洗牌（不足 6 張時依卡片規則處理）。"
+    },
+    {
+      "number": "hBP01-070",
+      "name": "尾丸波爾卡",
+      "fields": [
+        "keyword.effect"
+      ],
+      "sourceText": "從自己的牌庫公開1張粉絲牌，加入手牌。然後洗牌。",
+      "problem": "通用牌庫搜尋 queueDeckToHand 預設 optional=true；有合法粉絲牌時仍可略過，文字沒有「可以」。",
+      "anchors": [
+        "queueSimpleTriggeredKeyword",
+        "queueDeckToHand"
+      ],
+      "astraAction": "有合法粉絲牌時必須公開 1 張加入手牌並洗牌；沒有合法卡時只洗牌。"
+    },
+    {
+      "number": "hBP01-070",
+      "name": "尾丸波爾卡",
+      "fields": [
+        "arts.0.effect"
+      ],
+      "sourceText": "這張Arts只有在這位HoloMen沒有〈座員〉時才能使用。",
+      "problem": "attack() 的 hBP01-070:0 斷言檢查攻擊者必須附有〈座員〉，與文字的「沒有〈座員〉」條件相反。",
+      "anchors": [
+        "attack",
+        "hBP01-070:0"
+      ],
+      "astraAction": "將使用條件改為攻擊者沒有〈座員〉時才可使用；附有〈座員〉時拒絕發動。"
+    },
+    {
+      "number": "hBP01-071",
+      "name": "尾丸波爾卡",
+      "fields": [
+        "extra"
+      ],
+      "sourceText": "當這個Holomen倒下時，自身生命值-2。",
+      "problem": "擊倒流程及 Extra 觸發搜尋沒有 hBP01-071 的生命 -2 分支；倒下時只按一般生命減少處理。",
+      "anchors": [
+        "knockOutUnit",
+        "queueKnockoutAttachmentEffects",
+        "queueGiftKnockoutEffects"
+      ],
+      "astraAction": "當目前頂牌 hBP01-071 倒下時，令持有者生命額外減少 2，並按生命應援公開／附加及防護規則結算。"
+    },
+    {
+      "number": "hBP01-072",
+      "name": "Hakos Baelz",
+      "fields": [
+        "arts.0.effect"
+      ],
+      "sourceText": "若此Holomen裝備了▲紅▲應援，則可擲一次骰子：若為奇數，對對手的合作Holomen造成20點特殊傷害。",
+      "problem": "resolveDiceArtEffects 會在紅色應援條件成立時直接自動擲骰；「則可擲一次骰子」應先提供可選發動。",
+      "anchors": [
+        "resolveDiceArtEffects",
+        "hBP01-072:0"
+      ],
+      "astraAction": "紅色應援條件成立時先提供可選骰子；玩家選用且為奇數時，對手有合作 Holomen 才造成 20 點特殊傷害。"
+    }
+  ],
+  "checkedNoIssueFields": [
+    {
+      "number": "hBP01-057",
+      "path": "keyword.effect",
+      "note": "合作效果直接對手合作 Holomen 造成 10 點特殊傷害；通用合作目標及特殊傷害流程已涵蓋。"
+    },
+    {
+      "number": "hBP01-057",
+      "path": "arts.0.effect",
+      "note": "Arts 同樣只對手合作位置造成 10 點特殊傷害；通用合作目標及特殊傷害流程已涵蓋。"
+    },
+    {
+      "number": "hBP01-060",
+      "path": "keyword.effect",
+      "note": "Bloom 時可選手牌存檔成本；支付後抽 2 張的後半句由通用成本餘效處理。"
+    },
+    {
+      "number": "hBP01-061",
+      "path": "keyword.effect",
+      "note": "可選返回存檔區 1～2 張帶 #秘密結社holoX 的 Holomen；通用存檔區回手支援數量及可選語意。"
+    },
+    {
+      "number": "hBP01-062",
+      "path": "extra",
+      "note": "Debut 任意張數規則已有通用處理。"
+    },
+    {
+      "number": "hBP01-062",
+      "path": "arts.0.effect",
+      "note": "可選手牌存檔成本及支付後本次 Arts +20 由通用 Arts 成本流程處理。"
+    },
+    {
+      "number": "hBP01-066",
+      "path": "arts.1.effect",
+      "note": "可選存檔重疊 Holomen 1 張；支付後對手合作造成 40 點特殊傷害，通用成本及合作特殊傷害流程已涵蓋。"
+    },
+    {
+      "number": "hBP01-068",
+      "path": "extra",
+      "note": "Debut 任意張數規則已有通用處理。"
+    },
+    {
+      "number": "hBP01-071",
+      "path": "keyword.effect",
+      "note": "可選從存檔區將 1 張〈座員〉返回手牌；通用名稱篩選及可選回手流程已涵蓋。"
+    },
+    {
+      "number": "hBP01-071",
+      "path": "arts.0.effect",
+      "note": "全舞台自己 Holomen 身上的粉絲卡每張 +20；專用分支計算所有舞台附加卡中的 supportFan 數量。"
+    },
+    {
+      "number": "hBP01-072",
+      "path": "extra",
+      "note": "Debut 任意張數規則已有通用處理。"
+    }
+  ]
+}

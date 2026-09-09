@@ -1,0 +1,6 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {applyAction} from '../lib/simulator/engine.mjs';
+import {pool,state,inst,unit} from './fixtures/simulator-audit.mjs';
+test('Risu required top-three cheer then draw',()=>{let s=state();s.phase='main';s.players[0].zones.back1=unit('hBP05-073');s.players[0].mainDeck=[inst('AUDIT-DUMMY','power'),inst('AUDIT-DUMMY','draw')];s.players[0].cheerDeck=[inst('hY01-001','a'),inst('hY02-001','b'),inst('hY03-001','c'),inst('hY04-001','outside')];s=applyAction(s,0,{type:'collab',zone:'back1'},pool,()=>0);assert.equal(s.pendingChoice.optional,false);assert.equal(s.pendingChoice.min,1);assert.deepEqual(s.pendingChoice.cards.map(c=>c.id),['a','b','c']);s=applyAction(s,0,{type:'choose',cardIds:['a']},pool,()=>0);while(s.pendingChoice){if(s.pendingChoice.options?.includes('collab')){assert.deepEqual(s.pendingChoice.options,['collab']);s=applyAction(s,0,{type:'choose',zone:'collab'},pool,()=>0);}else s=applyAction(s,0,{type:'choose',cardIds:s.pendingChoice.cards.map(c=>c.id)},pool,()=>0);}assert.equal(s.players[0].zones.collab.cheer[0].id,'a');assert.equal(s.players[0].hand[0].id,'draw');assert.equal(s.players[0].cheerDeck[0].id,'outside');});
+

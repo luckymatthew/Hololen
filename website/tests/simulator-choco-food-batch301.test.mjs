@@ -1,0 +1,6 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {applyAction} from '../lib/simulator/engine.mjs';
+import {cards,pool,state,inst,fund,attack} from './fixtures/simulator-audit.mjs';
+for(const count of [0,1,3])test('Choco food bonus capped at two '+count,()=>{const food=cards.find(c=>c.typeCode?.startsWith('supportEvent')&&c.tags?.includes('#食べ物'));let s=state('hBP05-056');fund(s.players[0].zones.center,['紫','無色']);s.players[0].turnEvents={turn:s.turn,arts:[],supports:Array(count).fill(food.number)};s=applyAction(s,0,attack,pool,()=>0);assert.equal(s.players[1].zones.center.damage,90+Math.min(2,count)*20);});
+test('Choco paid recovery required',()=>{const cooking=cards.find(c=>c.group==='holomem'&&c.tags?.includes('#料理'));let s=state('hBP05-056');fund(s.players[0].zones.center,['紫','無色','無色']);s.players[0].hand=[inst('AUDIT-DUMMY','pay1'),inst('AUDIT-DUMMY','pay2')];s.players[0].archive=[inst(cooking.number,'yes')];s=applyAction(s,0,{...attack,artIndex:1},pool,()=>0);s=applyAction(s,0,{type:'choose',cardIds:['pay1','pay2']},pool,()=>0);assert.equal(s.pendingChoice.optional,false);s=applyAction(s,0,{type:'choose',cardIds:['yes']},pool,()=>0);assert.equal(s.players[0].hand[0].id,'yes');});

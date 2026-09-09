@@ -1,0 +1,43 @@
+{
+  "date": "2026-09-05",
+  "engineBatch": 7,
+  "sources": [
+    "https://hololive-official-cardgame.com/cardlist/?id=369",
+    "https://hololive-official-cardgame.com/rules/question/faq/"
+  ],
+  "unresolved": [
+    "Q227 timing relative to passive and reactive reductions",
+    "original zero damage versus damage reduced to zero",
+    "receiver damage additions and immunity"
+  ],
+  "observations": [
+    {
+      "kind": "arts",
+      "amount": 0,
+      "actualDamage": 0,
+      "fanArchived": true,
+      "status": "observed only; expected timing is not certified"
+    },
+    {
+      "kind": "arts",
+      "amount": 40,
+      "actualDamage": 40,
+      "fanArchived": true,
+      "status": "observed only; expected timing is not certified"
+    },
+    {
+      "kind": "special",
+      "amount": 0,
+      "actualDamage": 0,
+      "fanArchived": true,
+      "status": "observed only; expected timing is not certified"
+    },
+    {
+      "kind": "special",
+      "amount": 40,
+      "actualDamage": 40,
+      "fanArchived": true,
+      "status": "observed only; expected timing is not certified"
+    }
+  ]
+}

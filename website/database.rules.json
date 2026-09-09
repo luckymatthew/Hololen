@@ -1,0 +1,71 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "rooms": {
+      "$code": {
+        ".read": "auth != null && (!data.exists() || data.child('metadata/hostUid').val() == auth.uid)",
+        ".write": "auth != null && ((!data.exists() && newData.child('metadata/hostUid').val() == auth.uid && $code.matches(/^[A-HJ-NP-Z2-9]{6}$/)) || data.child('metadata/hostUid').val() == auth.uid)",
+        ".validate": "newData.hasChildren(['metadata','stateJson','views'])",
+        "metadata": {
+          ".read": "auth != null && root.child('rooms').child($code).child('metadata/expiresAt').val() > now",
+          ".validate": "newData.hasChildren(['code','hostUid','guestUid','version','status','createdAt','updatedAt','expiresAt']) && newData.child('code').val() == $code && newData.child('hostUid').isString() && (!data.exists() || newData.child('hostUid').val() == data.child('hostUid').val()) && newData.child('guestUid').isString() && (!data.exists() || data.child('guestUid').val() == '' || newData.child('guestUid').val() == data.child('guestUid').val()) && newData.child('version').isNumber() && newData.child('version').val() >= 1 && (!data.exists() || newData.child('version').val() >= data.child('version').val()) && newData.child('createdAt').isNumber() && (!data.exists() || newData.child('createdAt').val() == data.child('createdAt').val()) && newData.child('expiresAt').isNumber() && newData.child('expiresAt').val() <= newData.child('createdAt').val() + 129600000 && (!data.exists() || newData.child('expiresAt').val() == data.child('expiresAt').val()) && newData.child('updatedAt').isNumber() && newData.child('updatedAt').val() <= now + 300000 && newData.child('status').isString()"
+        },
+        "stateJson": {
+          ".validate": "newData.isString() && newData.val().length <= 2000000"
+        },
+        "views": {
+          "$uid": {
+            ".read": "auth != null && auth.uid == $uid && root.child('rooms').child($code).child('metadata/expiresAt').val() > now",
+            ".validate": "newData.isString() && newData.val().length <= 2000000"
+          }
+        },
+        "join": {
+          ".read": "auth != null && root.child('rooms').child($code).child('metadata/expiresAt').val() > now && (!data.exists() || data.child('uid').val() == auth.uid || root.child('rooms').child($code).child('metadata/hostUid').val() == auth.uid)",
+          ".write": "auth != null && root.child('rooms').child($code).child('metadata/expiresAt').val() > now && root.child('rooms').child($code).child('metadata/guestUid').val() == '' && root.child('rooms').child($code).child('metadata/hostUid').val() != auth.uid && (!data.exists() || data.child('uid').val() == auth.uid) && newData.child('uid').val() == auth.uid",
+          ".validate": "newData.hasChildren(['uid','name','deckJson']) && newData.child('uid').isString() && newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 24 && newData.child('deckJson').isString() && newData.child('deckJson').val().length <= 60000",
+          "uid": {},
+          "name": {},
+          "deckJson": {},
+          "$other": {
+            ".validate": false
+          }
+        },
+        "commands": {
+          "$uid": {
+            ".read": "auth != null && auth.uid == $uid && root.child('rooms').child($code).child('metadata/expiresAt').val() > now",
+            ".write": "auth != null && (root.child('rooms').child($code).child('metadata/hostUid').val() == auth.uid || root.child('rooms').child($code).child('metadata/guestUid').val() == auth.uid) && auth.uid == $uid && root.child('rooms').child($code).child('metadata/expiresAt').val() > now",
+            ".validate": "newData.hasChildren(['id','expectedVersion','actionJson']) && newData.child('id').isString() && newData.child('id').val().length <= 80 && newData.child('expectedVersion').isNumber() && ((newData.child('id').val() == data.child('id').val() && newData.child('expectedVersion').val() == data.child('expectedVersion').val() && newData.child('actionJson').val() == data.child('actionJson').val()) || newData.child('expectedVersion').val() == root.child('rooms').child($code).child('metadata/version').val()) && newData.child('actionJson').isString() && newData.child('actionJson').val().length <= 16000",
+            "id": {},
+            "expectedVersion": {},
+            "actionJson": {},
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "results": {
+          "$uid": {
+            ".read": "auth != null && auth.uid == $uid && root.child('rooms').child($code).child('metadata/expiresAt').val() > now",
+            ".validate": "newData.isString() && newData.val().length <= 2048"
+          }
+        },
+        "presence": {
+          ".read": "auth != null && (root.child('rooms').child($code).child('metadata/hostUid').val() == auth.uid || root.child('rooms').child($code).child('metadata/guestUid').val() == auth.uid) && root.child('rooms').child($code).child('metadata/expiresAt').val() > now",
+          "$uid": {
+            ".write": "auth != null && (root.child('rooms').child($code).child('metadata/hostUid').val() == auth.uid || root.child('rooms').child($code).child('metadata/guestUid').val() == auth.uid) && auth.uid == $uid && root.child('rooms').child($code).child('metadata/expiresAt').val() > now",
+            ".validate": "newData.hasChildren(['online','updatedAt']) && newData.child('online').isBoolean() && newData.child('updatedAt').isNumber() && newData.child('updatedAt').val() <= now + 300000",
+            "online": {},
+            "updatedAt": {},
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    }
+  }
+}

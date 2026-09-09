@@ -1,0 +1,31 @@
+{
+  "version": "2026-09-05.2-source-gaps-listed",
+  "totalCards": 1276,
+  "totalEffectFields": 1746,
+  "sentenceReviewed": 1539,
+  "exactTemplateChecked": 192,
+  "sourceVerifiedEffects": 1729,
+  "rulingPending": 2,
+  "unreviewedEffects": 2,
+  "completeCards": 1260,
+  "sharedCheerRules": 13,
+  "identityPending": 7,
+  "correctedFields": 268,
+  "cardStatuses": {
+    "printed_effects_verified": 1260,
+    "official_source_missing": 8,
+    "effects_pending": 2,
+    "shared_cheer_rule_checked": 6
+  },
+  "officialPages": 181,
+  "officialMissing": [
+    "hBP09-037",
+    "hY01-008",
+    "hY01-011",
+    "hY02-009",
+    "hY03-010",
+    "hY04-008",
+    "hY05-006",
+    "hY06-008"
+  ]
+}

@@ -1,0 +1,14 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync,existsSync} from 'node:fs';
+import {cardSearchText,matchesSearch} from '../web/lib/catalog-search.mjs';
+import {fromHoloSimDeck,toHoloSimDeck,isHoloSimDeck} from '../web/lib/holosim-deck.mjs';
+const cards=JSON.parse(readFileSync(new URL('../app/src/main/assets/cards.json',import.meta.url))).cards;
+const index=JSON.parse(readFileSync(new URL('../app/src/main/assets/holosim-card-index.json',import.meta.url)));
+test('full website card snapshot and translations remain bundled',()=>{assert.equal(cards.length,1276);assert.ok(cards.every(c=>c.name&&c.number));assert.ok(cards.find(c=>c.number==='hEB01-024').keyword.effect);});
+test('Japanese, Traditional Chinese, card numbers and effects searchable',()=>{const c=cards.find(c=>c.number==='hBP01-060');const text=cardSearchText(c);for(const q of [c.jpName,c.name,c.number])assert.ok(matchesSearch(text,q),q);});
+test('HoloSim export/import retains supported card quantities',()=>{const oshi=cards.find(c=>c.group==='oshi'&&index[c.number]);const d={oshi:{[oshi.number]:1},main:{'hBP01-060':4},cheer:{'hY03-001':20}};const encoded=toHoloSimDeck(d,index);assert.deepEqual(encoded.unsupported,[]);assert.ok(isHoloSimDeck(encoded.deck));const decoded=fromHoloSimDeck(encoded.deck);assert.deepEqual(decoded.oshi,d.oshi);assert.deepEqual(decoded.main,d.main);assert.deepEqual(decoded.cheer,d.cheer);});
+test('unsupported simulator card export is explicit',()=>{const e=toHoloSimDeck({oshi:{},main:{'UNKNOWN':1},cheer:{}},index);assert.ok(e.unsupported.length);});
+test('no PvP or single-player entry or engine is bundled',()=>{const page=readFileSync(new URL('../web/app/page.tsx',import.meta.url),'utf8');assert.doesNotMatch(page,/href=["']\/simulator|SimulatorClient|createRoom/);assert.equal(existsSync(new URL('../web/lib/simulator',import.meta.url)),false);});
+test('native scanner has no Tesseract or remote script requirement',()=>{const page=readFileSync(new URL('../web/app/CardScanner.tsx',import.meta.url),'utf8');assert.match(page,/HoloNative.startScanner/);assert.doesNotMatch(page,/tesseract|cdn|createWorker/);});
+test('host only exposes packaged HTML and specific account APIs',()=>{const host=readFileSync(new URL('../app/src/main/java/com/holocard/scanner/MainActivity.java',import.meta.url),'utf8');assert.match(host,/setAllowFileAccess\(false\)/);assert.match(host,/handler.cancel\(\)/);assert.doesNotMatch(host,/handler.proceed\(\)/);assert.match(host,/api\/auth/);});

@@ -1,0 +1,5 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {applyAction} from '../lib/simulator/engine.mjs';
+import {cards,pool,state,inst,unit,fund,attack} from './fixtures/simulator-audit.mjs';
+for(const accept of [true,false])test('Flare archive Elfriend optional attachment '+accept,()=>{const fan=cards.find(c=>c.jpName==='エルフレンド');assert.ok(fan);let s=state('hSD07-008');fund(s.players[0].zones.center,['黃','無色']);s.players[0].zones.back1=unit('hSD07-008');s.players[0].archive=[inst(fan.number,'fan'),inst('AUDIT-DUMMY','wrong')];s=applyAction(s,0,attack,pool,()=>0);assert.equal(s.pendingChoice.optional,true);assert.deepEqual(s.pendingChoice.cards.map(c=>c.id),['fan']);s=applyAction(s,0,{type:'choose',cardIds:accept?['fan']:[]},pool,()=>0);if(accept){assert.deepEqual(s.pendingChoice.options,['center']);s=applyAction(s,0,{type:'choose',zone:'center'},pool,()=>0);assert.equal(s.players[0].zones.center.attachments[0].id,'fan');}else assert.ok(s.players[0].archive.some(c=>c.id==='fan'));});

@@ -1,0 +1,1 @@
+{ "indexes": [], "fieldOverrides": [{ "collectionGroup": "decks", "fieldPath": "deck", "indexes": [] }, { "collectionGroup": "data", "fieldPath": "value", "indexes": [] }] }

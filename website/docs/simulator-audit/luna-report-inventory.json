@@ -1,0 +1,470 @@
+{
+  "reports": 93,
+  "items": [
+    {
+      "name": "hBP01-001-020-text-audit.md",
+      "sha256": "d74cc80ddaf129978b3a04060fbe06cd77b3abf373d92063ded333a424686e01",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP01-021-040-text-audit.md",
+      "sha256": "e15dfd741eacef8ba3d20002a524bf34ccf88937b1f8d22ddf18e356b117d3ec",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP01-041-060-text-audit.md",
+      "sha256": "e0a2663c3f9efd23518012c38498843cc56eefa809d9223233733eae194a825d",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP01-061-080-text-audit.md",
+      "sha256": "c6d20e83290d33f17ff62a09f78ede1d3cea91d86b38c4cd74729d9f073464cc",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP01-081-100-text-audit.md",
+      "sha256": "de9b176b696630a6d61e1ef939b43826e8261d965737813bf3ace8ab664240d5",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP01-089-104-text-audit.md",
+      "sha256": "2e543f791bddbb42d7f57ba5122521929903666eee07af4d014a7f62d8f4a4c8",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP01-101-120-text-audit.md",
+      "sha256": "4735e6e4d2e95ab50bf26b3afd00fa963c82d0e7a4ef9775c4456a51e65da3e6",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP01-105-120-text-audit.md",
+      "sha256": "b9382b0349e257b5bc3d18ff5b8ad0e7f3706e8049947bb740eb284dc129662f",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP01-121-126-text-audit.md",
+      "sha256": "198679be0bd6f27bbb49217992249b1ce01a8328fbeb98460054df3f0bf48f1e",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP02-001-016-text-audit.md",
+      "sha256": "8486d36f074b22aec81295fe21464e16cb7d6b0740aef85c30a63471f325e65c",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP02-001-020-text-audit.md",
+      "sha256": "990516fddfebf2d2b4ffd0fe416312e4521bacdadd09a2b920ce66c4be2378b1",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP02-017-032-text-audit.md",
+      "sha256": "043d8f45f8f3ad439073ee5f9539e429c7af461aaadabfb1e391fb68a7406ecc",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP02-021-040-text-audit.md",
+      "sha256": "8f29bfbbd2c17f471afe6aaec20faff15164fe09d376027d5f5d6e635a8cb038",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP02-033-048-text-audit.md",
+      "sha256": "2da025fa1ac1681e2d4225592a4932a32f87ffc19a3d07e7f530b37ca443818a",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP02-041-060-text-audit.md",
+      "sha256": "226c03b7118d6baf121b818b94686840d7ccccdb99dd9006093f67f56af59d51",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP02-049-064-text-audit.md",
+      "sha256": "32e99eb10b3827b21417bb9076bca9444ad01a2e007881fd04af59a5ae7eecf0",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP02-061-080-text-audit.md",
+      "sha256": "280dd4a5016c653de3f43a653411503481780b38be7579870e4214e5af54b57b",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP02-065-080-text-audit.md",
+      "sha256": "8e9fbd07f85eaf7bccdc88235757d584a88e56850eded69333980058149ee5b0",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP02-081-096-text-audit.md",
+      "sha256": "87fe65975283a1da39b173ac8596464747afb75aae8c0855981a2708335e574d",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP02-081-100-text-audit.md",
+      "sha256": "0cd0abfab5420906af222e2c3ee7237d748d23597f2c155c7e7682b57045fc22",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP02-097-102-text-audit.md",
+      "sha256": "e92087157758e534323a175ee29e2b396111206180fc2e6c147687146ace8940",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP02-101-102-text-audit.md",
+      "sha256": "2af95206b574a8a311b59ea789213dfb1892ed6406a4201d23c956a09d306534",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP03-001-016-text-audit.md",
+      "sha256": "1eae23c69d816db08d9eb2389c2606be2052d00924fe37b55dd75c7b66fa6bf2",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP03-001-020-text-audit.md",
+      "sha256": "9c3540970b2271016071bf6bf96c1d345e4dca89d50cedc8b8e2437c468602b3",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP03-017-032-text-audit.md",
+      "sha256": "95c24c6636b6e372961631b2b7f6f4f73108799d74f06f95a05e5c88bd0937b9",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP03-021-040-text-audit.md",
+      "sha256": "005226507bef5cc4ef83fcc7bab9812ae16cf6c93fef01b192807cf844fb32a4",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP03-033-048-text-audit.md",
+      "sha256": "5643e85bdf28b3a2485eeb286bf0d913ba8982a2ae6f2553d9ce4d8913208d33",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP03-041-060-text-audit.md",
+      "sha256": "ebf07d8e8ba3a279a99d85b4bc00df9d3646c6e8a4f69e34190cecfd44beaf22",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP03-049-064-text-audit.md",
+      "sha256": "723329f6173358eb5f0a50b1ee74e00d8589d8bd9851d6c404335bef7e52055f",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP03-061-080-text-audit.md",
+      "sha256": "8451ece3d7cfcb87d1b960df12bcaf1649ee5168a3696cc6eaa7076fe898d000",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP03-065-080-text-audit.md",
+      "sha256": "9ad0acc603bde0637acc9989bf580b41a59f7b18d8fbc1033b214ef505d91686",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP03-081-096-text-audit.md",
+      "sha256": "37dff886e528c2be61642e9d8b2bef6995aea1269dbc55b4912780fd19e4e100",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP03-081-100-text-audit.md",
+      "sha256": "75252de34b36e7f0b9a674b80176421e0341581b8dc58f8c6a4af4134e20682e",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP03-097-112-text-audit.md",
+      "sha256": "57fbc6d2b238f7d2e32b67f0686fd60324b58f4e861fdb2b144e4954591b4ea6",
+      "status": "partial: 106/108 repaired; 097/107/109/112 pending"
+    },
+    {
+      "name": "hBP03-101-113-text-audit.md",
+      "sha256": "c148cde0a6b8b281b219b30b18716ee4c8c370a359624d9d7a467ffad8c1f1b9",
+      "status": "reported findings reconciled; see batch 5"
+    },
+    {
+      "name": "hBP03-113-text-audit.md",
+      "sha256": "5d2103be86cbf925f901c26a255754f73b473f9e34aa07b401860fbbdd36ae62",
+      "status": "reported findings reconciled; see batch 5"
+    },
+    {
+      "name": "hBP04-001-014-text-audit.md",
+      "sha256": "459f35b9a2981c11ee1ac5ebe66080bf96a367f489129c7f4a5c97b773fca789",
+      "status": "reported findings reconciled; see batch 2"
+    },
+    {
+      "name": "hBP04-001-016-text-audit.md",
+      "sha256": "051e09fdd02cb54a4a54a0afa2b80ab5806e8c2ed59dd243ad7a4fcd3c0d4069",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP04-017-032-text-audit.md",
+      "sha256": "55c1a90bf176186c3c4765046e6c75211c0599e2ebea4a357fd6ef5c3a9ec405",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP04-033-048-text-audit.md",
+      "sha256": "f903bf558eabdd3992dfbda29391d3d4de61b9f9a978b094ae0329f20c8d796e",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP04-049-064-text-audit.md",
+      "sha256": "09fb8f15c90cb2b43510c1111230925a7bf627d43c22886199de9b13ed80dae7",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP04-065-080-text-audit.md",
+      "sha256": "e7f7b2d330df0eb9e31a3d623b1a257c5f2dfa3c6f12390f2a08991bf63e8120",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP04-081-096-text-audit.md",
+      "sha256": "463e33d8b7fecbc2f147508a93372a8f056d6ca173ac3ee03a9fdd016551d1c0",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP04-097-106-text-audit.md",
+      "sha256": "dd4b3022b94f4bac95d13e61404a1a0a667af9435de145607b7bf1d539cbba05",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP05-001-016-text-audit.md",
+      "sha256": "977d3b24eaeb83fd2327bc725bc2f35eee5ee50813658aa50dbf8c8a51599f99",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP05-017-032-text-audit.md",
+      "sha256": "36b517c7e5a16538e3a25e62e2dca2024c74ee61aa844910ee55dc6f9df95d0b",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP05-033-048-text-audit.md",
+      "sha256": "dcdb1cae262042909b1b58c9b82dbb87a90af66f069e365ed3ed956bbc1223bb",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP05-049-064-text-audit.md",
+      "sha256": "c89ef3d57e3ac8a5d4ce199a645c0027175c3c9462aece57742c24e7d7ab7a5f",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP05-065-080-text-audit.md",
+      "sha256": "80bfd7a531cdb30aba9264cb1e1cfdcea40135dbfcac0201fc698c36d3d7e743",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP05-081-087-text-audit.md",
+      "sha256": "0fcbff2ae4e2a16ede1360e8f03c2f8d1f1015d6e66649a4f189313629111e84",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP06-001-016-text-audit.md",
+      "sha256": "a22403a2b11f6335558c9a54010f15c54fce879aa7b95cb6cea1ba06fb936a00",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP06-018-032-text-audit.md",
+      "sha256": "6e4b3f8cf6e990b5de40e81717f2e7061ec070dc61bf3ea036cc76d6389d900e",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP06-033-048-text-audit.md",
+      "sha256": "cde039296966d6eb0c2bc304d2bf0bbac36c8bb684f20b6584c90275de3c6db6",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP06-049-064-text-audit.md",
+      "sha256": "4bdfb30b2068cd2e35c0fcddd5068e17786cae1ad16ba5ae7bb8564fc9612d8d",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP06-065-080-text-audit.md",
+      "sha256": "b066c72f4ab05629d9292b6a8def68eeb38588968536dc73697f7f3e303aa51f",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP06-081-096-text-audit.md",
+      "sha256": "294dc77086001ec1941340ed2fd112d2d6cf5e934a948ce14eb6a3848632c806",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP06-097-104-text-audit.md",
+      "sha256": "33caaa60a7c3a6cb6429442e727b5f248866cffc88d66075e369c8ef5bee3f2f",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP07-001-016-text-audit.md",
+      "sha256": "660af1cf08a0ac1f5b3cb1236faa012bdab7316efe68b94c2d23b098f92047ce",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP07-017-032-text-audit.md",
+      "sha256": "3da5a466f8e42f25d6131ce0d90dffc2a13af7f5753b270b44f960ea89410561",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP07-033-048-text-audit.md",
+      "sha256": "570c8790c14cadc8adb0ead62de7d81441fb98c54421176ceaaa0df30e3b5f41",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP07-049-064-text-audit.md",
+      "sha256": "d5dafc8c08e7b9725bbd8711f472ad76279ffe112de4845a04b5c19e15edb113",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP07-065-080-text-audit.md",
+      "sha256": "58e1f223d980f5b793b529182251a6570da76d2f33d53dbb59342f9fd174764a",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP07-081-096-text-audit.md",
+      "sha256": "a165a2940ee8220aaf5f8684cc41a401bf9a4f33b566c3cf0f6bb03fc127817a",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP07-097-110-text-audit.md",
+      "sha256": "28f07e5fcbbb245360c3e1640a5ab305334738e5f235de60ad27c67c240bd669",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP08-001-016-text-audit.md",
+      "sha256": "1f8a9c2bc02115d53cbd63cea7c3096b8e6916debd8c84f8c0e86343e44d5769",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP08-017-032-text-audit.md",
+      "sha256": "c5872339b45de000f76c980fb1fc8a536a0f28ef38b96dbd68c3500c107abd7b",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP08-033-048-text-audit.md",
+      "sha256": "ee0c522e89e0c4cd1701788fbef32d2bdf157665ae688f3c121c5026580998d2",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP08-049-064-text-audit.md",
+      "sha256": "8beb0f84761285808b7e2fbed5932fdb1a4589e76000db70e738d9d63e21f219",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP08-065-080-text-audit.md",
+      "sha256": "d84a7fbee3b804405de9b1fe3c63eec82d705c3c44596b4e0d17e38822c6b734",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP08-081-096-text-audit.md",
+      "sha256": "b23aabd1ed119967048de8d3386f6f7edfe00345fbfed88018f5d007f0252e4f",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP08-097-110-text-audit.md",
+      "sha256": "b3e5d8a2c747787988a1013ee3d259f553d8a0542b5deb178e8645652caf744a",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hBP09-037-text-audit.md",
+      "sha256": "9a4252b2310cac88ae5761bee04fd462e1425deb5103a8e5156db4c087199999",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hEB01-001-016-text-audit.md",
+      "sha256": "21b5131da3ddff3ab5f2747726c2def4fff15f1163f24a1cf860dd98fba0d42a",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hEB01-017-034-text-audit.md",
+      "sha256": "77ad6cc8b63b793f4e13c3d09967dc04c9771efb46fd521f56df47d236c68ae7",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hPR-001-002-hSD01-001-021-text-audit.md",
+      "sha256": "a9c8bf9eaaf10f584d14d22f26d1c490a1babc403c201367f9a8b2495508f4bb",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hSD02-001-014-text-audit.md",
+      "sha256": "d021182ed4c5667ee4825779cb9d748bb379c5b28d87e547b12a5ec1cbc934a7",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hSD03-001-014-text-audit.md",
+      "sha256": "e60823a037d71bd3d89126eb1683acb9b32b279f017f9ba469ab21f4577aa36c",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hSD04-001-014-text-audit.md",
+      "sha256": "354e33468324e4b2cbbee248c2c7f47d0a81b1f28d603c199f3cc0fe889bc564",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hSD05-001-014-text-audit.md",
+      "sha256": "577c34dc016d399918fab0e88b43cbd8545a5a31a0600f92fc47d6afe30210b2",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hSD06-001-012-text-audit.md",
+      "sha256": "4362574702a0b592a651264fa82c600ec18531bc1581ec31e07ab7c8750f1518",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hSD07-001-015-text-audit.md",
+      "sha256": "614130e4fd3fd3d9160543321aa8f8abfa6d65c8e022c7c47f0f3819d14f5c20",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hSD08-001-007-text-audit.md",
+      "sha256": "b559f25070f73ff2d892909a24dc36d221b326647347a79d8e1c18bb681f3128",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hSD09-001-007-text-audit.md",
+      "sha256": "9f15d0f1d7116654575032db1ad40829f440ea5be66146b96202032cf70e27e6",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hSD10-001-013-text-audit.md",
+      "sha256": "9947b00af49940bec85b4db7fa0392e67606b88e5e545e11eb0f72535b79a1d0",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hSD11-001-009-text-audit.md",
+      "sha256": "dd200f7dd9c398f593d5850dc0c31c368a719626fdd8a5b438b2dacc72d183b9",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hSD12-001-016-text-audit.md",
+      "sha256": "406638b639523eef3b28a8845f266bd8c6a1ef62656014c98bdf9f9a23dd0caf",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hSD13-001-018-text-audit.md",
+      "sha256": "e10e2767355bf1d630789126dfe92c7adf376d7a893f12c1c0b9781e878e60e8",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hSD14-001-011-text-audit.md",
+      "sha256": "0e44ff50dcb5455eddf887442b3a8c618fb050911b767c3a0e201f1f48317505",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hSD15-001-010-text-audit.md",
+      "sha256": "0effab07fdd4b306ba2e2298d2da043529f693a64a8c0735fffc6d16aa662f72",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hSD16-001-009-text-audit.md",
+      "sha256": "c34000ddb35210bc08d962ee871887f9bdfdd250f953a1494b64c9e5c9f1ecb7",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hSD17-001-010-text-audit.md",
+      "sha256": "0121b4b2adf87cb2611a491f0b2c1506982977feeafcfc0b4eb3d20a2a366a29",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hSD18-001-009-text-audit.md",
+      "sha256": "c9bb623d1fba99e13535ffd66164cb3254de738a1678a8cf22ea4ee509b6d3b4",
+      "status": "pending reconciliation"
+    },
+    {
+      "name": "hSD19-001-010-text-audit.md",
+      "sha256": "4b2a27e5083b962b37f7c886e5e0eace280f81572a6cff60c293770288e96bdd",
+      "status": "pending reconciliation"
+    }
+  ]
+}

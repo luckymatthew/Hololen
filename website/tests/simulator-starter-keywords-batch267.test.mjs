@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {applyAction} from '../lib/simulator/engine.mjs';
+import {cards,pool,state,inst,unit} from './fixtures/simulator-audit.mjs';
+function setup(number){const c=cards.find(c=>c.number===number),prior=cards.find(p=>p.jpName===c.jpName&&p.stage===(c.stage==='2nd'?'1st':'Debut'));let s=state(prior.number);s.phase='main';s.players[0].hand=[inst(number,'bloom')];return s;}
+function bloom(s){s=applyAction(s,0,{type:'play',cardId:'bloom'},pool,()=>0);return applyAction(s,0,{type:'choose',zone:'center'},pool,()=>0);}
+for(const [number,names] of [['hSD06-006',['ﾁｬｷ丸','ぽこべぇ']],['hSD07-006',['エルフレンド']],['hSD08-003',[]]])test(number+' required correct search',()=>{
+ let s=setup(number);const candidates=cards.filter(c=>names.length?names.includes(c.jpName):c.stage==='Debut'&&c.tags?.includes('#4期生')).slice(0,2);assert.ok(candidates.length);s.players[0].mainDeck=[...candidates.map((c,i)=>inst(c.number,'yes'+i)),inst('AUDIT-DUMMY','no')];s=bloom(s);assert.equal(s.pendingChoice.optional,false);assert.equal(s.pendingChoice.min,1);assert.deepEqual(s.pendingChoice.cards.map(c=>c.id),candidates.map((_,i)=>'yes'+i));s=applyAction(s,0,{type:'choose',cardIds:['yes0']},pool,()=>0);assert.ok(s.players[0].hand.some(c=>c.id==='yes0'));
+});
+test('Iroha collab required heal 10',()=>{let s=state();s.phase='main';s.players[0].zones.center.damage=40;s.players[0].zones.back1=unit('hSD06-002');s=applyAction(s,0,{type:'collab',zone:'back1'},pool,()=>0);assert.equal(s.pendingChoice.optional,false);s=applyAction(s,0,{type:'choose',zone:'center'},pool,()=>0);assert.equal(s.players[0].zones.center.damage,30);});
+test('Iroha Bloom required holoX heal 30',()=>{let s=setup('hSD06-007');s.players[0].zones.center.damage=40;s.players[0].zones.back1=unit('AUDIT-DUMMY',{damage:40});s=bloom(s);assert.equal(s.pendingChoice.optional,false);assert.deepEqual(s.pendingChoice.options,['center']);s=applyAction(s,0,{type:'choose',zone:'center'},pool,()=>0);assert.equal(s.players[0].zones.center.damage,10);});
+test('Iroha Bloom uses top cheer only for holoX',()=>{let s=setup('hSD06-005');s.players[0].zones.back1=unit('AUDIT-DUMMY');s.players[0].cheerDeck=[inst('hY01-001','top'),inst('hY02-001','bottom')];s=bloom(s);assert.equal(s.pendingChoice.optional,false);assert.deepEqual(s.pendingChoice.options,['center']);s=applyAction(s,0,{type:'choose',zone:'center'},pool,()=>0);assert.equal(s.players[0].zones.center.cheer[0].id,'top');assert.deepEqual(s.players[0].cheerDeck.map(c=>c.id),['bottom']);});

@@ -1,0 +1,5 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {applyAction} from '../lib/simulator/engine.mjs';
+import {cards,pool,state,inst,unit} from './fixtures/simulator-audit.mjs';
+for(const valid of [true,false])test('Mio required Fubuki white cheer '+valid,()=>{const prior=cards.find(c=>c.jpName==='大神ミオ'&&c.stage==='1st'),oshi=cards.find(c=>c.group==='oshi'&&c.jpName==='白上フブキ');let s=state(prior.number);s.phase='main';if(valid)s.players[0].oshi=inst(oshi.number);s.players[0].zones.back1=unit('hBP04-014');s.players[0].hand=[inst('hBP04-026','bloom')];s.players[0].cheerDeck=[inst('hY01-001','white'),inst('hY02-001','green')];s=applyAction(s,0,{type:'play',cardId:'bloom'},pool,()=>0);s=applyAction(s,0,{type:'choose',zone:'center'},pool,()=>0);if(valid){assert.equal(s.pendingChoice.optional,false);assert.deepEqual(s.pendingChoice.selectableIds,['white']);s=applyAction(s,0,{type:'choose',cardIds:['white']},pool,()=>0);assert.deepEqual(s.pendingChoice.options,['back1']);s=applyAction(s,0,{type:'choose',zone:'back1'},pool,()=>0);assert.equal(s.players[0].zones.back1.cheer[0].id,'white');}else assert.equal(s.pendingChoice,null);});

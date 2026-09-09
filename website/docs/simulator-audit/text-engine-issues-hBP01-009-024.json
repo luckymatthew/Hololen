@@ -1,0 +1,202 @@
+{
+  "checkedAt": "2026-09-06",
+  "scope": "hBP01-009 through hBP01-024; text-only engine checking; no scenario testing",
+  "cardsChecked": 16,
+  "effectFieldsChecked": 19,
+  "issueCards": 5,
+  "issueEffectFields": 6,
+  "status": "checking_only",
+  "officialSource": "https://hololive-official-card-game.com/cardlist/cardsearch/?expansion=hBP01&view=text",
+  "implementation": "lib/simulator/engine.mjs",
+  "issues": [
+    {
+      "number": "hBP01-012",
+      "name": "天音かなた",
+      "fields": [
+        "keyword.effect"
+      ],
+      "status": "confirmed_issue",
+      "sourceText": "可以擲一次骰子：若為3或以下，從自己的牌庫公開1張吉祥物，並附加到自己的Holomen上。然後將牌庫洗牌。",
+      "problem": "目前走通用 Bloom 路徑，自動擲骰；骰子大於 3 時沒有明確的失敗後洗牌處理，而且成功時 queueDeckAttachmentToStage 的預設選擇可略過，未保證有合法吉祥物時必須附加。",
+      "implementationAnchors": [
+        "queueBloomEffects",
+        "queueSimpleTriggeredKeyword",
+        "queueDeckAttachmentToStage"
+      ],
+      "astraAction": "加入可選擲骰選擇；失敗必須洗牌；成功且有合法吉祥物時以必選 1 張附加。"
+    },
+    {
+      "number": "hBP01-018",
+      "name": "Nanashi Mumei",
+      "fields": [
+        "arts.0.effect"
+      ],
+      "status": "confirmed_issue",
+      "sourceText": "你可以公開自己牌庫頂的1張牌：如果公開的卡牌具有#Promise，這個Arts+20。然後將公開的卡牌加入手牌。",
+      "problem": "resolveGenericArtEffects 目前直接公開牌庫頂並加入手牌，沒有先提供「可以」的選擇；因此玩家不能合法略過公開。",
+      "implementationAnchors": [
+        "resolveGenericArtEffects"
+      ],
+      "astraAction": "先建立可選公開；選擇使用後才公開並加入手牌，只有公開到 #Promise 才為本次 Arts +20。"
+    },
+    {
+      "number": "hBP01-019",
+      "name": "Nanashi Mumei",
+      "fields": [
+        "keyword.effect"
+      ],
+      "status": "confirmed_issue",
+      "sourceText": "從Debut Bloom時，從自己的牌庫中公開1張具有#Promise且不是Buzz的[Debut Holo成員或1st Holo成員]，將該卡加入手牌。然後將牌庫洗牌。",
+      "problem": "目前沒有 hBP01-019 專用分支，會落入通用搜尋；queueDeckToHand 預設 optional=true，牌庫有合法卡時仍可略過，且條件組合與必選語意未被明確保證。",
+      "implementationAnchors": [
+        "queueBloomEffects",
+        "queueSimpleTriggeredKeyword",
+        "queueDeckToHand"
+      ],
+      "astraAction": "限制為 #Promise、非 Buzz、Debut 或 1st Holomen；有合法卡時必選 1 張加入手牌並洗牌。"
+    },
+    {
+      "number": "hBP01-020",
+      "name": "Nanashi Mumei",
+      "fields": [
+        "keyword.effect"
+      ],
+      "status": "confirmed_issue",
+      "sourceText": "從自己的牌庫中公開1張持有#Promise的Holomen，加入手牌。然後洗牌。",
+      "problem": "目前沒有 hBP01-020 的聯動專用分支，會落入通用搜尋；queueDeckToHand 預設 optional=true，且沒有明確保證 #Promise Holomen 搜尋、必選與洗牌的完整語意。",
+      "implementationAnchors": [
+        "queueCollabEffects",
+        "queueSimpleTriggeredKeyword",
+        "queueDeckToHand"
+      ],
+      "astraAction": "建立專用搜尋：牌庫有合法 #Promise Holomen 時必選 1 張加入手牌，之後洗牌。"
+    },
+    {
+      "number": "hBP01-023",
+      "name": "ときのそら",
+      "fields": [
+        "keyword.effect",
+        "arts.0.effect"
+      ],
+      "status": "confirmed_issue",
+      "sourceText": "抽取自己牌庫上方的2張牌。可以擲一次骰子：若為奇數，對同一位Holomen再使用一次此技能（此技能可重複使用，直到該Holomen倒下為止）",
+      "problem": "Arts 目前只在 resolveDiceArtEffects 自動擲骰並建立重複 Arts；沒有可選擲骰選擇，重複 Arts modifier 沒有保存同一目標 ID/位置，因而可改打另一位 Holomen；另未找到 hBP01-023 的牌庫頂 2 張抽牌專用處理。",
+      "implementationAnchors": [
+        "resolveGenericArtEffects",
+        "resolveDiceArtEffects",
+        "attack",
+        "queueArtKnockoutEffects"
+      ],
+      "astraAction": "先執行抽牌庫頂 2 張；提供可選骰子；奇數時只允許同一位目標重複，並可在未擊倒前繼續選擇是否再擲。"
+    }
+  ],
+  "checkedNoIssueFound": [
+    {
+      "number": "hBP01-009",
+      "name": "天音かなた",
+      "fields": [
+        "extra",
+        "arts.0.effect"
+      ],
+      "note": "Debut 任意張數規則與只能指定對手中央的目標限制已有通用處理。"
+    },
+    {
+      "number": "hBP01-010",
+      "name": "天音かなた",
+      "fields": [
+        "keyword.effect"
+      ],
+      "note": "聯動分支已有中央 Arts +10；中央擁有 #4期生 時再 +20，並支援全形／半形標籤。"
+    },
+    {
+      "number": "hBP01-011",
+      "name": "天音かなた",
+      "fields": [],
+      "note": "無效果欄位。"
+    },
+    {
+      "number": "hBP01-013",
+      "name": "天音かなた",
+      "fields": [
+        "keyword.effect"
+      ],
+      "note": "通用特殊傷害會指定對手中央，且「不會讓對手生命減少」使用 loseLife=false。"
+    },
+    {
+      "number": "hBP01-014",
+      "name": "天音かなた",
+      "fields": [
+        "keyword.effect",
+        "arts.0.effect"
+      ],
+      "note": "中央 50 特殊傷害、紅色特攻 +50 及超額至少 50 時扣生命的分支均已找到。"
+    },
+    {
+      "number": "hBP01-015",
+      "name": "Nanashi Mumei",
+      "fields": [
+        "extra",
+        "arts.0.effect"
+      ],
+      "note": "Debut 任意張數規則及「曾使用過支援卡」回合事件條件已有通用處理。"
+    },
+    {
+      "number": "hBP01-016",
+      "name": "Nanashi Mumei",
+      "fields": [
+        "keyword.effect"
+      ],
+      "note": "中央 #Promise 條件及抽 1 張牌已有通用處理。"
+    },
+    {
+      "number": "hBP01-017",
+      "name": "Nanashi Mumei",
+      "fields": [],
+      "note": "無效果欄位。"
+    },
+    {
+      "number": "hBP01-021",
+      "name": "ときのそら",
+      "fields": [
+        "extra"
+      ],
+      "note": "Debut 任意張數規則已有通用處理。"
+    },
+    {
+      "number": "hBP01-022",
+      "name": "ときのそら",
+      "fields": [
+        "keyword.effect"
+      ],
+      "note": "抽 1 張牌已有通用處理。"
+    },
+    {
+      "number": "hBP01-024",
+      "name": "Vestia Zeta",
+      "fields": [
+        "extra"
+      ],
+      "note": "Debut 任意張數規則已有通用處理。"
+    },
+    {
+      "number": "hBP01-020",
+      "name": "Nanashi Mumei",
+      "fields": [
+        "arts.0.effect"
+      ],
+      "note": "每有 1 位自己後排 Holomen，自己的前排與合作 Holomen Arts +10；專用 Arts 分支已有處理。"
+    }
+  ],
+  "mainProgressBeforeNoIssueMark": {
+    "cardsReviewed": 173,
+    "effectFieldsReviewed": 292,
+    "cardsRemaining": 1103,
+    "effectFieldsRemaining": 1454
+  },
+  "mainProgressAfterNoIssueMark": {
+    "cardsReviewed": 184,
+    "effectFieldsReviewed": 305,
+    "cardsRemaining": 1092,
+    "effectFieldsRemaining": 1441
+  }
+}
