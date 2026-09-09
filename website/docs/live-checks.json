@@ -44,7 +44,7 @@
     }
   ],
   "hashedAsset": {
-    "path": "/assets/index-DO5Cbs1v.js",
+    "path": "/assets/index-Bmnx55-B.js",
     "cache": "public, max-age=31536000, immutable"
   },
   "serviceWorkerCache": "no-store",
@@ -110,5 +110,6 @@
     "googleLogout": "passed",
     "offlineDeckReloadAddSave": "passed on production origin",
     "googleLogin": "passed on Firebase preview"
-  }
+  },
+  "finalDeploymentVerifiedAt": "2026-09-09T22:20:32.1757326+08:00"
 }
