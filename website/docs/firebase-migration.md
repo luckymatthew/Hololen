@@ -104,7 +104,7 @@ APK 大小及 SHA-256 見 README。0.7.2 APK 並非由本庫保留的 0.2.2 Andr
 
 ## 10. 部署命令
 
-根 README 提供 `npm ci`、`firebase login/use`、`npm run build`、`firebase deploy`／`--only hosting` 及七天 preview 命令。規則／索引已部署到 `hololive-ocg`，預覽站與正式站不會混同；正式 Hosting／自訂網域切換仍留待驗收決定。
+根 README 提供 `npm ci`、`firebase login/use`、`npm run build`、`firebase deploy`／`--only hosting` 及七天 preview 命令。規則／索引已部署到 `hololive-ocg`；預覽站驗證後，新 Firebase 正式網址 `https://hololive-ocg.web.app` 已發佈。原 Sites 網站／自訂網域未更改。
 
 ## 11. Firebase Console 手動工作
 
@@ -125,6 +125,7 @@ APK 大小及 SHA-256 見 README。0.7.2 APK 並非由本庫保留的 0.2.2 Andr
 - 原 App 已有本機收藏／掃卡及自有 bridge，但來源不是新提供 APK 的版本；不擅自改動或加入 PvP／AI。
 - 原卡庫是快照，有缺少官方圖／OCR 參考圖；未補造圖或移入 Storage。卡片資料／效果測試不是逐張所有可能組合的完備證明。
 - 原 TypeScript 有 Simulator payload、可選附件／顏色與 variant union 等型別問題；已作相容修正，未改 engine 邏輯。
+- 正式 bundle 實測發現混合動態／靜態匯入共用模組時，輸出遺失原匯出名称，導致保存失敗。已將已載入的資料服務／驗證函數固定匯入，保留 PvP 的獨立延遲 chunk；已於修正版線上站確認保存、更新及 URL 重新載入成功。未把只有 SDK 通過當成整個 UI 已通過。
 - SW 使用 version hash；HTML/card JSON 重新驗證、hash assets 長快取；新 SW 等舊頁關閉後啟用，避免對局中強制 reload。帳號／RTDB／GitHub metadata 不進 SW cache；離線首次未載入的卡圖仍須網絡。
 
 ## 15. 驗證紀錄與範圍
@@ -139,8 +140,13 @@ APK 大小及 SHA-256 見 README。0.7.2 APK 並非由本庫保留的 0.2.2 Andr
 | Firebase production build | 通過，29 個 Hosting 輸出檔，無 APK 或私鑰 |
 | 舊 Sites build | 通過，原 `/`、`/account`、`/simulator` 和 API routes 仍存在 |
 | Google login | 真實 Firebase 預覽站已用專案擁有者帳號登入成功，姓名／頭像與已同步狀態正常 |
+| 線上牌組／session | 真實 Google session 跨重新整理保留；在瀏覽器建立牌組、編輯名稱、透過牌組 URL 重新載入成功；帳號頁顯示已同步、封存成功；登出回本機模式。僅留下已封存的「Firebase 驗證牌組（已編輯）」測試資料。 |
 | 第二瀏覽器 | Chrome／Edge 同一 emulator 帳號，已讀到相同完整牌組與卡圖版本 |
 | 桌面／手機 UI | Chrome 桌面卡庫及 390×844 下載頁已目視檢查；沒有橫向溢出 |
 | APK | Android 官方 apksigner v3 簽署通過；版本、minSdk、ABI、hash 已驗證；不是實機安裝測試 |
+| 公開 APK 下載 | GitHub prerelease 已公開；無 Authorization／cookies 完整下載 576,750,232 bytes，SHA-256 與原檔一致；`/latest` 目前 404 是因沒有正式版，網站具名預覽 fallback 可用。 |
+| Hosting HTTP | 八個直接路徑 200；HTML no-cache、hash asset immutable、SW no-store；線上 cards.json 1,276 卡號 |
+| 正式站離線 UI | Chrome 斷網模擬後重新開啟 `/deck`，1,276 卡號仍載入、加卡、保存本機牌組成功；驗證後已恢復瀏覽器網絡設定。 |
+| 原站可用性 | 最終檢查原 Sites 網址仍 HTTP 200；沒有修改原站部署或 DNS。 |
 
 另見最終交付的 live-checks.json（HTTP／下載驗證）及 migration-files.json（實際檔案差異）。測試不宣稱逐卡每一種狀態都完整覆盖，也不宣稱手機 App 已整合 Firebase。

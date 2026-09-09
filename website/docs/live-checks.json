@@ -1,0 +1,114 @@
+{
+  "verifiedAt": "2026-09-09T22:06:53.9205411+08:00",
+  "previewSite": "https://hololive-ocg--migration-yonpzisv.web.app",
+  "routes": [
+    {
+      "route": "/",
+      "status": 200,
+      "cache": "no-cache"
+    },
+    {
+      "route": "/cards",
+      "status": 200,
+      "cache": "no-cache"
+    },
+    {
+      "route": "/deck",
+      "status": 200,
+      "cache": "no-cache"
+    },
+    {
+      "route": "/play",
+      "status": 200,
+      "cache": "no-cache"
+    },
+    {
+      "route": "/pvp",
+      "status": 200,
+      "cache": "no-cache"
+    },
+    {
+      "route": "/profile",
+      "status": 200,
+      "cache": "no-cache"
+    },
+    {
+      "route": "/settings",
+      "status": 200,
+      "cache": "no-cache"
+    },
+    {
+      "route": "/download",
+      "status": 200,
+      "cache": "no-cache"
+    }
+  ],
+  "hashedAsset": {
+    "path": "/assets/index-DO5Cbs1v.js",
+    "cache": "public, max-age=31536000, immutable"
+  },
+  "serviceWorkerCache": "no-store",
+  "cardCount": 1276,
+  "releaseUrl": "https://github.com/luckymatthew/Hololen/releases/tag/v0.7.2-native-preview",
+  "releasePrerelease": true,
+  "apkUrl": "https://github.com/luckymatthew/Hololen/releases/download/v0.7.2-native-preview/HoloLens.apk",
+  "apkDownloadedAnonymously": true,
+  "apkBytes": 576750232,
+  "apkSha256": "927f06dec1e727a07f4a74a3a65d9c856e5ab9fc94a301a29b272a0079285ca1",
+  "stableLatestStatus": 404,
+  "stableLatestNote": "No stable release yet. Website explicitly uses the verified named preview fallback.",
+  "productionSite": "https://hololive-ocg.web.app",
+  "productionRoutes": [
+    {
+      "route": "/",
+      "status": 200,
+      "cache": "no-cache"
+    },
+    {
+      "route": "/cards",
+      "status": 200,
+      "cache": "no-cache"
+    },
+    {
+      "route": "/deck",
+      "status": 200,
+      "cache": "no-cache"
+    },
+    {
+      "route": "/play",
+      "status": 200,
+      "cache": "no-cache"
+    },
+    {
+      "route": "/pvp",
+      "status": 200,
+      "cache": "no-cache"
+    },
+    {
+      "route": "/profile",
+      "status": 200,
+      "cache": "no-cache"
+    },
+    {
+      "route": "/settings",
+      "status": 200,
+      "cache": "no-cache"
+    },
+    {
+      "route": "/download",
+      "status": 200,
+      "cache": "no-cache"
+    }
+  ],
+  "browserValidation": {
+    "mobileScrollWidth": 390,
+    "googleSessionReload": "passed",
+    "originalSitesHttpStatus": 200,
+    "mobileViewport": "390 x 844",
+    "physicalAndroidInstall": "not tested",
+    "onlineDeckCreateEditReloadArchive": "passed",
+    "googleLogout": "passed",
+    "offlineDeckReloadAddSave": "passed on production origin",
+    "googleLogin": "passed on Firebase preview"
+  }
+}

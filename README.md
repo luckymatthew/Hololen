@@ -5,10 +5,11 @@
 - 網站：`website/`，React 19 + Vite，Firebase Hosting 靜態 SPA。
 - 原始碼與 APK：<https://github.com/luckymatthew/Hololen>。
 - Firebase 專案：`hololive-ocg`（專案編號 `10748518089`），Spark。
+- 正式 Firebase 網站：<https://hololive-ocg.web.app>；[Android 下載](https://hololive-ocg.web.app/download)。
 - 測試站：<https://hololive-ocg--migration-yonpzisv.web.app>，2026-09-16 到期；可重新執行預覽部署延長。
 - 完整架構、結構、權限及測試交付：[遷移報告](website/docs/firebase-migration.md)。
 
-舊網站仍在原部署平台運作，沒有切換公開網域。Firebase 預覽站使用本專案的真實 Authentication／Firestore／RTDB；模擬器則使用完全獨立的 `demo-holo-ocg`。
+Firebase 網站已先經預覽站驗證，再發佈到原本空白的 Firebase 正式網址。舊網站仍在原部署平台運作，沒有切換舊站網域。Firebase 正式／預覽站共用本專案的真實 Authentication／Firestore／RTDB；模擬器使用完全獨立的 `demo-holo-ocg`。
 
 ## Firebase Setup
 
@@ -32,7 +33,7 @@ npx firebase deploy --only firestore,database
 npm run deploy:preview
 ```
 
-正式發佈（完成驗收並決定切換後才執行）：
+往後更新 Firebase 正式網站：
 
 ```powershell
 cd website
@@ -131,7 +132,7 @@ Spark 的目前配額：Hosting 10 GB 儲存／360 MB 每日傳輸；Firestore 1
 
 ## 最後需要由擁有者處理
 
-- 檢查 Firebase 測試站及資料備份遷移流程，決定何時發佈正式 Hosting／切换網域。
+- 檢查資料備份遷移流程，決定何時讓舊站使用者改用新 Firebase 網站／切換自訂網域。Firebase 正式網址已可用。
 - 如要自動建置下一個 App 版本，提供 0.7.2 對應原始碼和原簽署金鑰，設定上述 Secrets；本次預覽 APK 的發佈不需要這些 Secrets。
 - 實機測試 App 安裝、覆蓋更新、掃卡及手機下載。手機舊帳號仍依舊網站運作。
 - 新域名加入 Auth Authorized domains；監控免費額度與過期房間。專案目前沒有啟用付費服務。

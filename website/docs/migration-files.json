@@ -10,7 +10,10 @@
     "website/app/download/DownloadClient.tsx",
     "website/app/firebase.css",
     "website/database.rules.json",
+    "website/docs/android-apk-verification.json",
     "website/docs/firebase-migration.md",
+    "website/docs/live-checks.json",
+    "website/docs/migration-files.json",
     "website/firebase.json",
     "website/firebase/Link.tsx",
     "website/firebase/cloudflare-types.d.ts",
@@ -51,7 +54,7 @@
     "website/vite.config.ts"
   ],
   "unchangedCount": 2975,
-  "trackedCandidateCount": 3022,
-  "totalBytes": 132354890,
+  "trackedCandidateCount": 3025,
+  "totalBytes": 132361925,
   "securityScanFindings": []
 }

@@ -19,7 +19,9 @@ const sample = JSON.parse(readFileSync('tests/fixtures/starter-deck.json', 'utf8
 const wait = async predicate => { for (let n = 0; n < 150; n++) { if (await predicate()) return; await pause(100); } throw new Error('Integration timeout'); };
 test('actual Auth + Firestore SDK: local migration, cloud edits, conflict retention, logout and account isolation', { timeout: 45000 }, async () => {
   app.startSync();
-  app.saveLocalDeck({ name: 'Offline deck', deck: sample });
+  const saved = await app.appFetch('/api/decks', { method: 'POST', body: JSON.stringify({ name: 'Offline deck', deck: sample }) });
+  assert.equal(saved.status, 200);
+  assert.equal((await (await app.appFetch('/api/decks')).json()).decks[0].name, 'Offline deck');
   await app.emailLogin(`integration-${Date.now()}@example.test`, 'Only-for-local-emulator-123!', true);
   await wait(() => app.currentOwner()); await app.syncNow(true);
   assert.equal(app.listLocalDecks().length, 0, 'guest decks require deliberate import on shared device');
