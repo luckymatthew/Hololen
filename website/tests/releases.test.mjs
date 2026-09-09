@@ -1,7 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { releaseMetadata, APK_URL, PREVIEW_TAG, PREVIEW_URL } from '../lib/releases.mjs';
-test('download always points at stable GitHub release asset', () => assert.equal(APK_URL, 'https://github.com/luckymatthew/Hololen/releases/latest/download/HoloLens.apk'));
-test('extracts current version and APK size without trusting release URLs', () => { const meta = releaseMetadata({ tag_name: 'v1.2.3', published_at: '2026-09-09', assets: [{ name: 'HoloLens.apk', size: 1024 }], body: '<script>test</script>' }); assert.equal(meta.version, 'v1.2.3'); assert.equal(meta.size, 1024); });
-test('missing or prerelease APK metadata cannot change stable link', () => { assert.throws(() => releaseMetadata({ assets: [] })); assert.throws(() => releaseMetadata({ prerelease: true, assets: [] })); assert.ok(APK_URL.endsWith('/HoloLens.apk')); });
-test('only the explicitly verified preview is accepted as a fallback and remains labeled preview', () => { const payload = { tag_name: PREVIEW_TAG, prerelease: true, assets: [{ name: 'HoloLens.apk', size: 576750232 }] }; assert.equal(releaseMetadata(payload, true).preview, true); assert.throws(() => releaseMetadata({ ...payload, tag_name: 'unknown-preview' }, true)); assert.ok(PREVIEW_URL.includes(`/download/${PREVIEW_TAG}/`)); });
+import { releaseMetadata, APK_URL, STABLE_METADATA, apkUrl } from '../lib/releases.mjs';
+const payload = { tag_name: 'v1.0.0', assets: [{ name: 'HoloLens.apk', size: 577082256, state: 'uploaded' }] };
+test('offline default is the public versioned stable APK', () => {
+ assert.equal(STABLE_METADATA.preview, false);
+ assert.equal(STABLE_METADATA.version, 'v1.0.0');
+ assert.equal(APK_URL, 'https://github.com/luckymatthew/Hololen/releases/download/v1.0.0/HoloLens.apk');
+});
+test('new stable metadata and its download remain paired', () => {
+ const meta = releaseMetadata({ ...payload, tag_name: 'v1.2.3' });
+ assert.equal(meta.version, 'v1.2.3');
+ assert.ok(apkUrl(meta.version).includes('/download/v1.2.3/'));
+});
+test('preview, draft, old and incomplete releases cannot replace stable download', () => {
+ for (const value of [{...payload, prerelease:true}, {...payload, draft:true}, {...payload, tag_name:'v0.7.2'}, {...payload, tag_name:'v1.0.0-beta'}, {...payload, assets:[]}, {...payload, assets:[{name:'HoloLens.apk',state:'new',size:1}]}]) assert.throws(() => releaseMetadata(value));
+});
