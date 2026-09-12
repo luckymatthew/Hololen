@@ -27,7 +27,7 @@ test("renders the finished Traditional Chinese site metadata", async () => {
     /^text\/html\b/i,
   );
   const html = await response.text();
-  assert.match(html, /掃卡翻譯/);
+  assert.doesNotMatch(html, /掃卡翻譯|卡牌操作模式|個卡號 ·|查看牌組 ·/);
   assert.match(html, /每張卡，一目了然/);
   assert.match(html, /效果列表模式/);
   assert.match(html, /id="deck-workbench"[^>]*hidden/);

@@ -1,5 +1,11 @@
 # Card scanner
 
+As of 2026-09-12, card scanning is available in the Android app only. The website
+catalogue no longer imports or opens the scanner, so visiting the website does
+not load its OCR engine. Scanner sources and datasets remain in this repository
+for the mobile app and their existing unit tests. The web-scanner implementation
+notes below describe the retired website feature.
+
 The library header opens a native modal dialog. A separate preparation button
 downloads/loads Japanese and English OCR data without camera access or an image.
 Stage progress, cancellation, retry and a ready state are shown; camera and OCR

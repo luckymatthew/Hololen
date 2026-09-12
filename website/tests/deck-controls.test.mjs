@@ -41,9 +41,12 @@ async function mount(Component, url = '/') {
 }
 const quantity = card => Number(document.querySelector(`output[aria-label="${card.name} 牌組張數"]`)?.textContent);
 
-test('catalog, modal, edit modes, saving and removable deck lifecycle', async t => {
+test('catalog, modal, saving and removable deck lifecycle', async t => {
   await t.test('catalog can add and remove an oshi down to zero and survive remount', async () => {
     await mount(Home);
+    assert.equal(document.querySelector('[aria-label="卡牌操作模式"]'), null);
+    assert.equal(document.querySelector('.studio-masthead-actions'), null);
+    assert.doesNotMatch(document.body.textContent, /掃卡翻譯|查看牌組 ·|點卡牌查看詳情|個卡號 ·/);
     await click(`將 ${oshi.name} 加入牌組`);
     assert.equal(quantity(oshi), 1);
     await click(`從牌組減少 ${oshi.name}`);
@@ -70,15 +73,20 @@ test('catalog, modal, edit modes, saving and removable deck lifecycle', async t 
     assert.equal(draft().main[member.number], undefined);
     assert.equal(draft().printings[member.number], undefined);
   });
-  await t.test('add/remove modes and deck steppers keep cheer counts correct', async () => {
-    await click('＋ 加卡');
-    await click(`增加 ${cheer.name} 卡牌`);
-    await click(`增加 ${cheer.name} 卡牌`);
+  await t.test('card images open details without changing counts; direct controls keep cheer counts correct', async () => {
+    await click(`查看 ${cheer.name} 詳情`);
+    assert.ok(document.querySelector('dialog[open]'));
+    assert.equal(quantity(cheer), 0);
+    await click('關閉卡片詳情');
+    await click(`將 ${cheer.name} 加入牌組`);
+    await click(`將 ${cheer.name} 加入牌組`);
     assert.equal(quantity(cheer), 2);
-    await click('− 減卡');
-    await click(`減少 ${cheer.name} 卡牌`);
+    await click(`從牌組減少 ${cheer.name}`);
     assert.equal(quantity(cheer), 1);
-    await click('查看牌組 · 1 張');
+    await click('牌組工房 1');
+    await click(`查看 ${cheer.name} ${cheer.variants[0].rarity} 卡牌`);
+    assert.equal(draft().cheer[cheer.number], 1);
+    await click('關閉卡片詳情');
     await click(`減少 ${cheer.name} ${cheer.variants[0].rarity}版本`);
     assert.deepEqual(draft().cheer, {});
     assert.equal(document.querySelectorAll('.deck-card-tile').length, 0);

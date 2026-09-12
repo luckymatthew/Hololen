@@ -15,7 +15,6 @@ import { fromHoloSimDeck, isHoloSimDeck, toHoloSimDeck, toHoloSimFilename } from
 import { groupMemberOptions } from "@/lib/member-sort.mjs";
 import ThemeToggle from "@/app/ThemeToggle";
 import FoilCardImage from "@/app/FoilCardImage";
-import CardScanner from "@/app/CardScanner";
 import ConfirmDialog from "@/app/ConfirmDialog";
 
 type CardGroup = "oshi" | "holomem" | "support" | "cheer";
@@ -214,7 +213,6 @@ function CardModal({
   quantity,
   quantityForVariant,
   initialVariantId,
-  scanResult = false,
 }: {
   card: Card;
   onClose: () => void;
@@ -223,7 +221,6 @@ function CardModal({
   quantity: number;
   quantityForVariant: (variantId: string) => number;
   initialVariantId?: string;
-  scanResult?: boolean;
 }) {
   const sortedVariants = useMemo(() => sortVariantsByRarity(card.variants), [card.variants]);
   const initialVariant = sortedVariants[0];
@@ -273,7 +270,6 @@ function CardModal({
           )}
         </div>
         <div className="modal-copy">
-          {scanResult && <button className="account-button" type="button" onClick={onClose}>← 繼續掃卡</button>}
           <div className="modal-kicker">
             <code>{card.number}</code>
             <span>{cardText(card.type)}</span>
@@ -382,7 +378,6 @@ export default function Home() {
   const deferredQuery = useDeferredValue(query);
   const searchInput = useRef<HTMLInputElement>(null);
   const [workspace, setWorkspace] = useState<"library" | "deck">("library");
-  const [editMode, setEditMode] = useState<"view" | "add" | "remove">("view");
   const [onlyDeck, setOnlyDeck] = useState(false);
   const [clearRequested, setClearRequested] = useState(false);
   const [view, setView] = useState<"gallery" | "list">("gallery");
@@ -395,8 +390,6 @@ export default function Home() {
   const [memberFilter, setMemberFilter] = useState("all");
   const [visibleCount, setVisibleCount] = useState(72);
   const [activeCard, setActiveCard] = useState<Card | null>(null);
-  const [scannerOpen, setScannerOpen] = useState(false);
-  const [fromScanner, setFromScanner] = useState(false);
   const [activeVariantId, setActiveVariantId] = useState("");
   const [deck, setDeck] = useState<DeckState>(emptyDeck);
   const [deckReady, setDeckReady] = useState(false);
@@ -451,14 +444,14 @@ export default function Home() {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement;
-      if (event.key === "/" && !event.ctrlKey && !event.metaKey && !event.altKey && !activeCard && !scannerOpen && !target.closest("input, textarea, select, [contenteditable='true']")) {
+      if (event.key === "/" && !event.ctrlKey && !event.metaKey && !event.altKey && !activeCard && !target.closest("input, textarea, select, [contenteditable='true']")) {
         event.preventDefault(); setWorkspace("library");
         requestAnimationFrame(() => searchInput.current?.focus());
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [activeCard, scannerOpen]);
+  }, [activeCard]);
 
   useEffect(() => {
     if (!notice) return;
@@ -609,9 +602,7 @@ export default function Home() {
     changePrintingQuantity(cardSection(card), card.number, variantId || heldIds[0] || "", -1);
   };
 
-  const openOrEditCard = (card: Card, variantId?: string) => {
-    if (editMode === "remove") { removeCard(card, variantId); return; }
-    if (editMode === "add" && (variantId || card.variants.length <= 1)) { addCard(card, variantId); return; }
+  const openCard = (card: Card, variantId?: string) => {
     setActiveVariantId(variantId || "");
     setActiveCard(card);
   };
@@ -776,20 +767,9 @@ export default function Home() {
           <h1>{workspace === "library" ? "每張卡，一目了然。" : "組出你的下一場勝利。"}</h1>
           <p>{workspace === "library" ? "查卡圖、讀繁中效果，找到適合你牌組的一張。" : "選擇卡圖版本、調整配比，保存後直接開始試牌。"}</p>
         </div>
-        <div className="studio-masthead-actions">
-          {workspace === "library" ? <button type="button" className="studio-primary" disabled={loading || !cards.length} onClick={() => setScannerOpen(true)}><StudioIcon name="scan" />掃卡翻譯</button> : <button type="button" className="studio-primary" onClick={() => setWorkspace("library")}><StudioIcon name="search" />去卡庫加卡</button>}
-          <span>{meta ? `${meta.uniqueCards.toLocaleString()} 個卡號 · ${meta.printings.toLocaleString()} 款卡圖` : "正在載入卡庫…"}</span>
-        </div>
-      </div>
-
-      <div className="deck-edit-toolbar" role="group" aria-label="卡牌操作模式">
-        <div className="deck-edit-modes">
-          <button type="button" aria-pressed={editMode === "view"} onClick={() => setEditMode("view")}>查看</button>
-          <button type="button" aria-pressed={editMode === "add"} onClick={() => setEditMode("add")}>＋ 加卡</button>
-          <button type="button" aria-pressed={editMode === "remove"} onClick={() => setEditMode("remove")}>− 減卡</button>
-        </div>
-        <p>{editMode === "remove" ? "點卡牌減一張；有多款卡圖時先選版本。" : editMode === "add" ? "點卡牌加入；有多款卡圖時先選版本。" : "點卡牌查看詳情，亦可用 ＋／− 調整張數。"}</p>
-        <button type="button" className="deck-edit-total" onClick={() => setWorkspace(workspace === "deck" ? "library" : "deck")}>{workspace === "deck" ? "返回卡庫" : `查看牌組 · ${oshiCount + mainCount + cheerCount} 張`}</button>
+        {workspace === "deck" && <div className="studio-masthead-actions">
+          <button type="button" className="studio-primary" onClick={() => setWorkspace("library")}><StudioIcon name="search" />去卡庫加卡</button>
+        </div>}
       </div>
 
       <section className="deck-workbench" id="deck-workbench" aria-label="牌組構築器" hidden={workspace !== "deck"} tabIndex={-1}>
@@ -836,7 +816,7 @@ export default function Home() {
                   <div className="deck-card-grid">
                     {rows.map(({ card, count: rowCount, variant }) => (
                       <article className="deck-card-tile" key={`${card.number}-${variant?.id || "default"}`}>
-                        <button className="deck-card-open" type="button" onClick={() => openOrEditCard(card, variant?.id)} aria-label={`${editMode === "remove" ? "減少" : editMode === "add" ? "增加" : "查看"} ${card.name} ${variant?.rarity || ""} 卡牌`}>
+                        <button className="deck-card-open" type="button" onClick={() => openCard(card, variant?.id)} aria-label={`查看 ${card.name} ${variant?.rarity || ""} 卡牌`}>
                           <span className="deck-card-art"><CardImage card={{ ...card, image: variant?.image || card.image }} className="deck-card-thumb" rarity={variant?.rarity || card.rarity} /><b>×{rowCount}</b>{variant && <em>{variantLabel(variant, sortVariantsByRarity(card.variants))}</em>}</span>
                           <span className="deck-card-copy">
                             <code>{card.number}</code>
@@ -919,7 +899,7 @@ export default function Home() {
               const quantity = quantityFor(card);
               return (
                 <article className="card-tile" key={card.number}>
-                  <button className="card-open" type="button" onClick={() => openOrEditCard(card)} aria-label={editMode === "view" ? `查看 ${card.name} 詳情` : `${editMode === "add" ? "增加" : "減少"} ${card.name} 卡牌`}>
+                  <button className="card-open" type="button" onClick={() => openCard(card)} aria-label={`查看 ${card.name} 詳情`}>
                     <div className="card-art-wrap">
                       <CardImage card={card} className="card-thumb" />
                       {quantity > 0 && <span className="quantity">×{quantity}</span>}
@@ -981,18 +961,12 @@ export default function Home() {
         </div>
       </footer>
 
-      {scannerOpen && <CardScanner cards={cards} onClose={() => setScannerOpen(false)} onPick={(number) => {
-        const card = cardMap.get(number);
-        if (!card) return;
-        setScannerOpen(false); setFromScanner(true); setActiveVariantId(""); setActiveCard(card);
-      }} />}
       {activeCard && (
         <CardModal
           key={`${activeCard.number}-${activeVariantId || "default"}`}
           card={activeCard}
           initialVariantId={activeVariantId}
-          scanResult={fromScanner}
-          onClose={() => { setActiveCard(null); setActiveVariantId(""); if (fromScanner) { setFromScanner(false); setScannerOpen(true); } }}
+          onClose={() => { setActiveCard(null); setActiveVariantId(""); }}
           onAdd={addCard}
           onRemove={removeCard}
           quantity={quantityFor(activeCard)}
