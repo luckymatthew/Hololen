@@ -16,6 +16,7 @@ import { groupMemberOptions } from "@/lib/member-sort.mjs";
 import ThemeToggle from "@/app/ThemeToggle";
 import FoilCardImage from "@/app/FoilCardImage";
 import CardScanner from "@/app/CardScanner";
+import ConfirmDialog from "@/app/ConfirmDialog";
 
 type CardGroup = "oshi" | "holomem" | "support" | "cheer";
 
@@ -209,6 +210,7 @@ function CardModal({
   card,
   onClose,
   onAdd,
+  onRemove,
   quantity,
   quantityForVariant,
   initialVariantId,
@@ -217,6 +219,7 @@ function CardModal({
   card: Card;
   onClose: () => void;
   onAdd: (card: Card, variantId?: string) => void;
+  onRemove: (card: Card, variantId?: string) => void;
   quantity: number;
   quantityForVariant: (variantId: string) => number;
   initialVariantId?: string;
@@ -250,7 +253,7 @@ function CardModal({
           <CardImage card={{ ...card, image: selectedImage }} className="modal-card-image" rarity={selectedVariant?.rarity || card.rarity} />
           {card.variants.length > 1 && (
             <div className="variant-picker">
-              <p>卡圖版本 · 點選後加入牌組</p>
+              <p>卡圖版本 · 選擇後調整張數</p>
               <div className="variant-strip" aria-label="卡圖版本">
                 {sortedVariants.map((variant) => (
                   <button
@@ -357,9 +360,13 @@ function CardModal({
             {card.illustrator && <span>Illustration · {card.illustrator}</span>}
             {card.qaCount > 0 && <span>官方 Q&amp;A · {card.qaCount} 條</span>}
           </div>
+          <div className="modal-quantity-controls">
+          <button className="remove-large" type="button" disabled={selectedQuantity === 0} onClick={() => onRemove(card, selectedVariant?.id)} aria-label={`減少 ${card.name} 所選版本`}>− 減少一張</button>
+          <output aria-live="polite">此版本 {selectedQuantity} 張 · 合計 {quantity} 張</output>
           <button className="add-large" type="button" onClick={() => onAdd(card, selectedVariant?.id)}>
             {selectedVariant ? `＋ 加入 ${variantLabel(selectedVariant, sortedVariants)} 版本${selectedQuantity ? ` · 此版本 ${selectedQuantity}` : ""}` : quantity > 0 ? `加入牌組 · 現有 ${quantity}` : "＋ 加入牌組"}
           </button>
+          </div>
         </div>
       </section>
     </dialog>
@@ -375,6 +382,9 @@ export default function Home() {
   const deferredQuery = useDeferredValue(query);
   const searchInput = useRef<HTMLInputElement>(null);
   const [workspace, setWorkspace] = useState<"library" | "deck">("library");
+  const [editMode, setEditMode] = useState<"view" | "add" | "remove">("view");
+  const [onlyDeck, setOnlyDeck] = useState(false);
+  const [clearRequested, setClearRequested] = useState(false);
   const [view, setView] = useState<"gallery" | "list">("gallery");
   const [sort, setSort] = useState("number");
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -517,13 +527,14 @@ export default function Home() {
     ...(stageFilter !== "all" ? [{ label: stageFilter, clear: () => setStageFilter("all") }] : []),
     ...(setFilter !== "all" ? [{ label: setFilter, clear: () => setSetFilter("all") }] : []),
   ];
-  const resetFilters = () => { setQuery(""); setMemberFilter("all"); setTypeFilter("all"); setColorFilter("all"); setStageFilter("all"); setSetFilter("all"); };
+  const resetFilters = () => { setQuery(""); setMemberFilter("all"); setTypeFilter("all"); setColorFilter("all"); setStageFilter("all"); setSetFilter("all"); setOnlyDeck(false); };
 
   const oshiCount = countSection(deck.oshi);
   const mainCount = countSection(deck.main);
   const cheerCount = countSection(deck.cheer);
 
   const quantityFor = (card: Card) => cardDeckCount(deck, card);
+  const catalogCards = filteredCards.filter(card => !onlyDeck || quantityFor(card) > 0);
   const quantityForVariant = (card: Card, variantId: string) => normalizedPrintingCounts(deck, card)[variantId] || 0;
 
   const addCard = (card: Card, requestedVariantId?: string) => {
@@ -570,15 +581,16 @@ export default function Home() {
       const current = previous[section][number] || 0;
       if (current <= 0) return previous;
       const allocations = normalizedPrintingCounts(previous, card);
-      if (variantId && Number(allocations[variantId] || 0) <= 0) return previous;
+      const removalId = variantId || Object.keys(allocations).find(id => allocations[id] > 0);
+      if (removalId && Number(allocations[removalId] || 0) <= 0) return previous;
       const nextSection = { ...previous[section] };
       const next = current - 1;
       if (next <= 0) delete nextSection[number];
       else nextSection[number] = next;
       const printings = { ...(previous.printings || {}) };
-      if (variantId && allocations[variantId]) {
-        allocations[variantId] -= 1;
-        if (allocations[variantId] <= 0) delete allocations[variantId];
+      if (removalId && allocations[removalId]) {
+        allocations[removalId] -= 1;
+        if (allocations[removalId] <= 0) delete allocations[removalId];
       }
       if (next <= 0 || Object.keys(allocations).length === 0) delete printings[number];
       else printings[number] = allocations;
@@ -586,8 +598,26 @@ export default function Home() {
     });
   };
 
+  const removeCard = (card: Card, variantId?: string) => {
+    const allocations = normalizedPrintingCounts(deck, card);
+    const heldIds = Object.keys(allocations).filter(id => allocations[id] > 0);
+    if (!variantId && heldIds.length > 1) {
+      setActiveVariantId(heldIds[0]);
+      setActiveCard(card);
+      return;
+    }
+    changePrintingQuantity(cardSection(card), card.number, variantId || heldIds[0] || "", -1);
+  };
+
+  const openOrEditCard = (card: Card, variantId?: string) => {
+    if (editMode === "remove") { removeCard(card, variantId); return; }
+    if (editMode === "add" && (variantId || card.variants.length <= 1)) { addCard(card, variantId); return; }
+    setActiveVariantId(variantId || "");
+    setActiveCard(card);
+  };
+
   const clearDeck = () => {
-    if (!window.confirm("確定要清空目前牌組嗎？")) return;
+    setClearRequested(false);
     setDeck(emptyDeck());
     setActiveDeckId(null);
     setEditorBase("");
@@ -597,7 +627,7 @@ export default function Home() {
   };
 
   const saveDeck = async () => {
-    if (oshiCount + mainCount + cheerCount === 0) {
+    if (!activeDeckId && oshiCount + mainCount + cheerCount === 0) {
       setNotice("請先加入卡片再保存牌組。");
       return;
     }
@@ -752,6 +782,16 @@ export default function Home() {
         </div>
       </div>
 
+      <div className="deck-edit-toolbar" role="group" aria-label="卡牌操作模式">
+        <div className="deck-edit-modes">
+          <button type="button" aria-pressed={editMode === "view"} onClick={() => setEditMode("view")}>查看</button>
+          <button type="button" aria-pressed={editMode === "add"} onClick={() => setEditMode("add")}>＋ 加卡</button>
+          <button type="button" aria-pressed={editMode === "remove"} onClick={() => setEditMode("remove")}>− 減卡</button>
+        </div>
+        <p>{editMode === "remove" ? "點卡牌減一張；有多款卡圖時先選版本。" : editMode === "add" ? "點卡牌加入；有多款卡圖時先選版本。" : "點卡牌查看詳情，亦可用 ＋／− 調整張數。"}</p>
+        <button type="button" className="deck-edit-total" onClick={() => setWorkspace(workspace === "deck" ? "library" : "deck")}>{workspace === "deck" ? "返回卡庫" : `查看牌組 · ${oshiCount + mainCount + cheerCount} 張`}</button>
+      </div>
+
       <section className="deck-workbench" id="deck-workbench" aria-label="牌組構築器" hidden={workspace !== "deck"} tabIndex={-1}>
         <div className="deck-workbench-head">
           <div>
@@ -796,7 +836,7 @@ export default function Home() {
                   <div className="deck-card-grid">
                     {rows.map(({ card, count: rowCount, variant }) => (
                       <article className="deck-card-tile" key={`${card.number}-${variant?.id || "default"}`}>
-                        <button className="deck-card-open" type="button" onClick={() => { setActiveVariantId(variant?.id || ""); setActiveCard(card); }}>
+                        <button className="deck-card-open" type="button" onClick={() => openOrEditCard(card, variant?.id)} aria-label={`${editMode === "remove" ? "減少" : editMode === "add" ? "增加" : "查看"} ${card.name} ${variant?.rarity || ""} 卡牌`}>
                           <span className="deck-card-art"><CardImage card={{ ...card, image: variant?.image || card.image }} className="deck-card-thumb" rarity={variant?.rarity || card.rarity} /><b>×{rowCount}</b>{variant && <em>{variantLabel(variant, sortVariantsByRarity(card.variants))}</em>}</span>
                           <span className="deck-card-copy">
                             <code>{card.number}</code>
@@ -806,8 +846,9 @@ export default function Home() {
                         </button>
                         <div className="stepper">
                           <button type="button" onClick={() => changePrintingQuantity(section, card.number, variant?.id || "", -1)} aria-label={`減少 ${card.name} ${variant?.rarity || ""}版本`}>−</button>
-                          <b>{rowCount}</b>
+                          <b aria-live="polite">{rowCount}</b>
                           <button type="button" onClick={() => changePrintingQuantity(section, card.number, variant?.id || "", 1)} aria-label={`增加 ${card.name} ${variant?.rarity || ""}版本`}>＋</button>
+                          <button className="deck-card-details" type="button" aria-label={`查看 ${card.name} 詳情`} onClick={() => { setActiveVariantId(variant?.id || ""); setActiveCard(card); }}>詳情</button>
                         </div>
                       </article>
                     ))}
@@ -823,12 +864,13 @@ export default function Home() {
           <button className="export-button" type="button" onClick={exportDeck}>匯出 HoloSim 1.13 JSON</button>
           <a className="saved-decks-link simulator-deck-link" href="/simulator">用這副牌組開私人房間 →</a>
           <label className="import-button">匯入 JSON<input type="file" accept="application/json,.json" onChange={(event) => { void importDeck(event.target.files?.[0]); event.target.value = ""; }} /></label>
-          <button className="clear-button" type="button" onClick={clearDeck}>清空</button>
+          <button className="clear-button" type="button" onClick={() => setClearRequested(true)}>清空</button>
           <a className="saved-decks-link" href="/account">查看已保存牌組 →</a>
         </div>
       </section>
 
       <section className="catalog-panel" id="library" hidden={workspace !== "library"} tabIndex={-1} aria-label="完整卡庫">
+          <label className="deck-only-filter"><input type="checkbox" checked={onlyDeck} onChange={event => { setOnlyDeck(event.target.checked); setVisibleCount(72); }} />只顯示已加入牌組的卡片</label>
           <div className="search-panel" role="search" aria-label="搜尋及篩選卡片">
             <div className="studio-search-row">
             <label className="searchbox">
@@ -858,7 +900,7 @@ export default function Home() {
           </div>
 
           <div className="result-bar">
-            <span role="status" aria-live="polite">{loading ? "載入中…" : <><b>{filteredCards.length.toLocaleString()}</b> 張卡片{query !== deferredQuery && " · 搜尋中…"}</>}</span>
+            <span role="status" aria-live="polite">{loading ? "載入中…" : <><b>{catalogCards.length.toLocaleString()}</b> 張卡片{query !== deferredQuery && " · 搜尋中…"}</>}</span>
             <div className="result-controls">
               <label><span className="sr-only">卡片排序</span><select value={sort} onChange={event => setSort(event.target.value)}><option value="number">卡號順序</option><option value="newest">新卡優先</option><option value="name">名稱順序</option></select></label>
               <div className="view-switch" aria-label="卡庫顯示方式"><button type="button" aria-label="大卡圖模式" title="大卡圖模式" aria-pressed={view === "gallery"} onClick={() => setView("gallery")}><StudioIcon name="grid" /></button><button type="button" aria-label="效果列表模式" title="效果列表模式" aria-pressed={view === "list"} onClick={() => setView("list")}><StudioIcon name="list" /></button></div>
@@ -873,11 +915,11 @@ export default function Home() {
           )}
 
           <div className={`card-grid studio-${view}`} aria-busy={query !== deferredQuery}>
-            {filteredCards.slice(0, visibleCount).map((card) => {
+            {catalogCards.slice(0, visibleCount).map((card) => {
               const quantity = quantityFor(card);
               return (
                 <article className="card-tile" key={card.number}>
-                  <button className="card-open" type="button" onClick={() => { setActiveVariantId(""); setActiveCard(card); }} aria-label={`查看 ${card.name} 詳情`}>
+                  <button className="card-open" type="button" onClick={() => openOrEditCard(card)} aria-label={editMode === "view" ? `查看 ${card.name} 詳情` : `${editMode === "add" ? "增加" : "減少"} ${card.name} 卡牌`}>
                     <div className="card-art-wrap">
                       <CardImage card={card} className="card-thumb" />
                       {quantity > 0 && <span className="quantity">×{quantity}</span>}
@@ -896,6 +938,9 @@ export default function Home() {
                       <small>查看中文效果 →</small>
                     </div>
                   </button>
+                  <div className="catalog-quantity-controls">
+                  <button type="button" disabled={quantity === 0} onClick={() => removeCard(card)} aria-label={`從牌組減少 ${card.name}`} title="減少一張">−</button>
+                  <output aria-label={`${card.name} 牌組張數`} aria-live="polite">{quantity}</output>
                   <button
                     className="quick-add"
                     type="button"
@@ -910,14 +955,17 @@ export default function Home() {
                   >
                     ＋
                   </button>
+                  <button className="catalog-card-details" type="button" onClick={() => { setActiveVariantId(""); setActiveCard(card); }} aria-label={`查看 ${card.name} 詳情`}>詳情</button>
+                  </div>
                 </article>
               );
             })}
           </div>
 
-          {visibleCount < filteredCards.length && (
+          {onlyDeck && filteredCards.length > 0 && catalogCards.length === 0 && <p className="deck-filter-empty">沒有符合篩選的已加入卡片。取消「只顯示已加入牌組的卡片」即可繼續加卡。</p>}
+          {visibleCount < catalogCards.length && (
             <button className="load-more" type="button" onClick={() => setVisibleCount((count) => count + 72)}>
-              顯示更多卡片 <span>{Math.min(visibleCount, filteredCards.length)} / {filteredCards.length}</span>
+              顯示更多卡片 <span>{visibleCount} / {catalogCards.length}</span>
             </button>
           )}
       </section>
@@ -946,11 +994,13 @@ export default function Home() {
           scanResult={fromScanner}
           onClose={() => { setActiveCard(null); setActiveVariantId(""); if (fromScanner) { setFromScanner(false); setScannerOpen(true); } }}
           onAdd={addCard}
+          onRemove={removeCard}
           quantity={quantityFor(activeCard)}
           quantityForVariant={(variantId) => quantityForVariant(activeCard, variantId)}
         />
       )}
       {notice && <div className="toast" role="status">{notice}</div>}
+      {clearRequested && <ConfirmDialog title="清空目前草稿？" description="草稿內所有卡片將會移除。已保存的牌組仍可在「我的牌組」載入；如要刪除已保存牌組，請到該頁操作。" confirmLabel="清空草稿" onConfirm={clearDeck} onCancel={() => setClearRequested(false)} />}
     </main>
   );
 }
