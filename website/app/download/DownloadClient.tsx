@@ -10,7 +10,7 @@ export default function DownloadClient() {
     fetch(`https://api.github.com/repos/${RELEASE_REPOSITORY}/releases/latest`, { signal: controller.signal, cache: 'no-store', credentials: 'omit', headers: { Accept: 'application/vnd.github+json' } })
       .then(async response => { if (!response.ok) throw new Error(String(response.status)); return releaseMetadata(await response.json()); })
       .then(value => { setMetadata(value); setStatus(''); })
-      .catch(() => setStatus('目前提供已發佈的 1.0.0 正式版，可直接下載。'))
+      .catch(() => setStatus(`目前提供已發佈的 ${STABLE_METADATA.version.slice(1)} 正式版，可直接下載。`))
       .finally(() => clearTimeout(timer));
     return () => { clearTimeout(timer); controller.abort(); };
   }, []);
