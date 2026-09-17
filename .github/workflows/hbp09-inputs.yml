@@ -1,0 +1,66 @@
+name: Gather hBP09 database inputs
+on:
+  push:
+    branches: [codex/hbp09-database-20260917]
+    paths: [.github/workflows/hbp09-inputs.yml]
+permissions:
+  contents: read
+jobs:
+  gather:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Fetch public source inputs
+        run: |
+          python - <<'PY'
+          import urllib.request, json, pathlib, hashlib, datetime, zipfile
+          out=pathlib.Path('hbp09-inputs'); out.mkdir()
+          def fetch(url):
+              req=urllib.request.Request(url,headers={'User-Agent':'Hololens-hBP09-update/1.0'})
+              with urllib.request.urlopen(req,timeout=60) as r: return r.read()
+          repo='TETSUNekko/holotcgtw'
+          commit=json.loads(fetch(f'https://api.github.com/repos/{repo}/commits/main'))['sha']
+          tree=json.loads(fetch(f'https://api.github.com/repos/{repo}/git/trees/{commit}?recursive=1'))
+          candidates=[t for t in tree['tree'] if t['type']=='blob' and t['path'].endswith(('.json','.js','.ts')) and 'node_modules/' not in t['path'] and ('hbp09' in t['path'].lower() or ('card' in t['path'].lower() and t['path'].endswith('.json')))]
+          (out/'community-file-list.json').write_text(json.dumps(candidates,indent=2))
+          manifest={'capturedAt':datetime.datetime.now(datetime.timezone.utc).isoformat(),'communityCommit':commit,'communityRepository':repo,'files':[]}
+          for t in candidates:
+              if 'hbp09' not in t['path'].lower() and t.get('size',0)>15000000: continue
+              url=f"https://raw.githubusercontent.com/{repo}/{commit}/{t['path']}"
+              data=fetch(url)
+              if b'hBP09' not in data: continue
+              dest=out/'community'/t['path'];dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(data)
+              manifest['files'].append({'path':str(dest.relative_to(out)),'url':url,'sha256':hashlib.sha256(data).hexdigest()})
+          for path in ['cards.json','holosim-card-index.json','scanner-ja.json']:
+              data=fetch(f'https://hololive-ocg.web.app/{path}')
+              json.loads(data)
+              (out/('live-'+path)).write_bytes(data)
+          url='https://github.com/luckymatthew/Hololen/releases/download/v1.1.0/HoloLens.apk'
+          data=fetch(url)
+          digest=hashlib.sha256(data).hexdigest()
+          if digest!='fe7e54bb60468eba7d27ae97a7f99a528c86d5b618f4ec0e09571f298258b2a5': raise ValueError('Published baseline APK differs')
+          (out/'published-1.1.0.apk').write_bytes(data)
+          manifest['publishedApk']={'url':url,'sha256':digest}
+          (out/'manifest.json').write_text(json.dumps(manifest,indent=2))
+          print(json.dumps(manifest,indent=2))
+          PY
+      - name: Report deployment configuration availability without secret values
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          FIREBASE_SERVICE_ACCOUNT_HOLOLIVE_OCG: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_HOLOLIVE_OCG }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}
+        run: |
+          python - <<'PY'
+          import os,json,pathlib
+          keys=['FIREBASE_TOKEN','FIREBASE_SERVICE_ACCOUNT_HOLOLIVE_OCG','FIREBASE_SERVICE_ACCOUNT','GOOGLE_APPLICATION_CREDENTIALS_JSON']
+          data={key:bool(os.environ.get(key)) for key in keys}
+          pathlib.Path('hbp09-inputs/deploy-capabilities.json').write_text(json.dumps(data))
+          print(json.dumps(data))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hbp09-inputs
+          path: hbp09-inputs/
+          retention-days: 7
