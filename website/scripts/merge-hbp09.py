@@ -104,8 +104,8 @@ def build_release(source,names,existing):
         variants=[{'id':'hbp09-'+pathlib.PurePosixPath(r['image']).stem,'rarity':rarity(r),'image':r['image'],'sets':[SET],'releaseDate':DATE,'sourceUrl':r['sourceUrl']} for r in printings]
         variants.sort(key=lambda v:(base_rarities.index(v['rarity']) if v['rarity'] in base_rarities else 99,v['id']))
         unlimited='何枚でも' in abilities['extra'];name=names.get(row['name'],row['name'])
-        if group=='cheer':name=(COLORS[colors[0]] if colors else '')+'色應援'
-        card={'id':variants[0]['id'],'number':card_number,'name':name,'jpName':row['name'],'enName':'','group':group,'type':label,'typeCode':typecode,'colors':[COLORS[c] for c in colors],'colorCodes':colors,'stage':info.get('Bloomレベル',{}).get('text','').replace(' Buzz',''),'hp':hp,'life':life,'rarity':rarity(row),'set':SET,'sets':[SET],'tags':info.get('タグ',{}).get('text','').split(),'illustrator':'','baton':len(info.get('バトンタッチ',{}).get('images',[])) if 'バトンタッチ' in info else None,'image':row['image'],'variants':variants,'abilityText':ability,**abilities,'qaCount':0,'maxCopies':1 if group=='oshi' else 20 if group=='cheer' else 99 if unlimited else 4,'unlimited':unlimited,'restricted':False,'preview':False,'simOnly':False,'releaseDate':DATE,'catalogVersion':VERSION,'effectLanguage':'ja','translationStatus':'official-japanese-fallback','sourceUrl':row['sourceUrl'],'simulationStatus':'not-audited'}
+        name_status='reviewed-mapping' if row['name'] in names else 'official-japanese-fallback'
+        card={'id':variants[0]['id'],'number':card_number,'name':name,'jpName':row['name'],'enName':'','group':group,'type':label,'typeCode':typecode,'colors':[COLORS[c] for c in colors],'colorCodes':colors,'stage':info.get('Bloomレベル',{}).get('text','').replace(' Buzz',''),'hp':hp,'life':life,'rarity':rarity(row),'set':SET,'sets':[SET],'tags':info.get('タグ',{}).get('text','').split(),'illustrator':'','baton':len(info.get('バトンタッチ',{}).get('images',[])) if 'バトンタッチ' in info else None,'image':row['image'],'variants':variants,'abilityText':ability,**abilities,'qaCount':0,'maxCopies':1 if group=='oshi' else 20 if group=='cheer' else 99 if unlimited else 4,'unlimited':unlimited,'restricted':False,'preview':False,'simOnly':False,'releaseDate':DATE,'catalogVersion':VERSION,'nameTranslationStatus':name_status,'effectLanguage':'ja','translationStatus':'official-japanese-fallback','sourceUrl':row['sourceUrl'],'simulationStatus':'not-audited'}
         skills=[card[key] for key in ['keyword','stageSkill','oshiSkill','spOshiSkill'] if card.get(key)]
         titles=[row['name']]+[s['name'] for s in skills]+[a['name'] for a in card['arts']]
         effects=[ability,card['extra']]+[s['effect'] for s in skills]+[a['effect'] for a in card['arts']]
@@ -136,8 +136,9 @@ def merge(base,release,local_images=None):
                 out['variants'].append(variant);images[variant['image']]=variant;added_variants+=1
         current[n]=out
     result['cards']=sorted(current.values(),key=lambda c:c['number'])
-    result['meta']={**result.get('meta',{}),'snapshotDate':'2026-09-17','catalogVersion':VERSION,'uniqueCards':len(current),'sourceUniqueCards':sum(not c.get('simOnly',False) for c in current.values()),'printings':sum(len(c.get('variants',[])) for c in current.values()),'latestRelease':SET+'（2026-09-19 發售）','latestReleasePrintings':255,'latestReleaseBaseCards':125,'latestReleaseParallels':130,'latestReleaseDate':DATE,'hbp09':release['meta'],'note':'卡名沿用現有繁中名稱；hBP09 新效果目前附官方日文原文，並非已核准繁中翻譯。新卡實際效果及對戰支援須另行驗證；正式對戰以官方日文卡面與最新裁定為準。'}
-    return result,{'addedCards':added,'addedVariants':added_variants,'totalCards':len(current),'totalPrintings':result['meta']['printings']}
+    fallbacks=[{'number':c['number'],'jpName':c['jpName']} for c in result['cards'] if c.get('nameTranslationStatus')=='official-japanese-fallback']
+    result['meta']={**result.get('meta',{}),'snapshotDate':'2026-09-17','catalogVersion':VERSION,'uniqueCards':len(current),'sourceUniqueCards':sum(not c.get('simOnly',False) for c in current.values()),'traditionalChineseCards':len(current)-len(fallbacks),'japaneseNameFallbackCards':len(fallbacks),'printings':sum(len(c.get('variants',[])) for c in current.values()),'latestRelease':SET+'（2026-09-19 發售）','latestReleasePrintings':255,'latestReleaseBaseCards':125,'latestReleaseParallels':130,'latestReleaseDate':DATE,'hbp09':release['meta'],'note':'卡名沿用現有繁中名稱；尚未翻譯的名稱及 hBP09 新效果保留官方日文原文，並非已核准繁中翻譯。新卡實際效果及對戰支援須另行驗證；正式對戰以官方日文卡面與最新裁定為準。'}
+    return result,{'addedCards':added,'addedVariants':added_variants,'totalCards':len(current),'totalPrintings':result['meta']['printings'],'japaneseNameFallbacks':fallbacks}
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--cards',default=str(ROOT.parent/'public/cards.json'));args=parser.parse_args()
@@ -151,6 +152,6 @@ def main():
         old=scanner['cards'].get(n,{})
         scanner['cards'][n]={**old,**{k:list(dict.fromkeys(old.get(k,[])+row[k])) for k in ['titles','effects']}}
     scanner.setdefault('meta',{})['hbp09CatalogVersion']=VERSION;dump(scanner_path,scanner)
-    dump(ROOT.parent/'docs/hbp09-import-report.json',summary);print(json.dumps(summary))
+    dump(ROOT.parent/'docs/hbp09-import-report.json',summary);print(json.dumps(summary,ensure_ascii=False))
 
 if __name__=='__main__':main()
