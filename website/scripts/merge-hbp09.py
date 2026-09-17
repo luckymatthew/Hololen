@@ -64,7 +64,7 @@ def fields(row):
         elif 'keyword' in classes:
             keyword=None
             for icon in icons:
-                match=re.search(r'/(gift|bloom|collab)\.png',icon.get('src',''))
+                match=re.search(r'/(gift|bloom|collab)(?:EF)?\.png',icon.get('src',''))
                 if match:keyword=match[1];break
             if not keyword:raise ValueError(f'Unknown keyword icon: {row["number"]} {icons}')
             result['keyword']={'type':keyword,'name':title,'effect':effect}
@@ -97,7 +97,7 @@ def build_release(source,names,existing):
             if not m or m[1] not in COLORS:raise ValueError(f'Unrecognized color: {icon}')
             colors.append(m[1])
         abilities=fields(row);ability=info.get('能力テキスト',{}).get('text','').strip()
-        if group=='support' and not ability:raise ValueError(f'Missing support effect: {card_number}')
+        if group=='support' and not ability:raise ValueError(f'Missing support effect: {card_number}; available info: {info}')
         hp=number(info.get('HP',{}).get('text',''));life=number(info.get('LIFE',{}).get('text',''))
         if group=='holomem' and (hp is None or not abilities['arts']):raise ValueError(f'Missing Holomen stats: {card_number}')
         if group=='oshi' and (life is None or not abilities['oshiSkill']):raise ValueError(f'Missing oshi stats: {card_number}')
@@ -146,7 +146,11 @@ def main():
     output,summary=merge(base,release);again,repeat=merge(output,release)
     if output!=again or repeat['addedCards'] or repeat['addedVariants']:raise ValueError('Merge is not idempotent')
     dump(args.cards,output);dump(ROOT.parent/'public/hbp09-cards.json',release);dump(ROOT.parent/'public/hbp09-scanner-ja.json',japanese)
-    scanner_path=ROOT.parent/'public/scanner-ja.json';scanner=load(scanner_path);scanner['cards'].update(japanese);scanner.setdefault('meta',{})['hbp09CatalogVersion']=VERSION;dump(scanner_path,scanner)
+    scanner_path=ROOT.parent/'public/scanner-ja.json';scanner=load(scanner_path)
+    for n,row in japanese.items():
+        old=scanner['cards'].get(n,{})
+        scanner['cards'][n]={**old,**{k:list(dict.fromkeys(old.get(k,[])+row[k])) for k in ['titles','effects']}}
+    scanner.setdefault('meta',{})['hbp09CatalogVersion']=VERSION;dump(scanner_path,scanner)
     dump(ROOT.parent/'docs/hbp09-import-report.json',summary);print(json.dumps(summary))
 
 if __name__=='__main__':main()
