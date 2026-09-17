@@ -5,10 +5,17 @@ on:
     paths:
       - .github/workflows/hbp09-verify.yml
       - website/scripts/merge-hbp09.py
+      - website/scripts/sync-hbp09-android-data.py
       - website/tests/hbp09.test.py
 permissions:
   actions: read
   contents: write
+concurrency:
+  group: hbp09-verify-${{ github.ref }}
+  cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -39,43 +46,48 @@ jobs:
           path: baseline-inputs
           github-token: ${{ github.token }}
           run-id: 35221158448
-      - name: Build native database files without changing any executable code
+      - name: Prepare native data-only source fixture
         run: |
           python - <<'PY'
-          import copy,hashlib,importlib.util,json,pathlib,shutil,zipfile
-          root=pathlib.Path('website');spec=importlib.util.spec_from_file_location('hbp09',root/'scripts/merge-hbp09.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+          import hashlib,pathlib,zipfile,json
           apk=pathlib.Path('baseline-inputs/published-1.1.0.apk')
-          if hashlib.sha256(apk.read_bytes()).hexdigest()!='fe7e54bb60468eba7d27ae97a7f99a528c86d5b618f4ec0e09571f298258b2a5':raise ValueError('Public APK baseline mismatch')
-          delta=m.load(root/'public/hbp09-cards.json');images=m.load(root/'scripts/hbp09-art-manifest.json');art={r['url']:r['path'] for r in images};japanese=m.load(root/'public/hbp09-scanner-ja.json')
-          out=pathlib.Path('hbp09-deliverables');assets=out/'android-assets';report={'baseline':'Hololens 1.1.0 public APK','catalogVersion':m.VERSION,'apkRebuilt':False,'executableCodeModified':False,'images':len(images),'databases':{}}
+          if hashlib.sha256(apk.read_bytes()).hexdigest()!='fe7e54bb60468eba7d27ae97a7f99a528c86d5b618f4ec0e09571f298258b2a5':raise ValueError('APK baseline mismatch')
+          assets=pathlib.Path('hbp09-deliverables/android-assets')
           with zipfile.ZipFile(apk) as z:
-              for rel in ['cards.json','app/offline-cards.json','native/firebase-cards.json']:
-                  old=json.loads(z.read('assets/'+rel));new,stats=m.merge(old,delta,art if rel=='app/offline-cards.json' else None)
-                  again,repeat=m.merge(new,delta,art if rel=='app/offline-cards.json' else None)
-                  if again!=new:raise ValueError('Non-idempotent Android data update')
-                  m.dump(assets/rel,new);report['databases'][rel]=stats
-                  before={c['number']:c for c in old['cards']};after={c['number']:c for c in new['cards']}
-                  for n,c in before.items():
-                      if after[n]['id']!=c['id']:raise ValueError('Android card identity changed')
-              mapping=json.loads(z.read('assets/art-map.json'));mapping.update(art);m.dump(assets/'art-map.json',mapping)
-              scanner=json.loads(z.read('assets/scanner-ja.json'))
-              for n,r in japanese.items():
-                  previous=scanner['cards'].get(n,{})
-                  scanner['cards'][n]={**previous,**{k:list(dict.fromkeys(previous.get(k,[])+r[k])) for k in ['titles','effects']}}
-              scanner.setdefault('meta',{})['hbp09CatalogVersion']=m.VERSION;m.dump(assets/'scanner-ja.json',scanner)
-              report['preservedEngineSha256']={p:hashlib.sha256(z.read(p)).hexdigest() for p in z.namelist() if p.endswith('.dex') or p in ['assets/native/engine.js','assets/native/firebase-rules.js']}
-          for image in images:
-              source=root/'public'/image['path'].lstrip('/');target=assets/image['path'].lstrip('/');target.parent.mkdir(parents=True,exist_ok=True)
-              if hashlib.sha256(source.read_bytes()).hexdigest()!=image['sha256']:raise ValueError('Artwork hash mismatch')
-              shutil.copy2(source,target)
-          m.dump(out/'android-data-verification.json',report)
+              for rel in ['cards.json','app/offline-cards.json','native/firebase-cards.json','art-map.json','scanner-ja.json']:
+                  target=assets/rel;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(z.read('assets/'+rel))
+              engines={p:hashlib.sha256(z.read(p)).hexdigest() for p in z.namelist() if p.endswith('.dex') or p in ['assets/native/engine.js','assets/native/firebase-rules.js']}
+          pathlib.Path('qa-hbp09/original-code-hashes.json').write_text(json.dumps(engines,indent=2))
+          PY
+      - name: Verify native updater dry run, apply and idempotence
+        run: |
+          python website/scripts/sync-hbp09-android-data.py --assets hbp09-deliverables/android-assets > qa-hbp09/native-dry-run.json
+          python website/scripts/sync-hbp09-android-data.py --assets hbp09-deliverables/android-assets --apply > qa-hbp09/native-applied.json
+          python website/scripts/sync-hbp09-android-data.py --assets hbp09-deliverables/android-assets > qa-hbp09/native-repeat.json
+          python - <<'PY'
+          import json,pathlib
+          repeat=json.loads(pathlib.Path('qa-hbp09/native-repeat.json').read_text())
+          if repeat['changedFiles']!=0:raise ValueError('Native update not idempotent')
+          result=json.loads(pathlib.Path('qa-hbp09/native-applied.json').read_text())
+          if result['changedFiles']!=260 or result['executableFilesTouched']!=0:raise ValueError('Unexpected native data scope')
+          PY
+      - name: Package verified website and native data
+        run: |
+          python - <<'PY'
+          import json,pathlib,shutil,hashlib
+          root=pathlib.Path('website');out=pathlib.Path('hbp09-deliverables')
+          for backup in out.glob('hbp09-catalog-backup-*'):shutil.rmtree(backup)
           for rel in ['cards.json','scanner-ja.json','hbp09-cards.json','hbp09-scanner-ja.json']:
               target=out/'website-public'/rel;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(root/'public'/rel,target)
           shutil.copytree(root/'dist-firebase',out/'website-build')
           shutil.copytree('qa-hbp09',out/'verification')
           shutil.copy2(root/'docs/hbp09-import-report.json',out/'verification/hbp09-import-report.json')
-          (out/'README.txt').write_text('hBP09 database update, 2026-09-17\n\n255 official printings; release date 2026-09-19. New effects retain official Japanese originals, not a completed Traditional Chinese translation.\n\nwebsite-build: verified Firebase Hosting production build; NOT yet deployed.\nandroid-assets: DATA FILES ONLY for public Hololens 1.1.0 source app/src/main/assets. No APK is rebuilt or signed. Preserve the existing Java/Kotlin/DEX/native engine and original signing key. For a newer AI Lab source, merge the hBP09 release delta into its existing databases instead of replacing unrelated data.\n\nNo signing key or password is included. New card gameplay effects and real-device operation have not been audited by this database update.\n',encoding='utf-8')
-          print(json.dumps(report,ensure_ascii=False,indent=2))
+          shutil.copytree(root/'scripts',out/'website-source/scripts',ignore=shutil.ignore_patterns('__pycache__'))
+          shutil.copytree(root/'public/card-art',out/'website-source/public/card-art',ignore=lambda d,n:[x for x in n if not x.startswith('hbp09-')])
+          for rel in ['hbp09-cards.json','hbp09-scanner-ja.json']:shutil.copy2(root/'public'/rel,out/'website-source/public'/rel)
+          (out/'README.txt').write_text('hBP09 database update, 2026-09-17\n\n255 official printings; release date 2026-09-19. New effects retain official Japanese originals, not a completed Traditional Chinese translation.\n\nwebsite-build: verified Firebase Hosting production build; NOT yet deployed.\nandroid-assets: DATA FILES ONLY generated from public Hololens 1.1.0. No APK has been rebuilt or signed. No Java/Kotlin/DEX/native engine or user deck data is changed.\n\nFor the CURRENT Android source, use website-source/scripts/sync-hbp09-android-data.py --assets PATH_TO_app/src/main/assets (dry run), then add --apply. This merges the delta with the current data and preserves newer AI work. It creates a backup before writing. Requires Python and beautifulsoup4. Rebuild and sign the current Android source with the existing project build workflow.\n\nNo signing key or password is included. New card gameplay effects and real-device operation have not been audited by this database update.\n',encoding='utf-8')
+          files={str(p.relative_to(out)):hashlib.sha256(p.read_bytes()).hexdigest() for p in out.rglob('*') if p.is_file()}
+          (out/'SHA256.json').write_text(json.dumps(files,indent=2))
           PY
       - name: Commit verified catalog data
         run: |
