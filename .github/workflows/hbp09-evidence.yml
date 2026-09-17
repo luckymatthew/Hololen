@@ -1,0 +1,56 @@
+name: Capture hBP09 official card evidence
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/hbp09-database-20260917]
+    paths: [.github/workflows/hbp09-evidence.yml]
+permissions:
+  contents: read
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Capture all published hBP09 printings
+        run: |
+          python - <<'PY'
+          import concurrent.futures, datetime, hashlib, importlib.util, json, pathlib, re, urllib.request, time
+          out = pathlib.Path('hbp09-evidence'); raw = out / 'raw'; raw.mkdir(parents=True, exist_ok=True)
+          spec = importlib.util.spec_from_file_location('official', 'website/scripts/fetch-official-audit.py')
+          mod = importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
+          def capture(page):
+              url = ('https://hololive-official-cardgame.com/cardlist/cardsearch/?expansion=hBP09&view=text' if page == 1 else f'https://hololive-official-cardgame.com/cardlist/cardsearch_ex?expansion=hBP09&view=text&page={page}')
+              for attempt in range(3):
+                  try:
+                      req = urllib.request.Request(url, headers={'User-Agent': 'Hololens-CardDatabase/1.0 (official-source verification)'})
+                      with urllib.request.urlopen(req, timeout=45) as response: data = response.read()
+                      html = data.decode('utf-8'); rows = mod.extract(html, url)
+                      if not rows: raise ValueError('Empty parsed card page')
+                      (raw / f'{page:03d}.html').write_bytes(data)
+                      return {'page': page, 'url': url, 'sha256': hashlib.sha256(data).hexdigest(), 'cards': rows}
+                  except Exception:
+                      if attempt == 2: raise
+                      time.sleep(2 ** attempt)
+          first = capture(1)
+          html = (raw / '001.html').read_text(encoding='utf-8')
+          m = re.search(r'var\s+max_page\s*=\s*(\d+)', html)
+          if not m: raise ValueError('Cannot identify official pagination')
+          pages = int(m.group(1)); assert 1 <= pages <= 50, pages
+          results = [first]
+          with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
+              results.extend(pool.map(capture, range(2, pages + 1)))
+          rows = [row for result in results for row in result['cards']]
+          payload = {'capturedAt': datetime.datetime.now(datetime.timezone.utc).isoformat(), 'expansion': 'hBP09', 'pages': pages, 'successfulPages': len(results), 'pageEvidence': [{k:v for k,v in r.items() if k != 'cards'} for r in results], 'printings': rows}
+          (out / 'official-snapshot.json').write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding='utf-8')
+          assert len(rows) >= 200, f'Incomplete source: {len(rows)} printings'
+          print(json.dumps({'pages':pages, 'printings':len(rows), 'cardNumbers':len({r['number'] for r in rows})}))
+          PY
+      - name: Package exact website source baseline
+        run: git archive HEAD website mobile/HoloCardScanner/app/src/main/java mobile/HoloCardScanner/app/build.gradle > hbp09-evidence/source-baseline.tar
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hbp09-official-evidence
+          path: hbp09-evidence/
+          retention-days: 14
