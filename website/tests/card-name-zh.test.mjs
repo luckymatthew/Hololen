@@ -64,7 +64,7 @@ test("Summer Hologram contains all 214 official printings and keeps new Koyori m
   const koyoriOshi = releaseCards.find((card) => card.number === "hEB01-003");
   assert.ok(koyoriOshi);
   assert.equal(koyoriOshi.name, "博衣小夜璃");
-  assert.ok(koyoriOshi.colors[0], "黃");
+  assert.equal(koyoriOshi.colors[0], "黃");
   assert.match(koyoriOshi.stageSkill?.name || "", /助手くん/);
   assert.match(koyoriOshi.oshiSkill?.effect || "", /藝能傷害\+30/);
 
