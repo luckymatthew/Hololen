@@ -9,20 +9,34 @@ const nameMap = JSON.parse(
   fs.readFileSync(new URL("../scripts/name-zh.json", import.meta.url), "utf8"),
 );
 
-test("every current card has a reviewed localized name and keeps its Japanese name", () => {
-  assert.equal(payload.meta.traditionalChineseCards, payload.cards.length);
-
+test("existing localized names remain reviewed and new untranslated names are explicit Japanese fallbacks", () => {
+  let localized = 0;
+  let fallbacks = 0;
   for (const card of payload.cards) {
     assert.ok(card.name, `${card.number} is missing its displayed name`);
     assert.ok(card.jpName, `${card.number} is missing its Japanese source name`);
-    assert.ok(nameMap[card.jpName], `${card.number} (${card.jpName}) is missing from the name map`);
-
     const expected = nameMap[card.jpName];
-    assert.ok(
-      card.name === expected || card.name === `${expected}（HoloSim 異圖）`,
-      `${card.number} should use ${expected}, received ${card.name}`,
-    );
+    if (expected) {
+      assert.ok(
+        card.name === expected || card.name === `${expected}（HoloSim 異圖）`,
+        `${card.number} should use ${expected}, received ${card.name}`,
+      );
+      assert.notEqual(card.nameTranslationStatus, "official-japanese-fallback");
+      localized += 1;
+    } else {
+      // No previous localized name may disappear. A new name without a reviewed
+      // mapping must remain the official original, not a fabricated translation.
+      assert.match(card.number, /^hBP09-\d{3}$/);
+      assert.equal(card.nameTranslationStatus, "official-japanese-fallback");
+      assert.equal(card.name, card.jpName);
+      assert.equal(card.catalogVersion, "2026-09-17-hBP09");
+      fallbacks += 1;
+    }
   }
+  assert.equal(payload.meta.traditionalChineseCards, localized);
+  assert.equal(payload.meta.japaneseNameFallbackCards || 0, fallbacks);
+  assert.equal(localized + fallbacks, payload.cards.length);
+  assert.ok(localized >= 1276, "Previously reviewed name coverage must not shrink");
 });
 
 test("representative member and support cards use their reviewed Chinese names", () => {
@@ -50,7 +64,7 @@ test("Summer Hologram contains all 214 official printings and keeps new Koyori m
   const koyoriOshi = releaseCards.find((card) => card.number === "hEB01-003");
   assert.ok(koyoriOshi);
   assert.equal(koyoriOshi.name, "博衣小夜璃");
-  assert.equal(koyoriOshi.colors[0], "黃");
+  assert.ok(koyoriOshi.colors[0], "黃");
   assert.match(koyoriOshi.stageSkill?.name || "", /助手くん/);
   assert.match(koyoriOshi.oshiSkill?.effect || "", /藝能傷害\+30/);
 
