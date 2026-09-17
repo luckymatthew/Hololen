@@ -1,0 +1,19 @@
+{
+  "verifiedAtUtc": "2026-09-17T14:28:13.270777+00:00",
+  "website": "https://hololive-ocg.web.app",
+  "cards": 1392,
+  "printings": 2906,
+  "catalogVersion": "2026-09-17-hBP09",
+  "publicCatalogSha256": "a24c4980de7c42af12ea17fac11a5581bde19a7049c165ca474dcfe87becab21",
+  "publicImageHashesVerified": 255,
+  "indexAndServiceWorkerMatchBuild": true,
+  "apkVersion": "1.2.0",
+  "apkUrl": "https://github.com/luckymatthew/Hololen/releases/download/v1.2.0/HoloLens.apk",
+  "publicApkSha256": "88d48a1b317867953f4d77e21cc9114832be3af4f08e512e820fd1d2bd3d4bfd",
+  "deployedApplicationCommit": "69a17c22cded4704d41ae7169d58d0e818168d6a",
+  "browserDownloadVersion": "v1.2.0",
+  "browserDownloadUrlVerified": true,
+  "browserHbp09CardSearchAndImagePassed": true,
+  "browserNewCardAddReloadRemovePassed": true,
+  "deviceTested": false
+}

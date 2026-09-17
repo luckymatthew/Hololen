@@ -15,8 +15,12 @@
   "productionWebsiteBuildSucceeded": true,
   "nativeDataMergeVerified": true,
   "nativeCrossCatalogCountsMatch": true,
-  "nativeCatalogBaseline": "Public v1.1.0 APK; not the newer AI development APK",
-  "nativeCatalogs": ["cards.json", "app/offline-cards.json", "native/firebase-cards.json"],
+  "nativeCatalogBaseline": "User-confirmed Hololens 1.1.0 source; released as 1.2.0",
+  "nativeCatalogs": [
+    "cards.json",
+    "app/offline-cards.json",
+    "native/firebase-cards.json"
+  ],
   "nativeChangedFiles": 260,
   "nativeExecutableFilesTouched": 0,
   "nativeRepeatedDryRunChanges": 0,
@@ -27,12 +31,20 @@
   "hbp09ReleaseDate": "2026-09-19",
   "japaneseNameFallbackCards": 22,
   "effectTranslation": "official Japanese fallback",
-  "catalogOnlyOshiCards": ["hBP09-001", "hBP09-002", "hBP09-003", "hBP09-004", "hBP09-005", "hBP09-006", "hBP09-007"],
+  "catalogOnlyOshiCards": [
+    "hBP09-001",
+    "hBP09-002",
+    "hBP09-003",
+    "hBP09-004",
+    "hBP09-005",
+    "hBP09-006",
+    "hBP09-007"
+  ],
   "catalogOnlyOshiActivationsRejectedWithoutStateMutation": true,
   "newGameplayEffectsAudited": false,
-  "firebaseDeployed": false,
-  "apkBuilt": false,
-  "apkSigned": false,
+  "firebaseDeployed": true,
+  "apkBuilt": true,
+  "apkSigned": true,
   "deviceTested": false,
   "artifact": {
     "id": 10500900143,
@@ -42,8 +54,14 @@
     "expiresAtUtc": "2026-10-01T13:41:57Z"
   },
   "remainingReleaseSteps": [
-    "Deploy the verified website using the authorized Firebase project environment and verify public cards.json",
-    "Merge data into the CURRENT native source containing intended AI and battle-export updates",
-    "Rebuild and sign with the original key; test an in-place device update before publishing the APK"
-  ]
+    "Physical-device update, camera, Google login and full live deck-sync acceptance remain untested",
+    "New card gameplay effects require a separate card-by-card implementation and audit"
+  ],
+  "apkVersion": "1.2.0",
+  "apkVersionCode": 16,
+  "apkSha256": "88d48a1b317867953f4d77e21cc9114832be3af4f08e512e820fd1d2bd3d4bfd",
+  "liveVerificationFile": "hololens-1.2.0-live-verification.json",
+  "nativePackageVerificationFile": "hololens-1.2.0-verification.json",
+  "releaseVerifiedAtUtc": "2026-09-17T14:28:13.270777+00:00",
+  "nativeExecutableFilesTouchedScope": "Data importer only; the release separately adds catalog-only Oshi guards and atomic profile persistence."
 }
