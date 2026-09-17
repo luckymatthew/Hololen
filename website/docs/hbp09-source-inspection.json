@@ -1,0 +1,229 @@
+{
+  "officialCount": 255,
+  "classes": {
+    "sp arts": "<div class=\"sp arts\"><p>アーツ</p><p><span><img alt=\"◇\" class=\"\" src=\"/wp-content/images/texticon/arts_null.png\">WAZZUP!!　20<span class=\"tokkou\"></span></img></span>\nこのホロメンに赤エールが付いているなら、サイコロを1回振れる。奇数なら、相手のコラボホロメンに特殊ダメージ20を与える。</p></div>",
+    "extra": "<div class=\"extra\"><p>エクストラ</p><p>このホロメンはデッキに何枚でも入れられる</p></div>",
+    "keyword": "<div class=\"keyword\"><p>キーワード</p><p><span><img alt=\"ギフト\" class=\"\" src=\"/wp-content/images/texticon/gift.png\"/>わっしょ～い！　</span>\n相手のターンで、このホロメンがダウンした時、このホロメンのエール1枚を自分の他のホロメンに付け替えられる。</p></div>",
+    "stage skill": "<div class=\"stage skill\"><p>推しステージスキル</p><p><span>秩序を守る署長</span>自分の〈大空スバル〉全員のアーツに必要な白-1。</p></div>",
+    "oshi skill": "<div class=\"oshi skill\"><p>推しスキル</p><p>[ホロパワー:-2]<span>大空警察出動！</span>[ターンに1回]相手のステージのホロメン1人を選ぶ。自分のデッキから、選んだホロメンと同じBloomレベルの〈大空スバル〉1枚をステージに出す。そしてデッキをシャッフルする。</p></div>",
+    "sp skill": "<div class=\"sp skill\"><p>SP推しスキル</p><p>[ホロパワー:-3]<span>ナイヴィヴィ！イケヴィヴィ！カッコヴィヴィ！</span>[ゲームに1回]自分のセンターが2nd〈綺々羅々ヴィヴィ〉なら、お互いの[手札すべてとアーカイブのホロメンとサポートすべて]をデッキに戻してシャッフルする。そしてそれぞれのデッキを7枚引く。</p></div>"
+  },
+  "translationCount": 0,
+  "translationSamples": [],
+  "translationErrors": [],
+  "infoSamples": [
+    {
+      "number": "hBP01-072",
+      "name": "ハコス・ベールズ",
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP09/hBP01-072_C_02.png",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2829&expansion=hBP09&view=text",
+      "info": {
+        "カードタイプ": {
+          "text": "ホロメン",
+          "images": []
+        },
+        "タグ": {
+          "text": "#EN #Promise #ケモミミ",
+          "images": []
+        },
+        "レアリティ": {
+          "text": "C",
+          "images": []
+        },
+        "収録商品": {
+          "text": "ブースターパック「ボリュームヴォルテックス」 【使用可能カード】セレクションカップ",
+          "images": []
+        },
+        "色": {
+          "text": "",
+          "images": [
+            {
+              "class": [],
+              "src": "/wp-content/images/texticon/type_red.png",
+              "alt": "赤"
+            }
+          ]
+        },
+        "HP": {
+          "text": "80",
+          "images": []
+        },
+        "Bloomレベル": {
+          "text": "Debut",
+          "images": []
+        },
+        "バトンタッチ": {
+          "text": "",
+          "images": [
+            {
+              "class": [],
+              "src": "/wp-content/images/texticon/arts_null.png",
+              "alt": "◇"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "number": "hBP01-088",
+      "name": "ムーナ・ホシノヴァ",
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP09/hBP01-088_C_02.png",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2830&expansion=hBP09&view=text",
+      "info": {
+        "カードタイプ": {
+          "text": "ホロメン",
+          "images": []
+        },
+        "タグ": {
+          "text": "#ID #ID1期生 #歌",
+          "images": []
+        },
+        "レアリティ": {
+          "text": "C",
+          "images": []
+        },
+        "収録商品": {
+          "text": "ブースターパック「ボリュームヴォルテックス」 【使用可能カード】セレクションカップ",
+          "images": []
+        },
+        "色": {
+          "text": "",
+          "images": [
+            {
+              "class": [],
+              "src": "/wp-content/images/texticon/type_blue.png",
+              "alt": "青"
+            }
+          ]
+        },
+        "HP": {
+          "text": "90",
+          "images": []
+        },
+        "Bloomレベル": {
+          "text": "Debut",
+          "images": []
+        },
+        "バトンタッチ": {
+          "text": "",
+          "images": [
+            {
+              "class": [],
+              "src": "/wp-content/images/texticon/arts_null.png",
+              "alt": "◇"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "number": "hBP02-014",
+      "name": "白銀ノエル",
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP09/hBP02-014_C_02.png",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2831&expansion=hBP09&view=text",
+      "info": {
+        "カードタイプ": {
+          "text": "ホロメン",
+          "images": []
+        },
+        "タグ": {
+          "text": "#JP #3期生 #お酒",
+          "images": []
+        },
+        "レアリティ": {
+          "text": "C",
+          "images": []
+        },
+        "収録商品": {
+          "text": "ブースターパック「ボリュームヴォルテックス」 【使用可能カード】セレクションカップ",
+          "images": []
+        },
+        "色": {
+          "text": "",
+          "images": [
+            {
+              "class": [],
+              "src": "/wp-content/images/texticon/type_white.png",
+              "alt": "白"
+            }
+          ]
+        },
+        "HP": {
+          "text": "130",
+          "images": []
+        },
+        "Bloomレベル": {
+          "text": "Debut",
+          "images": []
+        },
+        "バトンタッチ": {
+          "text": "",
+          "images": [
+            {
+              "class": [],
+              "src": "/wp-content/images/texticon/arts_null.png",
+              "alt": "◇"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "number": "hBP02-024",
+      "name": "大神ミオ",
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP09/hBP02-024_C_02.png",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2832&expansion=hBP09&view=text",
+      "info": {
+        "カードタイプ": {
+          "text": "ホロメン",
+          "images": []
+        },
+        "タグ": {
+          "text": "#JP #ゲーマーズ #ケモミミ #料理",
+          "images": []
+        },
+        "レアリティ": {
+          "text": "C",
+          "images": []
+        },
+        "収録商品": {
+          "text": "ブースターパック「ボリュームヴォルテックス」 【使用可能カード】セレクションカップ",
+          "images": []
+        },
+        "色": {
+          "text": "",
+          "images": [
+            {
+              "class": [],
+              "src": "/wp-content/images/texticon/type_green.png",
+              "alt": "緑"
+            }
+          ]
+        },
+        "HP": {
+          "text": "90",
+          "images": []
+        },
+        "Bloomレベル": {
+          "text": "Debut",
+          "images": []
+        },
+        "バトンタッチ": {
+          "text": "",
+          "images": [
+            {
+              "class": [],
+              "src": "/wp-content/images/texticon/arts_null.png",
+              "alt": "◇"
+            },
+            {
+              "class": [],
+              "src": "/wp-content/images/texticon/arts_null.png",
+              "alt": "◇"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

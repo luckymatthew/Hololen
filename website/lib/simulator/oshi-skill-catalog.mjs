@@ -1,6 +1,14 @@
 const DEFAULT_OSHI_COST = 2;
 const DEFAULT_SP_COST = 2;
 
+// These cards are available to browse and build decks with, but their engine
+// resolvers are not implemented by the database import. Never assume 2/2 costs
+// or offer an activation that would spend power without resolving an effect.
+export const CATALOG_ONLY_OSHI = Object.freeze([
+  "hBP09-001", "hBP09-002", "hBP09-003", "hBP09-004",
+  "hBP09-005", "hBP09-006", "hBP09-007",
+]);
+
 // Official Holo Power costs that differ from the common 2 / 2 template.
 // Cards without an SP skill simply never ask for the SP value.
 const COST_OVERRIDES = Object.freeze({
@@ -134,6 +142,8 @@ export const OSHI_STAGE_SKILLS = Object.freeze({
 });
 
 export function oshiSkillPowerCost(cardNumber, kind = "oshi") {
+  // null means not registered in the executable catalog, not a zero-cost skill.
+  if (CATALOG_ONLY_OSHI.includes(cardNumber)) return null;
   if (String(cardNumber).startsWith("hYS01-")) return kind === "sp" ? 1 : 2;
   const override = COST_OVERRIDES[cardNumber]?.[kind];
   if (override != null) return override;
@@ -149,6 +159,7 @@ export function isReactiveOshiSkill(cardNumber, kind = "oshi") {
 }
 
 export function isActivatableOshiSkill(cardNumber, kind = "oshi") {
+  if (CATALOG_ONLY_OSHI.includes(cardNumber)) return false;
   if (kind === "oshi") return !isReactiveNormalOshi(cardNumber);
   return String(cardNumber).startsWith("hBD24-") || ACTIVE_SP_OSHI.includes(cardNumber);
 }
@@ -163,6 +174,8 @@ function costTiming(cost, currentTiming = "") {
 
 export function enrichOshiCardMetadata(card) {
   if (!card || card.group !== "oshi") return card;
+  // Official imported fields remain visible even before engine support exists.
+  if (CATALOG_ONLY_OSHI.includes(card.number)) return card;
   const enriched = { ...card };
   if (card.oshiSkill) enriched.oshiSkill = { ...card.oshiSkill, timing: costTiming(oshiSkillPowerCost(card.number, "oshi"), card.oshiSkill.timing) };
   if (card.spOshiSkill) enriched.spOshiSkill = { ...card.spOshiSkill, timing: costTiming(oshiSkillPowerCost(card.number, "sp"), card.spOshiSkill.timing) };

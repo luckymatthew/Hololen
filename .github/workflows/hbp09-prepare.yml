@@ -1,0 +1,38 @@
+name: Prepare hBP09 card database sources
+on:
+  push:
+    branches: [codex/hbp09-database-20260917]
+    paths: [.github/workflows/hbp09-prepare.yml, website/scripts/prepare-hbp09.py]
+permissions:
+  actions: read
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: hbp09-official-evidence
+          path: evidence
+          github-token: ${{ github.token }}
+          run-id: 35220916864
+      - run: python -m pip install beautifulsoup4==4.13.5 json5==0.12.1 pillow==11.3.0
+      - run: python website/scripts/prepare-hbp09.py
+      - name: Commit source snapshots on isolated update branch
+        run: |
+          git config user.name 'Hololens Database Update'
+          git config user.email '108892610+luckymatthew@users.noreply.github.com'
+          git add website/scripts/hbp09-official.json website/scripts/hbp09-source.json website/scripts/hbp09-art-manifest.json website/docs/hbp09-source-inspection.json website/public/card-art/hbp09-*.webp
+          git diff --cached --quiet || git commit -m 'Capture 255 official hBP09 printings, translated text and verified offline artwork'
+          git push origin HEAD:codex/hbp09-database-20260917
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hbp09-offline-media
+          path: |
+            website/public/card-art/hbp09-*.webp
+            website/scripts/hbp09-*.json
+            website/docs/hbp09-source-inspection.json
+          retention-days: 14
