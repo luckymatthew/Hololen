@@ -4,9 +4,9 @@ on:
     branches: [codex/hbp09-database-20260917]
     paths:
       - .github/workflows/hbp09-verify.yml
-      - website/scripts/merge-hbp09.py
-      - website/scripts/sync-hbp09-android-data.py
-      - website/tests/hbp09.test.py
+      - website/scripts/*hbp09*.py
+      - website/tests/**
+      - website/lib/**
 permissions:
   actions: read
   contents: write
@@ -28,25 +28,23 @@ jobs:
           cache: npm
           cache-dependency-path: website/package-lock.json
       - run: python -m pip install beautifulsoup4==4.13.5
-      - name: Import and validate all hBP09 cards
+      - name: Validate official card database
         run: |
           mkdir -p qa-hbp09
           cp website/public/cards.json qa-hbp09/baseline-cards.json
           python website/scripts/merge-hbp09.py
           HBP09_BASELINE="$PWD/qa-hbp09/baseline-cards.json" python website/tests/hbp09.test.py 2>&1 | tee qa-hbp09/database-tests.txt
-      - name: Install website dependencies
+      - run: npm ci
         working-directory: website
-        run: npm ci
-      - name: Website tests, type check and production build
-        working-directory: website
-        run: npm test 2>&1 | tee ../qa-hbp09/website-tests.txt
+      - name: Website regression tests and build
+        run: python website/scripts/hbp09-check-website.py
       - uses: actions/download-artifact@v4
         with:
           name: hbp09-inputs
           path: baseline-inputs
           github-token: ${{ github.token }}
           run-id: 35221158448
-      - name: Prepare native data-only source fixture
+      - name: Prepare original native data fixture
         run: |
           python - <<'PY'
           import hashlib,pathlib,zipfile,json
@@ -55,11 +53,11 @@ jobs:
           assets=pathlib.Path('hbp09-deliverables/android-assets')
           with zipfile.ZipFile(apk) as z:
               for rel in ['cards.json','app/offline-cards.json','native/firebase-cards.json','art-map.json','scanner-ja.json']:
-                  target=assets/rel;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(z.read('assets/'+rel))
-              engines={p:hashlib.sha256(z.read(p)).hexdigest() for p in z.namelist() if p.endswith('.dex') or p in ['assets/native/engine.js','assets/native/firebase-rules.js']}
-          pathlib.Path('qa-hbp09/original-code-hashes.json').write_text(json.dumps(engines,indent=2))
+                  p=assets/rel;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(z.read('assets/'+rel))
+              hashes={p:hashlib.sha256(z.read(p)).hexdigest() for p in z.namelist() if p.endswith('.dex') or p in ['assets/native/engine.js','assets/native/firebase-rules.js']}
+          pathlib.Path('qa-hbp09/original-code-hashes.json').write_text(json.dumps(hashes,indent=2))
           PY
-      - name: Verify native updater dry run, apply and idempotence
+      - name: Verify native merge and repeated-import idempotence
         run: |
           python website/scripts/sync-hbp09-android-data.py --assets hbp09-deliverables/android-assets > qa-hbp09/native-dry-run.json
           python website/scripts/sync-hbp09-android-data.py --assets hbp09-deliverables/android-assets --apply > qa-hbp09/native-applied.json
@@ -67,11 +65,12 @@ jobs:
           python - <<'PY'
           import json,pathlib
           repeat=json.loads(pathlib.Path('qa-hbp09/native-repeat.json').read_text())
-          if repeat['changedFiles']!=0:raise ValueError('Native update not idempotent')
-          result=json.loads(pathlib.Path('qa-hbp09/native-applied.json').read_text())
-          if result['changedFiles']!=260 or result['executableFilesTouched']!=0:raise ValueError('Unexpected native data scope')
+          applied=json.loads(pathlib.Path('qa-hbp09/native-applied.json').read_text())
+          if repeat['changedFiles']!=0:raise ValueError('Native merge not idempotent')
+          if applied['changedFiles']!=260 or applied['executableFilesTouched']!=0:raise ValueError('Unexpected native change scope')
+          print(json.dumps(applied,indent=2));print('Repeated dry run: zero changes')
           PY
-      - name: Package verified website and native data
+      - name: Package validated data, build and audit records
         run: |
           python - <<'PY'
           import json,pathlib,shutil,hashlib
@@ -83,18 +82,19 @@ jobs:
           shutil.copytree('qa-hbp09',out/'verification')
           shutil.copy2(root/'docs/hbp09-import-report.json',out/'verification/hbp09-import-report.json')
           shutil.copytree(root/'scripts',out/'website-source/scripts',ignore=shutil.ignore_patterns('__pycache__'))
-          shutil.copytree(root/'public/card-art',out/'website-source/public/card-art',ignore=lambda d,n:[x for x in n if not x.startswith('hbp09-')])
+          target=out/'website-source/public/card-art';target.mkdir(parents=True)
+          for image in (root/'public/card-art').glob('hbp09-*.webp'):shutil.copy2(image,target/image.name)
           for rel in ['hbp09-cards.json','hbp09-scanner-ja.json']:shutil.copy2(root/'public'/rel,out/'website-source/public'/rel)
-          (out/'README.txt').write_text('hBP09 database update, 2026-09-17\n\n255 official printings; release date 2026-09-19. New effects retain official Japanese originals, not a completed Traditional Chinese translation.\n\nwebsite-build: verified Firebase Hosting production build; NOT yet deployed.\nandroid-assets: DATA FILES ONLY generated from public Hololens 1.1.0. No APK has been rebuilt or signed. No Java/Kotlin/DEX/native engine or user deck data is changed.\n\nFor the CURRENT Android source, use website-source/scripts/sync-hbp09-android-data.py --assets PATH_TO_app/src/main/assets (dry run), then add --apply. This merges the delta with the current data and preserves newer AI work. It creates a backup before writing. Requires Python and beautifulsoup4. Rebuild and sign the current Android source with the existing project build workflow.\n\nNo signing key or password is included. New card gameplay effects and real-device operation have not been audited by this database update.\n',encoding='utf-8')
-          files={str(p.relative_to(out)):hashlib.sha256(p.read_bytes()).hexdigest() for p in out.rglob('*') if p.is_file()}
-          (out/'SHA256.json').write_text(json.dumps(files,indent=2))
+          shutil.copy2(root/'docs/HBP09-UPDATE-HANDOFF.md',out/'README.md')
+          hashes={str(p.relative_to(out)):hashlib.sha256(p.read_bytes()).hexdigest() for p in out.rglob('*') if p.is_file()}
+          (out/'SHA256.json').write_text(json.dumps(hashes,indent=2))
           PY
-      - name: Commit verified catalog data
+      - name: Commit tested catalog outputs to update branch
         run: |
           git config user.name 'Hololens Database Update'
           git config user.email '108892610+luckymatthew@users.noreply.github.com'
           git add website/public/cards.json website/public/scanner-ja.json website/public/hbp09-cards.json website/public/hbp09-scanner-ja.json website/docs/hbp09-import-report.json
-          git diff --cached --quiet || git commit -m 'Add complete hBP09 catalog: 255 printings with preserved deck IDs'
+          git diff --cached --quiet || git commit -m 'Add verified hBP09 card database and source provenance'
           git pull --rebase origin codex/hbp09-database-20260917
           git push origin HEAD:codex/hbp09-database-20260917
       - uses: actions/upload-artifact@v4
