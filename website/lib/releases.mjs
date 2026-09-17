@@ -1,12 +1,12 @@
 export const RELEASE_REPOSITORY = 'luckymatthew/Hololen';
 export const APK_FILENAME = 'HoloLens.apk';
 export const RELEASES_URL = `https://github.com/${RELEASE_REPOSITORY}/releases`;
-export const STABLE_TAG = 'v1.1.0';
+export const STABLE_TAG = 'v1.2.0';
 export const releaseUrl = tag => `${RELEASES_URL}/tag/${encodeURIComponent(tag)}`;
 export const apkUrl = tag => `${RELEASES_URL}/download/${encodeURIComponent(tag)}/${APK_FILENAME}`;
 export const APK_URL = apkUrl(STABLE_TAG);
 // Verified public release: usable even when GitHub metadata is unavailable.
-export const STABLE_METADATA = { version: STABLE_TAG, size: 578584523, date: '2026-09-12T00:00:00Z', preview: false, name: 'Hololens 1.1.0', downloads: 0, notes: '新增卡牌加減張數、牌組刪除與還原及 Google 帳號登入。掃卡候選會保留，按「重新掃描」才清空。已使用原金鑰簽署，可更新舊版。Android 15 或以上、ARM64。真機更新、Google 登入及完整雙向同步仍待實測。' };
+export const STABLE_METADATA = { version: STABLE_TAG, size: 599776366, date: '2026-09-17T00:00:00Z', preview: false, name: 'Hololens 1.2.0 · hBP09', downloads: 0, notes: '新增 hBP09 卡庫及 255 款官方卡圖，現有 1,392 個卡號、2,906 個版本。保留加減卡、牌組刪除／還原、Google 登入及掃描候選保留。已用原金鑰簽署。新卡效果尚未全部實作，七張新推卡技能暫不開放。Android 15 或以上、ARM64；真機更新與登入仍待實測。' };
 export function releaseMetadata(payload) {
   if (!payload || payload.draft || payload.prerelease || !/^v\d+\.\d+\.\d+$/.test(payload.tag_name) || !Array.isArray(payload.assets)) throw new Error('尚未有正式版本');
   const apk = payload.assets.find(asset => asset.name === APK_FILENAME && asset.state === 'uploaded');

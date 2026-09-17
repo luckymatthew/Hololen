@@ -1,0 +1,209 @@
+{
+  "apk": "Hololens-1.2.0.apk",
+  "sha256": "88d48a1b317867953f4d77e21cc9114832be3af4f08e512e820fd1d2bd3d4bfd",
+  "bytes": 599776366,
+  "version": "1.2.0",
+  "versionCode": 16,
+  "package": "com.holocard.pocketlab.preview06",
+  "minSdk": 35,
+  "targetSdk": 36,
+  "debuggable": false,
+  "abi": "arm64-v8a",
+  "unchangedOriginalAssets": 5545,
+  "cards": 1392,
+  "ocrModelsVerified": 29,
+  "zip16KiBAligned": true,
+  "nativeElfMinAlignment": {
+    "lib/arm64-v8a/libc++_shared.so": 16384,
+    "lib/arm64-v8a/libimage_processing_util_jni.so": 16384,
+    "lib/arm64-v8a/libmlkit_google_ocr_pipeline.so": 16384,
+    "lib/arm64-v8a/libopencv_java4.so": 16384,
+    "lib/arm64-v8a/libquickjs-android-wrapper.so": 16384,
+    "lib/arm64-v8a/libsurface_util_jni.so": 16384
+  },
+  "googleCredentialManagerPackaged": true,
+  "signingStatus": "signed",
+  "deviceInstallTested": false,
+  "realGoogleSignInTested": false,
+  "catalogVersion": "2026-09-17-hBP09",
+  "catalogs": {
+    "cards.json": {
+      "cards": 1392,
+      "printings": 2906,
+      "oldCardAndPrintingIdsPreserved": true
+    },
+    "app/offline-cards.json": {
+      "cards": 1392,
+      "printings": 2906,
+      "oldCardAndPrintingIdsPreserved": true
+    },
+    "native/firebase-cards.json": {
+      "cards": 1392,
+      "printings": 2906,
+      "oldCardAndPrintingIdsPreserved": true
+    }
+  },
+  "newArtworkHashesVerified": 255,
+  "changedOriginalAssets": [
+    "assets/dexopt/baseline.prof",
+    "assets/app/offline-cards.json",
+    "assets/art-map.json",
+    "assets/cards.json",
+    "assets/native/engine.js",
+    "assets/native/firebase-cards.json",
+    "assets/native/firebase-rules.js",
+    "assets/native/themes.json",
+    "assets/scanner-ja.json"
+  ],
+  "preExistingEmptyArtworkVariants": [
+    [
+      "hY01-014",
+      "heb01-hY01-014-S-1"
+    ],
+    [
+      "hY02-012",
+      "heb01-hY02-012-S-1"
+    ],
+    [
+      "hY03-016",
+      "heb01-hY03-016-S-1"
+    ],
+    [
+      "hY04-013",
+      "heb01-hY04-013-S-1"
+    ],
+    [
+      "hY05-011",
+      "heb01-hY05-011-S-1"
+    ],
+    [
+      "hY06-011",
+      "heb01-hY06-011-S-1"
+    ]
+  ],
+  "signatureVerified": true,
+  "sameCertificateAsOriginal": true,
+  "certificateSha256": "92a20ef4e5e7a93e96865577fc90978ba085c0723a0145bcda58c848f5b84f4a",
+  "v3SignatureVerified": true,
+  "androidUnitTests": 68,
+  "androidTestSuites": [
+    {
+      "name": "com.holocard.scanner.GalleryFilterTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.holocard.scanner.nativegame.ArchiveTransportTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.holocard.scanner.nativegame.DeckOperationsTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.holocard.scanner.nativegame.DeckSyncTest",
+      "tests": "12",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.holocard.scanner.nativegame.FirebaseCodecTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.holocard.scanner.nativegame.GoogleLoginTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.holocard.scanner.nativegame.NativeFeatureUiTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.holocard.scanner.nativegame.WebsiteDeckApiTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.holocard.scanner.OriginalArtStoreTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.holocard.scanner.PortraitGeometryTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.holocard.scanner.ScanGeometryTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.holocard.scanner.ScannerCandidateStabilityTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.holocard.scanner.ScannerLogicTest",
+      "tests": "15",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  ],
+  "lint": {
+    "debug": {
+      "errors": 0,
+      "warnings": 49
+    },
+    "release": {
+      "errors": 0,
+      "warnings": 49
+    }
+  },
+  "websiteRegressionTests": 2101,
+  "hbp09DatabaseTests": 16,
+  "nativeFocusedTests": 6,
+  "offlineSessionTests": 7,
+  "nativeFirebaseProtocolSmokePassed": true,
+  "allNewCardEffectsImplemented": false,
+  "baseVersionConfirmed": "1.1.0",
+  "changedExistingExecutableSources": [
+    "app/src/main/java/com/holocard/scanner/nativegame/BattleLobby.java",
+    "app/src/main/java/com/holocard/scanner/nativegame/HoloDeckEditor.java",
+    "app/src/main/java/com/holocard/scanner/nativegame/HoloDeckScreen.java",
+    "app/src/main/java/com/holocard/scanner/nativegame/HoloHomeScreen.java",
+    "app/src/main/java/com/holocard/scanner/nativegame/NativeGameActivity.java",
+    "app/src/main/java/com/holocard/scanner/nativegame/NativeStore.java",
+    "web/lib/simulator/engine.mjs",
+    "web/lib/simulator/oshi-skill-catalog.mjs"
+  ]
+}
