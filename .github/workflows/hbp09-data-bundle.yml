@@ -2,7 +2,7 @@ name: Package hBP09 data only - not an application release
 on:
   push:
     branches: [codex/hbp09-database-20260917]
-    paths: [.github/workflows/hbp09-data-bundle.yml]
+    paths: [.github/workflows/hbp09-data-bundle.yml, website/scripts/sync-hbp09-android-data.py]
 permissions:
   actions: read
   contents: write
@@ -28,17 +28,17 @@ jobs:
           path: baseline-inputs
           github-token: ${{ github.token }}
           run-id: 35221158448
-      - name: Extract original public native catalog fixture
+      - name: Extract original native catalog fixture
         run: |
           python - <<'PY'
-          import hashlib,json,pathlib,zipfile
+          import hashlib,pathlib,zipfile
           apk=pathlib.Path('baseline-inputs/published-1.1.0.apk')
           if hashlib.sha256(apk.read_bytes()).hexdigest()!='fe7e54bb60468eba7d27ae97a7f99a528c86d5b618f4ec0e09571f298258b2a5':raise ValueError('Original APK checksum differs')
           with zipfile.ZipFile(apk) as archive:
               for rel in ['cards.json','app/offline-cards.json','native/firebase-cards.json','art-map.json','scanner-ja.json']:
                   p=pathlib.Path('data-bundle/android-assets')/rel;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(archive.read('assets/'+rel))
           PY
-      - name: Apply only native catalog data and artwork
+      - name: Verify native data merge, cross-catalog counts and idempotence
         run: |
           python website/scripts/sync-hbp09-android-data.py --assets data-bundle/android-assets --apply > data-bundle/verification/native-applied.json
           python website/scripts/sync-hbp09-android-data.py --assets data-bundle/android-assets > data-bundle/verification/native-repeat.json
@@ -47,9 +47,11 @@ jobs:
           applied=json.loads(pathlib.Path('data-bundle/verification/native-applied.json').read_text())
           repeat=json.loads(pathlib.Path('data-bundle/verification/native-repeat.json').read_text())
           if applied['executableFilesTouched']!=0 or applied['changedFiles']!=260 or repeat['changedFiles']!=0:raise ValueError('Native data verification failed')
-          print(json.dumps(applied,indent=2));print('Native repeat dry run: 0 changed files')
+          for name,stats in applied['databases'].items():
+              if stats['totalCards']!=1392 or stats['totalPrintings']!=2906:raise ValueError(f'Inconsistent native catalog {name}: {stats}')
+          print(json.dumps(applied,indent=2));print('Repeat dry run: zero changes. All three catalogs have matching counts.')
           PY
-      - name: Package data with explicit incomplete application-release status
+      - name: Package data with incomplete application-release status
         run: |
           python - <<'PY'
           import hashlib,json,pathlib,shutil
@@ -63,20 +65,20 @@ jobs:
           for name in ['hbp09-cards.json','hbp09-scanner-ja.json']:shutil.copy2(web/'public'/name,public/name)
           for p in (web/'public/card-art').glob('hbp09-*.webp'):shutil.copy2(p,public/'card-art'/p.name)
           shutil.copy2(web/'docs/hbp09-import-report.json',out/'verification/import-report.json')
-          status={'dataTestsPassed':16,'nativeDataMergeVerified':True,'websiteApplicationRegression':'FAILED - localization count, fixed Oshi count and missing new Oshi engine resolvers','firebaseDeployed':False,'apkBuilt':False,'apkSigned':False,'effectTranslation':'official Japanese fallback','newGameplayEffectsAudited':False}
+          status={'dataTestsPassed':16,'nativeDataMergeVerified':True,'nativeCrossCatalogCountsMatch':True,'websiteApplicationRegression':'FAILED: localization metadata, fixed Oshi count and missing new Oshi engine resolvers','firebaseDeployed':False,'apkBuilt':False,'apkSigned':False,'effectTranslation':'official Japanese fallback','newGameplayEffectsAudited':False}
           (out/'RELEASE-STATUS.json').write_text(json.dumps(status,indent=2))
-          (out/'README.md').write_text('# hBP09 data update only\n\nThis is NOT a website deployment, production web build or installable APK. Application release checks are still failing. Do not claim this as a completed app release.\n\nThe website-public directory contains merged catalogs. The android-assets directory contains verified DATA ONLY generated from the public 1.1.0 APK; no executable code or user saves are included. For a newer Android source with AI changes, use source/website/scripts/sync-hbp09-android-data.py with --assets pointing to the current app/src/main/assets directory. Run without --apply first, inspect the report, then use --apply to merge with a backup. Requires Python and beautifulsoup4==4.13.5. Do not replace newer AI code with the old repository mobile project.\n\n255 official printings are included. Official release date: 2026-09-19. New effect text is Japanese, not a completed Traditional Chinese translation. Existing reprint translations and card identities are preserved. No signing material is included.\n',encoding='utf-8')
+          (out/'README.md').write_text('# hBP09 data update only\n\nNOT a website deployment, production web build or installable APK. Application release checks are still failing.\n\nwebsite-public contains merged catalogs. android-assets contains verified DATA ONLY generated from public 1.1.0; no executable code or user saves are included. For a newer Android source with AI changes, run source/website/scripts/sync-hbp09-android-data.py --assets PATH_TO_CURRENT_app/src/main/assets first without --apply, then with --apply after inspecting the report. It creates backups and preserves existing offline image aliases. Requires Python and beautifulsoup4==4.13.5. Do not replace newer AI code with the old repository mobile project.\n\n255 official printings are included. Release date: 2026-09-19. New effect text is Japanese, not completed Traditional Chinese translation. No signing material is included.\n',encoding='utf-8')
           hashes={str(p.relative_to(out)):hashlib.sha256(p.read_bytes()).hexdigest() for p in out.rglob('*') if p.is_file()}
           (out/'SHA256.json').write_text(json.dumps(hashes,indent=2))
           shutil.copy2(out/'RELEASE-STATUS.json',web/'docs/hbp09-release-status.json')
           shutil.copy2(out/'verification/native-applied.json',web/'docs/hbp09-native-verification.json')
           PY
-      - name: Commit verified data only on draft update branch
+      - name: Commit verified data only to draft update branch
         run: |
           git config user.name 'Hololens Database Update'
           git config user.email '108892610+luckymatthew@users.noreply.github.com'
           git add website/public/cards.json website/public/scanner-ja.json website/public/hbp09-cards.json website/public/hbp09-scanner-ja.json website/docs/hbp09-import-report.json website/docs/hbp09-release-status.json website/docs/hbp09-native-verification.json
-          git diff --cached --quiet || git commit -m 'Store verified hBP09 web and Android catalog data; application release remains blocked'
+          git diff --cached --quiet || git commit -m 'Verify matching hBP09 website and native offline catalogs; not an application release'
           git pull --rebase origin codex/hbp09-database-20260917
           git push origin HEAD:codex/hbp09-database-20260917
       - uses: actions/upload-artifact@v4
