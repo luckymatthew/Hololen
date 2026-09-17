@@ -1,0 +1,17 @@
+{
+  "provenance": [
+    {
+      "url": "https://www.googletagmanager.com/gtag/js?id=G-3B67TCHDW8",
+      "sha256": "6fd4076f8538d10617bb515680db9935af929559e30ecb215c69885e326068ac"
+    },
+    {
+      "url": "https://static.cloudflareinsights.com/beacon.min.js",
+      "sha256": "08c4fd72f9d96a7aa554510dff2c293973b1b092dff1b9b282bce9111b50ef41"
+    },
+    {
+      "url": "https://tetsunekko.github.io/holotcgtw/assets/index-D3E6mKIB.js",
+      "sha256": "bd225e55cb9b4646766b1c19af0a550a530683f9486240387a8a28d1e890b870"
+    }
+  ],
+  "cards": []
+}
