@@ -1,5 +1,5 @@
-"""Update only JSON catalogs and artwork in an existing native Android source.
-Default is dry-run. --apply creates backups. No executable code or user saves change.
+"""Merge hBP09 JSON and artwork into a current native source, never its code.
+Default is dry-run; --apply writes atomically with a backup and rollback.
 """
 import argparse,hashlib,importlib.util,json,os,pathlib,shutil,tempfile,time
 ROOT=pathlib.Path(__file__).resolve().parent
@@ -12,24 +12,44 @@ def build_updates(assets,public,manifest):
     if len(delta['cards'])!=131 or sum(len(c['variants']) for c in delta['cards'])!=255:raise ValueError('Incomplete release delta')
     if len(manifest)!=255:raise ValueError('Incomplete artwork manifest')
     mapping=merge_module.load(assets/'art-map.json')
-    # Existing remote URLs must retain their old local aliases. Otherwise a
-    # reprint already in the APK is counted twice under different local paths.
-    art={image['url']:mapping.get(image['url'],image['path']) for image in manifest}
+    art={image['url']:image['path'] for image in manifest}
+    originals={rel:merge_module.load(assets/rel) for rel in CATALOGS}
+    offline_by_number={c['number']:c for c in originals['app/offline-cards.json']['cards']}
+    aliases=dict(art)
+    # The old offline catalog and art-map do not necessarily use the same URL
+    # spelling. Pair variants by their stable IDs to recover their EXACT image
+    # value, including legacy aliases, before de-duplicating reprinted images.
+    for remote in originals['cards.json']['cards']:
+        local=offline_by_number.get(remote['number'],{})
+        local_variants={v['id']:v for v in local.get('variants',[])}
+        for variant in remote.get('variants',[]):
+            counterpart=local_variants.get(variant['id'])
+            if variant['image'] in aliases and counterpart:
+                aliases[variant['image']]=counterpart['image']
+    release_by_number={c['number']:c for c in delta['cards']}
+    def merge_one(before,offline):
+        after,stats=merge_module.merge(before,delta,aliases if offline else None)
+        if offline:
+            before_numbers={c['number'] for c in before['cards']}
+            for card in after['cards']:
+                incoming=release_by_number.get(card['number'])
+                if incoming and (card['number'].startswith('hBP09-') or card['number'] not in before_numbers or card.get('catalogVersion')==merge_module.VERSION):
+                    card['image']=art[incoming['image']]
+        return after,stats
     updates={};report={}
-    for rel in CATALOGS:
-        path=assets/rel
-        if not path.is_file():raise ValueError(f'Missing native catalog: {path}')
-        before=merge_module.load(path);after,stats=merge_module.merge(before,delta,art if rel=='app/offline-cards.json' else None)
-        repeated,_=merge_module.merge(after,delta,art if rel=='app/offline-cards.json' else None)
+    for rel,before in originals.items():
+        after,stats=merge_one(before,rel=='app/offline-cards.json')
+        repeated,_=merge_one(after,rel=='app/offline-cards.json')
         if repeated!=after:raise ValueError('Non-idempotent data update')
         before_cards={c['number']:c for c in before['cards']};after_cards={c['number']:c for c in after['cards']}
-        release_numbers={c['number'] for c in delta['cards']}
         for n,old in before_cards.items():
             new=after_cards[n]
             if old['id']!=new['id']:raise ValueError(f'Card identity changed: {n}')
             if not {v['id'] for v in old.get('variants',[])}<={v['id'] for v in new.get('variants',[])}:raise ValueError(f'Printing identity lost: {n}')
-            if n not in release_numbers and old!=new:raise ValueError(f'Unrelated card modified: {n}')
+            if n not in release_by_number and old!=new:raise ValueError(f'Unrelated card modified: {n}')
         updates[rel]=encoded(after);report[rel]=stats
+    # Store new URLs separately from the compatibility aliases used only for
+    # de-duplication; never insert a remote-URL-to-itself mapping.
     mapping.update(art);updates['art-map.json']=encoded(mapping)
     scanner=merge_module.load(assets/'scanner-ja.json')
     for n,row in japanese.items():
