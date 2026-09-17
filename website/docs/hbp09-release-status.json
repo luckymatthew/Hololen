@@ -1,7 +1,8 @@
 {
   "dataTestsPassed": 16,
   "nativeDataMergeVerified": true,
-  "websiteApplicationRegression": "FAILED - localization count, fixed Oshi count and missing new Oshi engine resolvers",
+  "nativeCrossCatalogCountsMatch": true,
+  "websiteApplicationRegression": "FAILED: localization metadata, fixed Oshi count and missing new Oshi engine resolvers",
   "firebaseDeployed": false,
   "apkBuilt": false,
   "apkSigned": false,
