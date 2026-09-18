@@ -1,0 +1,33 @@
+{
+  "version": "hbp09-executable-20260918.1",
+  "workflowRun": 35301951683,
+  "workflowJob": 105466245154,
+  "workflowConclusion": "success",
+  "testedSourceCommit": "621ee54079886483568ce8f3c7c11ba9ed0b6e3f",
+  "originalEngineSha256": "6900365289cd6fd4bd4a5d773c7a87b2e29193ad578d8d197d78cf2eab073fc3",
+  "hbp09StateTransitionTests": {"tests": 53, "pass": 53, "fail": 0, "skipped": 0},
+  "fullRegressionIncludingHbp09": {"tests": 2154, "pass": 2154, "fail": 0, "skipped": 0},
+  "packagedReferenceRetest": {"tests": 53, "pass": 53, "fail": 0, "skipped": 0},
+  "typeScriptCheck": true,
+  "productionBuild": true,
+  "nativeReferenceBundleParityScenarios": 5,
+  "artifact": {
+    "id": 10530272773,
+    "name": "Hololens-hBP09-Executable-Effects",
+    "bytes": 953707,
+    "sha256": "c95e3ba81049d4c0d046aee195230c6ed2c919fb46423bfbcc81572819bcc9c7",
+    "files": 37
+  },
+  "delivery": "Executable rule source, exact-anchor integration installer, reference reducer and reference native bundle; not a new APK",
+  "websiteDeployed": false,
+  "apkBuilt": false,
+  "realDeviceTested": false,
+  "allCrossSetInteractionsAudited": false,
+  "additionalReview": [
+    "Cross-set replacement of Holomen hand-archive costs",
+    "Simultaneous multi-hit and Down-reaction ordering",
+    "Arbitrary ordering of simultaneous performance-end triggers",
+    "Current native app API/global compatibility and choice UI",
+    "Official errata after the pinned card snapshot"
+  ]
+}
