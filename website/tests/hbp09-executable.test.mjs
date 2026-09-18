@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {registerExtraCases} from './hbp09-extra-cases.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {applyAction,publicRoomState} from '../lib/simulator/engine.mjs';
@@ -118,3 +119,4 @@ test('Hajime passive reduces actual received Arts damage by 30',()=>{const s=fix
 test('all effect continuations serialize and resume without closures',()=>{const s=runCollab(10);const encoded=JSON.stringify(s);const restored=JSON.parse(encoded);const out=answer(restored,{cardIds:restored.pendingChoice.selectableIds});assert.equal(out.pendingChoice,null);assert.equal(out.players[0].hand.length,0);});
 test('unknown program instructions fail closed rather than silently claiming success',()=>{const runtime=createHbp09({});const s=fixture();assert.throws(()=>runtime.run(s,runtime.context(s,0,N(1)),[{op:'UNIMPLEMENTED_TEST'}],new Map(),()=>0.5),/Unimplemented/);});
 test('program data are plain JSON and no empty fake resolvers are registered',()=>{const restored=JSON.parse(JSON.stringify(PROGRAMS));assert.ok(Object.keys(restored).length>90);for(const [key,steps]of Object.entries(restored)){assert.ok(Array.isArray(steps)&&steps.length>0,key);}});
+registerExtraCases({test,assert,cards,map,N,instance,unit,fixture,act,answer,settle,support,attack,runCollab,conserve,cheerNumbers});
