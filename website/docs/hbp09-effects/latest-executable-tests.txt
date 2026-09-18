@@ -1,85 +1,18 @@
-  ...
-# Subtest: Makeup extra Bloom at performance-end changes the stack and keeps physical cards
-not ok 46 - Makeup extra Bloom at performance-end changes the stack and keeps physical cards
-  ---
-  duration_ms: 2.215688
-  type: 'test'
-  location: '/home/runner/work/Hololen/Hololen/website/tests/hbp09-extra-cases.mjs:42:3'
-  failureType: 'testCodeFailure'
-  error: |-
-    Expected values to be strictly equal:
-    + actual - expected
-    
-    + undefined
-    - 'hbp09'
-    
-  code: 'ERR_ASSERTION'
-  name: 'AssertionError'
-  expected: 'hbp09'
-  operator: 'strictEqual'
-  stack: |-
-    TestContext.<anonymous> (file:///home/runner/work/Hololen/Hololen/website/tests/hbp09-extra-cases.mjs:45:44)
-    Test.runInAsyncScope (node:async_hooks:214:14)
-    Test.run (node:internal/test_runner/test:1047:25)
-    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
-    Test.postRun (node:internal/test_runner/test:1173:19)
-    Test.run (node:internal/test_runner/test:1101:12)
-    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
-  ...
-# Subtest: Makeup optional extra Bloom can be declined
-not ok 47 - Makeup optional extra Bloom can be declined
-  ---
-  duration_ms: 1.639413
-  type: 'test'
-  location: '/home/runner/work/Hololen/Hololen/website/tests/hbp09-extra-cases.mjs:48:3'
-  failureType: 'testCodeFailure'
-  error: '應援目標無效。 '
-  code: 'ERR_TEST_FAILURE'
-  stack: |-
-    assert (file:///home/runner/work/Hololen/Hololen/website/lib/simulator/engine.mjs:90:25)
-    hbp09Legacy_resolveChoice (file:///home/runner/work/Hololen/Hololen/website/lib/simulator/engine.mjs:6528:5)
-    resolveChoice (file:///home/runner/work/Hololen/Hololen/website/lib/simulator/engine.mjs:10770:18)
-    executeAction (file:///home/runner/work/Hololen/Hololen/website/lib/simulator/engine.mjs:10316:5)
-    runDiceAction (file:///home/runner/work/Hololen/Hololen/website/lib/simulator/dice-actions.mjs:30:16)
-    applyAction (file:///home/runner/work/Hololen/Hololen/website/lib/simulator/engine.mjs:10290:10)
-    act (file:///home/runner/work/Hololen/Hololen/website/tests/hbp09-executable.test.mjs:19:50)
-    answer (file:///home/runner/work/Hololen/Hololen/website/tests/hbp09-executable.test.mjs:20:115)
-    TestContext.<anonymous> (file:///home/runner/work/Hololen/Hololen/website/tests/hbp09-extra-cases.mjs:50:41)
-    Test.runInAsyncScope (node:async_hooks:214:14)
-  ...
-# Subtest: Snow Moon end effect archives the actual tool and draws exactly one
-ok 48 - Snow Moon end effect archives the actual tool and draws exactly one
-  ---
-  duration_ms: 1.534455
-  type: 'test'
-  ...
-# Subtest: Snow Moon does not trigger without an Arts event this turn
-ok 49 - Snow Moon does not trigger without an Arts event this turn
-  ---
-  duration_ms: 3.098895
-  type: 'test'
-  ...
-# Subtest: receiving nonlethal 100 Arts with Subaru011 draws two after damage
-ok 50 - receiving nonlethal 100 Arts with Subaru011 draws two after damage
-  ---
-  duration_ms: 0.775284
-  type: 'test'
-  ...
-  duration_ms: 0.630948
+  duration_ms: 0.617493
   type: 'test'
   ...
 # Subtest: Towa blue cheer gains purple only when Break Mic is on 2nd Towa
 ok 53 - Towa blue cheer gains purple only when Break Mic is on 2nd Towa
   ---
-  duration_ms: 0.83224
+  duration_ms: 0.789317
   type: 'test'
   ...
 1..53
 # tests 53
 # suites 0
-# pass 51
-# fail 2
+# pass 53
+# fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 262.772798
+# duration_ms 298.608349

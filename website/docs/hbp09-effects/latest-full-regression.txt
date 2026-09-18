@@ -2,17 +2,17 @@ rendering chunks...
 computing gzip size...
 dist-firebase/index.html                               0.57 kB │ gzip:   0.40 kB
 dist-firebase/assets/index-BJ4TH_z1.css              175.95 kB │ gzip:  32.72 kB
-dist-firebase/assets/Link-ByxkCJ3b.js                  0.10 kB │ gzip:   0.11 kB
-dist-firebase/assets/ConfirmDialog-BS5t-e1A.js         0.75 kB │ gzip:   0.41 kB
-dist-firebase/assets/ThemeToggle-Ma2rfPos.js           1.64 kB │ gzip:   0.74 kB
-dist-firebase/assets/FoilCardImage-BwyKg5cF.js         2.35 kB │ gzip:   1.34 kB
-dist-firebase/assets/DownloadClient-DlYNVadD.js        4.82 kB │ gzip:   2.32 kB
-dist-firebase/assets/FirebaseAccount-B2ozW-jh.js       9.57 kB │ gzip:   3.99 kB
+dist-firebase/assets/Link-r-6S9ubL.js                  0.10 kB │ gzip:   0.11 kB
+dist-firebase/assets/ConfirmDialog-BJ_Bdowr.js         0.75 kB │ gzip:   0.41 kB
+dist-firebase/assets/ThemeToggle-AdnXsMKF.js           1.64 kB │ gzip:   0.74 kB
+dist-firebase/assets/FoilCardImage-BoJ13HIS.js         2.35 kB │ gzip:   1.34 kB
+dist-firebase/assets/DownloadClient-CYFsYkab.js        4.82 kB │ gzip:   2.32 kB
+dist-firebase/assets/FirebaseAccount-Ck6y3mHs.js       9.57 kB │ gzip:   3.99 kB
 dist-firebase/assets/oshi-skill-catalog-BUYNeKqT.js   10.88 kB │ gzip:   3.78 kB
-dist-firebase/assets/page-VtdiYJjI.js                 35.64 kB │ gzip:  11.85 kB
-dist-firebase/assets/SimulatorClient-DLTgU_wG.js      72.99 kB │ gzip:  22.25 kB
-dist-firebase/assets/TerminologyNote-Ch3LOjb8.js     265.26 kB │ gzip:  27.85 kB
-dist-firebase/assets/pvp-BTEjOahX.js                 583.89 kB │ gzip: 155.22 kB
-dist-firebase/assets/index-BaBJiRxi.js               888.11 kB │ gzip: 267.21 kB
+dist-firebase/assets/page-RDNXh7wg.js                 35.64 kB │ gzip:  11.85 kB
+dist-firebase/assets/SimulatorClient-Csl2dPL3.js      72.99 kB │ gzip:  22.25 kB
+dist-firebase/assets/TerminologyNote-DO9ozWeW.js     265.26 kB │ gzip:  27.85 kB
+dist-firebase/assets/pvp-B8q8NARd.js                 584.07 kB │ gzip: 155.29 kB
+dist-firebase/assets/index-D0nukPNA.js               888.11 kB │ gzip: 267.20 kB
 
-[32m✓ built in 991ms[39m
+[32m✓ built in 1.03s[39m
