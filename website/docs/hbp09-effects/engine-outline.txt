@@ -1,0 +1,256 @@
+5: const STAGE_SLOTS = ["center", "collab", "back1", "back2", "back3", "back4", "back5"];
+6: const BACK_SLOTS = STAGE_SLOTS.filter((slot) => slot.startsWith("back"));
+7: const ORDINARY_COMPUTER = "hBP01-104";
+8: const AUTOMATED_EVENT_CARDS = new Set(["hEB01-030", "hBP03-088", "hBP05-080", "hBP06-089", "hBP06-090", "hBP06-093"]);
+9: const ASSISTANT_CARD = "hBP04-105";
+10: const KOYORI_OSHI = "hEB01-003";
+12: function clone(value) {
+16: function countCards(section) {
+20: function catalogMap(cards, state = null) {
+26: function secureRandom() {
+31: function shuffle(input, random = secureRandom) {
+40: function makeInstances(section, owner, printings = {}) {
+56: function emptyZones() {
+60: function unit(card, turn = 0) {
+77: function topCard(stageUnit) {
+81: function removeById(list, id) {
+87: function assert(condition, message) {
+91: function snapshotCardRefs(cardRefs = []) {
+99: function appendLog(state, message, cardRefs = [], options = {}) {
+111: function normalizeLegacyState(state) {
+168: export function validateBattleDeck(deck, cards) {
+213: export function createLobbyState(name, deck) {
+230: export function joinLobby(stateInput, name, deck) {
+240: function materializePlayer(player, owner, cards, random) {
+285: function initializeGame(state, cards, random) {
+294: function hasDebutInHand(player, map) {
+298: function redrawOpeningHand(state, playerIndex, map, random) {
+323: function setupStage(state, playerIndex, action, map, random) {
+367: function stageUnitCount(player) {
+371: function emptyBackSlots(player) {
+375: function talentMatches(left, right) {
+380: function legalBloomStage(playedCard, current) {
+383: function fastForwardBloomTargets(player, card, map, turn) {
+390: function bloomTargets(player, playedCard, map, turn) {
+412: function queuePlay(state, playerIndex, cardInstance, card, map) {
+427: function normalizeCardName(value) {
+431: function treatedAsHolomemNames(card) {
+438: function cardAliases(card) {
+444: function cardHasTag(card, tag) {
+448: function cardHasName(card, name) {
+453: function cardIsBuzz(card) {
+457: function cardIsUnlimitedDebut(card) {
+461: const SKILL_COLOR_WORDS = Object.freeze([
+470: function skillColor(text) {
+474: function oshiPowerCost(skill, cardNumber = "", kind = "oshi") {
+486: function canPayReactiveOshi(state, playerIndex, kind, map) {
+495: function payReactiveOshi(state, playerIndex, kind, map) {
+509: function stageHasAnyCheerColor(player, color, map) {
+513: function addMatchingStageModifiers(state, playerIndex, map, rule, amount, sourceNumber, kind = "arts", expiresTurn = state.turn) {
+520: function queueDeckAttachmentToStage(state, playerIndex, rule, targetRule, map, random, label, { optional = true } = {}) {
+543: function unitCard(stageUnit, map) {
+554: function effectiveCheerColors(player, stageUnit, cheer, map) {
+563: function stageCheerColors(player, stageUnit, map) {
+567: function stageMatchesRule(stageUnit, zone, rule, map, player = null) {
+593: function stageOptionsMatching(player, map, rule = {}) {
+597: function activeModifiers(stageUnit, kind, turn) {
+601: function addStageModifier(stageUnit, kind, amount, expiresTurn, sourceNumber, extra = {}) {
+607: function addPlayerModifier(player, kind, amount, expiresTurn, sourceNumber, rule = {}) {
+612: function matchingPlayerModifierBonus(player, kind, stageUnit, zone, map, turn) {
+619: function usedNamedThisTurn(player, key, turn) {
+623: function markNamedUsage(player, key, turn) {
+628: function currentTurnEvents(player, turn) {
+633: function wasKnockedOutDuringPreviousOpponentTurn(state, ownerIndex, name = "") {
+641: function isKoyoriCard(card) {
+645: function cardCodes(cards) {
+649: function stageEntries(player) {
+653: function assistantCount(player) {
+657: function totalCheer(player) {
+661: function stageZoneByTopId(player, cardId) {
+665: function stageMaximumHp(player, zone, map) {
+670: function stageRemainingHp(player, zone, map) {
+674: function revealCount(player) {
+678: function stageHasTag(player, tag, map) {
+682: function drawCards(state, playerIndex, amount) {
+693: function healStageUnit(state, playerIndex, zone, amount, map, sourceIsOwn = true) {
+707: function attachCheerCards(state, stageUnit, cheers) {
+720: function enqueueEffect(state, effect) {
+732: function queueDamageTriggers(state, callback) {
+738: function resolveDamageKnockout(state, ownerIndex, zone, map, sourcePlayerIndex, options, artEvidence = null) {
+751: function enqueueCardSelection(state, { playerIndex, cards, selectableIds, min = 1, max = 1, prompt, effect, optional = false, source = "", meta = {} }) {
+757: function enqueueStageTarget(state, { playerIndex, targetPlayerIndex = playerIndex, options, rule = {}, prompt, effect, optional = false, meta = {} }) {
+761: function stageCheerOptions(player, map, rule = {}) {
+771: function enqueueStageCheerSelection(state, { playerIndex, ownerIndex = playerIndex, options, rule = {}, min = 1, max = 1, prompt, effect, optional = false, meta = {} }) {
+775: function stageAttachmentOptions(player, map, predicate = () => true) {
+779: function enqueueStageAttachmentSelection(state, { playerIndex, ownerIndex = playerIndex, options, prompt, effect, optional = false, meta = {} }) {
+783: function enqueueOptionChoice(state, { playerIndex, options, prompt, effect, optional = false, meta = {} }) {
+787: function enqueueArchiveCheerToTarget(state, playerIndex, { min = 1, max = 1, targetRule = {}, targetZone = "", prompt = "從存檔區選擇要附加的應援。", optional = false, effect = "archiveCheerToStage", meta = {} } = {}, map) {
+805: function queueFrontierCheer(state, playerIndex, remaining, map) {
+809: function enqueueHandToDestination(state, playerIndex, { min = 1, max = 1, effect = "handToBottom", prompt, optional = false, selectableIds, meta = {} }) {
+819: function canReplaceHandArchive(state, playerIndex, card, map) {
+826: function enqueueHolomemHandArchive(state, selection, card, map) {
+852: function payHandArchive(state, playerIndex, pending, selected, skipped, map) {
+882: function rollDieRaw(random, state = null, playerIndex = null, count = 1, sourceCard = null) {
+899: function interactiveDice(random, state, playerIndex, count, sourceCard) {
+944: function rollDie(random, state = null, playerIndex = null, count = 1, sourceCard = null) {
+948: function logDie(state, playerIndex, result, label = "擲骰") {
+952: function shionRerollUseCount(player, turn) {
+956: function shionRerollUseLimit(player, map) {
+965: function canUseShionReroll(state, playerIndex, map) {
+972: function payShionReroll(state, playerIndex, map) {
+985: function resolveShionAbilityDie(state, playerIndex, meta, map, random) {
+999: function rollShionAbilityDie(state, playerIndex, meta, map, random, allowReroll = true) {
+1017: function resolveHaatoDie(state, playerIndex, meta, map) {
+1028: function rollHaatoDie(state, playerIndex, meta, map, random) {
+1040: function rollDice(random, state, playerIndex, count, sourceCard, label = "擲骰") {
+1046: const TEXT_NUMBERS = Object.freeze({ 一: 1, 二: 2, 兩: 2, 三: 3, 四: 4, 五: 5, 六: 6, 七: 7, 八: 8, 九: 9 });
+1048: function textNumber(value) {
+1052: const KNOWN_EFFECT_TAGS = Object.freeze([
+1059: const EFFECT_TAG_PATTERN = new RegExp(KNOWN_EFFECT_TAGS.map((tag) => tag.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&")).sort((left, right) => right.length - left.length).join("|"), "gu");
+1061: function effectTags(text) {
+1066: function firstEffectTag(text) {
+1070: function simpleKeywordCondition(state, playerIndex, zone, text, map, random, sourceCard = null) {
+1151: function simpleSearchRule(text) {
+1180: function simpleTargetRule(text) {
+1198: function queueGenericTopLook(state, playerIndex, text, map, required = false, ruleOverride = null) {
+1231: function cheerTargetRuleFromText(text, sourceZone = "") {
+1269: function queueCheerDeckSearch(state, playerIndex, text, sourceZone, map, random, { topCount = 0, optional = true, targetRuleOverride = null, colorsOverride = null } = {}) {
+1301: function queueArchiveSupportAttachment(state, playerIndex, text, sourceZone, map) {
+1311: function keywordCostRule(text) {
+1332: function resolveGenericKeywordRemainder(state, playerIndex, meta, map, random, paidCount = 1) {
+1492: function queueGenericKeywordCostEffects(state, playerIndex, zone, card, map, context = {}) {
+1573: function completeGenericCheerMove(state, playerIndex, meta, map) {
+1592: function queueGenericStageCheerMove(state, playerIndex, zone, card, text, map) {
+1625: function queueGenericStageAttachmentMove(state, playerIndex, zone, card, text, map) {
+1635: function queueSimpleTriggeredKeyword(state, playerIndex, zone, card, map, random, { skipBuff = false, conditionChecked = false } = {}) {
+2200: function queueBloomEffects(state, playerIndex, zone, card, map, random) {
+2497: function queueAttachmentBloomEffects(state, playerIndex, zone, map) {
+2524: function queueBotanCheerPayment(state, playerIndex, sourceZone, card, map) {
+2540: function resolveBotanCheerPayment(state, playerIndex, option, meta, map) {
+2571: function queueCollabMoveGift(state, playerIndex, map) {
+2576: function queueCollabEffects(state, playerIndex, card, map, random) {
+2896: function queueStageGiftCollabEffects(state, playerIndex, collabCard, map) {
+2916: function queuePerformanceStartGiftEffects(state, playerIndex, map) {
+3005: function queueStageEntryGiftEffects(state, playerIndex, enteredZone, enteredCard, map) {
+3017: function queueGiftOshiSkillEffects(state, playerIndex, skill, kind, map) {
+3037: function opponentAbilityLifeLossBlocked(state, ownerIndex, sourcePlayerIndex) {
+3042: function queueFlowGlowArchivedCards(state, playerIndex, sourceCard, archived, map) {
+3045: function queueHsd11SpOshiTrigger(state, playerIndex, archivedCount, map) {
+3056: function queueHbp01Oshi008Trigger(state, playerIndex, sourceZone, map) {
+3075: function triggerCheerArchivedGift(state, playerIndex, map, amount = 1) {
+3088: function queueStageReturnGiftEffects(state, playerIndex, returnedCards, map) {
+3106: function queueAttachmentCollabEffects(state, playerIndex, map) {
+3134: function queueDrawingStreamArchive(state, playerIndex, map) {
+3140: function attachmentTargets(player, attachment, map) {
+3158: function queueAttachment(state, playerIndex, cardInstance, card, map) {
+3165: function queueAssistantCheerMove(state, playerIndex, targetZone) {
+3181: function queueAttachmentEntryEffects(state, playerIndex, targetZone, attachment, map, random, source = "hand") {
+3214: function isAttachment(card) {
+3218: function commitSupport(state, playerIndex, cardInstance, card) {
+3233: function cardMatchesRule(card, rule, player, map) {
+3262: function queueBottomOrder(state, playerIndex, cards, prompt = "按次序選擇；第 1 張會最先放到牌庫底。") {
+3266: function queueTopLookGroup(state, playerIndex, cards, groups, map) {
+3292: function playTopLookSupport(state, playerIndex, cardInstance, card, rule, map) {
+3321: function queueDeckSearch(state, playerIndex, rule, map, random, label) {
+3329: function queueDeckCardsToStage(state, playerIndex, rule, map, random, { min = 1, max = 1, optional = true, label = "牌庫登場效果", afterEffect = "", afterMeta = {} } = {}) {
+3355: function queueArchiveCardsToStage(state, playerIndex, rule, map, { min = 1, max = 1, optional = true, label = "存檔區登場效果", afterEffect = "", afterMeta = {} } = {}) {
+3373: function queueDeckToHand(state, playerIndex, rule, map, random, { min = 1, max = 1, optional = true, label = "牌庫搜尋", effect = "deckToHandShuffle", meta = {} } = {}) {
+3396: function queueGroupedDeckToHand(state, playerIndex, groups, map, random, label = "分組牌庫搜尋") {
+3412: function queueArchiveToHand(state, playerIndex, rule, map, { min = 1, max = 1, optional = true, label = "存檔區回收", effect = "archiveToHand", meta = {} } = {}) {
+3431: function allStageCardsMatch(player, map, predicate) {
+3436: function commitNamedSupport(state, playerIndex, cardInstance, card, key = card.number) {
+3444: function playDeckSearchSupport(state, playerIndex, cardInstance, card, rule, map, random) {
+3470: function playSimpleSupport(state, playerIndex, cardInstance, card, effect, map, random) {
+3510: function playAutomatedEvent(state, playerIndex, cardInstance, card, map, random) {
+3577: function playExtendedSupport(state, playerIndex, cardInstance, card, effect, map, random) {
+3713: function playExtendedSupportPartTwo(state, playerIndex, cardInstance, card, effect, map, random) {
+3849: function playExtendedSupportPartThree(state, playerIndex, cardInstance, card, effect, map, random) {
+3937: function playFromHand(state, playerIndex, action, map, random) {
+3998: function resolveChoice(state, playerIndex, action, map, random) {
+6542: function stageOptions(player) {
+6546: function drawAndQueueCheer(state, playerIndex) {
+6568: function centerReplacementOptions(player) {
+6573: function returnCollabToBack(player, map) {
+6587: function beginTurn(state, playerIndex, map) {
+6630: function startNextTurn(state, map) {
+6637: function startFollowingTurn(state, playerIndex, map) {
+6648: function completeEndStep(state, playerIndex, map) {
+6661: function resolveEndOshiStageSkills(state, playerIndex, map) {
+6689: function finishTurn(state, playerIndex, map) {
+6733: function advancePhase(state, playerIndex, map) {
+6753: function collab(state, playerIndex, action, map, random) {
+6780: function cheerCanPay(attached, cost, map) {
+6798: function attachmentVirtualCheerColors(stageUnit, map, player) {
+6809: function cheerCanPayForUnit(stageUnit, cost, map, player) {
+6817: function jacketProtectsHp(state, target, owner, sourcePlayer, map) {
+6820: function attachmentDamageAdjustment(stageUnit, map, zone, player, opponent, kind = "arts", state = null) {
+6842: function attachmentSpecialDamageBonus(stageUnit, map, zone, targetZone) {
+6852: function attachmentBlocks(card) {
+6856: function attachmentBlockApplies(block, stageUnit, zone, map, player, opponent = null) {
+6887: function sumBonuses(text, pattern) {
+6891: function attachmentHpBonus(stageUnit, map, zone = "", player = null) {
+6901: function giftText(stageUnit, map) {
+6906: function giftZoneApplies(text, zone) {
+6914: function stageHasNamedAttachment(stageUnit, map, names) {
+6918: function holomemHpBonus(stageUnit, map, zone = "", player = null) {
+6939: function giftArtsBonus(state, playerIndex, sourceZone, map) {
+6962: function giftDamageAdjustment(state, targetPlayerIndex, targetZone, sourcePlayerIndex, sourceZone, kind, map) {
+6998: function giftSpecialDamageBonus(state, playerIndex, sourceZone, targetZone, map, sourceCardNumber = "") {
+7010: function giftAllowsBackAttack(player, source, target, targetZone, map) {
+7017: function defenderForcesCollabTarget(player, map) {
+7028: function attachmentArtsBonus(stageUnit, map, turn, zone = "", player = null, opponent = null) {
+7055: function effectiveArtCost(stageUnit, art, state, player, zone, map) {
+7133: function effectiveBatonCost(state, playerIndex, stageUnit, zone, map) {
+7147: function resolveKoyoriArtEffects(state, playerIndex, sourceZone, artIndex, map, random) {
+7197: function stageAttachmentCount(player, map, predicate = () => true) {
+7201: function stageCheerColorCount(player, map, color = "") {
+7205: function artConditionApplies(state, playerIndex, sourceZone, targetZone, text, map) {
+7301: function rollArtDie(state, playerIndex, sourceCard, random, label = "因 Arts 擲骰") {
+7307: function queueFixedSpecialDamage(state, playerIndex, sourceZone, zones, amount, sourceName, loseLife = true) {
+7315: function resolveDiceArtEffects(state, playerIndex, sourceZone, artIndex, card, art, map, random) {
+7382: function adjustQueuedArtsDamage(state, playerIndex, sourceZone, amount) {
+7390: function queueArtHandArchiveCost(state, playerIndex, sourceZone, card, map, { min = 1, max = 1, fixedBonus = 0, perBonus = 0, prompt, afterEffect = "", afterMeta = {} } = {}) {
+7395: function queueArtCheerArchiveCost(state, playerIndex, sourceZone, options, { optional = true, min = 1, max = 1, perBonus = 0, fixedBonus = 0, prompt, afterEffect = "", afterMeta = {} } = {}) {
+7401: function queueGenericArtCostEffects(state, playerIndex, sourceZone, artIndex, card, map) {
+7522: function completeArtCheerCost(state, playerIndex, meta, map, random) {
+7535: function resolveGenericArtEffects(state, playerIndex, sourceZone, artIndex, targetZone, map, random, artCardOverride = null) {
+8578: function queueAttachmentArtEffects(state, playerIndex, sourceZone, map, random) {
+8599: function archiveUnit(player, stageUnit) {
+8603: function lunaiteArchiveReplacement(state, ownerIndex, sourceZone, attachment, map) {
+8614: function queueLunaiteArchiveReplacements(state, ownerIndex, defeatedZone, defeated, map, pendingEffects) {
+8624: function queueKnockoutAttachmentEffects(state, ownerIndex, defeated, defeatedCard, map, sourcePlayerIndex, options, pendingEffects) {
+8691: function queueOshiKnockoutEffects(state, ownerIndex, defeated, defeatedCard, map, sourcePlayerIndex, options, pendingEffects) {
+8733: function giftKnockoutLifeReduction(state, ownerIndex, defeatedZone, defeated, defeatedCard, map) {
+8744: function queueGiftKnockoutEffects(state, ownerIndex, defeated, defeatedCard, map, sourcePlayerIndex, options, pendingEffects) {
+8842: function finishGame(state, winnerIndex) {
+8852: function queueExtraLifeLoss(state, ownerIndex, sourcePlayerIndex, map, sourceName) {
+8867: function defeatedCardPool(player) {
+8870: function takeDefeatedCard(player, id) {
+8880: function knockOutUnit(state, ownerIndex, zone, map, sourcePlayerIndex, options = {}) {
+8910: function finishKnockoutLife(state, ownerIndex, zone, map, sourcePlayerIndex, options, context) {
+8972: function applySpecialDamage(state, playerIndex, targetPlayerIndex, targetZone, amount, map, options = {}) {
+8995: function simultaneousDamageEffects(state, effect) {
+9000: function prepareOshiDamageReaction(state, effect, map) {
+9039: function prepareGiftDamageReaction(state, effect, map) {
+9072: function archiveShionFansBeforeDamage(state, ownerIndex, target, damage) {
+9079: function prepareAttachmentDamageReaction(state, effect, map) {
+9101: function queueAttachmentDamagedTriggers(state, targetPlayerIndex, targetZone, sourcePlayerIndex, damage, map) {
+9125: function queueGiftDamagedTriggers(state, targetPlayerIndex, targetZone, sourcePlayerIndex, damage, kind, map, sourceCardNumber = "") {
+9147: function queueGiftDamageDealtTriggers(state, playerIndex, sourceZone, targetPlayerIndex, targetZone, damage, kind, map, sourceCardNumber = "") {
+9169: function queueOshiAfterArtsDamage(state, sourcePlayerIndex, sourceZone, targetPlayerIndex, targetZone, damage, map) {
+9184: function queueOshiAfterSpecialDamage(state, sourcePlayerIndex, sourceZone, targetPlayerIndex, targetZone, damage, map) {
+9191: function queueGiftArtUseEffects(state, playerIndex, sourceZone, sourceCard, map) {
+9220: function queueArtKnockoutEffects(state, effect, targetCard, damage, remainingHpBefore, map, random) {
+9261: function attack(state, playerIndex, action, map, random) {
+9360: function batonPass(state, playerIndex, action, map) {
+9389: function resolveNormalOshiSkill(state, playerIndex, oshiCard, map, random) {
+9646: function resolveSpOshiSkill(state, playerIndex, oshiCard, map, random) {
+9896: function activateOshiSkill(state, playerIndex, map, random, kind = "oshi") {
+9921: function activateAttachmentSkill(state, playerIndex, action, map) {
+9947: function activateGiftSkill(state, playerIndex, action, map, random) {
+10008: function drainEffectQueue(state, map, random = secureRandom) {
+10280: export function applyAction(stateInput, playerIndex, action, cards, random = secureRandom) {
+10284: function executeAction(stateInput, playerIndex, action, cards, random, diceRun) {
+10330: function publicUnit(stageUnit, hidden = false) {
+10338: function publicPlayer(player, own, status) {
+10369: export function publicRoomState(state, viewerIndex) {
