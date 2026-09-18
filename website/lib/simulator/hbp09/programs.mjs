@@ -37,7 +37,10 @@ const archiveCheer=(rule={},max=1,same=false,extra={})=>pick({area:'archive',rul
   target(rule,'destination',[{op:'attach',cards:R('energies'),target:R('destination')}],extra)
 ]:[{op:'forEach',items:R('energies'),key:'energyItem',then:[target(rule,'destination',[{op:'attach',cards:R('energyItem'),target:R('destination')}],extra)]}],1,max);
 const deploy=(rule,max=1,area='mainDeck')=>[pick({area,rule},'deployPick',[{op:'deploy',cards:R('deployPick')}],0,max,{search:area==='mainDeck'}),...(area==='mainDeck'?[{op:'shuffle',area}]:[])];
-const attachFrom=(area,rule,targetRule,source=false)=>[pick({area,rule},'attachmentPick',source?[{op:'attach',cards:R('attachmentPick'),target:S}]:[target(targetRule,'attachmentTarget',[{op:'attach',cards:R('attachmentPick'),target:R('attachmentTarget')}])],...(area==='mainDeck'?[{op:'shuffle',area}]:[])];
+const attachFrom=(area,rule,targetRule,source=false)=>{
+  const steps=source?[{op:'attach',cards:R('attachmentPick'),target:S}]:[target(targetRule,'attachmentTarget',[{op:'attach',cards:R('attachmentPick'),target:R('attachmentTarget')}])];
+  return [pick({area,rule},'attachmentPick',steps),...(area==='mainDeck'?[{op:'shuffle',area}]:[])];
+};
 export const PROGRAMS={
   '001:oshi':[target({},'opponentLevel',[],{owner:'opponent'}),{op:'sameLevelSubaru'}],
   '002:oshi':[{op:'hajimeX'}],
@@ -111,14 +114,26 @@ export const PROGRAMS={
   '075:art0':[yes(own('ネリッサ・レイヴンクロフト'),[draw(1),pick({area:'hand'},'handPower',[move(R('handPower'),'holoPower')])])],
   '076:keyword':[cost({area:'holoPower'},1,3,[move(R('paid'),'archive'),buff(stage({tags:['#歌']}),O('mul',{numberOfSelected:'paid'},30))])],
   '077:keyword':[{op:'roll',key:'die'},yes(O('eq',{var:'die'},6),[buff(S,20)]),yes(O('eq',{var:'die'},1),[{op:'rest',target:S}])],
-  '078:keyword':[onFirst([draw(3),pick({area:'hand'},'firstDiscard',[{op:'set',key:'isSake',value:F('selectedMatches',{ref:'firstDiscard',rule:sake})},move(R('firstDiscard'),'archive'),yes(O('not',{var:'isSake'}),[pick({area:'hand'},'secondDiscard',[move(R('secondDiscard'),'archive')])])])],
+  '078:keyword':[onFirst([
+    draw(3),
+    pick({area:'hand'},'firstDiscard',[
+      {op:'set',key:'isSake',value:F('selectedMatches',{ref:'firstDiscard',rule:sake})},
+      move(R('firstDiscard'),'archive'),
+      yes(O('not',{var:'isSake'}),[pick({area:'hand'},'secondDiscard',[move(R('secondDiscard'),'archive')])])
+    ])
+  ])],
   '079:keyword':[look(5,sake)],
   '079:art0':[yes(atleast(count('attachments',{group:'support'}),1),[draw(1)])],
   '080:keyword':[archiveCheer({tags:['#お酒']})],
   '081:art0':[cost({area:'cheer',sourceOnly:true},2,2,[move(R('paid'),'archive'),special(40,{notDebut:true})])],
   '082:keyword':[yes(atleast(count('archive',sake),1),[topCheer({names:['雪花ラミィ']})])],
   '084:keyword':[cost({area:'hand',rule:matsuriLimited},1,1,[move(R('paid'),'archive'),...deploy({names:['夏色まつり'],stages:['Debut']},2)])],
-  '085:keyword':[yes(own('夏色まつり'),[cost({area:'archive',rule:matsuriLimited},1,1,[move(R('paid'),'deckBottom'),target({names:['夏色まつり']},'matsuri',[buff(R('matsuri'),30)])])],
+  '085:keyword':[yes(own('夏色まつり'),[
+    cost({area:'archive',rule:matsuriLimited},1,1,[
+      move(R('paid'),'deckBottom'),
+      target({names:['夏色まつり']},'matsuri',[buff(R('matsuri'),30)])
+    ])
+  ])],
   '086:keyword':[yes(own('夏色まつり'),[look(5,matsuriLimited)])],
   '087:keyword':[yes(O('and',own('夏色まつり'),F('oshiColor',{color:'黃'}),F('allMatsuri'),atleast(F('power'),1)),[{op:'chooseOption',key:'limitedPay',options:[{id:'yes',label:'支付頂部1 Holo Power'},{id:'no',label:'不支付'}],then:[yes(O('eq',{var:'limitedPay'},'yes'),[{op:'archiveTopPower',amount:1},{op:'limited',amount:2}])]}])],
   '088:art0':[{op:'distinctArchiveCheer',rule:{tags:['#5期生']},max:2}],

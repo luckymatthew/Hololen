@@ -41,7 +41,11 @@ def patch(root):
     ot=one(ot,'const COST_OVERRIDES = Object.freeze({','const COST_OVERRIDES = Object.freeze({\n  "hBP09-002": { oshi: "X" },\n  "hBP09-006": { sp: 3 },')
     ot=one(ot,'export const REACTIVE_NORMAL_OSHI = Object.freeze([','export const REACTIVE_NORMAL_OSHI = Object.freeze([\n  "hBP09-005",')
     ot=one(ot,'export const ACTIVE_SP_OSHI = Object.freeze([','export const ACTIVE_SP_OSHI = Object.freeze([\n  "hBP09-006",')
-    outputs={engine:text,oshi:ot}
+    catalog=root/'lib/simulator/effect-catalog.mjs'
+    ct=catalog.read_text(encoding='utf-8')
+    registrations=''.join(f'  \"hBP09-{n:03}\": \"hbp09-program-{n:03}\",\n' for n in range(90,106)).replace('\\n','\n').replace('\\\"','\"')
+    ct=one(ct,'export const EXTENDED_SUPPORT_EFFECTS = Object.freeze({','export const EXTENDED_SUPPORT_EFFECTS = Object.freeze({\n'+registrations)
+    outputs={engine:text,oshi:ot,catalog:ct}
     # Runtime corrections are kept in this installer to remain reproducible from
     # the pinned module source. The final packaged module is the corrected result.
     runtime=root/'lib/simulator/hbp09/runtime.mjs';rt=runtime.read_text(encoding='utf-8')

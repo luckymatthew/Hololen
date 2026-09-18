@@ -143,7 +143,8 @@ export function createHbp09(host) {
     if(n===50)bonus+=20*stageName('大空スバル');
     if(n===64&&q.hand.length>=4)bonus+=20;
     if(n===70)bonus+=q.hand.length>=10?100:q.hand.length>=7?70:0;
-    if(n===74&&['1st','2nd'].includes(metadata(q.zones[targetZone],map)?.stage))bonus+=50;
+    if(n===72&&p.hbp09ArchiveBloomTurn===state.turn)bonus+=30;
+    if(n===74&&(['1st','2nd'].includes(metadata(q.zones[targetZone],map)?.stage)||q.zones[targetZone]?.hbp09Stage?.expiresTurn===state.turn))bonus+=50;
     if(n===83){const die=host.rollDie(random,state,i,1,card);bonus+=die===6?100:die===1?-100:0;}
     if(n===87&&p.archive.filter(r=>/limited/i.test(map.get(r.number)?.typeCode||'')).length>=5)bonus+=60;
     const steps=program(card.number,`art${index}`);if(steps)rt.enqueue(state,c,steps);
