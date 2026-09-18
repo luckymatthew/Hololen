@@ -1,0 +1,4 @@
+[
+{"path":"website/tests/hbp09-executable.test.mjs","old":"import test from 'node:test';","new":"import test from 'node:test';\nimport {registerExtraCases} from './hbp09-extra-cases.mjs';"},
+{"path":"website/tests/hbp09-executable.test.mjs","old":"test('program data are plain JSON and no empty fake resolvers are registered',()=>{const restored=JSON.parse(JSON.stringify(PROGRAMS));assert.ok(Object.keys(restored).length>90);for(const [key,steps]of Object.entries(restored)){assert.ok(Array.isArray(steps)&&steps.length>0,key);}});","new":"test('program data are plain JSON and no empty fake resolvers are registered',()=>{const restored=JSON.parse(JSON.stringify(PROGRAMS));assert.ok(Object.keys(restored).length>90);for(const [key,steps]of Object.entries(restored)){assert.ok(Array.isArray(steps)&&steps.length>0,key);}});\nregisterExtraCases({test,assert,cards,map,N,instance,unit,fixture,act,answer,settle,support,attack,runCollab,conserve,cheerNumbers});"}
+]
