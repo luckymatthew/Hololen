@@ -112,7 +112,7 @@ export const PROGRAMS={
   '072:keyword':[yes(F('archiveBloom'),[once('dance-macabre',[draw(2)])])],
   '074:keyword':recover({tags:['#Advent'],group:'holomem',stages:['Debut','1st']},1,true),
   '075:art0':[yes(own('ネリッサ・レイヴンクロフト'),[draw(1),pick({area:'hand'},'handPower',[move(R('handPower'),'holoPower')])])],
-  '076:keyword':[cost({area:'holoPower'},1,3,[move(R('paid'),'archive'),buff(stage({tags:['#歌']}),O('mul',{numberOfSelected:'paid'},30))])],
+  '076:keyword':[{op:'payPower',min:1,max:3,optional:true,key:'powerPaid',then:[buff(stage({tags:['#歌']}),O('mul',{var:'powerPaid'},30))]}],
   '077:keyword':[{op:'roll',key:'die'},yes(O('eq',{var:'die'},6),[buff(S,20)]),yes(O('eq',{var:'die'},1),[{op:'rest',target:S}])],
   '078:keyword':[onFirst([
     draw(3),
@@ -139,7 +139,7 @@ export const PROGRAMS={
   '088:art0':[{op:'distinctArchiveCheer',rule:{tags:['#5期生']},max:2}],
   '089:keyword':[yes(F('threeIdColors'),[target({tags:['#ID1期生']},'idBoost',[buff(R('idBoost'),30)])])],
   '089:art0':[yes(O('or',F('oshiColor',{color:'綠'}),F('oshiColor',{color:'藍'}),F('oshiColor',{color:'黃'})),[topCheer({tags:['#ID1期生']})])],
-  '090:support':[pick({area:'holoPower'},'powerCost',[move(R('powerCost'),'archive'),{op:'commitSupport'},...search({group:'holomem',keyword:'collab',names:['$oshi']})],1,1,{cost:true})],
+  '090:support':[{op:'archiveTopPower',amount:1},{op:'commitSupport'},...search({group:'holomem',keyword:'collab',names:['$oshi']})],
   '091:support':[{op:'commitSupport'},...deploy({names:['AZKi'],stages:['1st']}),...deploy({names:['風真いろは'],stages:['1st']})],
   '092:support':[{op:'commitSupport'},draw(2),draw(2,'opponent'),yes(atleast(F('handOpponent'),7),[buff(stage({names:['綺々羅々ヴィヴィ']}),30)])],
   '093:support':[{op:'commitSupport'},pick({area:'cheer'},'energies',[{op:'forEach',items:R('energies'),key:'energyItem',then:[target({},'destination',[{op:'attach',cards:R('energyItem'),target:R('destination')}])]}],1,2),yes(atleast(count('stage',{}, {hasCheer:true}),4),[archiveCheer()])],

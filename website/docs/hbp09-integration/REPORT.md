@@ -1,5 +1,7 @@
 # hBP09 integration — 2026-09-18
 
+**Historical report.** See [2026-09-19 continuation](CONTINUATION-20260919.md) for current source, rule fixes, Android build/device/signing evidence and remaining release gates.
+
 Status: **implementation and host validation completed to the available-source boundary; production Definition of Done NOT complete.** No website deployment or signed APK was produced in this run.
 
 ## Sources

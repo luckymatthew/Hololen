@@ -19,7 +19,7 @@ const rules = card => {
   return values;
 };
 
-test("111 numbered cards and all 168 nonempty effect fields are explicitly translated", () => {
+test("111 numbered cards and all 169 nonempty effect fields are explicitly translated", () => {
   const numbers = Array.from({length:111}, (_,i) => `hBP09-${String(i+1).padStart(3,"0")}`);
   assert.deepEqual(Object.keys(hbp09Translations.cards).sort(), numbers);
   let count = 0;
@@ -34,7 +34,7 @@ test("111 numbered cards and all 168 nonempty effect fields are explicitly trans
       count++;
     }
   }
-  assert.equal(count, 168);
+  assert.equal(count, 169);
 });
 
 for (const [number, entry] of Object.entries(hbp09Translations.cards)) {

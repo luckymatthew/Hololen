@@ -17,6 +17,19 @@ export function createHbp09(host) {
   }
   function customOp(state,c,o,steps,map,random) {
     const p=state.players[c.playerIndex];const source=rt.sourceUnit(state,c);
+    if(o.op==='payPower'){
+      const max=Math.min(o.max,p.holoPower.length);
+      if(max<o.min)return true;
+      steps.unshift({op:'chooseOption',key:o.key,optional:!!o.optional,
+        options:Array.from({length:max-o.min+1},(_,n)=>({id:String(n+o.min),label:`存檔 ${n+o.min} Holo Power`})),
+        then:[{op:'commitPower',min:o.min,max:o.max,key:o.key,then:o.then}]});return true;
+    }
+    if(o.op==='commitPower'){
+      const amount=Number(c.vars[o.key]);
+      assert(Number.isInteger(amount)&&amount>=o.min&&amount<=o.max&&amount<=p.holoPower.length,'Holo Power payment changed');
+      p.archive.push(...p.holoPower.splice(-amount).reverse());c.vars[o.key]=amount;
+      steps.unshift(...o.then);return true;
+    }
     if(o.op==='commitSupport'){
       const instance=p.hand.find(x=>x.id===c.cardId);assert(instance&&instance.number===c.sourceNumber,'Support no longer in hand');
       host.commitSupport(state,c.playerIndex,instance,map.get(instance.number));
@@ -109,9 +122,16 @@ export function createHbp09(host) {
       if(state.effectQueue.some(e=>e.type!=='hbp09FinishTurn')){rt.enqueue(state,c,[o]);return true;}
       const triggers=c.vars.endTriggers||[];
       if(!triggers.length)return true;
-      if(triggers.length===1){const effect=triggers[0];rt.enqueue(state,effect.context,effect.steps);c.vars.endTriggers=[];return true;}
-      steps.unshift({op:'chooseOption',key:'endTriggerId',options:triggers.map((t,index)=>({id:String(index),label:`${t.context.sourceNumber} · ${t.context.sourceZone||'推し'}`})),then:[{op:'resolveEndTrigger'}]});return true;
+      const owner=triggers.some(t=>t.context.playerIndex===state.activePlayer)?state.activePlayer:1-state.activePlayer;
+      const eligible=triggers.map((t,index)=>({t,index})).filter(({t})=>t.context.playerIndex===owner);
+      if(eligible.length===1){
+        const [effect]=triggers.splice(eligible[0].index,1);rt.enqueue(state,effect.context,effect.steps);
+        if(triggers.length)rt.enqueue(state,c,[o]);return true;
+      }
+      c.playerIndex=owner;
+      steps.unshift({op:'chooseOption',key:'endTriggerId',options:eligible.map(({t,index})=>({id:String(index),label:`${t.context.sourceNumber} · ${t.context.sourceZone||'推し'}`})),then:[{op:'resolveEndTrigger'}]});return true;
     }
+    if(o.op==='legacyEndEffect'){host.enqueueEffect(state,o.effect);return true;}
     if(o.op==='resolveEndTrigger'){
       const index=Number(c.vars.endTriggerId),triggers=c.vars.endTriggers;
       assert(Number.isInteger(index)&&index>=0&&index<triggers.length,'Invalid end trigger');
@@ -241,6 +261,9 @@ export function createHbp09(host) {
     const centerUnit=p.zones.center;
     if(named(centerUnit,'綺々羅々ヴィヴィ',map)&&['1st','2nd'].includes(metadata(centerUnit,map)?.stage)&&centerUnit.attachments.some(r=>r.number==='hBP09-109'))add('hBP09-109','center',[{op:'makeup'}]);
     for(const {zone,unit}of entries(p))if(named(unit,'雪花ラミィ',map)&&unit.lastArtsTurn===state.turn&&unit.attachments.some(r=>r.number==='hBP09-110'))add('hBP09-110',zone,[pick({area:'attachments',sourceOnly:true,rule:{numbers:['hBP09-110']}},'snowMoon',[move(R('snowMoon'),'archive'),draw(1)])]);
+    for(const effect of host.performanceEndEffects?.(state,i,map)||[]){
+      triggers.push({context:rt.context(state,effect.playerIndex,effect.sourceCardNumber,effect.sourceZone||'',{event:'performanceEnd'}),steps:[{op:'legacyEndEffect',effect}]});
+    }
     if(triggers.length){
       const c=rt.context(state,i,p.oshi.number,'',{event:'performanceEndOrder',vars:{endTriggers:triggers}});
       rt.enqueue(state,c,[{op:'orderEndTriggers'}]);

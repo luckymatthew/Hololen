@@ -176,11 +176,14 @@ export function createRuntime(host) {
         continue;
       }
       if(o.op==='buff'||o.op==='heal'||o.op==='damage'||o.op==='rest'||o.op==='treatStage') {
+        // All targets of one instruction share the same damage event. Legacy
+        // reactive Oshi skills must be able to reduce every hit in that event.
+        const damageBatchId=o.op==='damage'?`hbp09:${state.turn}:${c.sourceId}:${state.hbp09DamageSequence=(state.hbp09DamageSequence||0)+1}`:undefined;
         for(const ref of targetRefs(state,c,o.target,map)){
           const t=locate(state,ref);if(!t?.unit)continue;
           if(o.op==='buff') { host.addStageModifier(t.unit,o.kind||'arts',n(o.amount),state.turn+Number(o.duration||0),c.sourceNumber); if ((o.kind||'arts')==='arts' && state.artsResolution?.phase==='ability' && t.owner===c.playerIndex) host.adjustQueuedArtsDamage(state,c.playerIndex,t.zone,n(o.amount)); }
           if(o.op==='heal')host.healStageUnit(state,t.owner,t.zone,Math.max(0,n(o.amount)),map,true);
-          if(o.op==='damage')host.enqueueEffect(state,{type:'specialDamage',playerIndex:c.playerIndex,targetPlayerIndex:t.owner,targetZone:t.zone,amount:Math.max(0,n(o.amount)),sourceZone:c.sourceZone,sourceCardNumber:c.sourceNumber,sourceName:c.sourceNumber});
+          if(o.op==='damage')host.enqueueEffect(state,{type:'specialDamage',damageBatchId,playerIndex:c.playerIndex,targetPlayerIndex:t.owner,targetZone:t.zone,amount:Math.max(0,n(o.amount)),sourceZone:c.sourceZone,sourceCardNumber:c.sourceNumber,sourceName:c.sourceNumber});
           if(o.op==='rest'){t.unit.rested=true;if(o.skipReset)t.unit.skipUnrestTurn=state.turn+1;}
           if(o.op==='treatStage'){t.unit.hbp09Stage={stage:o.stage,expiresTurn:state.turn};}
         }

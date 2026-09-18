@@ -81,9 +81,8 @@ test('second-player first turn can search exactly the eligible tools',()=>{
 test('support activation restrictions are enforced before consumption',()=>{
  for(const n of [91,92,94,95,99,101,102,103,105]){const s=fixture(4,38);const c=instance(N(n));s.players[0].hand.push(c);const before=structuredClone(s);assert.throws(()=>act(s,{type:'play',cardId:c.id}),String(n));assert.deepEqual(s,before);}
 });
-test('support 090 pays chosen power before revealing matching Collab holomem',()=>{
- const s=fixture(6,64);s.players[0].mainDeck.unshift(instance(N(65)));let out=support(s,90);
- assert.equal(out.players[0].archive.length,0);const paid=out.pendingChoice.cards[0].id;out=answer(out,{cardIds:[paid]});
+test('support 090 pays topmost power without looking before revealing matching Collab holomem',()=>{
+ const s=fixture(6,64);s.players[0].mainDeck.unshift(instance(N(65)));const paid=s.players[0].holoPower.at(-1).id;let out=support(s,90);
  assert.equal(out.players[0].holoPower.length,9);assert.ok(out.players[0].archive.some(c=>c.id===paid));assert.equal(out.pendingChoice.cards[0].number,N(65));
  out=answer(out,{cardIds:[out.pendingChoice.cards[0].id]});assert.ok(out.players[0].hand.some(c=>c.number===N(65)));conserve(s,out);
 });

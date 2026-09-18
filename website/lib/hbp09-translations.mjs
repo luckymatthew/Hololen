@@ -3,12 +3,12 @@
 // Gameplay still uses canonical card numbers, Japanese rules and raw tags.
 export const hbp09Translations = {
   "meta": {
-    "version": "2026-09-18-hBP09-zhHant-1",
+    "version": "2026-09-19-hBP09-zhHant-2",
     "sourceCatalogVersion": "2026-09-17-hBP09",
     "sourceCommit": "3aaaa392f3906fee00c49f92f01b7e03232d8639",
     "scope": "hBP09-001..hBP09-111",
     "cardCount": 111,
-    "effectFieldCount": 168,
+    "effectFieldCount": 169,
     "translationStatus": "AI translation from supplied official-Japanese snapshot; not official or human-approved",
     "displayOnly": true,
     "changesGameplay": false
@@ -3222,6 +3222,11 @@ export const hbp09Translations = {
           "path": "abilityText",
           "original": "自分のステージの〈白銀ノエル〉1人を選ぶ。このターンの間、選んだホロメンのアーツ+10。さらに、選んだホロメンがBuzzホロメンか2ndホロメンなら、そのホロメンのHP50回復。",
           "translation": "選擇自己舞台上的1位〈白銀諾艾爾〉。本回合中，所選成員的藝能傷害增加10。若所選成員是Buzz成員或2nd成員，再回復該成員50點HP。"
+        },
+        {
+          "path": "extra",
+          "original": "このイベントは〈牛丼〉としても扱う",
+          "translation": "此事件亦視為〈牛丼〉。"
         }
       ]
     },

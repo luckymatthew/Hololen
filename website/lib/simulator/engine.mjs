@@ -6689,6 +6689,25 @@ function resolveEndOshiStageSkills(state, playerIndex, map) {
   }
 }
 
+function performanceEndEffects(state, playerIndex, map) {
+  const player=state.players[playerIndex], defenderIndex=1-playerIndex, defender=state.players[defenderIndex], effects=[];
+  for(const sourceZone of ["center","collab"]){
+    const source=player.zones[sourceZone], card=unitCard(source,map);
+    if(source&&card?.stage==="2nd"&&isKoyoriCard(card)&&source.attachments.some(a=>a.number==="hEB01-034"))
+      effects.push({type:"endToolDamage",playerIndex,sourceZone,sourceCardNumber:"hEB01-034",sourceId:topCard(source).id});
+  }
+  for(const {zone,unit:source} of stageEntries(defender)){
+    const card=unitCard(source,map);if(!giftZoneApplies(giftText(source,map),zone))continue;
+    if(card?.number==="hBP03-083"&&(state.lifeLosses||[]).some(e=>e.turn===state.turn&&e.phase==="performance"&&e.ownerIndex===defenderIndex)){
+      const cheers=defender.archive.filter(c=>map.get(c.number)?.group==="cheer");
+      if(cheers.length)effects.push({type:"cardSelection",playerIndex:defenderIndex,sourceZone:zone,sourceCardNumber:card.number,cards:clone(cheers),selectableIds:cheers.map(c=>c.id),min:0,max:1,prompt:"なんちゅーこった：可揀存檔區 1 張應援，附加到 Gift 來源。",effect:"archiveCheerToStage",source:"archive",optional:true,meta:{targetZone:zone,targetRule:{zones:[zone]}}});
+    }
+    if(card?.number==="hBP05-055"&&!source.damage&&defender.cheerDeck.length)
+      effects.push({type:"eventCheerTarget",playerIndex:defenderIndex,sourceZone:zone,sourceCardNumber:card.number,targetRule:{names:["癒月ちょこ"]},optional:true,prompt:"睡過頭惡魔：可直接按自己 1 位癒月ちょこ，附加應援牌庫頂 1 張。"});
+  }
+  return effects;
+}
+
 function hbp09Legacy_finishTurn(state, playerIndex, map) {
   const player = state.players[playerIndex];
   const endedPerformance = state.phase === "performance";
@@ -6705,13 +6724,13 @@ function hbp09Legacy_finishTurn(state, playerIndex, map) {
       const stageUnit = player.zones[zone];
       return stageUnit && Number(stageUnit.lastArtsTurn || 0) === state.turn && cardHasTag(unitCard(stageUnit, map), "#FLOW GLOW") && stageUnit.attachments.some((instance) => instance.number === "hSD10-013");
     });
-    const toolTriggers = ["center", "collab"].filter((zone) => {
+    const toolTriggers = (player.hbp09EndProcessedTurn===state.turn?[]:["center", "collab"]).filter((zone) => {
       const stageUnit = player.zones[zone];
       const card = map.get(topCard(stageUnit)?.number);
       return stageUnit && card?.stage === "2nd" && isKoyoriCard(card) && stageUnit.attachments?.some((instance) => instance.number === "hEB01-034");
     });
     const defenderGiftTriggers = [];
-    for (const { zone, unit: giftUnit } of stageEntries(defender)) {
+    for (const { zone, unit: giftUnit } of (player.hbp09EndProcessedTurn===state.turn?[]:stageEntries(defender))) {
       const giftCard = unitCard(giftUnit, map);
       if (!giftZoneApplies(giftText(giftUnit, map), zone)) continue;
       if (giftCard?.number === "hBP03-083" && (state.lifeLosses || []).some((entry) => entry.turn === state.turn && entry.phase === "performance" && entry.ownerIndex === defenderIndex)) {
@@ -10261,7 +10280,7 @@ function drainEffectQueue(state, map, random = secureRandom) {
       const options = [effect.sourceZone].filter((zone) => {
         const stageUnit = player.zones[zone];
         const card = map.get(topCard(stageUnit)?.number);
-        return stageUnit && card?.stage === "2nd" && isKoyoriCard(card) && stageUnit.attachments?.some((instance) => instance.number === "hEB01-034");
+        return stageUnit && (!effect.sourceId || topCard(stageUnit)?.id===effect.sourceId) && card?.stage === "2nd" && isKoyoriCard(card) && stageUnit.attachments?.some((instance) => instance.number === "hEB01-034");
       });
       if (options.length === 0) continue;
       state.pendingChoice = { type: "endToolDamage", playerIndex: effect.playerIndex, options, optional: true, prompt: "可將「萬事爆解！」放到存檔區，給對手中央 Holomen 30 點特殊傷害。" };
@@ -10718,7 +10737,7 @@ const HBP09 = createHbp09({
   attachmentTargets, attachCheerCards, queueAttachmentEntryEffects, unit,
   queueStageEntryGiftEffects, queueStageReturnGiftEffects, adjustQueuedArtsDamage,
   queueExtraLifeLoss, queueGiftOshiSkillEffects, commitSupport, currentTurnEvents,
-  queueBloomEffects, queueAttachmentBloomEffects,
+  queueBloomEffects, queueAttachmentBloomEffects, performanceEndEffects,
 });
 function queueBloomEffects(state, playerIndex, zone, card, map, random) {
   const moved = topCard(state.players[playerIndex].zones[zone]);

@@ -35,8 +35,8 @@ export function registerExtraCases({test,assert,cards,map,N,instance,unit,fixtur
     const s=fixture(6,74);let out=play(s,N(76));out=answer(out,{zone:'center'});assert.equal(out.pendingChoice.optional,true);
     const power=out.players[0].holoPower.length;out=answer(out,{skip:true});assert.equal(out.players[0].holoPower.length,power);assert.equal(out.players[0].zones.center.modifiers.length,0);
   });
-  test('Nerissa optional Bloom cost pays selected three power and buffs all Song members',()=>{
-    const s=fixture(6,74);s.players[0].zones.back1=unit(N(53));let out=play(s,N(76));out=answer(out,{zone:'center'});out=answer(out,{cardIds:out.pendingChoice.cards.slice(0,3).map(c=>c.id)});
+  test('Nerissa optional Bloom cost pays top three power and buffs all Song members',()=>{
+    const s=fixture(6,74);s.players[0].zones.back1=unit(N(53));let out=play(s,N(76));out=answer(out,{zone:'center'});out=answer(out,{optionId:'3'});
     assert.equal(out.players[0].holoPower.length,7);assert.equal(out.players[0].zones.center.modifiers[0].amount,90);assert.equal(out.players[0].zones.back1.modifiers[0].amount,90);
   });
   test('Makeup extra Bloom at performance-end changes the stack and keeps physical cards',()=>{
