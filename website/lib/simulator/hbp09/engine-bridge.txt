@@ -159,4 +159,15 @@ function healStageUnit(state, playerIndex, zone, amount, map, sourceIsOwn = true
   }
   return hbp09Legacy_healStageUnit(state, playerIndex, zone, amount, map, sourceIsOwn);
 }
+function cardHasTag(card, tag) {
+  if (hbp09Legacy_cardHasTag(card, tag)) return true;
+  // The old importer split on whitespace and stored '#FLOW', 'GLOW'.
+  // Join continuation tokens, never combine two separate # tags.
+  const tags = [];
+  for (const token of card?.tags || []) {
+    if (String(token).startsWith('#') || !tags.length) tags.push(String(token));
+    else tags[tags.length - 1] += ' ' + token;
+  }
+  return tags.some(value => normalizeCardName(value) === normalizeCardName(tag));
+}
 // END HBP09 EXECUTABLE BRIDGE v1
