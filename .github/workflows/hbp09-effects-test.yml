@@ -1,0 +1,43 @@
+name: Test executable hBP09 effects
+on:
+  push:
+    branches: [codex/hbp09-executable-effects-20260918]
+    paths:
+      - .github/workflows/hbp09-effects-test.yml
+      - website/lib/simulator/hbp09/**
+      - website/scripts/apply-hbp09-effects.py
+      - website/tests/hbp09-executable.test.mjs
+permissions:
+  contents: read
+concurrency:
+  group: hbp09-effects-tests
+  cancel-in-progress: true
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax check executable modules
+        run: |
+          for file in website/lib/simulator/hbp09/*.mjs; do node --check "$file"; done
+      - name: Apply integration and test
+        run: |
+          mkdir -p hbp09-results
+          if [ -f website/scripts/apply-hbp09-effects.py ]; then
+            python website/scripts/apply-hbp09-effects.py --apply > hbp09-results/integration.json
+            node --check website/lib/simulator/engine.mjs
+          fi
+          if [ -f website/tests/hbp09-executable.test.mjs ]; then
+            cd website
+            node --test tests/hbp09-executable.test.mjs > ../hbp09-results/executable-tests.txt 2>&1 || { cat ../hbp09-results/executable-tests.txt; exit 1; }
+            tail -15 ../hbp09-results/executable-tests.txt
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hbp09-executable-test-records
+          path: hbp09-results/
