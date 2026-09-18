@@ -6,76 +6,101 @@ on:
       - .github/workflows/hbp09-effects-test.yml
       - website/lib/simulator/hbp09/**
       - website/scripts/apply-hbp09-effects.py
+      - website/scripts/package-hbp09-effects.py
       - website/scripts/hbp09-edits/**
-      - website/tests/hbp09-executable.test.mjs
+      - website/tests/hbp09*.mjs
 permissions:
   contents: write
 concurrency:
   group: hbp09-effects-tests
   cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Apply audited source corrections
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+      - name: Apply reviewed exact source corrections
         run: |
+          mkdir -p hbp09-results
           python - <<'PY'
           import pathlib,json
           for file in sorted(pathlib.Path('website/scripts/hbp09-edits').glob('*.json')):
             for edit in json.loads(file.read_text()):
               path=pathlib.Path(edit['path'])
-              if not str(path).startswith('website/'):raise ValueError('Bad edit path')
+              if not str(path).startswith('website/') or '..' in path.parts:raise ValueError('Bad edit path')
               text=path.read_text();old=edit['old'];new=edit['new']
-              if old in text:
-                if text.count(old)!=1:raise ValueError('Nonunique edit: '+str(file))
-                path.write_text(text.replace(old,new,1))
-              elif new not in text:raise ValueError('Source drift: '+str(file))
+              if new in text:continue
+              if text.count(old)!=1:raise ValueError('Source drift: '+str(file)+' '+old[:100])
+              path.write_text(text.replace(old,new,1))
           PY
       - name: Syntax check executable modules
         run: |
           for file in website/lib/simulator/hbp09/*.mjs; do node --check "$file"; done
-      - name: Commit source corrections only
+          python -m py_compile website/scripts/apply-hbp09-effects.py
+      - name: Commit reviewed source corrections
         run: |
           git config user.name 'Hololens Effects'
           git config user.email '108892610+luckymatthew@users.noreply.github.com'
-          git add website/lib/simulator/hbp09 website/scripts/apply-hbp09-effects.py website/tests/hbp09-executable.test.mjs
+          git add website/lib/simulator/hbp09 website/scripts/apply-hbp09-effects.py website/tests/hbp09*.mjs
           if ! git diff --cached --quiet; then
-            git commit -m 'Apply verified hBP09 source corrections'
+            git commit -m 'Apply reviewed hBP09 source corrections'
             git pull --rebase origin codex/hbp09-executable-effects-20260918
             git push origin HEAD:codex/hbp09-executable-effects-20260918
           fi
-      - name: Apply integration and test
+      - name: Apply exact reducer integration
         run: |
-          mkdir -p hbp09-results
-          if [ -f website/scripts/apply-hbp09-effects.py ]; then
-            python website/scripts/apply-hbp09-effects.py --apply > hbp09-results/integration.json
-            node --check website/lib/simulator/engine.mjs
-          fi
-          if [ -f website/tests/hbp09-executable.test.mjs ]; then
-            cd website
-            node --test tests/hbp09-executable.test.mjs > ../hbp09-results/executable-tests.txt 2>&1 || { cat ../hbp09-results/executable-tests.txt; exit 1; }
-            tail -15 ../hbp09-results/executable-tests.txt
-          fi
-      - name: Retain concise failure evidence in work branch
+          python website/scripts/apply-hbp09-effects.py --apply > hbp09-results/integration.json 2> hbp09-results/integration-error.txt || { cat hbp09-results/integration-error.txt; exit 1; }
+          node --check website/lib/simulator/engine.mjs
+          node --check website/lib/simulator/effect-catalog.mjs
+          python website/scripts/apply-hbp09-effects.py --apply > hbp09-results/integration-repeat.json
+      - name: Real hBP09 reducer tests
+        run: |
+          cd website
+          node --test tests/hbp09-executable.test.mjs > ../hbp09-results/executable-tests.txt 2>&1 || { cat ../hbp09-results/executable-tests.txt; exit 1; }
+          tail -15 ../hbp09-results/executable-tests.txt
+      - name: Install pinned project dependencies
+        working-directory: website
+        run: npm ci
+      - name: Existing website regression suite
+        working-directory: website
+        run: |
+          npm test > ../hbp09-results/full-regression.txt 2>&1 || { tail -60 ../hbp09-results/full-regression.txt; exit 1; }
+          tail -30 ../hbp09-results/full-regression.txt
+      - name: Build native-compatible reference bundle
+        working-directory: website
+        run: |
+          mkdir -p ../hbp09-results/native-reference
+          ./node_modules/.bin/esbuild lib/simulator/engine.mjs --bundle --format=iife --global-name=HololensHbp09Rules --target=es2020 --outfile=../hbp09-results/native-reference/hbp09-rules.iife.js
+          if [ -f tests/hbp09-native-parity.mjs ]; then node tests/hbp09-native-parity.mjs > ../hbp09-results/native-parity.json; fi
+      - name: Package executable deliverables
+        run: |
+          if [ -f website/scripts/package-hbp09-effects.py ]; then python website/scripts/package-hbp09-effects.py; fi
+      - name: Persist test evidence on isolated work branch
         if: always()
         run: |
           python - <<'PY'
-          import pathlib,json
-          p=pathlib.Path('hbp09-results/executable-tests.txt')
-          if p.exists():
-            lines=p.read_text().splitlines();keep=set(range(max(0,len(lines)-15),len(lines)))
+          import pathlib
+          out=pathlib.Path('website/docs/hbp09-effects');out.mkdir(parents=True,exist_ok=True)
+          for name in ['executable-tests.txt','full-regression.txt','integration-error.txt']:
+            p=pathlib.Path('hbp09-results')/name
+            if not p.exists():continue
+            lines=p.read_text().splitlines();keep=set(range(max(0,len(lines)-18),len(lines)))
             for i,line in enumerate(lines):
-              if 'not ok' in line:keep.update(range(max(0,i-2),min(len(lines),i+45)))
-            out=pathlib.Path('website/docs/hbp09-effects/latest-tests.txt');out.write_text('\n'.join(lines[i] for i in sorted(keep)))
+              if 'not ok' in line or 'Error:' in line or 'error TS' in line:keep.update(range(max(0,i-2),min(len(lines),i+38)))
+            (out/('latest-'+name)).write_text('\n'.join(lines[i] for i in sorted(keep)))
           PY
-          git add website/docs/hbp09-effects/latest-tests.txt 2>/dev/null || true
+          git add website/docs/hbp09-effects/latest-*.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'Record executable hBP09 test evidence'
+            git commit -m 'Record hBP09 reducer and compatibility test evidence'
             git stash push --include-untracked -m runner-only
             git pull --rebase origin codex/hbp09-executable-effects-20260918
             git push origin HEAD:codex/hbp09-executable-effects-20260918
@@ -86,3 +111,10 @@ jobs:
         with:
           name: hbp09-executable-test-records
           path: hbp09-results/
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: Hololens-hBP09-Executable-Effects
+          path: hbp09-package/
+          if-no-files-found: error
+          retention-days: 14
