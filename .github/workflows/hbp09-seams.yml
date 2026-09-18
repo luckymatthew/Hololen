@@ -1,0 +1,38 @@
+name: Inspect remaining hBP09 engine seams
+on:
+  push:
+    branches: [codex/hbp09-executable-effects-20260918]
+    paths: [.github/workflows/hbp09-seams.yml]
+permissions:
+  contents: write
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract exact engine and UI integration seams
+        run: |
+          python - <<'PY'
+          import pathlib,re,json
+          root=pathlib.Path('website');out=root/'docs/hbp09-effects';lines=(root/'lib/simulator/engine.mjs').read_text().splitlines();blocks=[]
+          for i,line in enumerate(lines):
+            if (('bloom' in line.lower() and ('archive' in line.lower() or '存檔' in line)) or ('pending.type === "optionChoice"' in line) or 'hBP09-037' in line):
+              blocks.append('\n'.join(f'{j+1}: {lines[j]}' for j in range(max(0,i-3),min(len(lines),i+18))))
+          (out/'archive-bloom-seams.txt').write_text('\n\n'.join(blocks))
+          blocks=[]
+          for folder in ['lib/simulator','components','app']:
+            for f in (root/folder).rglob('*'):
+              if f.suffix not in ['.ts','.tsx','.mjs'] or 'hbp09' in str(f):continue
+              text=f.read_text();ls=text.splitlines()
+              for i,line in enumerate(ls):
+                if ('holoPower' in line and ('"X"' in line or "'X'" in line)) or ('modeOptions' in line and any('option' in s for s in ls[max(0,i-2):i+3])):
+                  blocks.append(str(f)+'\n'+'\n'.join(f'{j+1}: {ls[j]}' for j in range(max(0,i-2),min(len(ls),i+5))))
+          (out/'ui-choices-seams.txt').write_text('\n\n'.join(blocks))
+          PY
+      - run: |
+          git config user.name 'Hololens Effects'
+          git config user.email '108892610+luckymatthew@users.noreply.github.com'
+          git add website/docs/hbp09-effects/*seams.txt
+          git commit -m 'Capture exact archive-Bloom and UI integration evidence'
+          git pull --rebase origin codex/hbp09-executable-effects-20260918
+          git push origin HEAD:codex/hbp09-executable-effects-20260918
