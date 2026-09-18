@@ -101,10 +101,10 @@ export function createHbp09(host) {
       rt.enqueue(state,ownerContext,programSteps);return true;
     }
     if(o.op==='zetaDown'){
-      const a=host.rollDie(random,state,c.playerIndex,1,map.get(c.sourceNumber));
-      const b=host.rollDie(random,state,c.playerIndex,1,map.get(c.sourceNumber));
+      const [a,b]=host.interactiveDice(random,state,c.playerIndex,2,map.get(c.sourceNumber));
       if(a+b===state.players[0].life.length+state.players[1].life.length)host.queueExtraLifeLoss(state,1-c.playerIndex,c.playerIndex,map,c.sourceNumber);return true;
     }
+    if(o.op==='deferSupport'){rt.enqueue(state,c,o.then);return true;}
     if(o.op==='gainPowerOne'){if(p.mainDeck.length)p.holoPower.push(p.mainDeck.shift());return true;}
     return false;
   }
@@ -195,7 +195,7 @@ export function createHbp09(host) {
   function onBaton(state,i,outgoing,map){const p=state.players[i];if(p.oshi?.number==='hBP09-002'&&host.cardHasName(outgoing,'轟はじめ')){const c=rt.context(state,i,'hBP09-002');if(rt.once(state,c,'hajime-baton'))rt.enqueue(state,c,[{op:'powerTop',amount:1}]);}}
   function onOshi(state,i,map){const p=state.players[i];if(metadata(p.zones.center,map)?.number==='hBP09-075'&&named(p.zones.collab,'ネリッサ・レイヴンクロフト',map))host.addStageModifier(p.zones.collab,'artCost:purple',-1,state.turn,'hBP09-075');}
   function onAttach(state,i,zone,card,map){const p=state.players[i];if(p.oshi?.number==='hBP09-004'&&arms(card)&&named(p.zones[zone],'カエラ・コヴァルスキア',map)){const c=rt.context(state,i,'hBP09-004',zone);if(rt.once(state,c,'kaela-forge'))rt.enqueue(state,c,[draw(2)]);}}
-  function onSupport(state,i,card,map){const p=state.players[i];if(p.oshi?.number==='hBP09-003'&&host.cardHasName(card,'牛丼')){const c=rt.context(state,i,'hBP09-003');if(rt.once(state,c,'noel-gyudon'))rt.enqueue(state,c,[topCheer({names:['白銀ノエル']}),yes(atleast(count('stage',{stages:['2nd']}),1),[draw(1)])]);}}
+  function onSupport(state,i,card,map){const p=state.players[i];if(p.oshi?.number==='hBP09-003'&&host.cardHasName(card,'牛丼')){const c=rt.context(state,i,'hBP09-003');if(rt.once(state,c,'noel-gyudon'))rt.enqueue(state,c,[{op:'deferSupport',then:[topCheer({names:['白銀ノエル']}),yes(atleast(count('stage',{stages:['2nd']}),1),[draw(1)])]}]);}}
   function onDamaged(state,i,zone,other,damage,kind,map){if(kind!=='arts'||state.activePlayer===i)return;const u=state.players[i].zones[zone],number=top(u)?.number,threshold={'hBP09-008':40,'hBP09-011':100,'hBP09-014':200}[number];if(!threshold||damage<threshold)return;
     const c=rt.context(state,i,number,zone);if(!rt.once(state,c,`${number}:${top(u).id}:damaged`))return;
     rt.enqueue(state,c,number==='hBP09-008'?[fixedDamage(30,['center'])]:number==='hBP09-011'?[draw(2)]:[{op:'subaruReturnCheer'}]);

@@ -122,7 +122,7 @@ export function createRuntime(host) {
   function context(state,i,number,zone='',data={}) {
     const u=state.players[i]?.zones?.[zone];return {playerIndex:i,sourceNumber:number,sourceZone:zone,sourceId:top(u)?.id||'',sourceBaseId:u?.stack?.[0]?.id||'',vars:{},...copy(data)};
   }
-  function enqueue(state,c,steps) {host.enqueueEffect(state,{type:'hbp09Program',playerIndex:c.playerIndex,context:copy(c),steps:copy(steps)});}
+  function enqueue(state,c,steps) {host.enqueueEffect(state,{type:'hbp09Program',playerIndex:c.playerIndex,sourceZone:c.sourceZone,sourceCardNumber:c.sourceNumber,context:copy(c),steps:copy(steps)});}
   function once(state,c,key){const p=state.players[c.playerIndex];p.namedUsageTurns||={};const k=`hbp09:${key}`;if(p.namedUsageTurns[k]===state.turn)return false;p.namedUsageTurns[k]=state.turn;return true;}
   function prompt(state,c,op,remaining,map) {
     const ctx=copy(c),owner=playerIndex(c,op.owner),kind=op.op;

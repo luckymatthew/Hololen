@@ -6,6 +6,7 @@ import argparse,datetime,hashlib,json,pathlib,re,shutil,os,tempfile
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 MARKER='// BEGIN HBP09 EXECUTABLE BRIDGE v1'
 def one(text,old,new):
+    if new != old and new in text:return text
     count=text.count(old)
     if count!=1: raise ValueError(f'Expected one source anchor, found {count}: {old[:110]!r}. Refusing unsafe automatic merge.')
     return text.replace(old,new,1)
@@ -46,6 +47,10 @@ def patch(root):
     registrations=''.join(f'  \"hBP09-{n:03}\": \"hbp09-program-{n:03}\",\n' for n in range(90,106)).replace('\\n','\n').replace('\\\"','\"')
     ct=one(ct,'export const EXTENDED_SUPPORT_EFFECTS = Object.freeze({','export const EXTENDED_SUPPORT_EFFECTS = Object.freeze({\n'+registrations)
     outputs={engine:text,oshi:ot,catalog:ct}
+    import importlib.util
+    spec=importlib.util.spec_from_file_location('hbp09_test_contracts',ROOT/'scripts/hbp09-test-contracts.py')
+    contract=importlib.util.module_from_spec(spec);spec.loader.exec_module(contract)
+    outputs.update(contract.patch_tests(root))
     # Runtime corrections are kept in this installer to remain reproducible from
     # the pinned module source. The final packaged module is the corrected result.
     runtime=root/'lib/simulator/hbp09/runtime.mjs';rt=runtime.read_text(encoding='utf-8')

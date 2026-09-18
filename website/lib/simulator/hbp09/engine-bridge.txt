@@ -1,7 +1,7 @@
 // BEGIN HBP09 EXECUTABLE BRIDGE v1
 const HBP09 = createHbp09({
   cardHasName, cardHasTag, cardIsBuzz, talentMatches, stageRemainingHp,
-  enqueueEffect, drawCards, shuffle, rollDie, appendLog, triggerCheerArchivedGift,
+  enqueueEffect, drawCards, shuffle, rollDie, interactiveDice, appendLog, triggerCheerArchivedGift,
   addStageModifier, addPlayerModifier, healStageUnit, applySpecialDamage,
   attachmentTargets, attachCheerCards, queueAttachmentEntryEffects, unit,
   queueStageEntryGiftEffects, queueStageReturnGiftEffects, adjustQueuedArtsDamage,
@@ -48,6 +48,10 @@ function resolveChoice(state, playerIndex, action, map, random) {
       const c = HBP09.context(state, playerIndex, 'hBP09-031', zone);
       if (HBP09.once(state, c, `gyudon-heal:${topCard(u).id}`)) pending.amount = Number(pending.amount) + 100;
     }
+  }
+  if (!action.skip && pending?.type === 'stageTarget' && /bloom/i.test(pending.effect || '')) {
+    const archiveCard = state.players[playerIndex].archive.find(card => card.id === pending.meta?.cardId);
+    if (archiveCard) archiveCard.hbp09FromArchive = true;
   }
   const result = hbp09Legacy_resolveChoice(state, playerIndex, action, map, random);
   if (before != null && pending) pending.amount = before;
@@ -146,5 +150,13 @@ function stageMatchesRule(stageUnit, zone, rule, map, player = null) {
     return hbp09Legacy_stageMatchesRule(stageUnit, zone, { ...rule, stages: undefined }, map, player);
   }
   return hbp09Legacy_stageMatchesRule(stageUnit, zone, rule, map, player);
+}
+function healStageUnit(state, playerIndex, zone, amount, map, sourceIsOwn = true) {
+  const current = state.players[playerIndex].zones[zone];
+  if (sourceIsOwn && topCard(current)?.number === 'hBP09-031' && cardHasName(map.get(state.hbp09ResolvingSupport), '牛丼')) {
+    const c = HBP09.context(state, playerIndex, 'hBP09-031', zone);
+    if (HBP09.once(state, c, `gyudon-heal:${topCard(current).id}`)) amount = Number(amount) + 100;
+  }
+  return hbp09Legacy_healStageUnit(state, playerIndex, zone, amount, map, sourceIsOwn);
 }
 // END HBP09 EXECUTABLE BRIDGE v1
