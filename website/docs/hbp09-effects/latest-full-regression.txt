@@ -1,162 +1,18 @@
-  ...
-# Subtest: all 155 pre-hBP09 Oshi retain their exact cost and activation coverage
-not ok 78 - all 155 pre-hBP09 Oshi retain their exact cost and activation coverage
-  ---
-  duration_ms: 2.990257
-  type: 'test'
-  location: '/home/runner/work/Hololen/Hololen/website/tests/oshi-skill-regression.test.mjs:82:1'
-  failureType: 'testCodeFailure'
-  error: |-
-    Expected values to be strictly equal:
-    
-    162 !== 155
-    
-  code: 'ERR_ASSERTION'
-  name: 'AssertionError'
-  expected: 155
-  actual: 162
-  operator: 'strictEqual'
-  stack: |-
-    TestContext.<anonymous> (file:///home/runner/work/Hololen/Hololen/website/tests/oshi-skill-regression.test.mjs:86:10)
-    Test.runInAsyncScope (node:async_hooks:214:14)
-    Test.run (node:internal/test_runner/test:1047:25)
-    Test.start (node:internal/test_runner/test:944:17)
-    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
-  ...
-# Subtest: all seven hBP09 Oshi preserve official metadata without exposing unimplemented activations
-not ok 79 - all seven hBP09 Oshi preserve official metadata without exposing unimplemented activations
-  ---
-  duration_ms: 1.970772
-  type: 'test'
-  location: '/home/runner/work/Hololen/Hololen/website/tests/oshi-skill-regression.test.mjs:114:1'
-  failureType: 'testCodeFailure'
-  error: |-
-    Expected values to be strictly deep-equal:
-    + actual - expected
-    
-    + [
-    +   'hBP09-001',
-    +   'hBP09-002',
-    +   'hBP09-003',
-    +   'hBP09-004',
-    +   'hBP09-005',
-    +   'hBP09-006',
-    +   'hBP09-007'
-    + ]
-    - []
-    
-  code: 'ERR_ASSERTION'
-  name: 'AssertionError'
-  expected:
-  actual:
-    0: 'hBP09-001'
-    1: 'hBP09-002'
-    2: 'hBP09-003'
-    3: 'hBP09-004'
-    4: 'hBP09-005'
-    5: 'hBP09-006'
-    6: 'hBP09-007'
-  operator: 'deepStrictEqual'
-  stack: |-
-    TestContext.<anonymous> (file:///home/runner/work/Hololen/Hololen/website/tests/oshi-skill-regression.test.mjs:116:10)
-    Test.runInAsyncScope (node:async_hooks:214:14)
-    Test.run (node:internal/test_runner/test:1047:25)
-    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
-  ...
-# Subtest: every active non-Birthday Oshi skill has an engine resolver branch
-not ok 80 - every active non-Birthday Oshi skill has an engine resolver branch
-  ---
-  duration_ms: 1.292679
-  type: 'test'
-  location: '/home/runner/work/Hololen/Hololen/website/tests/oshi-skill-regression.test.mjs:146:1'
-  failureType: 'testCodeFailure'
-  error: 'hBP01-001 normal Oshi resolver is missing'
-  code: 'ERR_ASSERTION'
-  name: 'AssertionError'
-  expected: true
-  actual: false
-  operator: '=='
-  stack: |-
-    TestContext.<anonymous> (file:///home/runner/work/Hololen/Hololen/website/tests/oshi-skill-regression.test.mjs:156:17)
-    Test.runInAsyncScope (node:async_hooks:214:14)
-    Test.run (node:internal/test_runner/test:1047:25)
-    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
-    Test.postRun (node:internal/test_runner/test:1173:19)
-    Test.run (node:internal/test_runner/test:1101:12)
-    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
-  ...
-# Subtest: hEB01-002 Marine Stage skill offers and resolves the second Bloom
-ok 81 - hEB01-002 Marine Stage skill offers and resolves the second Bloom
-  ---
-  duration_ms: 27.304899
-  type: 'test'
-  ...
-# Subtest: hEB01-002 normal Oshi skill pays 2 and deals both 50-damage hits with a three-card Center stack
-ok 82 - hEB01-002 normal Oshi skill pays 2 and deals both 50-damage hits with a three-card Center stack
-  ---
-  duration_ms: 7.373179
-  type: 'test'
-  ...
-# Subtest: hBP03-002 Botan SP skill is active, pays 2 and snipes a non-Debut Center for 100
-ok 83 - hBP03-002 Botan SP skill is active, pays 2 and snipes a non-Debut Center for 100
-  ---
-  duration_ms: 3.174112
-  type: 'test'
-  ...
-# Subtest: the automated support list is unique and covers every effect family
-not ok 607 - the automated support list is unique and covers every effect family
-  ---
-  duration_ms: 1.169943
-  type: 'test'
-  location: '/home/runner/work/Hololen/Hololen/website/tests/simulator-effect-catalog.test.mjs:26:1'
-  failureType: 'testCodeFailure'
-  error: |-
-    Expected values to be strictly equal:
-    
-    128 !== 112
-    
-  code: 'ERR_ASSERTION'
-  name: 'AssertionError'
-  expected: 112
-  actual: 128
-  operator: 'strictEqual'
-  stack: |-
-    TestContext.<anonymous> (file:///home/runner/work/Hololen/Hololen/website/tests/simulator-effect-catalog.test.mjs:28:10)
-    Test.runInAsyncScope (node:async_hooks:214:14)
-    Test.run (node:internal/test_runner/test:1047:25)
-    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
-    Test.postRun (node:internal/test_runner/test:1173:19)
-    Test.run (node:internal/test_runner/test:1101:12)
-    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
-  ...
-# Subtest: 0748 mandatory EN recovery excludes other cards
-ok 608 - 0748 mandatory EN recovery excludes other cards
-  ---
-  duration_ms: 38.679076
-  type: 'test'
-  ...
-# Subtest: 0748 empty matching archive resolves without a choice
-ok 609 - 0748 empty matching archive resolves without a choice
-  ---
-  duration_ms: 3.102844
-  type: 'test'
-  ...
-# Subtest: 0748 Buzz DOWN loses two life
-  duration_ms: 2.635438
-  type: 'test'
-  ...
-# Subtest: Zeta mandatory archive attachment
-ok 2133 - Zeta mandatory archive attachment
-  ---
-  duration_ms: 14.564672
-  type: 'test'
-  ...
-1..2133
-# tests 2139
-# suites 0
-# pass 2135
-# fail 4
-# cancelled 0
-# skipped 0
-# todo 0
-# duration_ms 24436.20298
+rendering chunks...
+computing gzip size...
+dist-firebase/index.html                               0.57 kB │ gzip:   0.40 kB
+dist-firebase/assets/index-BJ4TH_z1.css              175.95 kB │ gzip:  32.72 kB
+dist-firebase/assets/Link-ByxkCJ3b.js                  0.10 kB │ gzip:   0.11 kB
+dist-firebase/assets/ConfirmDialog-BS5t-e1A.js         0.75 kB │ gzip:   0.41 kB
+dist-firebase/assets/ThemeToggle-Ma2rfPos.js           1.64 kB │ gzip:   0.74 kB
+dist-firebase/assets/FoilCardImage-BwyKg5cF.js         2.35 kB │ gzip:   1.34 kB
+dist-firebase/assets/DownloadClient-DlYNVadD.js        4.82 kB │ gzip:   2.32 kB
+dist-firebase/assets/FirebaseAccount-B2ozW-jh.js       9.57 kB │ gzip:   3.99 kB
+dist-firebase/assets/oshi-skill-catalog-BUYNeKqT.js   10.88 kB │ gzip:   3.78 kB
+dist-firebase/assets/page-VtdiYJjI.js                 35.64 kB │ gzip:  11.85 kB
+dist-firebase/assets/SimulatorClient-DLTgU_wG.js      72.99 kB │ gzip:  22.25 kB
+dist-firebase/assets/TerminologyNote-Ch3LOjb8.js     265.26 kB │ gzip:  27.85 kB
+dist-firebase/assets/pvp-BTEjOahX.js                 583.89 kB │ gzip: 155.22 kB
+dist-firebase/assets/index-BaBJiRxi.js               888.11 kB │ gzip: 267.21 kB
+
+[32m✓ built in 991ms[39m
