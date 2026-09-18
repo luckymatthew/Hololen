@@ -1,0 +1,26 @@
+name: Export hBP09 functional repair source
+on:
+  push:
+    branches: [codex/hbp09-functional-20260918]
+    paths: [.github/workflows/hbp09-functional-source.yml]
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 3aaaa392f3906fee00c49f92f01b7e03232d8639
+      - name: Export tracked public source only
+        run: |
+          mkdir source-bundle
+          git archive --format=tar.gz --output=source-bundle/current-source.tar.gz HEAD website mobile
+          git rev-parse HEAD > source-bundle/COMMIT.txt
+          sha256sum source-bundle/current-source.tar.gz > source-bundle/SHA256.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hbp09-functional-source
+          path: source-bundle/
+          retention-days: 7
