@@ -1,0 +1,3 @@
+[
+  {"path":"website/lib/simulator/hbp09/programs.mjs","old":"const attachFrom=(area,rule,targetRule,source=false)=>[pick({area,rule},'attachmentPick',source?[{op:'attach',cards:R('attachmentPick'),target:S}]:[target(targetRule,'attachmentTarget',[{op:'attach',cards:R('attachmentPick'),target:R('attachmentTarget')}])],...(area==='mainDeck'?[{op:'shuffle',area}]:[])];","new":"const attachFrom=(area,rule,targetRule,source=false)=>{\n  const steps=source?[{op:'attach',cards:R('attachmentPick'),target:S}]:[target(targetRule,'attachmentTarget',[{op:'attach',cards:R('attachmentPick'),target:R('attachmentTarget')}])];\n  return [pick({area,rule},'attachmentPick',steps),...(area==='mainDeck'?[{op:'shuffle',area}]:[])];\n};"}
+]
