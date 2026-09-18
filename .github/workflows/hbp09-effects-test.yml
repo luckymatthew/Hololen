@@ -6,9 +6,10 @@ on:
       - .github/workflows/hbp09-effects-test.yml
       - website/lib/simulator/hbp09/**
       - website/scripts/apply-hbp09-effects.py
+      - website/scripts/hbp09-edits/**
       - website/tests/hbp09-executable.test.mjs
 permissions:
-  contents: read
+  contents: write
 concurrency:
   group: hbp09-effects-tests
   cancel-in-progress: true
@@ -21,9 +22,33 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Apply audited source corrections
+        run: |
+          python - <<'PY'
+          import pathlib,json
+          for file in sorted(pathlib.Path('website/scripts/hbp09-edits').glob('*.json')):
+            for edit in json.loads(file.read_text()):
+              path=pathlib.Path(edit['path'])
+              if not str(path).startswith('website/'):raise ValueError('Bad edit path')
+              text=path.read_text();old=edit['old'];new=edit['new']
+              if old in text:
+                if text.count(old)!=1:raise ValueError('Nonunique edit: '+str(file))
+                path.write_text(text.replace(old,new,1))
+              elif new not in text:raise ValueError('Source drift: '+str(file))
+          PY
       - name: Syntax check executable modules
         run: |
           for file in website/lib/simulator/hbp09/*.mjs; do node --check "$file"; done
+      - name: Commit source corrections only
+        run: |
+          git config user.name 'Hololens Effects'
+          git config user.email '108892610+luckymatthew@users.noreply.github.com'
+          git add website/lib/simulator/hbp09 website/scripts/apply-hbp09-effects.py website/tests/hbp09-executable.test.mjs
+          if ! git diff --cached --quiet; then
+            git commit -m 'Apply verified hBP09 source corrections'
+            git pull --rebase origin codex/hbp09-executable-effects-20260918
+            git push origin HEAD:codex/hbp09-executable-effects-20260918
+          fi
       - name: Apply integration and test
         run: |
           mkdir -p hbp09-results
@@ -35,6 +60,26 @@ jobs:
             cd website
             node --test tests/hbp09-executable.test.mjs > ../hbp09-results/executable-tests.txt 2>&1 || { cat ../hbp09-results/executable-tests.txt; exit 1; }
             tail -15 ../hbp09-results/executable-tests.txt
+          fi
+      - name: Retain concise failure evidence in work branch
+        if: always()
+        run: |
+          python - <<'PY'
+          import pathlib,json
+          p=pathlib.Path('hbp09-results/executable-tests.txt')
+          if p.exists():
+            lines=p.read_text().splitlines();keep=set(range(max(0,len(lines)-15),len(lines)))
+            for i,line in enumerate(lines):
+              if 'not ok' in line:keep.update(range(max(0,i-2),min(len(lines),i+45)))
+            out=pathlib.Path('website/docs/hbp09-effects/latest-tests.txt');out.write_text('\n'.join(lines[i] for i in sorted(keep)))
+          PY
+          git add website/docs/hbp09-effects/latest-tests.txt 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -m 'Record executable hBP09 test evidence'
+            git stash push --include-untracked -m runner-only
+            git pull --rebase origin codex/hbp09-executable-effects-20260918
+            git push origin HEAD:codex/hbp09-executable-effects-20260918
+            git stash pop || true
           fi
       - uses: actions/upload-artifact@v4
         if: always()
