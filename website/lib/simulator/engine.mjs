@@ -1,3 +1,4 @@
+import { createHbp09, isHbp09 } from './hbp09/hooks.mjs';
 import { diceRuns, diceDecision, runDiceAction } from "./dice-actions.mjs";
 import { DECK_SEARCH_EFFECTS, EXTENDED_SUPPORT_EFFECTS, SIMPLE_SUPPORT_EFFECTS, TOP_LOOK_EFFECTS } from "./effect-catalog.mjs";
 import { isReactiveOshiSkill, oshiSkillPowerCost } from "./oshi-skill-catalog.mjs";
@@ -20,6 +21,7 @@ function countCards(section) {
 function catalogMap(cards, state = null) {
   const map = new Map(cards.map((card) => [card.number, card]));
   map.gameState = state;
+  if (state) HBP09_MAPS.set(state, map);
   return map;
 }
 
@@ -441,7 +443,7 @@ function cardAliases(card) {
     .map(normalizeCardName))];
 }
 
-function cardHasTag(card, tag) {
+function hbp09Legacy_cardHasTag(card, tag) {
   return (card?.tags || []).includes(tag);
 }
 
@@ -551,7 +553,7 @@ function unitCard(stageUnit, map) {
   return allColors ? { ...card, colors: SKILL_COLOR_WORDS.map(([value]) => value) } : card;
 }
 
-function effectiveCheerColors(player, stageUnit, cheer, map) {
+function hbp09Legacy_effectiveCheerColors(player, stageUnit, cheer, map) {
   const colors = [...(map.get(cheer?.number)?.colors || [])];
   const source = unitCard(stageUnit, map);
   if (player?.oshi?.number === "hBP08-003"
@@ -564,7 +566,7 @@ function stageCheerColors(player, stageUnit, map) {
   return (stageUnit?.cheer || []).flatMap((instance) => effectiveCheerColors(player, stageUnit, instance, map));
 }
 
-function stageMatchesRule(stageUnit, zone, rule, map, player = null) {
+function hbp09Legacy_stageMatchesRule(stageUnit, zone, rule, map, player = null) {
   if (!stageUnit) return false;
   const card = unitCard(stageUnit, map);
   if (!card) return false;
@@ -690,7 +692,7 @@ function drawCards(state, playerIndex, amount) {
   return drawn;
 }
 
-function healStageUnit(state, playerIndex, zone, amount, map, sourceIsOwn = true) {
+function hbp09Legacy_healStageUnit(state, playerIndex, zone, amount, map, sourceIsOwn = true) {
   const player = state.players[playerIndex];
   const stageUnit = player?.zones?.[zone];
   if (!stageUnit) return 0;
@@ -2197,7 +2199,7 @@ function queueSimpleTriggeredKeyword(state, playerIndex, zone, card, map, random
   return handled;
 }
 
-function queueBloomEffects(state, playerIndex, zone, card, map, random) {
+function hbp09Legacy_queueBloomEffects(state, playerIndex, zone, card, map, random) {
   const player = state.players[playerIndex];
   if (card.number === "hBP04-052") {
     enqueueStageTarget(state, { playerIndex, targetPlayerIndex: playerIndex === 0 ? 1 : 0, rule: { zones: BACK_SLOTS }, effect: "specialDamage", optional: false, prompt: "選擇對手後排，造成 20 點特殊傷害；因此擊倒不扣生命。", meta: { amount: 20, loseLife: false, sourceName: card.keyword.name, sourceZone: zone } });
@@ -2573,7 +2575,7 @@ function queueCollabMoveGift(state, playerIndex, map) {
   if (state.activePlayer === playerIndex && card?.number === "hBP07-085") queueGenericTopLook(state, playerIndex, card.keyword.effect, map, true, { names: ["不知火フレア"] });
 }
 
-function queueCollabEffects(state, playerIndex, card, map, random) {
+function hbp09Legacy_queueCollabEffects(state, playerIndex, card, map, random) {
   if (card.number === "hBP03-017") { queueBotanCheerPayment(state, playerIndex, "collab", card, map); return; }
   const player = state.players[playerIndex];
   const opponentIndex = playerIndex === 0 ? 1 : 0;
@@ -3014,7 +3016,7 @@ function queueStageEntryGiftEffects(state, playerIndex, enteredZone, enteredCard
   }
 }
 
-function queueGiftOshiSkillEffects(state, playerIndex, skill, kind, map) {
+function hbp09Legacy_queueGiftOshiSkillEffects(state, playerIndex, skill, kind, map) {
   const player = state.players[playerIndex];
   for (const { zone, unit: giftUnit } of stageEntries(player)) {
     const giftCard = unitCard(giftUnit, map);
@@ -3137,7 +3139,7 @@ function queueDrawingStreamArchive(state, playerIndex, map) {
   if (archiveTargets.length > 0) enqueueCardSelection(state, { playerIndex, cards: archiveTargets, min: 1, max: 1, prompt: "繪畫直播：揀 1 張持有 #絵 的 Holomen 返回手牌。", effect: "archiveToHand", source: "archive" });
 }
 
-function attachmentTargets(player, attachment, map) {
+function hbp09Legacy_attachmentTargets(player, attachment, map) {
   const typeCode = String(attachment.typeCode || "");
   const text = String(attachment.abilityText || "");
   const restrictionSentence = text.split(/[。\n]/u).find((sentence) => /(?:只能|只可|此(?:粉絲|應援|Fan|FAN)).*(?:裝備|附加|附著|附給|附於)/iu.test(sentence)) || "";
@@ -3178,7 +3180,7 @@ function queueAssistantCheerMove(state, playerIndex, targetZone) {
   appendLog(state, `${player.name} 可選擇舞台上的 1 張應援，移到附加了「こよりの助手くん」的 Holomen。`);
 }
 
-function queueAttachmentEntryEffects(state, playerIndex, targetZone, attachment, map, random, source = "hand") {
+function hbp09Legacy_queueAttachmentEntryEffects(state, playerIndex, targetZone, attachment, map, random, source = "hand") {
   const player = state.players[playerIndex];
   const target = player.zones[targetZone];
   const targetCard = unitCard(target, map);
@@ -3215,7 +3217,7 @@ function isAttachment(card) {
   return ["supportTool", "supportMascot", "supportFan"].includes(String(card?.typeCode || ""));
 }
 
-function commitSupport(state, playerIndex, cardInstance, card) {
+function hbp09Legacy_commitSupport(state, playerIndex, cardInstance, card) {
   const player = state.players[playerIndex];
   const selected = removeById(player.hand, cardInstance.id);
   assert(selected, "手牌已改變，請重新選擇。 ");
@@ -3958,6 +3960,7 @@ function playFromHand(state, playerIndex, action, map, random) {
     queueAttachment(state, playerIndex, cardInstance, card, map);
     return;
   }
+  if (HBP09.support(state, playerIndex, cardInstance, card, map)) return;
   if (TOP_LOOK_EFFECTS[card.number]) {
     playTopLookSupport(state, playerIndex, cardInstance, card, TOP_LOOK_EFFECTS[card.number], map);
     return;
@@ -3995,7 +3998,7 @@ function playFromHand(state, playerIndex, action, map, random) {
   throw new Error(`「${card.name}」的文字效果尚未接入自動效果核心；為免錯誤裁定，本版本不會代為結算。`);
 }
 
-function resolveChoice(state, playerIndex, action, map, random) {
+function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
   const pending = state.pendingChoice;
   assert(pending && pending.playerIndex === playerIndex, "目前沒有需要你處理的選擇。 ");
   const player = state.players[playerIndex];
@@ -6570,7 +6573,7 @@ function centerReplacementOptions(player) {
   return active.length > 0 ? active : BACK_SLOTS.filter((slot) => Boolean(player.zones[slot]));
 }
 
-function returnCollabToBack(player, map) {
+function hbp09Legacy_returnCollabToBack(player, map) {
   const collabUnit = player.zones.collab;
   if (!collabUnit) return;
   const preferred = BACK_SLOTS.includes(collabUnit.returnSlot) && !player.zones[collabUnit.returnSlot] ? collabUnit.returnSlot : null;
@@ -6686,7 +6689,7 @@ function resolveEndOshiStageSkills(state, playerIndex, map) {
   }
 }
 
-function finishTurn(state, playerIndex, map) {
+function hbp09Legacy_finishTurn(state, playerIndex, map) {
   const player = state.players[playerIndex];
   const endedPerformance = state.phase === "performance";
   state.phase = "end";
@@ -6888,7 +6891,7 @@ function sumBonuses(text, pattern) {
   return [...text.matchAll(pattern)].reduce((sum, match) => sum + Number(match[1] || 0) * (match[0].includes("-") || match[0].includes("−") ? -1 : 1), 0);
 }
 
-function attachmentHpBonus(stageUnit, map, zone = "", player = null) {
+function hbp09Legacy_attachmentHpBonus(stageUnit, map, zone = "", player = null) {
   return (stageUnit.attachments || []).reduce((total, instance) => {
     const card = map.get(instance.number);
     if (card?.number === "hBP03-095" && !["Debut", "Spot"].includes(unitCard(stageUnit, map)?.stage)) return total;
@@ -6915,7 +6918,7 @@ function stageHasNamedAttachment(stageUnit, map, names) {
   return (stageUnit?.attachments || []).some((instance) => names.some((name) => cardHasName(map.get(instance.number), name)));
 }
 
-function holomemHpBonus(stageUnit, map, zone = "", player = null) {
+function hbp09Legacy_holomemHpBonus(stageUnit, map, zone = "", player = null) {
   const text = giftText(stageUnit, map);
   if (!text || !giftZoneApplies(text, zone)) return 0;
   let bonus = 0;
@@ -6936,7 +6939,7 @@ function holomemHpBonus(stageUnit, map, zone = "", player = null) {
   return bonus;
 }
 
-function giftArtsBonus(state, playerIndex, sourceZone, map) {
+function hbp09Legacy_giftArtsBonus(state, playerIndex, sourceZone, map) {
   const player = state.players[playerIndex];
   const opponent = state.players[playerIndex === 0 ? 1 : 0];
   const source = player.zones[sourceZone];
@@ -6959,7 +6962,7 @@ function giftArtsBonus(state, playerIndex, sourceZone, map) {
   return bonus;
 }
 
-function giftDamageAdjustment(state, targetPlayerIndex, targetZone, sourcePlayerIndex, sourceZone, kind, map) {
+function hbp09Legacy_giftDamageAdjustment(state, targetPlayerIndex, targetZone, sourcePlayerIndex, sourceZone, kind, map) {
   const owner = state.players[targetPlayerIndex];
   const opponent = state.players[sourcePlayerIndex];
   const target = owner?.zones?.[targetZone];
@@ -7025,7 +7028,7 @@ function defenderForcesCollabTarget(player, map) {
   return false;
 }
 
-function attachmentArtsBonus(stageUnit, map, turn, zone = "", player = null, opponent = null) {
+function hbp09Legacy_attachmentArtsBonus(stageUnit, map, turn, zone = "", player = null, opponent = null) {
   let total = (stageUnit.attachments || []).reduce((sum, instance) => {
     if (instance.number === "hBP07-107") {
       const oshi = map.get(player?.oshi?.number);
@@ -7052,7 +7055,7 @@ function attachmentArtsBonus(stageUnit, map, turn, zone = "", player = null, opp
   return total;
 }
 
-function effectiveArtCost(stageUnit, art, state, player, zone, map) {
+function hbp09Legacy_effectiveArtCost(stageUnit, art, state, player, zone, map) {
   if (activeModifiers(stageUnit, "freeArts", state.turn).length > 0) return [];
   const source = unitCard(stageUnit, map);
   if (player.oshi?.number === "hBP08-006" && cardHasName(source, "一伊那尓栖")) {
@@ -7130,7 +7133,7 @@ function effectiveArtCost(stageUnit, art, state, player, zone, map) {
   return cost;
 }
 
-function effectiveBatonCost(state, playerIndex, stageUnit, zone, map) {
+function hbp09Legacy_effectiveBatonCost(state, playerIndex, stageUnit, zone, map) {
   const player = state.players[playerIndex];
   const card = unitCard(stageUnit, map);
   const modifier = activeModifiers(stageUnit, "batonCost", state.turn).reduce((sum, item) => sum + Number(item.amount || 0), 0)
@@ -7532,7 +7535,7 @@ function completeArtCheerCost(state, playerIndex, meta, map, random) {
   }
 }
 
-function resolveGenericArtEffects(state, playerIndex, sourceZone, artIndex, targetZone, map, random, artCardOverride = null) {
+function hbp09Legacy_resolveGenericArtEffects(state, playerIndex, sourceZone, artIndex, targetZone, map, random, artCardOverride = null) {
   const player = state.players[playerIndex];
   const opponent = state.players[playerIndex === 0 ? 1 : 0];
   const source = player.zones[sourceZone];
@@ -8741,7 +8744,7 @@ function giftKnockoutLifeReduction(state, ownerIndex, defeatedZone, defeated, de
   }).length;
 }
 
-function queueGiftKnockoutEffects(state, ownerIndex, defeated, defeatedCard, map, sourcePlayerIndex, options, pendingEffects) {
+function hbp09Legacy_queueGiftKnockoutEffects(state, ownerIndex, defeated, defeatedCard, map, sourcePlayerIndex, options, pendingEffects) {
   const owner = state.players[ownerIndex];
   const sourcePlayer = state.players[sourcePlayerIndex];
   const source = options.sourceZone ? sourcePlayer?.zones?.[options.sourceZone] : null;
@@ -8825,7 +8828,7 @@ function queueGiftKnockoutEffects(state, ownerIndex, defeated, defeatedCard, map
     sourcePlayer.holoPower.push(sourcePlayer.mainDeck.shift());
     appendLog(state, `${sourcePlayer.name} 因擊倒 Gift 將牌庫頂 1 張放到 Holo Power。`);
   }
-  if (sourceCard?.number === "hBP09-037") pendingEffects.push({ type: "stageTarget", playerIndex: sourcePlayerIndex, targetPlayerIndex: sourcePlayerIndex, options: null, rule: { zones: BACK_SLOTS, tags: ["#FLOW GLOW"] }, prompt: "Gift：可直接按自己 1 位 #FLOW GLOW 後排，將整個重疊組返回手牌。", effect: "giftReturnStageStack", optional: true, meta: {} });
+  if (false && sourceCard?.number === "hBP09-037") pendingEffects.push({ type: "stageTarget", playerIndex: sourcePlayerIndex, targetPlayerIndex: sourcePlayerIndex, options: null, rule: { zones: BACK_SLOTS, tags: ["#FLOW GLOW"] }, prompt: "Gift：可直接按自己 1 位 #FLOW GLOW 後排，將整個重疊組返回手牌。", effect: "giftReturnStageStack", optional: true, meta: {} });
   if (sourceCard?.number === "hSD12-007" && !usedNamedThisTurn(sourcePlayer, "gift:hSD12-007", state.turn)) {
     const cards = sourcePlayer.archive.filter((instance) => map.get(instance.number)?.group === "support" && !String(map.get(instance.number)?.type || "").toUpperCase().includes("LIMITED"));
     if (cards.length > 0) {
@@ -9122,7 +9125,7 @@ function queueAttachmentDamagedTriggers(state, targetPlayerIndex, targetZone, so
   }
 }
 
-function queueGiftDamagedTriggers(state, targetPlayerIndex, targetZone, sourcePlayerIndex, damage, kind, map, sourceCardNumber = "") {
+function hbp09Legacy_queueGiftDamagedTriggers(state, targetPlayerIndex, targetZone, sourcePlayerIndex, damage, kind, map, sourceCardNumber = "") {
   if (damage <= 0) return;
   const owner = state.players[targetPlayerIndex];
   const target = owner?.zones?.[targetZone];
@@ -9217,7 +9220,7 @@ function queueGiftArtUseEffects(state, playerIndex, sourceZone, sourceCard, map)
   }
 }
 
-function queueArtKnockoutEffects(state, effect, targetCard, damage, remainingHpBefore, map, random) {
+function hbp09Legacy_queueArtKnockoutEffects(state, effect, targetCard, damage, remainingHpBefore, map, random) {
   if (state.status === "finished") return;
   const playerIndex = effect.playerIndex;
   const player = state.players[playerIndex];
@@ -9273,13 +9276,14 @@ function attack(state, playerIndex, action, map, random) {
   const intrinsicBackAttack = (artCard?.number === "hBP01-081" && Number(action.artIndex) === 0) || (artCard?.number === "hSD12-004" && Number(action.artIndex) === 0);
   const damagedBackAttack = activeModifiers(source, "attackDamagedBack", state.turn).length > 0 && Number(target?.damage || 0) > 0;
   const secondBackAttack = activeModifiers(source, "attackSecondBack", state.turn).length > 0 && BACK_SLOTS.includes(action.targetZone) && unitCard(target, map)?.stage === "2nd";
-  const canAttackBack = intrinsicBackAttack || damagedBackAttack || secondBackAttack || activeModifiers(source, "attackBack", state.turn).length > 0 || giftAllowsBackAttack(player, source, target, action.targetZone, map);
+  const canAttackBack = HBP09.canBack(state, playerIndex, source, action.targetZone, unitCard(target, map), map) || intrinsicBackAttack || damagedBackAttack || secondBackAttack || activeModifiers(source, "attackBack", state.turn).length > 0 || giftAllowsBackAttack(player, source, target, action.targetZone, map);
   assert((canAttackBack ? STAGE_SLOTS : ["center", "collab"]).includes(action.targetZone), "Arts 的目標位置無效。 ");
   assert(source && target && !source.rested, "攻擊者或目標不存在，或攻擊者已休息。 ");
   assert(!defenderForcesCollabTarget(opponent, map) || action.targetZone === "collab", "對手的 Gift 令 Arts 只能以合作 Holomen 為對象。 ");
   const art = artCard?.arts?.[Number(action.artIndex)];
   assert(art && Number.isFinite(art.damage), "所選 Arts 無效。 ");
   assert(!/只能以對手的(?:中央|中心)/u.test(String(art.effect || "")) || action.targetZone === "center", "這個 Arts 只能以對手中央 Holomen 為對象。 ");
+  HBP09.beforeAttack(state, playerIndex, action, map);
   const artKey = `${artCard?.number}:${Number(action.artIndex)}`;
   if (artKey === "hBP01-070:0") assert(!(source.attachments || []).some((instance) => cardHasName(map.get(instance.number), "座員")), "這個 Arts 只能在攻擊者沒有座員時使用。 ");
   if (artKey === "hBP07-060:1") assert(player.archive.filter((instance) => map.get(instance.number)?.group === "support").length >= 4, "存檔區最少需要 4 張支援卡先可使用這個 Arts。 ");
@@ -9312,6 +9316,7 @@ function attack(state, playerIndex, action, map, random) {
   source.rested = true;
   source.lastArtsTurn = state.turn;
   source.lastArtsZone = action.sourceZone;
+  HBP09.afterAttack(state, playerIndex, action, map);
   if (spendingRepeat) spendingRepeat.uses = 0;
   const grantedRepeat = activeModifiers(source, "repeatArts", state.turn).find((modifier) => Number(modifier.uses || 0) > 0 && modifier.artIndex == null);
   if (grantedRepeat) {
@@ -9375,6 +9380,7 @@ function batonPass(state, playerIndex, action, map) {
   player.zones.center = replacement;
   player.zones[action.zone] = center;
   player.batonTurn = state.turn;
+  HBP09.onBaton(state, playerIndex, card, map);
   appendLog(state, `${player.name} 支付 ${cost} 張應援並完成接力。`);
   if (card?.number === "hBP08-022") {
     center.rested = true;
@@ -9386,7 +9392,7 @@ function batonPass(state, playerIndex, action, map) {
   }
 }
 
-function resolveNormalOshiSkill(state, playerIndex, oshiCard, map, random) {
+function hbp09Legacy_resolveNormalOshiSkill(state, playerIndex, oshiCard, map, random) {
   const player = state.players[playerIndex];
   const opponentIndex = playerIndex === 0 ? 1 : 0;
   const opponent = state.players[opponentIndex];
@@ -9643,7 +9649,7 @@ function resolveNormalOshiSkill(state, playerIndex, oshiCard, map, random) {
   }
 }
 
-function resolveSpOshiSkill(state, playerIndex, oshiCard, map, random) {
+function hbp09Legacy_resolveSpOshiSkill(state, playerIndex, oshiCard, map, random) {
   const player = state.players[playerIndex];
   const opponentIndex = playerIndex === 0 ? 1 : 0;
   const opponent = state.players[opponentIndex];
@@ -9893,7 +9899,7 @@ function resolveSpOshiSkill(state, playerIndex, oshiCard, map, random) {
   }
 }
 
-function activateOshiSkill(state, playerIndex, map, random, kind = "oshi") {
+function hbp09Legacy_activateOshiSkill(state, playerIndex, map, random, kind = "oshi") {
   assert(state.status === "playing" && state.activePlayer === playerIndex && state.phase === "main", "只能在自己的主要階段使用推し技能。 ");
   assert(!state.pendingChoice, "請先完成目前的選擇。 ");
   const player = state.players[playerIndex];
@@ -10011,6 +10017,8 @@ function drainEffectQueue(state, map, random = secureRandom) {
     if (diceRuns.has(state)) diceRuns.get(state).context = effect;
     const player = state.players[effect.playerIndex];
     if (!player && effect.type !== "startNextTurn") continue;
+    if (effect.type === "hbp09Program") { HBP09.run(state, effect.context, effect.steps, map, random); continue; }
+    if (effect.type === "hbp09FinishTurn") { if (state.effectQueue.length) { state.effectQueue.push(effect); continue; } hbp09Legacy_finishTurn(state, effect.playerIndex, map); continue; }
     if (effect.type === "koFanTransfer") {
       if (!stageOptionsMatching(player,map,effect.targetRule).length) continue;
       const cards=(effect.eligibleIds ? defeatedCardPool(player) : player.archive).filter(c=>map.get(c.number)?.group==="cheer" && (map.get(c.number)?.colors||[]).some(color=>effect.colors.includes(color)) && (!effect.eligibleIds || effect.eligibleIds.includes(c.id)));
@@ -10154,6 +10162,7 @@ function drainEffectQueue(state, map, random = secureRandom) {
       const giftAdjustment = effect.ignoreArtsReduction ? Math.max(0, giftDefense.adjustment) : giftDefense.adjustment;
       const reactionReduction = effect.ignoreArtsReduction ? 0 : Number(effect.reactionReduction || 0);
       damage = attachmentDefense.immune || giftDefense.immune || effect.giftImmune ? 0 : Math.max(0, damage + attachmentAdjustment + giftAdjustment - reactionReduction);
+      damage = HBP09.immuneDamage(state, effect.targetPlayerIndex, effect.targetZone, damage, map);
       const damageBefore = Number(target.damage || 0);
       archiveShionFansBeforeDamage(state, effect.targetPlayerIndex, target, damage);
       target.damage += damage;
@@ -10286,6 +10295,7 @@ function executeAction(stateInput, playerIndex, action, cards, random, diceRun) 
   normalizeLegacyState(state);
   const map = catalogMap(cards, state);
   diceRun.map = map; diceRuns.set(state, diceRun);
+  if (action?.type !== "choose") delete state.hbp09ResolvingSupport;
   assert(Number.isInteger(playerIndex) && state.players[playerIndex], "玩家身份無效。 ");
   assert(action && typeof action.type === "string", "操作格式不正確。 ");
 
@@ -10696,4 +10706,185 @@ export { BACK_SLOTS, ORDINARY_COMPUTER, STAGE_SLOTS };
 
 
 
+
+
+
+// BEGIN HBP09 EXECUTABLE BRIDGE v1
+const HBP09_MAPS = new WeakMap();
+const HBP09 = createHbp09({
+  cardHasName, cardHasTag, cardIsBuzz, talentMatches, stageRemainingHp,
+  enqueueEffect, drawCards, shuffle, rollDie, interactiveDice, appendLog, triggerCheerArchivedGift,
+  addStageModifier, addPlayerModifier, healStageUnit, applySpecialDamage,
+  attachmentTargets, attachCheerCards, queueAttachmentEntryEffects, unit,
+  queueStageEntryGiftEffects, queueStageReturnGiftEffects, adjustQueuedArtsDamage,
+  queueExtraLifeLoss, queueGiftOshiSkillEffects, commitSupport, currentTurnEvents,
+  queueBloomEffects, queueAttachmentBloomEffects,
+});
+function queueBloomEffects(state, playerIndex, zone, card, map, random) {
+  const moved = topCard(state.players[playerIndex].zones[zone]);
+  if (moved?.hbp09FromArchive) { state.players[playerIndex].hbp09ArchiveBloomTurn = state.turn; delete moved.hbp09FromArchive; }
+  if (HBP09.keyword(state, playerIndex, zone, card, map, 'bloom')) return;
+  return hbp09Legacy_queueBloomEffects(state, playerIndex, zone, card, map, random);
+}
+function queueCollabEffects(state, playerIndex, card, map, random) {
+  if (HBP09.keyword(state, playerIndex, 'collab', card, map, 'collab')) return;
+  return hbp09Legacy_queueCollabEffects(state, playerIndex, card, map, random);
+}
+function resolveGenericArtEffects(state, playerIndex, sourceZone, artIndex, targetZone, map, random, artCardOverride = null) {
+  const card = artCardOverride || unitCard(state.players[playerIndex].zones[sourceZone], map);
+  if (isHbp09(card?.number)) return HBP09.arts(state, playerIndex, sourceZone, artIndex, targetZone, map, random, card);
+  return hbp09Legacy_resolveGenericArtEffects(state, playerIndex, sourceZone, artIndex, targetZone, map, random, artCardOverride);
+}
+function resolveNormalOshiSkill(state, playerIndex, oshiCard, map, random) {
+  if (isHbp09(oshiCard.number)) { HBP09.enqueueProgram(state, playerIndex, oshiCard.number, 'oshi'); return; }
+  return hbp09Legacy_resolveNormalOshiSkill(state, playerIndex, oshiCard, map, random);
+}
+function resolveSpOshiSkill(state, playerIndex, oshiCard, map, random) {
+  if (oshiCard.number === 'hBP09-006') {
+    assert(unitCard(state.players[playerIndex].zones.center, map)?.stage === '2nd' && cardHasName(unitCard(state.players[playerIndex].zones.center, map), '綺々羅々ヴィヴィ'), 'Vivi SP requires a center 2nd Vivi.');
+    HBP09.enqueueProgram(state, playerIndex, oshiCard.number, 'sp'); return;
+  }
+  return hbp09Legacy_resolveSpOshiSkill(state, playerIndex, oshiCard, map, random);
+}
+function activateOshiSkill(state, playerIndex, map, random, kind = 'oshi') {
+  if (kind === 'oshi' && HBP09.activateX(state, playerIndex, map)) return;
+  return hbp09Legacy_activateOshiSkill(state, playerIndex, map, random, kind);
+}
+function resolveChoice(state, playerIndex, action, map, random) {
+  if (state.pendingChoice?.effect === 'hbp09') return HBP09.resolve(state, playerIndex, action, map, random);
+  const pending = state.pendingChoice;
+  const before = pending?.type === 'healTarget' ? pending.amount : null;
+  const source = pending?.meta?.sourceNumber || pending?.sourceNumber || state.hbp09ResolvingSupport;
+  const zone = action.zone || action.targetZone;
+  if (pending?.type === 'healTarget' && source && cardHasName(map.get(source), '牛丼')) {
+    const u = state.players[playerIndex].zones[zone];
+    if (topCard(u)?.number === 'hBP09-031') {
+      const c = HBP09.context(state, playerIndex, 'hBP09-031', zone);
+      if (HBP09.once(state, c, `gyudon-heal:${topCard(u).id}`)) pending.amount = Number(pending.amount) + 100;
+    }
+  }
+  if (!action.skip && pending?.type === 'stageTarget' && /bloom/i.test(pending.effect || '')) {
+    const archiveCard = state.players[playerIndex].archive.find(card => card.id === pending.meta?.cardId);
+    if (archiveCard) archiveCard.hbp09FromArchive = true;
+  }
+  const result = hbp09Legacy_resolveChoice(state, playerIndex, action, map, random);
+  if (before != null && pending) pending.amount = before;
+  return result;
+}
+function effectiveArtCost(stageUnit, art, state, player, zone, map) {
+  const base = hbp09Legacy_effectiveArtCost(stageUnit, art, state, player, zone, map);
+  if (activeModifiers(stageUnit, 'freeArts', state.turn).length) return base;
+  return HBP09.artCost(base, stageUnit, art, state, player, zone, map);
+}
+function effectiveBatonCost(state, playerIndex, stageUnit, zone, map) {
+  const base = hbp09Legacy_effectiveBatonCost(state, playerIndex, stageUnit, zone, map);
+  return Math.max(0, base - (topCard(stageUnit)?.number === 'hBP09-015' && stageUnitCount(state.players[playerIndex]) >= 3 ? 1 : 0));
+}
+function hbp09WithoutNewAttachments(u) { return u ? { ...u, attachments: (u.attachments || []).filter(a => !isHbp09(a.number)) } : u; }
+function attachmentHpBonus(stageUnit, map, zone = '', player = null) {
+  const base = hbp09Legacy_attachmentHpBonus(hbp09WithoutNewAttachments(stageUnit), map, zone, player);
+  const card = unitCard(stageUnit, map);
+  const extra = cardHasName(card, 'カエラ・コヴァルスキア') && (cardIsBuzz(card) || card?.stage === '2nd') ? 40 * (stageUnit?.attachments || []).filter(a => a.number === 'hBP09-106').length : 0;
+  return base + extra;
+}
+function holomemHpBonus(stageUnit, map, zone = '', player = null) {
+  if (isHbp09(topCard(stageUnit)?.number)) return topCard(stageUnit)?.number === 'hBP09-025' && map.get(player?.oshi?.number)?.stageSkill ? 20 : 0;
+  return hbp09Legacy_holomemHpBonus(stageUnit, map, zone, player);
+}
+function attachmentArtsBonus(stageUnit, map, turn, zone = '', player = null, opponent = null) {
+  return hbp09Legacy_attachmentArtsBonus(hbp09WithoutNewAttachments(stageUnit), map, turn, zone, player, opponent);
+}
+function giftArtsBonus(state, playerIndex, sourceZone, map) {
+  return hbp09Legacy_giftArtsBonus(state, playerIndex, sourceZone, map) + HBP09.artsPassive(state, playerIndex, sourceZone, map);
+}
+function giftDamageAdjustment(state, targetPlayerIndex, targetZone, sourcePlayerIndex, sourceZone, kind, map) {
+  const base = hbp09Legacy_giftDamageAdjustment(state, targetPlayerIndex, targetZone, sourcePlayerIndex, sourceZone, kind, map);
+  return { ...base, adjustment: base.adjustment + HBP09.defense(state, targetPlayerIndex, targetZone, sourcePlayerIndex, sourceZone, kind, map) };
+}
+function effectiveCheerColors(player, stageUnit, cheer, map) {
+  const colors = hbp09Legacy_effectiveCheerColors(player, stageUnit, cheer, map);
+  if (unitCard(stageUnit, map)?.stage === '2nd' && cardHasName(unitCard(stageUnit, map), '常闇トワ') && (stageUnit.attachments || []).some(a => a.number === 'hBP09-108') && colors.includes('藍') && !colors.includes('紫')) return [...colors, '紫'];
+  return colors;
+}
+function attachmentTargets(player, attachment, map) {
+  let options = hbp09Legacy_attachmentTargets(player, attachment, map);
+  if (attachment.number === 'hBP09-111') return options.filter(zone => cardHasName(unitCard(player.zones[zone], map), 'カエラ・コヴァルスキア'));
+  if (HBP09.arms(attachment)) {
+    for (const {zone, unit: current} of stageEntries(player)) {
+      if (topCard(current)?.number !== 'hBP09-044') continue;
+      const held = current.attachments.filter(a => map.get(a.number)?.typeCode === 'supportTool');
+      if (held.length === 1 && !options.includes(zone)) options.push(zone);
+    }
+  }
+  return options;
+}
+function queueAttachmentEntryEffects(state, playerIndex, targetZone, attachment, map, random, source = 'hand') {
+  hbp09Legacy_queueAttachmentEntryEffects(state, playerIndex, targetZone, attachment, map, random, source);
+  HBP09.onAttach(state, playerIndex, targetZone, attachment, map);
+}
+function commitSupport(state, playerIndex, cardInstance, card) {
+  const result = hbp09Legacy_commitSupport(state, playerIndex, cardInstance, card);
+  state.hbp09ResolvingSupport = card.number;
+  const map = HBP09_MAPS.get(state);
+  if (map) HBP09.onSupport(state, playerIndex, card, map);
+  return result;
+}
+function queueGiftOshiSkillEffects(state, playerIndex, skill, kind, map) {
+  hbp09Legacy_queueGiftOshiSkillEffects(state, playerIndex, skill, kind, map);
+  HBP09.onOshi(state, playerIndex, map);
+}
+function queueGiftDamagedTriggers(state, targetPlayerIndex, targetZone, sourcePlayerIndex, damage, kind, map, sourceCardNumber = '') {
+  hbp09Legacy_queueGiftDamagedTriggers(state, targetPlayerIndex, targetZone, sourcePlayerIndex, damage, kind, map, sourceCardNumber);
+  HBP09.onDamaged(state, targetPlayerIndex, targetZone, sourcePlayerIndex, damage, kind, map);
+}
+function queueGiftKnockoutEffects(state, ownerIndex, defeated, defeatedCard, map, sourcePlayerIndex, options, pendingEffects) {
+  // The legacy engine already has a hBP09-037 preview resolver. Suppress only
+  // that old branch; every other previous-set handler remains available.
+  const attacker = state.players[sourcePlayerIndex]?.zones?.[options.sourceZone];
+  const replaced = topCard(attacker)?.number === 'hBP09-037';
+  hbp09Legacy_queueGiftKnockoutEffects(state, ownerIndex, defeated, defeatedCard, map, sourcePlayerIndex, options, pendingEffects);
+  HBP09.onDown(state, ownerIndex, defeated, defeatedCard, map, sourcePlayerIndex, options, pendingEffects);
+}
+function queueArtKnockoutEffects(state, effect, targetCard, damage, remainingHpBefore, map, random) {
+  hbp09Legacy_queueArtKnockoutEffects(state, effect, targetCard, damage, remainingHpBefore, map, random);
+  HBP09.artDown(state, effect, map);
+}
+function finishTurn(state, playerIndex, map) {
+  if (HBP09.endPerformance(state, playerIndex, map)) return;
+  return hbp09Legacy_finishTurn(state, playerIndex, map);
+}
+function returnCollabToBack(player, map) {
+  const source = player.zones.collab;
+  const exception = topCard(source)?.number === 'hBP09-020';
+  const result = hbp09Legacy_returnCollabToBack(player, map);
+  if (exception && source) { source.rested = false; return true; }
+  return result;
+}
+function stageMatchesRule(stageUnit, zone, rule, map, player = null) {
+  const additional = stageUnit?.hbp09Stage;
+  if (additional && additional.expiresTurn >= Number(map.gameState?.turn || Infinity) && rule.stages?.includes(additional.stage)) {
+    return hbp09Legacy_stageMatchesRule(stageUnit, zone, { ...rule, stages: undefined }, map, player);
+  }
+  return hbp09Legacy_stageMatchesRule(stageUnit, zone, rule, map, player);
+}
+function healStageUnit(state, playerIndex, zone, amount, map, sourceIsOwn = true) {
+  const current = state.players[playerIndex].zones[zone];
+  if (sourceIsOwn && topCard(current)?.number === 'hBP09-031' && cardHasName(map.get(state.hbp09ResolvingSupport), '牛丼')) {
+    const c = HBP09.context(state, playerIndex, 'hBP09-031', zone);
+    if (HBP09.once(state, c, `gyudon-heal:${topCard(current).id}`)) amount = Number(amount) + 100;
+  }
+  return hbp09Legacy_healStageUnit(state, playerIndex, zone, amount, map, sourceIsOwn);
+}
+function cardHasTag(card, tag) {
+  if (hbp09Legacy_cardHasTag(card, tag)) return true;
+  // The old importer split on whitespace and stored '#FLOW', 'GLOW'.
+  // Join continuation tokens, never combine two separate # tags.
+  const tags = [];
+  for (const token of card?.tags || []) {
+    if (String(token).startsWith('#') || !tags.length) tags.push(String(token));
+    else tags[tags.length - 1] += ' ' + token;
+  }
+  return tags.some(value => normalizeCardName(value) === normalizeCardName(tag));
+}
+// END HBP09 EXECUTABLE BRIDGE v1
 

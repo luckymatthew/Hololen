@@ -82,7 +82,7 @@ function powerCards(prefix, count) {
 test("all 155 pre-hBP09 Oshi retain their exact cost and activation coverage", () => {
   // Retain every prior count and behavior assertion. New catalog-only Oshi are
   // verified independently below rather than silently claiming implementation.
-  const oshiCards = cards.filter((card) => card.group === "oshi" && !CATALOG_ONLY_OSHI.includes(card.number));
+  const oshiCards = cards.filter((card) => card.group === "oshi" && !card.number.startsWith("hBP09-"));
   assert.equal(oshiCards.length, 155);
   assert.equal(oshiCards.filter((card) => card.oshiSkill).length, 155);
   assert.equal(oshiCards.filter((card) => card.spOshiSkill).length, 145);
@@ -111,45 +111,37 @@ test("all 155 pre-hBP09 Oshi retain their exact cost and activation coverage", (
   assert.equal(oshiCards.filter((card) => card.spOshiSkill && isReactiveOshiSkill(card.number, "sp")).length, 16);
 });
 
-test("all seven hBP09 Oshi preserve official metadata without exposing unimplemented activations", () => {
+test("all seven hBP09 Oshi preserve official costs and expose implemented activation windows", () => {
   const incoming = cards.filter((card) => card.group === "oshi" && card.number.startsWith("hBP09-"));
-  assert.deepEqual(incoming.map((card) => card.number).sort(), [...CATALOG_ONLY_OSHI].sort());
   assert.equal(incoming.length, 7);
   assert.equal(cards.filter((card) => card.group === "oshi").length, 162);
+  assert.deepEqual(CATALOG_ONLY_OSHI, []);
+  assert.deepEqual(incoming.map(c => c.number).sort(), Array.from({length: 7}, (_,i) => `hBP09-${String(i+1).padStart(3,'0')}`));
   for (const card of incoming) {
-    assert.equal(card.simulationStatus, "not-audited");
-    assert.equal(card.effectLanguage, "ja");
-    assert.deepEqual(enrichOshiCardMetadata(card), card);
-    for (const [kind, field] of [["oshi", "oshiSkill"], ["sp", "spOshiSkill"]]) {
-      assert.equal(isActivatableOshiSkill(card.number, kind), false);
-      assert.equal(isReactiveOshiSkill(card.number, kind), false);
-      assert.equal(oshiSkillPowerCost(card.number, kind), null);
-      const skill = card[field];
-      if (skill) {
-        assert.ok(Number.isInteger(skill.holoPowerCost) || skill.holoPowerCost === "X");
-        assert.match(skill.timing, new RegExp(`Holo Power -${skill.holoPowerCost}`));
-      }
-    }
-    const host = player("Catalog", card.number, { holoPower: powerCards("catalog-power", 10) });
-    host.zones.center = stageUnit("catalog-center", "hBP07-030");
-    const guest = player("Guest", "hBP08-001");
-    guest.zones.center = stageUnit("guest-center", "hBP08-012");
-    for (const type of ["oshiSkill", "spOshiSkill"]) {
-      const state = playingState(host, guest);
-      const before = structuredClone(state);
-      assert.throws(() => applyAction(state, 0, { type }, cards));
-      assert.deepEqual(state, before, `${card.number}: rejected activation changed game state`);
-    }
+    const enriched = enrichOshiCardMetadata(card);
+    assert.equal(enriched.number, card.number);
+    assert.equal(enriched.oshiSkill.name, card.oshiSkill.name);
+    assert.equal(enriched.oshiSkill.effect, card.oshiSkill.effect);
+    assert.equal(oshiSkillPowerCost(card.number, 'oshi'), card.oshiSkill.holoPowerCost);
+    assert.match(enriched.oshiSkill.timing, new RegExp(`Holo Power -${card.oshiSkill.holoPowerCost}`));
+    assert.equal(isReactiveOshiSkill(card.number), card.number === 'hBP09-005');
+    assert.equal(isActivatableOshiSkill(card.number), card.number !== 'hBP09-005');
+    assert.equal(isActivatableOshiSkill(card.number, 'sp'), card.number === 'hBP09-006');
+    if (card.spOshiSkill) assert.equal(oshiSkillPowerCost(card.number, 'sp'), card.spOshiSkill.holoPowerCost);
   }
+  // Actual costs, state mutations and invalid actions are independently exercised
+  // through applyAction in hbp09-executable.test.mjs, not inferred from this table.
 });
 
 test("every active non-Birthday Oshi skill has an engine resolver branch", () => {
-  const normalStart = engineSource.indexOf("function resolveNormalOshiSkill");
-  const spStart = engineSource.indexOf("function resolveSpOshiSkill");
-  const activationStart = engineSource.indexOf("function activateOshiSkill");
+  const normalStart = engineSource.indexOf("function hbp09Legacy_resolveNormalOshiSkill");
+  const spStart = engineSource.indexOf("function hbp09Legacy_resolveSpOshiSkill");
+  const activationStart = engineSource.indexOf("function hbp09Legacy_activateOshiSkill");
   const normalResolver = engineSource.slice(normalStart, spStart);
   const spResolver = engineSource.slice(spStart, activationStart);
-  const oshiCards = cards.filter((card) => card.group === "oshi");
+  const oshiCards = cards.filter((card) => card.group === "oshi" && !card.number.startsWith("hBP09-"));
+  const newPrograms = readFileSync(new URL("../lib/simulator/hbp09/programs.mjs", import.meta.url), "utf8");
+  for (const key of ["001:oshi", "002:oshi", "003:oshi", "004:oshi", "006:oshi", "006:sp", "007:oshi"]) assert.ok(newPrograms.includes(key), `${key} executable program missing`);
 
   for (const card of oshiCards.filter((candidate) => !candidate.number.startsWith("hBD24-") && isActivatableOshiSkill(candidate.number, "oshi"))) {
     if (card.number === "hEB01-003") assert.match(normalResolver, /number === KOYORI_OSHI/u);

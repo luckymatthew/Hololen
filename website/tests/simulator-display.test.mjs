@@ -127,7 +127,7 @@ test("browser zoom is inverse-compensated against a stable 100 percent canvas", 
 test("back row is artwork-first and mobile Holomen expose a live status control", () => {
   assert.match(simulatorSource, /compact\s+turn=\{turn\}/);
   assert.match(simulatorSource, /className="sim-stage-card-inspect"/);
-  assert.match(simulatorSource, /aria-label=\{`查看\$\{card\.name\}完整狀態`\}>狀態<\/button>/);
+  assert.match(simulatorSource, /aria-label=\{`查看\$\{effectText\(card, card\.name\)\}完整狀態`\}>狀態<\/button>/);
   assert.match(simulatorSource, /liveState=\{inspectedLiveState\}/);
   assert.match(simulatorSource, /playerIndex: liveReference\.playerIndex/);
   assert.match(simulatorSource, /hostNumber: hostCard\?\.number/);

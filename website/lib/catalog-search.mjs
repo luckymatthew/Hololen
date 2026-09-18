@@ -1,4 +1,4 @@
-import { cardText, effectText, keywordLabel } from "./card-terminology.mjs";
+import { cardText, cardTagText, effectText, keywordLabel } from "./card-terminology.mjs";
 
 export function normalizeSearch(value) {
   return String(value ?? "").normalize("NFKC").toLocaleLowerCase().replace(/[‐‑‒–—−]/g, "-").replace(/\s+/g, " ").trim();
@@ -13,9 +13,9 @@ export function cardSearchText(card) {
     ...skills.flatMap(skill => [skill?.name, skill?.effect]),
     ...(card.arts || []).flatMap(art => [art.name, art.effect]),
   ].filter(Boolean).join(" ");
-  const reviewed = [card.abilityText, card.extra, ...skills.map(skill => skill?.effect),
-    ...(card.arts || []).map(art => art.effect)].filter(Boolean).map(value => effectText(card, value)).join(' ');
-  return normalizeSearch(`${raw} ${cardText(raw)} ${reviewed}`);
+  const reviewed = [card.name, card.abilityText, card.extra, ...skills.flatMap(skill => [skill?.name, skill?.effect]),
+    ...(card.arts || []).flatMap(art => [art.name, art.effect])].filter(Boolean).map(value => effectText(card, value)).join(' ');
+  return normalizeSearch(`${raw} ${cardText(raw)} ${reviewed} ${(card.tags || []).map(cardTagText).join(" ")}`);
 }
 
 export function matchesSearch(text, query) {
