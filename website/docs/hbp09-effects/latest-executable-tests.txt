@@ -2,7 +2,7 @@
 # Subtest: Makeup extra Bloom at performance-end changes the stack and keeps physical cards
 not ok 46 - Makeup extra Bloom at performance-end changes the stack and keeps physical cards
   ---
-  duration_ms: 2.27264
+  duration_ms: 1.837628
   type: 'test'
   location: '/home/runner/work/Hololen/Hololen/website/tests/hbp09-extra-cases.mjs:42:3'
   failureType: 'testCodeFailure'
@@ -29,7 +29,7 @@ not ok 46 - Makeup extra Bloom at performance-end changes the stack and keeps ph
 # Subtest: Makeup optional extra Bloom can be declined
 not ok 47 - Makeup optional extra Bloom can be declined
   ---
-  duration_ms: 1.620906
+  duration_ms: 1.190605
   type: 'test'
   location: '/home/runner/work/Hololen/Hololen/website/tests/hbp09-extra-cases.mjs:48:3'
   failureType: 'testCodeFailure'
@@ -50,28 +50,28 @@ not ok 47 - Makeup optional extra Bloom can be declined
 # Subtest: Snow Moon end effect archives the actual tool and draws exactly one
 ok 48 - Snow Moon end effect archives the actual tool and draws exactly one
   ---
-  duration_ms: 1.538294
+  duration_ms: 1.090241
   type: 'test'
   ...
 # Subtest: Snow Moon does not trigger without an Arts event this turn
 ok 49 - Snow Moon does not trigger without an Arts event this turn
   ---
-  duration_ms: 3.331074
+  duration_ms: 2.486783
   type: 'test'
   ...
 # Subtest: receiving nonlethal 100 Arts with Subaru011 draws two after damage
 ok 50 - receiving nonlethal 100 Arts with Subaru011 draws two after damage
   ---
-  duration_ms: 0.754856
+  duration_ms: 0.598794
   type: 'test'
   ...
-  duration_ms: 0.587268
+  duration_ms: 0.473126
   type: 'test'
   ...
 # Subtest: Towa blue cheer gains purple only when Break Mic is on 2nd Towa
 ok 53 - Towa blue cheer gains purple only when Break Mic is on 2nd Towa
   ---
-  duration_ms: 0.779051
+  duration_ms: 0.560624
   type: 'test'
   ...
 1..53
@@ -82,4 +82,4 @@ ok 53 - Towa blue cheer gains purple only when Break Mic is on 2nd Towa
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 270.152015
+# duration_ms 214.085533
