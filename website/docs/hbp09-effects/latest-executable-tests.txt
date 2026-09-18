@@ -1,0 +1,18 @@
+  duration_ms: 0.4696
+  type: 'test'
+  ...
+# Subtest: program data are plain JSON and no empty fake resolvers are registered
+ok 38 - program data are plain JSON and no empty fake resolvers are registered
+  ---
+  duration_ms: 0.781603
+  type: 'test'
+  ...
+1..38
+# tests 38
+# suites 0
+# pass 38
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 228.60923
