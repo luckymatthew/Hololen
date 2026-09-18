@@ -6,11 +6,11 @@ on:
       - .github/workflows/hbp09-effects-test.yml
       - website/lib/simulator/hbp09/**
       - website/scripts/apply-hbp09-effects.py
+      - website/scripts/hbp09-test-contracts.py
       - website/scripts/package-hbp09-effects.py
-      - website/scripts/hbp09-edits/**
       - website/tests/hbp09*.mjs
 permissions:
-  contents: write
+  contents: read
 concurrency:
   group: hbp09-effects-tests
   cancel-in-progress: true
@@ -28,84 +28,38 @@ jobs:
           node-version: '22'
           cache: npm
           cache-dependency-path: website/package-lock.json
-      - name: Apply reviewed exact source corrections
+      - name: Check committed executable sources
         run: |
           mkdir -p hbp09-results
-          python - <<'PY'
-          import pathlib,json
-          for file in sorted(pathlib.Path('website/scripts/hbp09-edits').glob('*.json')):
-            for edit in json.loads(file.read_text()):
-              path=pathlib.Path(edit['path'])
-              if not str(path).startswith('website/') or '..' in path.parts:raise ValueError('Bad edit path')
-              text=path.read_text();old=edit['old'];new=edit['new']
-              if new in text:continue
-              if text.count(old)!=1:raise ValueError('Source drift: '+str(file)+' '+old[:100])
-              path.write_text(text.replace(old,new,1))
-          PY
-      - name: Syntax check executable modules
-        run: |
           for file in website/lib/simulator/hbp09/*.mjs; do node --check "$file"; done
-          python -m py_compile website/scripts/apply-hbp09-effects.py
-      - name: Commit reviewed source corrections
+          python -m py_compile website/scripts/apply-hbp09-effects.py website/scripts/hbp09-test-contracts.py
+      - name: Apply exact integration and check repeat safety
         run: |
-          git config user.name 'Hololens Effects'
-          git config user.email '108892610+luckymatthew@users.noreply.github.com'
-          git add website/lib/simulator/hbp09 website/scripts/apply-hbp09-effects.py website/tests/hbp09*.mjs
-          if ! git diff --cached --quiet; then
-            git commit -m 'Apply reviewed hBP09 source corrections'
-            git pull --rebase origin codex/hbp09-executable-effects-20260918
-            git push origin HEAD:codex/hbp09-executable-effects-20260918
-          fi
-      - name: Apply exact reducer integration
-        run: |
-          python website/scripts/apply-hbp09-effects.py --apply > hbp09-results/integration.json 2> hbp09-results/integration-error.txt || { cat hbp09-results/integration-error.txt; exit 1; }
+          python website/scripts/apply-hbp09-effects.py --apply > hbp09-results/integration.json
           node --check website/lib/simulator/engine.mjs
           node --check website/lib/simulator/effect-catalog.mjs
           python website/scripts/apply-hbp09-effects.py --apply > hbp09-results/integration-repeat.json
-      - name: Real hBP09 reducer tests
+      - name: Run real hBP09 state-transition tests
+        working-directory: website
         run: |
-          cd website
           node --test tests/hbp09-executable.test.mjs > ../hbp09-results/executable-tests.txt 2>&1 || { cat ../hbp09-results/executable-tests.txt; exit 1; }
           tail -15 ../hbp09-results/executable-tests.txt
-      - name: Install pinned project dependencies
+      - name: Install project dependencies
         working-directory: website
         run: npm ci
-      - name: Existing website regression suite
+      - name: Full regression, TypeScript and production build
         working-directory: website
         run: |
-          npm test > ../hbp09-results/full-regression.txt 2>&1 || { tail -60 ../hbp09-results/full-regression.txt; exit 1; }
+          npm test > ../hbp09-results/full-regression.txt 2>&1 || { tail -80 ../hbp09-results/full-regression.txt; exit 1; }
           tail -30 ../hbp09-results/full-regression.txt
-      - name: Build native-compatible reference bundle
+      - name: Build and verify native-reference parity
         working-directory: website
         run: |
           mkdir -p ../hbp09-results/native-reference
           ./node_modules/.bin/esbuild lib/simulator/engine.mjs --bundle --format=iife --global-name=HololensHbp09Rules --target=es2020 --outfile=../hbp09-results/native-reference/hbp09-rules.iife.js
-          if [ -f tests/hbp09-native-parity.mjs ]; then node tests/hbp09-native-parity.mjs > ../hbp09-results/native-parity.json; fi
-      - name: Package executable deliverables
-        run: |
-          if [ -f website/scripts/package-hbp09-effects.py ]; then python website/scripts/package-hbp09-effects.py; fi
-      - name: Persist test evidence on isolated work branch
-        if: always()
-        run: |
-          python - <<'PY'
-          import pathlib
-          out=pathlib.Path('website/docs/hbp09-effects');out.mkdir(parents=True,exist_ok=True)
-          for name in ['executable-tests.txt','full-regression.txt','integration-error.txt']:
-            p=pathlib.Path('hbp09-results')/name
-            if not p.exists():continue
-            lines=p.read_text().splitlines();keep=set(range(max(0,len(lines)-18),len(lines)))
-            for i,line in enumerate(lines):
-              if 'not ok' in line or 'Error:' in line or 'error TS' in line:keep.update(range(max(0,i-2),min(len(lines),i+38)))
-            (out/('latest-'+name)).write_text('\n'.join(lines[i] for i in sorted(keep)))
-          PY
-          git add website/docs/hbp09-effects/latest-*.txt
-          if ! git diff --cached --quiet; then
-            git commit -m 'Record hBP09 reducer and compatibility test evidence'
-            git stash push --include-untracked -m runner-only
-            git pull --rebase origin codex/hbp09-executable-effects-20260918
-            git push origin HEAD:codex/hbp09-executable-effects-20260918
-            git stash pop || true
-          fi
+          node tests/hbp09-native-parity.mjs > ../hbp09-results/native-parity.json
+      - name: Package and retest the self-contained reference
+        run: python website/scripts/package-hbp09-effects.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
