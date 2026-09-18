@@ -1,0 +1,41 @@
+name: Inspect hBP09 effect integration
+on:
+  push:
+    branches: [codex/hbp09-executable-effects-20260918]
+    paths: [.github/workflows/hbp09-effects-inspect.yml]
+permissions:
+  contents: write
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate reviewable source inventory
+        run: |
+          python - <<'PY'
+          import json,pathlib,re
+          root=pathlib.Path('website');out=root/'docs/hbp09-effects';out.mkdir(parents=True,exist_ok=True)
+          cards=json.loads((root/'public/hbp09-cards.json').read_text())['cards']
+          lines=[]
+          for c in cards:
+            if not c['number'].startswith('hBP09-'):continue
+            lines.append(f"\n## {c['number']} {c['jpName']} [{c.get('stage')}] {c.get('group')} HP {c.get('hp')} LIFE {c.get('life')}")
+            for key in ['stageSkill','oshiSkill','spOshiSkill','keyword']:
+              s=c.get(key)
+              if s:lines.append(f"{key}: {json.dumps(s,ensure_ascii=False)}")
+            for i,a in enumerate(c.get('arts',[])):lines.append(f"arts.{i}: {json.dumps(a,ensure_ascii=False)}")
+            for key in ['abilityText','extra']:
+              if c.get(key):lines.append(key+': '+c[key])
+          (out/'cards.md').write_text('\n'.join(lines))
+          text=(root/'lib/simulator/engine.mjs').read_text();lines=text.splitlines()
+          outline=[f'{i+1}: {s}' for i,s in enumerate(lines) if re.match(r'^(export )?(async )?function |^(export )?const [A-Z_]+',s)]
+          (out/'engine-outline.txt').write_text('\n'.join(outline))
+          print(f'{len(cards)} cards; {len(lines)} engine lines')
+          PY
+      - name: Commit derived source inspection
+        run: |
+          git config user.name 'Hololens Effects'
+          git config user.email '108892610+luckymatthew@users.noreply.github.com'
+          git add website/docs/hbp09-effects
+          git commit -m 'Add hBP09 source text and engine seam inventory' || true
+          git push origin HEAD:codex/hbp09-executable-effects-20260918
