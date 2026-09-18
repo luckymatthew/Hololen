@@ -1,0 +1,593 @@
+142:     player.shionRerollUsesTurn = Number(player.shionRerollUsesTurn || 0);
+143:     player.shionRerollUsesCount = Number(player.shionRerollUsesCount || 0);
+144:     player.spOshiSkillUsed = Boolean(player.spOshiSkillUsed);
+145:     if (!player.turnEvents || typeof player.turnEvents !== "object") player.turnEvents = { turn: 0, supports: [], arts: [], bloomCount: 0, cheerArchived: 0, deckArchived: 0, stageReturned: 0 };
+146:     if (!Array.isArray(player.removed)) player.removed = [];
+147:     if (!player.namedUsageTurns || typeof player.namedUsageTurns !== "object") player.namedUsageTurns = {};
+148:     if (!Array.isArray(player.modifiers)) player.modifiers = [];
+149:     player.koyoriArtsBonusTurn = Number(player.koyoriArtsBonusTurn || 0);
+150:     player.bonusBloomTurn = Number(player.bonusBloomTurn || 0);
+151:     player.bonusBloomUsedTurn = Number(player.bonusBloomUsedTurn || 0);
+152:     player.bonusBloomTargetId = String(player.bonusBloomTargetId || "");
+153:     for (const slot of STAGE_SLOTS) {
+154:       const stageUnit = player.zones[slot];
+155:       if (!stageUnit) continue;
+156:       if (!Number.isInteger(stageUnit.enteredTurn)) stageUnit.enteredTurn = 0;
+157:       if (!Number.isInteger(stageUnit.bloomedTurn)) stageUnit.bloomedTurn = 0;
+158:       if (!Number.isInteger(stageUnit.collabbedTurn)) stageUnit.collabbedTurn = 0;
+159:       if (!Number.isInteger(stageUnit.koyoriMascotBonusTurn)) stageUnit.koyoriMascotBonusTurn = 0;
+160:       if (!Array.isArray(stageUnit.attachments)) stageUnit.attachments = [];
+161:       if (!Array.isArray(stageUnit.modifiers)) stageUnit.modifiers = [];
+162:       stageUnit.skipUnrestTurn = Number(stageUnit.skipUnrestTurn || 0);
+
+272:     shionRerollUsesTurn: 0,
+273:     shionRerollUsesCount: 0,
+274:     spOshiSkillUsed: false,
+275:     turnEvents: { turn: 0, supports: [], arts: [], bloomCount: 0, cheerArchived: 0, deckArchived: 0, stageReturned: 0 },
+276:     namedUsageTurns: {},
+277:     modifiers: [],
+278:     koyoriArtsBonusTurn: 0,
+279:     bonusBloomTurn: 0,
+280:     bonusBloomUsedTurn: 0,
+281:     bonusBloomTargetId: "",
+282:   };
+283: }
+284: 
+285: function initializeGame(state, cards, random) {
+286:   state.players = state.players.map((player, index) => materializePlayer(player, index, cards, random));
+287:   state.status = "setup";
+288:   state.phase = "setup";
+289:   state.activePlayer = null;
+290:   state.firstPlayer = random() < 0.5 ? 0 : 1;
+291:   appendLog(state, `雙方牌組已自動洗牌並各抽 7 張；${state.players[state.firstPlayer].name} 成為先攻。`);
+292: }
+
+626: }
+627: 
+628: function currentTurnEvents(player, turn) {
+629:   if (!player.turnEvents || Number(player.turnEvents.turn || 0) !== turn) player.turnEvents = { turn, supports: [], arts: [], bloomCount: 0, cheerArchived: 0, deckArchived: 0, stageReturned: 0 };
+630:   return player.turnEvents;
+631: }
+632: 
+633: function wasKnockedOutDuringPreviousOpponentTurn(state, ownerIndex, name = "") {
+634:   const previousTurn = Number(state.turn || 0) - 1;
+635:   return (state.knockouts || []).some((entry) => entry.turn === previousTurn
+636:     && entry.ownerIndex === ownerIndex
+637:     && entry.sourcePlayerIndex !== ownerIndex
+638:     && (!name || cardHasName(entry.card, name)));
+639: }
+640: 
+641: function isKoyoriCard(card) {
+642:   return cardAliases(card).some((name) => name.includes("博衣こより"));
+643: }
+644: 
+645: function cardCodes(cards) {
+646:   return cards.map((instance) => instance.number).join("、") || "沒有牌";
+
+2245:   }
+2246:   if (card.number === "hSD13-011") {
+2247:     const cards = state.players[playerIndex].zones[zone].stack.slice(0, -1).filter(instance => map.get(instance.number)?.group === "holomem" && map.get(instance.number)?.stage === "Debut");
+2248:     if (cards.length) enqueueCardSelection(state, { playerIndex, cards, min: 1, max: 1, optional: true, effect: "gigiBloomDebutCost", source: "stack", prompt: "I am Gonathan G.：可存檔來源下方1張Debut，對對手聯動造成20特殊傷害。", meta: { sourceZone: zone } });
+2249:     return;
+2250:   }
+2251:   if (card.number === "hSD14-007") {
+2252:     const center = state.players[playerIndex].zones.center;
+2253:     if (center) addStageModifier(center, "arts", 10, state.turn, card.number);
+2254:     return;
+2255:   }
+2256:   if (card.number === "hSD15-009") {
+2257:     if (zone === "center") addStageModifier(state.players[playerIndex].zones[zone], "arts", 20, state.turn, card.number);
+2258:     return;
+2259:   }
+2260:   if (card.number === "hBP06-042") {
+2261:     enqueueHolomemHandArchive(state, { playerIndex, cards: state.players[playerIndex].hand,
+2262:       min: 1, max: 1, effect: "handToArchive", optional: false,
+2263:       prompt: "Strawberry Princess：先存檔 1 張手牌，再抽 1 張牌。" }, card, map);
+2264:     enqueueEffect(state, { type: "drawPlayerCards", playerIndex, amount: 1, label: "Strawberry Princess" });
+2265:   }
+
+2453:         const bloomCard = map.get(instance.number);
+2454:         return bloomCard?.stage === "1st" && stageEntries(player).some(({ unit: target }) => cardHasTag(unitCard(target, map), "#ID2期生") && unitCard(target, map)?.stage === "Debut" && talentMatches(bloomCard, unitCard(target, map)) && Number(target.enteredTurn || 0) !== state.turn && Number(target.bloomedTurn || 0) !== state.turn && Number(bloomCard.hp || 0) > Number(target.damage || 0));
+2455:       });
+2456:       if (candidates.length > 0) enqueueCardSelection(state, { playerIndex, cards: candidates, min: 0, max: 1, optional: true, effect: "archiveBloomCard", source: "archive", prompt: "限界化！！：可揀存檔區 1 張 1st Holomen；下一步直接按 #ID2期生 Debut 完成 Bloom。", meta: { usageKey } });
+2457:     }
+2458:   } else if (card.number === "hBP04-061") {
+2459:     // Only the SP Oshi skill 「蘇るオリー」 enables this Bloom effect.  That
+2460:     // context is carried by the Oshi Bloom resolver below.
+2461:   } else if (card.number === "hBP08-023") {
+2462:     const source = player.zones[zone];
+2463:     if (source && !source.rested) enqueueOptionChoice(state, { playerIndex, options: [{ id: "use", label: "讓此 Holomen 休息" }], effect: "restSourceThenHeal", optional: true, prompt: "一起相處的時間：可讓此 Holomen 休息；若有 2 位休息中的 #Justice，再回復 50 HP。", meta: { sourceId: topCard(source)?.id || "" } });
+2464:   } else if (card.number === "hBP08-039") {
+2465:     if (stageCheerColorCount(player, map, "藍") >= 6) {
+2466:       const options = stageOptionsMatching(player, map, { names: ["フワワ・アビスガード", "Fuwawa Abyssgard"], rested: true });
+2467:       if (options.length > 0) enqueueStageTarget(state, { playerIndex, options, effect: "unrest", optional: false, prompt: "來自深淵的信賴：選擇 1 位休息中的 Fuwawa Abyssgard，變為活動狀態。" });
+2468:     }
+2469:   } else if (card.number === "hSD13-006") {
+2470:     const options = stageOptionsMatching(player, map, { tags: ["#Justice"] });
+2471:     if (options.length > 0) enqueueStageTarget(state, { playerIndex, options, effect: "addModifier", prompt: "Bring It On!：直接按自己 1 位 #Justice Holomen，本回合 Arts +20。", meta: { kind: "arts", amount: 20, sourceNumber: card.number } });
+2472:   } else if (card.number === "hBP08-054") {
+2473:     const oshiColors = map.get(player.oshi?.number)?.colors || [];
+
+2477:     }
+2478:   } else if (card.number === "hEB01-022") {
+2479:     const candidates = player.archive.filter((instance) => instance.number === ASSISTANT_CARD);
+2480:     if (candidates.length > 0) enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: Math.min(2, candidates.length), prompt: "Bloom：可揀 1–2 張「こよりの助手くん」返回手牌。", effect: "archiveAssistants", source: "archive", optional: true });
+2481:   } else if (card.number === "hEB01-023") {
+2482:     const candidates = player.archive.filter((instance) => isKoyoriCard(map.get(instance.number)));
+2483:     if (candidates.length > 0) enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: Math.min(4, candidates.length), prompt: "Bloom：可按次序揀 1–4 張「博衣こより」放到牌庫底。", effect: "koyoriBottom", source: "archive", optional: true, meta: { zone } });
+2484:   } else if (card.number === "hBP04-012") {
+2485:     const candidates = player.mainDeck.filter((instance) => cardHasTag(map.get(instance.number), "#こよラボ") && map.get(instance.number)?.group === "support");
+2486:     if (candidates.length > 0) enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: 1, prompt: "Bloom：公開牌庫中 1 張 #こよラボ 支援卡加入手牌。", effect: "deckToHandShuffle", source: "deck", optional: false });
+2487:     else player.mainDeck = shuffle(player.mainDeck, random);
+2488:   } else if (card.number !== "hBP06-042" && ["bloom", "bloom_effect"].includes(card.keyword?.type)) queueSimpleTriggeredKeyword(state, playerIndex, zone, card, map, random);
+2489: 
+2490:   for (const modifier of (player.modifiers || []).filter((item) => item.kind === "flowGlowBloomCheer" && Number(item.expiresTurn || 0) >= state.turn)) {
+2491:     if (!cardHasTag(card, "#FLOW GLOW") || player.cheerDeck.length === 0) continue;
+2492:     const sourceZone = stageZoneByTopId(player, modifier.rule?.sourceId);
+2493:     if (sourceZone) enqueueEffect(state, { type: "eventCheerTarget", playerIndex, options: [sourceZone], prompt: "Give Me Hype!!：直接按效果來源，附加應援牌庫頂 1 張。" });
+2494:   }
+2495: }
+2496: 
+2497: function queueAttachmentBloomEffects(state, playerIndex, zone, map) {
+
+2480:     if (candidates.length > 0) enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: Math.min(2, candidates.length), prompt: "Bloom：可揀 1–2 張「こよりの助手くん」返回手牌。", effect: "archiveAssistants", source: "archive", optional: true });
+2481:   } else if (card.number === "hEB01-023") {
+2482:     const candidates = player.archive.filter((instance) => isKoyoriCard(map.get(instance.number)));
+2483:     if (candidates.length > 0) enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: Math.min(4, candidates.length), prompt: "Bloom：可按次序揀 1–4 張「博衣こより」放到牌庫底。", effect: "koyoriBottom", source: "archive", optional: true, meta: { zone } });
+2484:   } else if (card.number === "hBP04-012") {
+2485:     const candidates = player.mainDeck.filter((instance) => cardHasTag(map.get(instance.number), "#こよラボ") && map.get(instance.number)?.group === "support");
+2486:     if (candidates.length > 0) enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: 1, prompt: "Bloom：公開牌庫中 1 張 #こよラボ 支援卡加入手牌。", effect: "deckToHandShuffle", source: "deck", optional: false });
+2487:     else player.mainDeck = shuffle(player.mainDeck, random);
+2488:   } else if (card.number !== "hBP06-042" && ["bloom", "bloom_effect"].includes(card.keyword?.type)) queueSimpleTriggeredKeyword(state, playerIndex, zone, card, map, random);
+2489: 
+2490:   for (const modifier of (player.modifiers || []).filter((item) => item.kind === "flowGlowBloomCheer" && Number(item.expiresTurn || 0) >= state.turn)) {
+2491:     if (!cardHasTag(card, "#FLOW GLOW") || player.cheerDeck.length === 0) continue;
+2492:     const sourceZone = stageZoneByTopId(player, modifier.rule?.sourceId);
+2493:     if (sourceZone) enqueueEffect(state, { type: "eventCheerTarget", playerIndex, options: [sourceZone], prompt: "Give Me Hype!!：直接按效果來源，附加應援牌庫頂 1 張。" });
+2494:   }
+2495: }
+2496: 
+2497: function queueAttachmentBloomEffects(state, playerIndex, zone, map) {
+2498:   const player = state.players[playerIndex];
+2499:   const stageUnit = player.zones[zone];
+2500:   const card = unitCard(stageUnit, map);
+
+4363:       }
+4364:     } else if (pending.effect === "fastForwardBloomCard") {
+4365:       if (selected.length) enqueueStageTarget(state, { playerIndex, options: fastForwardBloomTargets(player, map.get(selected[0].number), map, state.turn), effect: "fastForwardBloom", optional: false, prompt: "選擇本回合出場的後排 Debut。", meta: { cardId: selected[0].id } });
+4366:     } else if (pending.effect === "giftArchiveBloomCard") {
+4367:       const selectedCard = selected[0] && map.get(selected[0].number);
+4368:       const options = selectedCard ? bloomTargets(player, selectedCard, map, state.turn) : [];
+4369:       assert(selected[0] && selectedCard && options.length > 0, "存檔區 Bloom 的卡片或目標已改變。 ");
+4370:       enqueueStageTarget(state, { playerIndex, options, effect: "giftArchiveBloom", prompt: "光，再次點亮：直接按牌桌上的合法 Holomen 完成 Bloom。", meta: { cardId: selected[0].id } });
+4371:     } else if (pending.effect === "archiveAssistants") {
+4372:       selected.forEach((card) => {
+4373:         const moved = removeById(player.archive, card.id);
+4374:         assert(moved, "存檔區的卡片已改變。 ");
+4375:         player.hand.push(moved);
+4376:       });
+4377:       appendLog(state, selected.length ? `${player.name} 將 ${selected.length} 張「こよりの助手くん」返回手牌。` : `${player.name} 略過 Bloom 的存檔區回收效果。`);
+4378:     } else if (pending.effect === "koyoriBottom") {
+4379:       selected.forEach((card) => {
+4380:         const moved = removeById(player.archive, card.id);
+4381:         assert(moved, "存檔區的卡片已改變。 ");
+4382:         player.mainDeck.push(moved);
+4383:       });
+
+4366:     } else if (pending.effect === "giftArchiveBloomCard") {
+4367:       const selectedCard = selected[0] && map.get(selected[0].number);
+4368:       const options = selectedCard ? bloomTargets(player, selectedCard, map, state.turn) : [];
+4369:       assert(selected[0] && selectedCard && options.length > 0, "存檔區 Bloom 的卡片或目標已改變。 ");
+4370:       enqueueStageTarget(state, { playerIndex, options, effect: "giftArchiveBloom", prompt: "光，再次點亮：直接按牌桌上的合法 Holomen 完成 Bloom。", meta: { cardId: selected[0].id } });
+4371:     } else if (pending.effect === "archiveAssistants") {
+4372:       selected.forEach((card) => {
+4373:         const moved = removeById(player.archive, card.id);
+4374:         assert(moved, "存檔區的卡片已改變。 ");
+4375:         player.hand.push(moved);
+4376:       });
+4377:       appendLog(state, selected.length ? `${player.name} 將 ${selected.length} 張「こよりの助手くん」返回手牌。` : `${player.name} 略過 Bloom 的存檔區回收效果。`);
+4378:     } else if (pending.effect === "koyoriBottom") {
+4379:       selected.forEach((card) => {
+4380:         const moved = removeById(player.archive, card.id);
+4381:         assert(moved, "存檔區的卡片已改變。 ");
+4382:         player.mainDeck.push(moved);
+4383:       });
+4384:       appendLog(state, selected.length ? `${player.name} 將 ${selected.length} 張「博衣こより」按選擇次序放到牌庫底。` : `${player.name} 略過 Bloom 的牌庫底回收效果。`);
+4385:       if (selected.length === 4) {
+4386:         const supports = player.archive.filter((instance) => {
+
+4367:       const selectedCard = selected[0] && map.get(selected[0].number);
+4368:       const options = selectedCard ? bloomTargets(player, selectedCard, map, state.turn) : [];
+4369:       assert(selected[0] && selectedCard && options.length > 0, "存檔區 Bloom 的卡片或目標已改變。 ");
+4370:       enqueueStageTarget(state, { playerIndex, options, effect: "giftArchiveBloom", prompt: "光，再次點亮：直接按牌桌上的合法 Holomen 完成 Bloom。", meta: { cardId: selected[0].id } });
+4371:     } else if (pending.effect === "archiveAssistants") {
+4372:       selected.forEach((card) => {
+4373:         const moved = removeById(player.archive, card.id);
+4374:         assert(moved, "存檔區的卡片已改變。 ");
+4375:         player.hand.push(moved);
+4376:       });
+4377:       appendLog(state, selected.length ? `${player.name} 將 ${selected.length} 張「こよりの助手くん」返回手牌。` : `${player.name} 略過 Bloom 的存檔區回收效果。`);
+4378:     } else if (pending.effect === "koyoriBottom") {
+4379:       selected.forEach((card) => {
+4380:         const moved = removeById(player.archive, card.id);
+4381:         assert(moved, "存檔區的卡片已改變。 ");
+4382:         player.mainDeck.push(moved);
+4383:       });
+4384:       appendLog(state, selected.length ? `${player.name} 將 ${selected.length} 張「博衣こより」按選擇次序放到牌庫底。` : `${player.name} 略過 Bloom 的牌庫底回收效果。`);
+4385:       if (selected.length === 4) {
+4386:         const supports = player.archive.filter((instance) => {
+4387:           const support = map.get(instance.number);
+
+4374:         assert(moved, "存檔區的卡片已改變。 ");
+4375:         player.hand.push(moved);
+4376:       });
+4377:       appendLog(state, selected.length ? `${player.name} 將 ${selected.length} 張「こよりの助手くん」返回手牌。` : `${player.name} 略過 Bloom 的存檔區回收效果。`);
+4378:     } else if (pending.effect === "koyoriBottom") {
+4379:       selected.forEach((card) => {
+4380:         const moved = removeById(player.archive, card.id);
+4381:         assert(moved, "存檔區的卡片已改變。 ");
+4382:         player.mainDeck.push(moved);
+4383:       });
+4384:       appendLog(state, selected.length ? `${player.name} 將 ${selected.length} 張「博衣こより」按選擇次序放到牌庫底。` : `${player.name} 略過 Bloom 的牌庫底回收效果。`);
+4385:       if (selected.length === 4) {
+4386:         const supports = player.archive.filter((instance) => {
+4387:           const support = map.get(instance.number);
+4388:           return cardHasTag(support, "#こよラボ")
+4389:             && support?.group === "support"
+4390:             && attachmentTargets(player, support, map).some((zone) => isKoyoriCard(map.get(topCard(player.zones[zone])?.number)));
+4391:         });
+4392:         if (supports.length > 0) enqueueCardSelection(state, { playerIndex, cards: supports, min: 1, max: 1, prompt: "已放回 4 張こより：可揀 1 張 #こよラボ 支援卡附加到自己的博衣こより。", effect: "chooseArchiveSupportForAttach", source: "archive", optional: true });
+4393:       }
+4394:     } else if (pending.effect === "chooseArchiveSupportForAttach") {
+
+4420:       }
+4421:     } else if (pending.effect === "kroniiFirstTurnBloomCard") {
+4422:       if (selected.length > 0) enqueueStageTarget(state, { playerIndex, options: ["center"], effect: "kroniiFirstTurnBloom", prompt: "直接按中央 Ouro Kronii，完成首回合特例 Bloom。", meta: { cardId: selected[0].id } });
+4423:     } else if (pending.effect === "archiveBloomCard") {
+4424:       if (selected.length > 0) {
+4425:         const selectedCard = map.get(selected[0].number);
+4426:         const options = stageEntries(player).filter(({ unit: target }) => cardHasTag(unitCard(target, map), "#ID2期生") && unitCard(target, map)?.stage === "Debut" && talentMatches(selectedCard, unitCard(target, map)) && Number(target.enteredTurn || 0) !== state.turn && Number(target.bloomedTurn || 0) !== state.turn && Number(selectedCard?.hp || 0) > Number(target.damage || 0)).map(({ zone }) => zone);
+4427:         assert(options.length > 0, "限界化！！的 Bloom 目標已改變。 ");
+4428:         enqueueStageTarget(state, { playerIndex, options, effect: "archiveBloom", prompt: "直接按 #ID2期生 Debut，使用存檔區卡片完成 Bloom。", meta: { cardId: selected[0].id, usageKey: pending.meta?.usageKey || "bloom:hBP02-051" } });
+4429:       }
+4430:     } else if (pending.effect === "deckSupportToAttach") {
+4431:       if (selected.length > 0) {
+4432:         const moved = removeById(player.mainDeck, selected[0].id);
+4433:         assert(moved, "牌庫中的附加卡已改變。 ");
+4434:         player.archive.push(moved);
+4435:         enqueueEffect(state, { type: "attachArchivedSupport", playerIndex, cardId: moved.id, genericTarget: true, targetRule: pending.meta?.targetRule || {}, optional: false, prompt: "直接按牌桌上的合法 Holomen 附加所選卡。" });
+4436:       }
+4437:       player.mainDeck = shuffle(player.mainDeck, random);
+4438:       if (selected.length === 0) appendLog(state, `${player.name} 沒有公開附加卡；牌庫已洗牌。`);
+4439:     } else if (pending.effect === "oshiRemoveArchivedCheer") {
+4440:       const moved = removeById(player.archive, selected[0].id);
+
+4425:         const selectedCard = map.get(selected[0].number);
+4426:         const options = stageEntries(player).filter(({ unit: target }) => cardHasTag(unitCard(target, map), "#ID2期生") && unitCard(target, map)?.stage === "Debut" && talentMatches(selectedCard, unitCard(target, map)) && Number(target.enteredTurn || 0) !== state.turn && Number(target.bloomedTurn || 0) !== state.turn && Number(selectedCard?.hp || 0) > Number(target.damage || 0)).map(({ zone }) => zone);
+4427:         assert(options.length > 0, "限界化！！的 Bloom 目標已改變。 ");
+4428:         enqueueStageTarget(state, { playerIndex, options, effect: "archiveBloom", prompt: "直接按 #ID2期生 Debut，使用存檔區卡片完成 Bloom。", meta: { cardId: selected[0].id, usageKey: pending.meta?.usageKey || "bloom:hBP02-051" } });
+4429:       }
+4430:     } else if (pending.effect === "deckSupportToAttach") {
+4431:       if (selected.length > 0) {
+4432:         const moved = removeById(player.mainDeck, selected[0].id);
+4433:         assert(moved, "牌庫中的附加卡已改變。 ");
+4434:         player.archive.push(moved);
+4435:         enqueueEffect(state, { type: "attachArchivedSupport", playerIndex, cardId: moved.id, genericTarget: true, targetRule: pending.meta?.targetRule || {}, optional: false, prompt: "直接按牌桌上的合法 Holomen 附加所選卡。" });
+4436:       }
+4437:       player.mainDeck = shuffle(player.mainDeck, random);
+4438:       if (selected.length === 0) appendLog(state, `${player.name} 沒有公開附加卡；牌庫已洗牌。`);
+4439:     } else if (pending.effect === "oshiRemoveArchivedCheer") {
+4440:       const moved = removeById(player.archive, selected[0].id);
+4441:       assert(moved, "存檔區的綠色應援已改變。 ");
+4442:       player.removed.push(moved);
+4443:       const cheers = [...player.cheerDeck];
+4444:       if (cheers.length > 0) enqueueCardSelection(state, { playerIndex, cards: cheers, min: 0, max: 1, optional: true, effect: "oshiCheerDeckPick", source: "cheerDeck", prompt: "HALU：可公開應援牌庫 1 張實際應援；之後直接按牌桌目標。" });
+4445:     } else if (pending.effect === "oshiCheerDeckPick") {
+
+4448:         assert(cheer, "應援牌庫中的卡片已改變。 ");
+4449:         enqueueEffect(state, { type: "eventCheerTarget", playerIndex, cheerCard: cheer, shuffleAfter: true, prompt: "HALU：直接按自己 1 位 Holomen 附加所選應援。" });
+4450:       } else player.cheerDeck = shuffle(player.cheerDeck, random);
+4451:     } else if (["oshiBonusBloomCard", "oshiBloomFromArchiveCard", "oshiBloomFromDeckCard"].includes(pending.effect)) {
+4452:       if (selected.length > 0) {
+4453:         const selectedCard = map.get(selected[0].number);
+4454:         const allowSameTurn = pending.effect === "oshiBonusBloomCard";
+4455:         const rule = pending.meta || {};
+4456:         const options = stageEntries(player).filter(({ unit: stageUnit }) => {
+4457:           const targetCard = unitCard(stageUnit, map);
+4458:           if (rule.tags && !rule.tags.some((tag) => cardHasTag(targetCard, tag))) return false;
+4459:           if (rule.names && !rule.names.some((name) => cardHasName(targetCard, name))) return false;
+4460:           if (!legalBloomStage(selectedCard, targetCard) || !talentMatches(selectedCard, targetCard) || Number(selectedCard?.hp || 0) <= Number(stageUnit.damage || 0)) return false;
+4461:           if (allowSameTurn) return Number(stageUnit.bloomedTurn || 0) === state.turn;
+4462:           return Number(stageUnit.enteredTurn || 0) !== state.turn && Number(stageUnit.bloomedTurn || 0) !== state.turn;
+4463:         }).map(({ zone }) => zone);
+4464:         assert(options.length > 0, "Bloom 的合法目標已改變。 ");
+4465:         enqueueStageTarget(state, { playerIndex, options, effect: "oshiBloom", prompt: "直接按牌桌上的合法 Holomen 完成 Bloom。", meta: { cardId: selected[0].id, source: pending.source, artCostReduction: pending.meta?.artCostReduction || 0, fullHealOllie: Boolean(pending.meta?.fullHealOllie) } });
+4466:       } else if (pending.source === "deck") player.mainDeck = shuffle(player.mainDeck, random);
+4467:     } else if (pending.effect === "oshiDiscardForArchiveEn") {
+4468:       selected.forEach((card) => {
+
+4527:         const card = map.get(instance.number);
+4528:         return card?.group === "holomem" && ["1st", "2nd"].includes(card.stage) && stageEntries(player).some(({ unit: stageUnit }) => legalBloomStage(card, unitCard(stageUnit, map)) && talentMatches(card, unitCard(stageUnit, map)) && Number(stageUnit.enteredTurn || 0) !== state.turn && Number(stageUnit.bloomedTurn || 0) !== state.turn && Number(card.hp || 0) > Number(stageUnit.damage || 0));
+4529:       });
+4530:       if (candidates.length > 0) enqueueCardSelection(state, { playerIndex, cards: candidates, min: 0, max: 1, optional: true, effect: "oshiBloomFromArchiveCard", source: "archive", prompt: "復甦的オリー：可揀 1 張存檔區 Holomen；下一步直接按合法 Bloom 目標。", meta: { fullHealOllie: true } });
+4531:     } else if (pending.effect === "oshiMushroomReturn") {
+4532:       selected.forEach((card) => {
+4533:         const moved = removeById(player.archive, card.id);
+4534:         assert(moved, "存檔區卡片已改變。 ");
+4535:         player.hand.push(moved);
+4536:       });
+4537:       appendLog(state, `${player.name} 返回 ${selected.length} 張 #きのこ 卡，並抽 ${drawCards(state, playerIndex, Math.floor(selected.length / 2))} 張牌。`);
+4538:     } else if (pending.effect === "oshiFoodReturn") {
+4539:       selected.forEach((card) => {
+4540:         const moved = removeById(player.archive, card.id);
+4541:         assert(moved, "存檔區卡片已改變。 ");
+4542:         player.hand.push(moved);
+4543:       });
+4544:       addMatchingStageModifiers(state, playerIndex, map, { tags: ["#料理"] }, 40, "hBP05-005");
+4545:     } else if (pending.effect === "oshiMioTopSix") {
+4546:       player.hand.push(...selected);
+4547:       stageOptionsMatching(player, map, { damaged: true }).forEach((zone) => healStageUnit(state, playerIndex, zone, 50, map));
+
+4989:         appendLog(state, `${player.name} 以早送り讓 ${moved.number} Bloom。`, [moved]);
+4990:         queueBloomEffects(state, playerIndex, action.zone, card, map, random);
+4991:         queueAttachmentBloomEffects(state, playerIndex, action.zone, map);
+4992:       } else if (pending.effect === "archiveBloom") {
+4993:         const moved = removeById(player.archive, pending.meta?.cardId);
+4994:         const movedCard = moved && map.get(moved.number);
+4995:         const targetCard = unitCard(target, map);
+4996:         assert(moved && movedCard?.stage === "1st" && targetCard?.stage === "Debut" && cardHasTag(targetCard, "#ID2期生") && talentMatches(movedCard, targetCard) && Number(target.enteredTurn || 0) !== state.turn && Number(target.bloomedTurn || 0) !== state.turn && Number(movedCard.hp || 0) > Number(target.damage || 0), "限界化！！的卡片或牌桌目標已改變。 ");
+4997:         target.stack.push(moved);
+4998:         target.bloomedTurn = state.turn;
+4999:         currentTurnEvents(player, state.turn).bloomCount += 1;
+5000:         markNamedUsage(player, pending.meta?.usageKey || "bloom:hBP02-051", state.turn);
+5001:         appendLog(state, `${player.name} 以「限界化！！」從存檔區讓 ${moved.number} Bloom。`, [moved]);
+5002:         queueBloomEffects(state, playerIndex, action.zone, movedCard, map, random);
+5003:         queueAttachmentBloomEffects(state, playerIndex, action.zone, map);
+5004:       } else if (pending.effect === "giftReturnStageStack") {
+5005:         assert(targetPlayerIndex === playerIndex && BACK_SLOTS.includes(action.zone), "Gift 返回目標無效。 ");
+5006:         targetPlayer.zones[action.zone] = null;
+5007:         player.hand.push(...target.stack);
+5008:         player.archive.push(...(target.cheer || []), ...(target.attachments || []));
+5009:         triggerCheerArchivedGift(state, playerIndex, map, target.cheer?.length || 0);
+
+4998:         target.bloomedTurn = state.turn;
+4999:         currentTurnEvents(player, state.turn).bloomCount += 1;
+5000:         markNamedUsage(player, pending.meta?.usageKey || "bloom:hBP02-051", state.turn);
+5001:         appendLog(state, `${player.name} 以「限界化！！」從存檔區讓 ${moved.number} Bloom。`, [moved]);
+5002:         queueBloomEffects(state, playerIndex, action.zone, movedCard, map, random);
+5003:         queueAttachmentBloomEffects(state, playerIndex, action.zone, map);
+5004:       } else if (pending.effect === "giftReturnStageStack") {
+5005:         assert(targetPlayerIndex === playerIndex && BACK_SLOTS.includes(action.zone), "Gift 返回目標無效。 ");
+5006:         targetPlayer.zones[action.zone] = null;
+5007:         player.hand.push(...target.stack);
+5008:         player.archive.push(...(target.cheer || []), ...(target.attachments || []));
+5009:         triggerCheerArchivedGift(state, playerIndex, map, target.cheer?.length || 0);
+5010:         appendLog(state, `${player.name} 將 ${target.stack.length} 張 #FLOW GLOW 重疊 Holomen 返回手牌；其應援及附加卡放到存檔區。`);
+5011:       } else if (pending.effect === "giftFlareCheerTarget") {
+5012:         const source = player.zones[pending.meta?.sourceZone];
+5013:         assert(source && source.cheer.length >= 2 && BACK_SLOTS.includes(action.zone), "Colorful Stream 的來源或目標已改變。 ");
+5014:         const options = source.cheer.map((cheer) => ({ id: cheer.id, number: cheer.number, zone: pending.meta.sourceZone }));
+5015:         state.effectQueue.unshift({ type: "stageCheerSelection", playerIndex, ownerIndex: playerIndex, options: clone(options), rule: {}, min: 1, max: 1, prompt: "Colorful Stream：直接按攻擊者身上第 1 張實際應援。", effect: "giftMoveFlareCheer", optional: false, meta: { sourceZone: pending.meta.sourceZone, targetZone: action.zone, remaining: 2 } });
+5016:       } else if (pending.effect === "giftArchiveBloom") {
+5017:         const moved = removeById(player.archive, pending.meta?.cardId);
+5018:         const movedCard = moved && map.get(moved.number);
+
+5013:         assert(source && source.cheer.length >= 2 && BACK_SLOTS.includes(action.zone), "Colorful Stream 的來源或目標已改變。 ");
+5014:         const options = source.cheer.map((cheer) => ({ id: cheer.id, number: cheer.number, zone: pending.meta.sourceZone }));
+5015:         state.effectQueue.unshift({ type: "stageCheerSelection", playerIndex, ownerIndex: playerIndex, options: clone(options), rule: {}, min: 1, max: 1, prompt: "Colorful Stream：直接按攻擊者身上第 1 張實際應援。", effect: "giftMoveFlareCheer", optional: false, meta: { sourceZone: pending.meta.sourceZone, targetZone: action.zone, remaining: 2 } });
+5016:       } else if (pending.effect === "giftArchiveBloom") {
+5017:         const moved = removeById(player.archive, pending.meta?.cardId);
+5018:         const movedCard = moved && map.get(moved.number);
+5019:         assert(moved && movedCard && bloomTargets(player, movedCard, map, state.turn).includes(action.zone), "光，再次點亮的 Bloom 目標已改變。 ");
+5020:         target.stack.push(moved);
+5021:         target.bloomedTurn = state.turn;
+5022:         currentTurnEvents(player, state.turn).bloomCount += 1;
+5023:         appendLog(state, `${player.name} 從存檔區讓 ${moved.number} Bloom。`, [moved]);
+5024:         queueBloomEffects(state, playerIndex, action.zone, movedCard, map, random);
+5025:         queueAttachmentBloomEffects(state, playerIndex, action.zone, map);
+5026:       } else if (pending.effect === "giftKroniiBloom") {
+5027:         const source = player.zones[pending.meta?.sourceZone];
+5028:         const moved = source && removeById(source.stack, pending.meta?.cardId);
+5029:         const movedCard = moved && map.get(moved.number);
+5030:         assert(source && moved && movedCard && legalBloomStage(movedCard, unitCard(target, map)) && talentMatches(movedCard, unitCard(target, map)) && Number(target.enteredTurn || 0) !== state.turn && Number(target.bloomedTurn || 0) !== state.turn && Number(movedCard.hp || 0) > Number(target.damage || 0), "時界を統べし者的 Bloom 來源或目標已改變。 ");
+5031:         target.stack.push(moved);
+5032:         target.bloomedTurn = state.turn;
+5033:         currentTurnEvents(player, state.turn).bloomCount += 1;
+
+5020:         target.stack.push(moved);
+5021:         target.bloomedTurn = state.turn;
+5022:         currentTurnEvents(player, state.turn).bloomCount += 1;
+5023:         appendLog(state, `${player.name} 從存檔區讓 ${moved.number} Bloom。`, [moved]);
+5024:         queueBloomEffects(state, playerIndex, action.zone, movedCard, map, random);
+5025:         queueAttachmentBloomEffects(state, playerIndex, action.zone, map);
+5026:       } else if (pending.effect === "giftKroniiBloom") {
+5027:         const source = player.zones[pending.meta?.sourceZone];
+5028:         const moved = source && removeById(source.stack, pending.meta?.cardId);
+5029:         const movedCard = moved && map.get(moved.number);
+5030:         assert(source && moved && movedCard && legalBloomStage(movedCard, unitCard(target, map)) && talentMatches(movedCard, unitCard(target, map)) && Number(target.enteredTurn || 0) !== state.turn && Number(target.bloomedTurn || 0) !== state.turn && Number(movedCard.hp || 0) > Number(target.damage || 0), "時界を統べし者的 Bloom 來源或目標已改變。 ");
+5031:         target.stack.push(moved);
+5032:         target.bloomedTurn = state.turn;
+5033:         currentTurnEvents(player, state.turn).bloomCount += 1;
+5034:         appendLog(state, `${player.name} 以「時界を統べし者」讓 ${moved.number} Bloom。`, [moved]);
+5035:         queueBloomEffects(state, playerIndex, action.zone, movedCard, map, random);
+5036:         queueAttachmentBloomEffects(state, playerIndex, action.zone, map);
+5037:       } else if (pending.effect === "oshiMarineStageBloom") {
+5038:         const moved = removeById(player.hand, pending.meta?.cardId);
+5039:         const movedCard = moved && map.get(moved.number);
+5040:         const targetCard = unitCard(target, map);
+
+5734:         appendLog(state, `${player.name} 將「${map.get(moved.number)?.name || moved.number}」放到牌庫底；Gift 來源本回合 Arts 無色費用 -2。`);
+5735:       } else throw new Error("這個舞台附加卡選擇效果尚未接入。 ");
+5736:     }
+5737:   } else if (pending.type === "optionChoice") {
+5738:     if (action.skip && pending.optional) {
+5739:       if (["damageReaction", "oshiDamageReaction", "giftDamageReaction"].includes(pending.effect) && pending.meta?.queuedEffect) state.effectQueue.unshift(clone(pending.meta.queuedEffect));
+5740:       if (pending.effect === "shionOshiReroll") resolveShionAbilityDie(state, playerIndex, pending.meta, map, random);
+5741:       if (pending.effect === "oshiDamageReaction" && player.oshi?.number === "hBP04-006") {
+5742:         for (const hit of simultaneousDamageEffects(state, pending.meta.queuedEffect)) hit.oshiReactionChecked = true;
+5743:       }
+5744:       appendLog(state, `${player.name} 略過可選模式。`);
+5745:     }
+5746:     else {
+5747:       const option = pending.modeOptions.find((candidate) => candidate.id === action.optionId && !candidate.disabled);
+5748:       assert(option, "效果模式選擇無效。 ");
+5749:       if (pending.effect === "koFanDraw") {
+5750:         appendLog(state,player.name+" 因 35P 抽 "+drawCards(state,playerIndex,1)+" 張牌。");
+5751:       } else if (pending.effect === "kanataBloomRoll") {
+5752:         const card = map.get("hBP01-012");
+5753:         const die = rollDie(random, state, playerIndex, 1, card);
+5754:         logDie(state, playerIndex, die, "因偶像かなたそを擲骰");
+
+8825:     sourcePlayer.holoPower.push(sourcePlayer.mainDeck.shift());
+8826:     appendLog(state, `${sourcePlayer.name} 因擊倒 Gift 將牌庫頂 1 張放到 Holo Power。`);
+8827:   }
+8828:   if (sourceCard?.number === "hBP09-037") pendingEffects.push({ type: "stageTarget", playerIndex: sourcePlayerIndex, targetPlayerIndex: sourcePlayerIndex, options: null, rule: { zones: BACK_SLOTS, tags: ["#FLOW GLOW"] }, prompt: "Gift：可直接按自己 1 位 #FLOW GLOW 後排，將整個重疊組返回手牌。", effect: "giftReturnStageStack", optional: true, meta: {} });
+8829:   if (sourceCard?.number === "hSD12-007" && !usedNamedThisTurn(sourcePlayer, "gift:hSD12-007", state.turn)) {
+8830:     const cards = sourcePlayer.archive.filter((instance) => map.get(instance.number)?.group === "support" && !String(map.get(instance.number)?.type || "").toUpperCase().includes("LIMITED"));
+8831:     if (cards.length > 0) {
+8832:       markNamedUsage(sourcePlayer, "gift:hSD12-007", state.turn);
+8833:       pendingEffects.push({ type: "cardSelection", playerIndex: sourcePlayerIndex, cards: clone(cards), selectableIds: cards.map((card) => card.id), min: 1, max: 1, prompt: "Gift：揀存檔區 1 張非 LIMITED 支援卡返回手牌。", effect: "archiveToHand", source: "archive", optional: false, meta: {} });
+8834:     }
+8835:   }
+8836:   if (sourcePlayerIndex !== ownerIndex && sourceCard?.number === "hSD15-008" && source) {
+8837:     const healed = healStageUnit(state, sourcePlayerIndex, options.sourceZone, 20, map);
+8838:     appendLog(state, `${sourcePlayer.name} 因擊倒 Gift 回復 ${healed} HP。`);
+8839:   }
+8840: }
+8841: 
+8842: function finishGame(state, winnerIndex) {
+8843:   state.status = "finished";
+8844:   state.phase = "finished";
+8845:   state.winner = winnerIndex;
+
+9449:       const card = map.get(instance.number);
+9450:       return card?.group === "holomem" && ["1st", "2nd"].includes(card.stage) && stageOptionsMatching(player, map, { tags: ["#ID2期生"] }).some((zone) => legalBloomStage(card, unitCard(player.zones[zone], map)) && talentMatches(card, unitCard(player.zones[zone], map)) && Number(player.zones[zone].enteredTurn || 0) !== state.turn && Number(player.zones[zone].bloomedTurn || 0) !== state.turn && Number(card.hp || 0) > Number(player.zones[zone].damage || 0));
+9451:     });
+9452:     assert(candidates.length > 0, "存檔區沒有可用來 Bloom #ID2期生 的 Holomen。 ");
+9453:     enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: 1, optional: false, effect: "oshiBloomFromArchiveCard", source: "archive", prompt: "殭屍戰術：揀 1 張存檔區 Holomen；下一步直接按合法 #ID2期生。", meta: { tags: ["#ID2期生"] } });
+9454:   } else if (number === "hBP02-007") {
+9455:     assert(player.hand.length >= 2, "需要 2 張手牌。 ");
+9456:     enqueueCardSelection(state, { playerIndex, cards: player.hand, min: 2, max: 2, effect: "oshiDiscardForArchiveEn", source: "hand", prompt: "取樣：揀 2 張手牌放到存檔區；之後可揀 2 張 #EN Holomen 返回手牌。" });
+9457:   } else if (number === "hBP03-001") {
+9458:     queueDeckToHand(state, playerIndex, { typeCodes: ["supportItem", "supportItemLimited"], nameIncludes: ["パソコン", "電腦"] }, map, random, { label: "如果是電腦的話我懂的啦" });
+9459:   } else if (["hBP03-002", "hBP04-002"].includes(number)) {
+9460:     const targetRule = number === "hBP03-002" ? { zones: BACK_SLOTS, names: ["獅白ぼたん", "獅白牡丹"] } : { tags: ["#ReGLOSS"] };
+9461:     enqueueArchiveCheerToTarget(state, playerIndex, { targetRule, optional: false, prompt: `${oshiCard.oshiSkill?.name}：揀 1 張存檔區應援；下一步直接按合法 Holomen。` }, map);
+9462:   } else if (number === "hBP03-003") {
+9463:     enqueueOptionChoice(state, { playerIndex, options: [{ id: "roll", label: "擲 1 次骰子" }], optional: true, effect: "miko35pRoll", prompt: "35P會回來嗎！？って！：可擲骰，按結果回收 35P。" });
+9464:   } else if (number === "hBP03-004") {
+9465:     const options = stageOptionsMatching(player, map, { stages: ["1st"], names: ["モココ・アビスガード", "Mococo Abyssgard"] });
+9466:     assert(options.length > 0 && player.cheerDeck.length > 0, "舞台沒有 1st モココ・アビスガード，或應援牌庫已空。 ");
+9467:     enqueueEffect(state, { type: "eventCheerTarget", playerIndex, options, prompt: "モコちゃん！：直接按 1st モココ・アビスガード，附加應援牌庫頂 1 張。" });
+9468:   } else if (["hBP03-005", "hBP05-006"].includes(number)) {
+9469:     const amount = number === "hBP03-005" ? 20 : 10;
+
+9450:       return card?.group === "holomem" && ["1st", "2nd"].includes(card.stage) && stageOptionsMatching(player, map, { tags: ["#ID2期生"] }).some((zone) => legalBloomStage(card, unitCard(player.zones[zone], map)) && talentMatches(card, unitCard(player.zones[zone], map)) && Number(player.zones[zone].enteredTurn || 0) !== state.turn && Number(player.zones[zone].bloomedTurn || 0) !== state.turn && Number(card.hp || 0) > Number(player.zones[zone].damage || 0));
+9451:     });
+9452:     assert(candidates.length > 0, "存檔區沒有可用來 Bloom #ID2期生 的 Holomen。 ");
+9453:     enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: 1, optional: false, effect: "oshiBloomFromArchiveCard", source: "archive", prompt: "殭屍戰術：揀 1 張存檔區 Holomen；下一步直接按合法 #ID2期生。", meta: { tags: ["#ID2期生"] } });
+9454:   } else if (number === "hBP02-007") {
+9455:     assert(player.hand.length >= 2, "需要 2 張手牌。 ");
+9456:     enqueueCardSelection(state, { playerIndex, cards: player.hand, min: 2, max: 2, effect: "oshiDiscardForArchiveEn", source: "hand", prompt: "取樣：揀 2 張手牌放到存檔區；之後可揀 2 張 #EN Holomen 返回手牌。" });
+9457:   } else if (number === "hBP03-001") {
+9458:     queueDeckToHand(state, playerIndex, { typeCodes: ["supportItem", "supportItemLimited"], nameIncludes: ["パソコン", "電腦"] }, map, random, { label: "如果是電腦的話我懂的啦" });
+9459:   } else if (["hBP03-002", "hBP04-002"].includes(number)) {
+9460:     const targetRule = number === "hBP03-002" ? { zones: BACK_SLOTS, names: ["獅白ぼたん", "獅白牡丹"] } : { tags: ["#ReGLOSS"] };
+9461:     enqueueArchiveCheerToTarget(state, playerIndex, { targetRule, optional: false, prompt: `${oshiCard.oshiSkill?.name}：揀 1 張存檔區應援；下一步直接按合法 Holomen。` }, map);
+9462:   } else if (number === "hBP03-003") {
+9463:     enqueueOptionChoice(state, { playerIndex, options: [{ id: "roll", label: "擲 1 次骰子" }], optional: true, effect: "miko35pRoll", prompt: "35P會回來嗎！？って！：可擲骰，按結果回收 35P。" });
+9464:   } else if (number === "hBP03-004") {
+9465:     const options = stageOptionsMatching(player, map, { stages: ["1st"], names: ["モココ・アビスガード", "Mococo Abyssgard"] });
+9466:     assert(options.length > 0 && player.cheerDeck.length > 0, "舞台沒有 1st モココ・アビスガード，或應援牌庫已空。 ");
+9467:     enqueueEffect(state, { type: "eventCheerTarget", playerIndex, options, prompt: "モコちゃん！：直接按 1st モココ・アビスガード，附加應援牌庫頂 1 張。" });
+9468:   } else if (["hBP03-005", "hBP05-006"].includes(number)) {
+9469:     const amount = number === "hBP03-005" ? 20 : 10;
+9470:     addMatchingStageModifiers(state, playerIndex, map, { zones: ["center", "collab"], tags: ["#歌"] }, amount, number);
+
+9694:   } else if (number === "hBP02-006") {
+9695:     appendLog(state, player.name + " 先抽 " + drawCards(state, playerIndex, 4) + " 張牌。");
+9696:     assert(player.hand.length >= 2, "抽牌後仍不足 2 張手牌可存檔。 ");
+9697:     enqueueCardSelection(state, { playerIndex, cards: player.hand, min: 2, max: 2, effect: "oshiOllieDiscard", source: "hand", prompt: "復甦的オリー：揀 2 張手牌放到存檔區；之後可從存檔區 Bloom。" });
+9698:   } else if (number === "hBP02-007") {
+9699:     assert(cardHasName(unitCard(player.zones.center, map), "森カリオペ"), "自己的中央 Holomen 必須是森カリオペ。 ");
+9700:     enqueueStageTarget(state, { playerIndex, options: stageOptionsMatching(player, map, { names: ["森カリオペ", "Mori Calliope"] }), effect: "oshiRepeatArts", prompt: "死神說唱：直接按 1 位森カリオペ；本回合可再使用一次相同 Arts。" });
+9701:   } else if (number === "hBP03-001") {
+9702:     assert(cardHasName(unitCard(player.zones.center, map), "姫森ルーナ"), "中央 Holomen 必須是姫森ルーナ。 ");
+9703:     const candidates = player.mainDeck.filter((instance) => cardHasName(map.get(instance.number), "ルーナイト"));
+9704:     assert(candidates.length > 0, "牌庫沒有ルーナイト。 ");
+9705:     enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: Math.min(4, candidates.length), effect: "deckSupportsToAttach", source: "deck", prompt: "ルーナイト集合：揀 1～4 張ルーナイト；之後逐張直接按合法 Holomen。", meta: { targetRule: {} } });
+9706:   } else if (number === "hBP03-002") {
+9707:     assert(player.zones.center && (unitCard(player.zones.center, map)?.colors || []).includes("綠"), "自己的中央 Holomen 必須是綠色。 ");
+9708:     assert(opponent.zones.center && unitCard(opponent.zones.center, map)?.stage !== "Debut", "對手中央必須是非 Debut Holomen。 ");
+9709:     enqueueStageTarget(state, { playerIndex, targetPlayerIndex: opponentIndex, options: ["center"], effect: "specialDamage", prompt: "狙撃：直接按對手非 Debut 中央 Holomen，造成 100 點特殊傷害。", meta: { amount: 100, loseLife: true, sourceCardNumber: oshiCard.number, sourceName: oshiCard.spOshiSkill?.name || "狙撃" } });
+9710:   } else if (number === "hBP03-003") {
+9711:     assert(player.zones.center && (unitCard(player.zones.center, map)?.colors || []).includes("紅"), "中央 Holomen 必須是紅色。 ");
+9712:     if (player.hand.length > 0) enqueueCardSelection(state, { playerIndex, cards: player.hand, min: 0, max: player.hand.length, optional: true, effect: "handToBottomThenDrawFive", source: "hand", prompt: "不放棄的心にぇ：揀任意張手牌按選擇次序放到牌庫底，再抽到 5 張。" });
+9713:     else appendLog(state, player.name + " 抽 " + drawCards(state, playerIndex, 5) + " 張至 5 張手牌。");
+9714:   } else if (number === "hBP03-004") {
+
+9952:   if (action.cardNumber === "hBP08-044" && !action.zone) {
+9953:     assert(Number(player.turnsTaken || 0) > 1, "自己的第 1 回合不可 Bloom。 ");
+9954:     assert(player.archive.filter((instance) => map.get(instance.number)?.group === "holomem").length >= 10, "存檔區需要最少 10 張 Holomen。 ");
+9955:     const candidates = player.archive.filter((instance) => instance.number === "hBP08-044" && bloomTargets(player, map.get(instance.number), map, state.turn).length > 0);
+9956:     assert(candidates.length > 0, "存檔區沒有可用此 Gift 進行 Bloom 的小鳥遊キアラ。 ");
+9957:     enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: 1, effect: "giftArchiveBloomCard", source: "archive", prompt: "光，再次點亮：揀存檔區 1 張小鳥遊キアラ；下一步直接按牌桌 Bloom 目標。" });
+9958:     return;
+9959:   }
+9960: 
+9961:   const source = player.zones[action.zone];
+9962:   const card = unitCard(source, map);
+9963:   assert(source && card, "Gift 來源已離開舞台。 ");
+9964:   const usageKey = card.number === "hSD13-013" ? `gift:${card.number}:${topCard(source).id}` : `gift:${card.number}`;
+9965:   assert(!usedNamedThisTurn(player, usageKey, state.turn), "這個每回合 1 次 Gift 本回合已使用。 ");
+9966:   if (card.number === "hSD10-004") {
+9967:     assert(cardHasName(map.get(player.oshi?.number), "輪堂千速"), "「有300匹馬力喔！」需要自己的推し Holomen 為輪堂千速。 ");
+9968:     assert(stageEntries(state.players[playerIndex === 0 ? 1 : 0]).some(({ unit: stageUnit }) => unitCard(stageUnit, map)?.stage === "1st"), "對手舞台上需要 1 位 1st Holomen。 ");
+9969:     assert(card.stage === "1st" && Number(source.bloomedTurn || 0) === state.turn, "只有本回合已 Bloom 的 1st 輪堂千速可使用此 Gift。 ");
+9970:     player.bonusBloomTurn = state.turn;
+9971:     player.bonusBloomUsedTurn = 0;
+9972:     player.bonusBloomTargetId = topCard(source)?.id || "";
+
+9953:     assert(Number(player.turnsTaken || 0) > 1, "自己的第 1 回合不可 Bloom。 ");
+9954:     assert(player.archive.filter((instance) => map.get(instance.number)?.group === "holomem").length >= 10, "存檔區需要最少 10 張 Holomen。 ");
+9955:     const candidates = player.archive.filter((instance) => instance.number === "hBP08-044" && bloomTargets(player, map.get(instance.number), map, state.turn).length > 0);
+9956:     assert(candidates.length > 0, "存檔區沒有可用此 Gift 進行 Bloom 的小鳥遊キアラ。 ");
+9957:     enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: 1, effect: "giftArchiveBloomCard", source: "archive", prompt: "光，再次點亮：揀存檔區 1 張小鳥遊キアラ；下一步直接按牌桌 Bloom 目標。" });
+9958:     return;
+9959:   }
+9960: 
+9961:   const source = player.zones[action.zone];
+9962:   const card = unitCard(source, map);
+9963:   assert(source && card, "Gift 來源已離開舞台。 ");
+9964:   const usageKey = card.number === "hSD13-013" ? `gift:${card.number}:${topCard(source).id}` : `gift:${card.number}`;
+9965:   assert(!usedNamedThisTurn(player, usageKey, state.turn), "這個每回合 1 次 Gift 本回合已使用。 ");
+9966:   if (card.number === "hSD10-004") {
+9967:     assert(cardHasName(map.get(player.oshi?.number), "輪堂千速"), "「有300匹馬力喔！」需要自己的推し Holomen 為輪堂千速。 ");
+9968:     assert(stageEntries(state.players[playerIndex === 0 ? 1 : 0]).some(({ unit: stageUnit }) => unitCard(stageUnit, map)?.stage === "1st"), "對手舞台上需要 1 位 1st Holomen。 ");
+9969:     assert(card.stage === "1st" && Number(source.bloomedTurn || 0) === state.turn, "只有本回合已 Bloom 的 1st 輪堂千速可使用此 Gift。 ");
+9970:     player.bonusBloomTurn = state.turn;
+9971:     player.bonusBloomUsedTurn = 0;
+9972:     player.bonusBloomTargetId = topCard(source)?.id || "";
+9973:     const cards = player.hand.filter((instance) => map.get(instance.number)?.stage === "2nd" && bloomTargets(player, map.get(instance.number), map, state.turn).includes(action.zone));
+
+9954:     assert(player.archive.filter((instance) => map.get(instance.number)?.group === "holomem").length >= 10, "存檔區需要最少 10 張 Holomen。 ");
+9955:     const candidates = player.archive.filter((instance) => instance.number === "hBP08-044" && bloomTargets(player, map.get(instance.number), map, state.turn).length > 0);
+9956:     assert(candidates.length > 0, "存檔區沒有可用此 Gift 進行 Bloom 的小鳥遊キアラ。 ");
+9957:     enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: 1, effect: "giftArchiveBloomCard", source: "archive", prompt: "光，再次點亮：揀存檔區 1 張小鳥遊キアラ；下一步直接按牌桌 Bloom 目標。" });
+9958:     return;
+9959:   }
+9960: 
+9961:   const source = player.zones[action.zone];
+9962:   const card = unitCard(source, map);
+9963:   assert(source && card, "Gift 來源已離開舞台。 ");
+9964:   const usageKey = card.number === "hSD13-013" ? `gift:${card.number}:${topCard(source).id}` : `gift:${card.number}`;
+9965:   assert(!usedNamedThisTurn(player, usageKey, state.turn), "這個每回合 1 次 Gift 本回合已使用。 ");
+9966:   if (card.number === "hSD10-004") {
+9967:     assert(cardHasName(map.get(player.oshi?.number), "輪堂千速"), "「有300匹馬力喔！」需要自己的推し Holomen 為輪堂千速。 ");
+9968:     assert(stageEntries(state.players[playerIndex === 0 ? 1 : 0]).some(({ unit: stageUnit }) => unitCard(stageUnit, map)?.stage === "1st"), "對手舞台上需要 1 位 1st Holomen。 ");
+9969:     assert(card.stage === "1st" && Number(source.bloomedTurn || 0) === state.turn, "只有本回合已 Bloom 的 1st 輪堂千速可使用此 Gift。 ");
+9970:     player.bonusBloomTurn = state.turn;
+9971:     player.bonusBloomUsedTurn = 0;
+9972:     player.bonusBloomTargetId = topCard(source)?.id || "";
+9973:     const cards = player.hand.filter((instance) => map.get(instance.number)?.stage === "2nd" && bloomTargets(player, map.get(instance.number), map, state.turn).includes(action.zone));
+9974:     assert(cards.length > 0, "手牌沒有可由此 Gift 讓該輪堂千速再 Bloom 的 2nd Holomen。 ");

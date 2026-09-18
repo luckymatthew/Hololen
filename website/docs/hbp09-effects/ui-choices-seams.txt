@@ -1,0 +1,98 @@
+website/lib/simulator/ai.mjs
+214:   if (pending.type === "cardSelection") return cardSelectionCandidates(state, pending, aiIndex, map);
+215:   if (pending.type === "optionChoice") {
+216:     const actions = (pending.modeOptions || []).filter((option) => !option.disabled).map((option) => ({ type: "choose", optionId: option.id }));
+217:     if (pending.optional) actions.push({ type: "choose", skip: true });
+218:     return actions;
+219:   }
+220:   if (pending.type === "ordinaryComputer") {
+
+website/lib/simulator/engine.mjs
+906:   const matching = stageEntries(player).filter(({unit}) => unitCard(unit, run.map)?.number === sourceCard.number);
+907:   const source = zones.map(zone => matching.find(entry => entry.zone === zone)).find(Boolean) || (matching.length === 1 ? matching[0] : null);
+908:   const choose = (prompt, options) => diceDecision(state, { type: 'optionChoice', playerIndex, effect: 'interactiveDice', optional: false, prompt, modeOptions: options });
+909:   let declared = null;
+910:   const oshi = run.map.get(player.oshi?.number);
+911:   if (sourceCard.group === 'holomem' && player.oshi?.number === 'hSD01-002' && player.oshiSkillTurn !== state.turn && player.holoPower.length >= oshiPowerCost(oshi.oshiSkill, oshi.number, 'oshi')) {
+912:     const id = choose('擲骰前：可使用 AZKi 推し技能，宣告下一顆骰子的點數。', [{id:'roll',label:'直接擲骰'}, ...Array.from({length:6},(_,i)=>({id:'declare:'+(i+1),label:'支付 3 Holo Power，宣告 '+(i+1)}))]);
+
+website/lib/simulator/engine.mjs
+5745:     }
+5746:     else {
+5747:       const option = pending.modeOptions.find((candidate) => candidate.id === action.optionId && !candidate.disabled);
+5748:       assert(option, "效果模式選擇無效。 ");
+5749:       if (pending.effect === "koFanDraw") {
+5750:         appendLog(state,player.name+" 因 35P 抽 "+drawCards(state,playerIndex,1)+" 張牌。");
+5751:       } else if (pending.effect === "kanataBloomRoll") {
+
+website/lib/simulator/engine.mjs
+9028:     playerIndex: effect.targetPlayerIndex,
+9029:     options: [],
+9030:     modeOptions: affordable,
+9031:     optional: true,
+9032:     prompt: "受到對手傷害：可使用一個合法推し技能減少這次傷害。",
+9033:     effect: "oshiDamageReaction",
+9034:     meta: { queuedEffect: { ...clone(effect), oshiReactionChecked: true } },
+
+website/lib/simulator/engine.mjs
+9061:     playerIndex: ownerIndex,
+9062:     options: [],
+9063:     modeOptions: options,
+9064:     optional: true,
+9065:     prompt: "即將受到傷害：可使用一個合法 Gift 防禦效果。",
+9066:     effect: "giftDamageReaction",
+9067:     meta: { targetZone: effect.targetZone, queuedEffect: { ...clone(effect), giftReactionChecked: true } },
+
+website/lib/simulator/engine.mjs
+9090:     playerIndex: effect.targetPlayerIndex,
+9091:     options: [],
+9092:     modeOptions: [{ id: "use", label: `將 ${map.get(reducer.number)?.name || reducer.number} 存檔，這次傷害 -30` }],
+9093:     optional: true,
+9094:     prompt: "受到傷害：可使用附加卡的防禦效果。",
+9095:     effect: "damageReaction",
+9096:     meta: { attachmentId: reducer.id, targetZone: effect.targetZone, queuedEffect: { ...clone(effect), attachmentReactionChecked: true } },
+
+website/lib/simulator/engine.mjs
+10099:       const options = (effect.options || []).filter((option) => !option.disabled);
+10100:       if (options.length === 0) continue;
+10101:       state.pendingChoice = { ...effect, type: "optionChoice", options: [], modeOptions: options };
+10102:     } else if (effect.type === "healTarget") {
+10103:       const options = stageEntries(player).filter(({ unit: stageUnit }) => stageUnit.damage > 0).map(({ zone }) => zone);
+10104:       if (options.length === 0 || Number(effect.amount || 0) <= 0) continue;
+10105:       state.pendingChoice = { type: "healTarget", playerIndex: effect.playerIndex, options, amount: effect.amount, prompt: effect.prompt, optional: Boolean(effect.optional) };
+
+website/lib/simulator/dice-actions.mjs
+10:   if (index >= run.transaction.decisions.length) throw new DicePause(state, choice);
+11:   const id = run.transaction.decisions[index];
+12:   if (!choice.modeOptions.some(option => option.id === id)) throw new Error('骰子選擇已改變。');
+13:   return id;
+14: }
+15: export function runDiceAction(input, playerIndex, action, cards, random, execute) {
+16:   let transaction;
+
+website/lib/simulator/dice-actions.mjs
+17:   if (input.pendingChoice?.effect === 'interactiveDice') {
+18:     const choice = input.pendingChoice;
+19:     if (action.type !== 'choose' || playerIndex !== choice.playerIndex || !choice.modeOptions.some(option => option.id === action.optionId)) throw new Error('骰子選擇無效。');
+20:     if (!input.privateDiceAction) throw new Error('骰子結算資料不存在。');
+21:     transaction = structuredClone(input.privateDiceAction);
+22:     transaction.decisions.push(action.optionId);
+23:   } else transaction = { baseline: input, playerIndex, action, random: [], decisions: [] };
+
+website/app/simulator/SimulatorClient.tsx
+107:   optionId?: string;
+108:   optionLabel?: string;
+109:   modeOptions?: { id: string; label: string; disabled?: boolean }[];
+110:   after?: "draw" | "nextTurn";
+111: };
+112: type RoomState = {
+113:   mode?: "pvp" | "solo";
+
+website/app/simulator/SimulatorClient.tsx
+1524:             })}<div className="sim-effect-choice-actions"><span>已選 {selectedCardIds.length}/{pending.min === pending.max ? pending.max : `${pending.min}–${pending.max}`}</span><button className="sim-primary" type="button" disabled={selectedCardIds.length < Number(pending.min || 0) || selectedCardIds.length > Number(pending.max || 0)} onClick={() => { void sendAction({ type: "choose", cardIds: selectedCardIds }); setCardChoice({ key: "", ids: [] }); }}>確認卡片選擇</button></div></div>}
+1525:             {pending.type === "healDistribution" && <div className="sim-heal-confirm"><span>已分配 <b>{healAssigned}</b> / {healRequired} 個「{pending.unitAmount || 20} HP」</span><small>直接喺下方每位 Holomen 卡上按 −／＋；同一位可以獲分配多次。</small><button className="sim-primary" type="button" disabled={healAssigned !== healRequired} onClick={() => { void sendAction({ type: "choose", allocations: healAllocations }); setHealChoice({ key: "", allocations: {} }); }}>確認全部回血分配</button></div>}
+1526:             {pending.type === "optionChoice" && <div className="sim-effect-choice-actions">{(pending.modeOptions || []).map((option) => <button className="sim-primary" type="button" disabled={option.disabled} key={option.id} onClick={() => void sendAction({ type: "choose", optionId: option.id })}>{option.label}</button>)}</div>}
+1527:             {pending.optional && <button type="button" className="sim-cancel" onClick={() => { void sendAction({ type: "choose", skip: true }); setCardChoice({ key: "", ids: [] }); }}>略過可選效果</button>}
+1528:           </section>}
+1529:           {choicePanelHidden && <button className="sim-choice-reopen" type="button" onClick={() => setHiddenChoiceKey("")}><span aria-hidden="true">⌃</span>{attackSource ? "攻擊目標" : "繼續卡牌選擇"}</button>}
+1530:           {displayedOwn && <Board player={displayedOwn} playerIndex={viewerIndex} own cardMap={cardMap} active={state.status === "playing" && Boolean(myTurn)} phase={state.phase} turn={state.turn} opponentBatonIncrease={ownBatonIncrease} actionsEnabled={state.status === "playing" && !Boolean(pending) && !Boolean(attackSource) && !busy && !animationBusy} mobileStatus={mobileInterface} selectableZones={ownSelectableZones} selectableCheerIds={ownSelectableCheerIds} selectableAttachmentIds={ownSelectableAttachmentIds} healAllocations={pending?.type === "healDistribution" ? healAllocations : undefined} healUnitAmount={Number(pending?.unitAmount || 20)} healAssigned={healAssigned} healRequired={healRequired} onAdjustHeal={adjustHeal} onSelectZone={selectOwnTableZone} onSelectCheer={selectAttachedCheer} onSelectAttachment={selectAttachedSupport} onInspect={inspectCard} onOpenArchive={() => setArchiveViewerIndex(viewerIndex)} onAction={(action) => void sendAction(action)} onAttack={(zone, artIndex, artSourceNumber) => setAttackSource({ zone, artIndex, artSourceNumber })} />}
