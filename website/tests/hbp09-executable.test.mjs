@@ -62,7 +62,7 @@ test('Subaru search copies selected enemy Bloom level and deploys without losing
 test('Lamy search allows selecting two matching cards and keeps hidden deck private',()=>{
  const s=fixture(7,77);s.players[0].mainDeck.unshift(instance(N(95)),instance(N(110)));
  let out=act(s,{type:'oshiSkill'});assert.equal(out.pendingChoice.max,2);
- const opponent=publicRoomState(out,1);assert.ok(!JSON.stringify(opponent).includes('hbp09-test-secret'));
+ const opponent=publicRoomState(out,1);assert.deepEqual(opponent.pendingChoice,{type:'opponent',playerIndex:0});assert.equal(opponent.players[0].mainDeck,undefined);for(const hidden of out.pendingChoice.cards)assert.ok(!JSON.stringify(opponent).includes(hidden.id));
  out=answer(out,{cardIds:out.pendingChoice.selectableIds.slice(0,2)});assert.equal(out.players[0].hand.length,2);conserve(s,out);
 });
 test('collab draw-two-bottom-two respects player ordering',()=>{
@@ -74,7 +74,7 @@ test('duplicate card IDs in hBP09 choice are rejected without state mutation',()
 test('another player cannot resolve someone else\'s effect choice',()=>{const s=runCollab(10);assert.throws(()=>act(s,{type:'choose',cardIds:[]},1));});
 test('conditional first-turn collab does not run on later turns',()=>{const out=runCollab(39);assert.equal(out.pendingChoice,null);assert.equal(out.players[0].hand.length,0);});
 test('second-player first turn can search exactly the eligible tools',()=>{
- let out=runCollab(39,s=>{s.firstPlayer=1;s.players[0].turnsTaken=1;s.players[0].mainDeck.unshift(instance(N(106)),instance(N(107)));});
+ let out=runCollab(39,s=>{s.firstPlayer=1;s.players[0].turnsTaken=1;s.players[0].mainDeck.unshift(instance(N(51)),instance(N(106)),instance(N(107)));});
  assert.equal(out.pendingChoice.max,2);assert.ok(out.pendingChoice.cards.every(c=>map.get(c.number).typeCode==='supportTool'));out=answer(out,{cardIds:out.pendingChoice.selectableIds});assert.equal(out.players[0].hand.length,2);
 });
 test('support activation restrictions are enforced before consumption',()=>{
@@ -114,7 +114,7 @@ test('Towa draw skill is unavailable in main and offered at performance end',()=
 });
 test('Hajime baton stage adds one Holo Power, and movement remains normal',()=>{const s=fixture(2,15);s.players[0].zones.center.cheer=[instance(cheerNumbers[0])];s.players[0].zones.back1=unit(N(17));const out=act(s,{type:'baton',zone:'back1'});assert.equal(out.players[0].holoPower.length,11);assert.equal(out.players[0].zones.center.stack[0].number,N(17));});
 test('Subaru damage Gift triggers after real Arts damage',()=>{const s=fixture(1,8);s.activePlayer=1;s.turn=4;s.phase='performance';const attacker={...dummy,number:'TEST-ATTACKER',arts:[{name:'Hit',damage:40,cost:[],effect:''}]};const custom=[...cards,attacker];s.players[1].zones.center=unit(attacker.number);const out=act(s,{type:'attack',sourceZone:'center',targetZone:'center',artIndex:0},1,custom);assert.equal(out.players[0].zones.center.damage,40);assert.equal(out.players[1].zones.center.damage,30);});
-test('Hajime passive reduces actual received Arts damage by 30',()=>{const s=fixture(2,17);s.activePlayer=1;s.turn=4;s.phase='performance';const attacker={...dummy,number:'TEST-ATTACKER',arts:[{name:'Hit',damage:60,cost:[],effect:''}]};s.players[1].zones.center=unit(attacker.number);const out=act(s,{type:'attack',sourceZone:'center',targetZone:'center',artIndex:0},1,[...cards,attacker]);assert.equal(out.players[0].zones.center.damage,30);});
+test('Hajime passive reduces actual received Arts damage by 30',()=>{const s=fixture(2,17);s.activePlayer=1;s.turn=4;s.phase='performance';const attacker={...dummy,number:'TEST-ATTACKER',arts:[{name:'Hit',damage:60,cost:[],effect:''}]};s.players[1].zones.center=unit(attacker.number);s.players[1].zones.center=unit(attacker.number);const out=act(s,{type:'attack',sourceZone:'center',targetZone:'center',artIndex:0},1,[...cards,attacker]);assert.equal(out.players[0].zones.center.damage,30);});
 test('all effect continuations serialize and resume without closures',()=>{const s=runCollab(10);const encoded=JSON.stringify(s);const restored=JSON.parse(encoded);const out=answer(restored,{cardIds:restored.pendingChoice.selectableIds});assert.equal(out.pendingChoice,null);assert.equal(out.players[0].hand.length,0);});
 test('unknown program instructions fail closed rather than silently claiming success',()=>{const runtime=createHbp09({});const s=fixture();assert.throws(()=>runtime.run(s,runtime.context(s,0,N(1)),[{op:'UNIMPLEMENTED_TEST'}],new Map(),()=>0.5),/Unimplemented/);});
 test('program data are plain JSON and no empty fake resolvers are registered',()=>{const restored=JSON.parse(JSON.stringify(PROGRAMS));assert.ok(Object.keys(restored).length>90);for(const [key,steps]of Object.entries(restored)){assert.ok(Array.isArray(steps)&&steps.length>0,key);}});

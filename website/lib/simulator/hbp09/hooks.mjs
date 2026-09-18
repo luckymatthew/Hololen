@@ -25,8 +25,9 @@ export function createHbp09(host) {
     }
     if(o.op==='sameLevelSubaru'){
       const ref=c.vars.opponentLevel?.[0];if(!ref)return true;
-      const level=map.get(ref.number)?.stage;
-      steps.unshift(...deploy({group:'holomem',names:['大空スバル'],stages:[level]}));return true;
+      const level=map.get(ref.number)?.stage;const extra=rt.locate(state,ref)?.unit?.hbp09Stage;
+      const stages=[level];if(extra?.expiresTurn===state.turn&&!stages.includes(extra.stage))stages.push(extra.stage);
+      steps.unshift(...deploy({group:'holomem',names:['大空スバル'],stages}));return true;
     }
     if(o.op==='hajimeX'){
       const options=Array.from({length:p.holoPower.length+1},(_,i)=>({id:String(i),label:`支付 ${i} Holo Power`}));
@@ -120,7 +121,7 @@ export function createHbp09(host) {
     assert(checks[code(card.number)]!==false,'The printed play requirement is not satisfied');
     rt.enqueue(state,c,program(card.number,'support'));return true;
   }
-  function keyword(state,i,zone,card,map){if(!isHbp09(card?.number))return false;enqueue(state,i,card.number,'keyword',zone);return true;}
+  function keyword(state,i,zone,card,map,event){if(!isHbp09(card?.number))return false;if(card.keyword?.type!==event)return true;assert(program(card.number,'keyword'),`Missing ${event} handler for ${card.number}`);enqueue(state,i,card.number,'keyword',zone);return true;}
   function arts(state,i,zone,index,targetZone,map,random,card){
     const p=state.players[i],q=state.players[1-i],u=p.zones[zone],n=code(card.number),c=rt.context(state,i,card.number,zone,{event:`art${index}`,targetZone});
     const os=name=>host.cardHasName(map.get(p.oshi.number),name);

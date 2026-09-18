@@ -9,11 +9,11 @@ const HBP09 = createHbp09({
   queueBloomEffects, queueAttachmentBloomEffects,
 });
 function queueBloomEffects(state, playerIndex, zone, card, map, random) {
-  if (HBP09.keyword(state, playerIndex, zone, card, map)) return;
+  if (HBP09.keyword(state, playerIndex, zone, card, map, 'bloom')) return;
   return hbp09Legacy_queueBloomEffects(state, playerIndex, zone, card, map, random);
 }
 function queueCollabEffects(state, playerIndex, card, map, random) {
-  if (HBP09.keyword(state, playerIndex, 'collab', card, map)) return;
+  if (HBP09.keyword(state, playerIndex, 'collab', card, map, 'collab')) return;
   return hbp09Legacy_queueCollabEffects(state, playerIndex, card, map, random);
 }
 function resolveGenericArtEffects(state, playerIndex, sourceZone, artIndex, targetZone, map, random, artCardOverride = null) {
