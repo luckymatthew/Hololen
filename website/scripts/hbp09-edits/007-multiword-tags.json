@@ -1,0 +1,3 @@
+[
+{"path":"website/lib/simulator/hbp09/engine-bridge.txt","old":"// END HBP09 EXECUTABLE BRIDGE v1","new":"function cardHasTag(card, tag) {\n  if (hbp09Legacy_cardHasTag(card, tag)) return true;\n  // The old importer split on whitespace and stored '#FLOW', 'GLOW'.\n  // Join continuation tokens, never combine two separate # tags.\n  const tags = [];\n  for (const token of card?.tags || []) {\n    if (String(token).startsWith('#') || !tags.length) tags.push(String(token));\n    else tags[tags.length - 1] += ' ' + token;\n  }\n  return tags.some(value => normalizeCardName(value) === normalizeCardName(tag));\n}\n// END HBP09 EXECUTABLE BRIDGE v1"}
+]
