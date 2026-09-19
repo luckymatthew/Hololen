@@ -1,4 +1,5 @@
 "use client";
+import { downloadReview } from '@/lib/simulator/review-download.mjs';
 
 import { appFetch } from "@/lib/backend";
 import { firebaseBuild } from "@/lib/firebase/client";
@@ -1271,6 +1272,11 @@ export default function SimulatorClient() {
     } catch { setNotice("無法讀取 AI 牌組檔案。 "); }
   }
 
+  function exportReview(format: string) {
+    if(!room?.code?.startsWith('AI-'))return setNotice('只可匯出此裝置嘅離線 AI 對局。');
+    try{const saved=JSON.parse(localStorage.getItem('holo-solo-v1:'+room.code)||'null');downloadReview(saved,format);setNotice('已準備 AI Review 下載，包含離線雙方手牌及牌庫。');}
+    catch(error){setNotice(error instanceof Error?error.message:'匯出失敗，對局已保留。');}
+  }
   async function copyRoomCode() {
     if (!room) return;
     try {
@@ -1504,7 +1510,7 @@ export default function SimulatorClient() {
     <main style={matchCanvasStyle} data-canvas-scale={lockedCanvas?.scale} className={`simulator-page sim-table-page sim-status-${state.status} ${matchActive ? `sim-match-active sim-zoom-locked ${lockedHeight < 620 ? "sim-short-canvas" : ""}` : ""}`}>
       <header className="topbar">
         <Link className="brand" href="/simulator"><span className="brand-mark">H</span><span><strong>{state.mode === "solo" ? "單人 AI 模擬器" : "私人 PvP 模擬器"}</strong><small>{state.mode === "solo" ? "CARD-AWARE EXPERT" : `ROOM ${room.code}`}</small></span></Link>
-        <div className="topbar-actions">{state.mode !== "solo" && <button className="sim-code-button" type="button" onClick={() => void copyRoomCode()}><span>房間碼</span><b>{room.code}</b></button>}<ThemeToggle /><Link className="account-button" href="/">卡庫</Link></div>
+        <div className="topbar-actions">{state.mode === 'solo' && firebaseBuild && <><button className="account-button" onClick={()=>exportReview('zip')}>AI Review ZIP</button><button className="account-button" onClick={()=>exportReview('json')}>AI Review JSON</button></>}{state.mode !== "solo" && <button className="sim-code-button" type="button" onClick={() => void copyRoomCode()}><span>房間碼</span><b>{room.code}</b></button>}<ThemeToggle /><Link className="account-button" href="/">卡庫</Link></div>
       </header>
 
       {state.status === "waiting" || state.status === "lobby" ? (

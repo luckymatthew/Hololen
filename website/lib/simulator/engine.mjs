@@ -1,3 +1,4 @@
+import {gameUUID,gameTime,gameRandom} from './review-entropy.mjs';
 import { createHbp09, isHbp09 } from './hbp09/hooks.mjs';
 import { diceRuns, diceDecision, runDiceAction } from "./dice-actions.mjs";
 import { DECK_SEARCH_EFFECTS, EXTENDED_SUPPORT_EFFECTS, SIMPLE_SUPPORT_EFFECTS, TOP_LOOK_EFFECTS } from "./effect-catalog.mjs";
@@ -107,7 +108,7 @@ function appendLog(state, message, cardRefs = [], options = {}) {
       : /(?:公開|展示)/u.test(message)
         ? cardRefs
         : []);
-  state.log.unshift({ id: crypto.randomUUID(), at: Date.now(), message, cardRefs: refs, revealRefs: revealed });
+  state.log.unshift({ id: gameUUID(), at: gameTime(), message, cardRefs: refs, revealRefs: revealed });
 }
 
 function normalizeLegacyState(state) {
@@ -225,7 +226,7 @@ export function createLobbyState(name, deck) {
     effectQueue: [],
     knockouts: [],
     lifeLosses: [],
-    log: [{ id: crypto.randomUUID(), at: Date.now(), message: `${name} 建立了私人房間。` }],
+    log: [{ id: gameUUID(), at: gameTime(), message: `${name} 建立了私人房間。` }],
   };
 }
 
@@ -7174,14 +7175,14 @@ function resolveKoyoriArtEffects(state, playerIndex, sourceZone, artIndex, map, 
   if (sourceCard?.number === "hEB01-018" && source.attachments?.some((instance) => cardHasTag(map.get(instance.number), "#こよラボ"))) bonus += 20;
   if (sourceCard?.number === "hEB01-022" && stageEntries(player).some(({ unit: stageUnit }) => map.get(topCard(stageUnit)?.number)?.stage === "2nd")) bonus += 20;
   if (sourceCard?.number === "hEB01-020" && artIndex === 1) {
-    const revealed = player.mainDeck.splice(0, Math.min(totalCheer(player), player.mainDeck.length));
+    const revealed = player.mainDeck.splice(0, Math.min(revealCount(player), player.mainDeck.length));
     const holomem = revealed.filter((instance) => map.get(instance.number)?.group === "holomem").length;
     bonus += holomem * 10;
     player.mainDeck = shuffle([...player.mainDeck, ...revealed], random);
     appendLog(state, `${player.name} 展示 ${cardCodes(revealed)}，當中 ${holomem} 張 Holomen；Arts +${holomem * 10}，然後洗牌。`, revealed);
   }
   if (sourceCard?.number === "hEB01-024" && artIndex === 0) {
-    const revealed = player.mainDeck.splice(0, Math.min(totalCheer(player), player.mainDeck.length));
+    const revealed = player.mainDeck.splice(0, Math.min(revealCount(player), player.mainDeck.length));
     const holomem = revealed.filter((instance) => map.get(instance.number)?.group === "holomem").length;
     bonus += holomem * 20;
     player.mainDeck = shuffle([...player.mainDeck, ...revealed], random);
@@ -7328,7 +7329,7 @@ function rollArtDie(state, playerIndex, sourceCard, random, label = "因 Arts �
 
 function queueFixedSpecialDamage(state, playerIndex, sourceZone, zones, amount, sourceName, loseLife = true) {
   const opponentIndex = playerIndex === 0 ? 1 : 0;
-  const damageBatchId = crypto.randomUUID();
+  const damageBatchId = gameUUID();
   zones.forEach((zone) => {
     if (state.players[opponentIndex].zones[zone]) enqueueEffect(state, { type: "specialDamage", damageBatchId, playerIndex, targetPlayerIndex: opponentIndex, targetZone: zone, amount, loseLife, sourceName, sourceZone });
   });
@@ -9350,7 +9351,7 @@ function attack(state, playerIndex, action, map, random) {
   queueAttachmentArtEffects(state, playerIndex, action.sourceZone, map, random);
   queueGiftArtUseEffects(state, playerIndex, action.sourceZone, sourceCard, map);
   const archiveCheerColors = new Set(player.archive.filter((instance) => map.get(instance.number)?.group === "cheer").flatMap((instance) => map.get(instance.number)?.colors || []));
-  const damageBatchId = crypto.randomUUID();
+  const damageBatchId = gameUUID();
   splitTargets.forEach((splitTargetZone) => {
     const splitTarget = opponent.zones[splitTargetZone];
     const splitTargetCard = unitCard(splitTarget, map);
@@ -10306,6 +10307,7 @@ function drainEffectQueue(state, map, random = secureRandom) {
 }
 
 export function applyAction(stateInput, playerIndex, action, cards, random = secureRandom) {
+  random = gameRandom(random);
   return runDiceAction(stateInput, playerIndex, action, cards, random, executeAction);
 }
 

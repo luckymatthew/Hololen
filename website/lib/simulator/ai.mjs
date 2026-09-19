@@ -1,4 +1,6 @@
-import { applyAction, BACK_SLOTS, STAGE_SLOTS } from "./engine.mjs";
+import {withoutEntropy} from './review-entropy.mjs';
+import { sampleObservation } from "./observation.mjs";
+import { publicRoomState, applyAction, BACK_SLOTS, STAGE_SLOTS } from "./engine.mjs";
 
 const MAX_AI_STEPS = 96;
 
@@ -228,6 +230,14 @@ function pendingCandidates(state, aiIndex, map) {
     const unitAmount = Math.max(1, Number(pending.unitAmount || 20));
     const zones = (pending.options || []).filter((zone) => state.players[aiIndex]?.zones?.[zone]);
     if (count === 0 || zones.length === 0) return [];
+    const exhaustive=[];
+    function allocate(index, remaining, allocation) {
+      if(exhaustive.length>512)return;
+      if(index===zones.length-1){exhaustive.push({type:'choose',allocations:{...allocation,[zones[index]]:remaining}});return;}
+      for(let n=0;n<=remaining;n++)allocate(index+1,remaining-n,{...allocation,[zones[index]]:n});
+    }
+    allocate(0,count,{});
+    if(exhaustive.length<=512)return exhaustive;
     const ranked = [...zones].sort((left, right) => {
       const leftUnit = state.players[aiIndex].zones[left];
       const rightUnit = state.players[aiIndex].zones[right];
@@ -322,7 +332,9 @@ function continuationScore(state, aiIndex, cards, map, depth) {
   return Number.isFinite(best) ? best : base;
 }
 
-function chooseAiAction(state, aiIndex, cards, excluded = new Set()) {
+function chooseAiActionCore(input, aiIndex, cards, excluded = new Set(), options = {}) {
+  const started=Date.now();const state=sampleObservation(input,aiIndex,cards);
+  const rows=[];
   const map = cardMap(cards);
   const candidates = state.pendingChoice ? pendingCandidates(state, aiIndex, map) : regularCandidates(state, aiIndex, map);
   let best = null;
@@ -331,14 +343,16 @@ function chooseAiAction(state, aiIndex, cards, excluded = new Set()) {
     try {
       const simulated = applyAction(state, aiIndex, action, cards, () => 0.5);
       const score = continuationScore(simulated, aiIndex, cards, map, 2) + actionPrior(action, state, aiIndex, map);
+      rows.push({action,score});
       if (!best || score > best.score) best = { action, score };
     } catch { /* use the live rules engine as the legality oracle */ }
   }
+  if(options.telemetry)Object.assign(options.telemetry,{turn:state.turn,phase:state.phase,seat:aiIndex,observation:publicRoomState(input,aiIndex),pendingChoice:publicRoomState(input,aiIndex).pendingChoice,actions:rows,chosenIndex:rows.findIndex(x=>JSON.stringify(x.action)===JSON.stringify(best?.action)),elapsedMs:Date.now()-started,nodes:null,samples:1,depth:null,budget:{choiceDepth:2},reasonCodes:['heuristic_continuation_value'],fallbackReason:best?null:'no_generated_legal_action'});
   return best?.action || null;
 }
 
 function decisionFingerprint(state) {
-  const copy = structuredClone(state);
+  const copy = publicRoomState(state, state.aiPlayer ?? 1);
   delete copy.log;
   delete copy.aiLastStepCount;
   return JSON.stringify(copy);
@@ -351,13 +365,13 @@ function aiNeedsToAct(state, aiIndex) {
   return state.status === "playing" && state.activePlayer === aiIndex;
 }
 
-export function runAiStep(stateInput, cards, aiIndex = 1, random) {
+export function runAiStep(stateInput, cards, aiIndex = 1, random, options = {}) {
   let state = structuredClone(stateInput);
   if (!aiNeedsToAct(state, aiIndex)) {
     state.aiLastStepCount = 0;
     return state;
   }
-  const action = chooseAiAction(state, aiIndex, cards);
+  const action = chooseAiAction(state, aiIndex, cards, new Set(), options);
   if (!action) {
     state.aiLastStepCount = 0;
     return state;
@@ -385,4 +399,6 @@ export function runAiUntilHuman(stateInput, cards, aiIndex = 1, random) {
   return state;
 }
 
-export { chooseAiAction, evaluateState };
+export { evaluateState };
+
+export function chooseAiAction(...args){return withoutEntropy(()=>chooseAiActionCore(...args));}
