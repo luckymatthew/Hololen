@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { releaseMetadata, APK_URL, STABLE_METADATA, apkUrl } from '../lib/releases.mjs';
-const payload = { tag_name: 'v1.2.0', assets: [{ name: 'HoloLens.apk', size: 599776366, state: 'uploaded' }] };
+const payload = { tag_name: 'v1.2.1', assets: [{ name: 'HoloLens.apk', size: 599903413, state: 'uploaded' }] };
 test('offline default is the public versioned stable APK', () => {
  assert.equal(STABLE_METADATA.preview, false);
- assert.equal(STABLE_METADATA.version, 'v1.2.0');
- assert.equal(STABLE_METADATA.size, 599776366);
- assert.equal(APK_URL, 'https://github.com/luckymatthew/Hololen/releases/download/v1.2.0/HoloLens.apk');
+ assert.equal(STABLE_METADATA.version, 'v1.2.1');
+ assert.equal(STABLE_METADATA.size, 599903413);
+ assert.equal(APK_URL, 'https://github.com/luckymatthew/Hololen/releases/download/v1.2.1/HoloLens.apk');
 });
 test('new stable metadata and its download remain paired', () => {
  const meta = releaseMetadata({ ...payload, tag_name: 'v1.2.3' });
@@ -14,5 +14,5 @@ test('new stable metadata and its download remain paired', () => {
  assert.ok(apkUrl(meta.version).includes('/download/v1.2.3/'));
 });
 test('preview, draft, old and incomplete releases cannot replace stable download', () => {
- for (const value of [{...payload, prerelease:true}, {...payload, draft:true}, {...payload, tag_name:'v0.7.2'}, {...payload, tag_name:'v1.0.0'}, {...payload, tag_name:'v1.1.0'}, {...payload, tag_name:'v1.2.0-beta'}, {...payload, assets:[]}, {...payload, assets:[{name:'HoloLens.apk',state:'new',size:1}]}]) assert.throws(() => releaseMetadata(value));
+ for (const value of [{...payload, prerelease:true}, {...payload, draft:true}, {...payload, tag_name:'v0.7.2'}, {...payload, tag_name:'v1.0.0'}, {...payload, tag_name:'v1.1.0'}, {...payload, tag_name:'v1.2.0'}, {...payload, tag_name:'v1.2.1-beta'}, {...payload, assets:[]}, {...payload, assets:[{name:'HoloLens.apk',state:'new',size:1}]}]) assert.throws(() => releaseMetadata(value));
 });
