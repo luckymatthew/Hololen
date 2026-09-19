@@ -29,6 +29,7 @@ Official references: [card list](https://hololive-official-cardgame.com/cardlist
 | TypeScript / production build / Firebase artifact guard | Pass |
 | Firebase emulator security rules | 7 pass |
 | Firebase emulator integration | 3 pass |
+| Production Firebase, two independent anonymous SDK clients | Pass: create/join/ready/setup/Cheer, opponent privacy, denied guest full-state read, stale action rejection, disconnect/reconnect; temporary room/accounts removed |
 | Current production native host suite | 43 pass; includes full offline AI matches; distinct from the older handoff's 43 diagnostics tests |
 | Current-source parity subset | 12 web/native/PvP-bundle transitions equal; 100 AI hidden-world samples retain selected printing |
 | Original AI Review release harness | Fails missing `battleDiagnostics`; gate retained |
@@ -46,8 +47,10 @@ The signed APK is a **local candidate**, `1.2.1-hbp09-rc1` / code 17, package `c
 ## Remaining acceptance gaps
 
 - Recover/reconcile the later AI Review source and validate diagnostics/battle-data export and its additional AI tests.
-- Physical ARM64 phone upgrade, live camera samples, Google sign-in, live account deck sync, two-client live PvP/reconnect, and browser pointer dragging.
+- Physical ARM64 phone upgrade, live camera samples, Google sign-in, live account deck sync, browser-to-browser live PvP UI and browser pointer dragging. The production two-client SDK PvP/reconnect test passed separately.
 - Broader old/new card permutation audits beyond the focused and full regression suites.
 - Public stable APK promotion and download metadata update after those release gates pass. Existing public 1.2.0 download remains intact.
 
-Deployment and public download verification are recorded in `DEPLOYMENT-20260919.json` after deployment.
+Website deployment from `1160db6a82c83d674916826373d02fac374425e0` succeeded at https://hololive-ocg.web.app/. Public HTML, service worker, catalogs and all 255 hBP09 artwork files match the build. Browser checks confirm the newly added 牛丼 text and stable download link. Service worker version: `holo-firebase-7c11213a95881d76`.
+
+The existing public 1.2.0 APK was anonymously downloaded in all 72 exact byte ranges and hashed in order: 599,776,366 bytes, SHA-256 `88d48a1b317867953f4d77e21cc9114832be3af4f08e512e820fd1d2bd3d4bfd`. The newly signed candidate was not promoted. Deployment and public download evidence are recorded in `DEPLOYMENT-20260919.json`.
