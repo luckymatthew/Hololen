@@ -56,6 +56,23 @@ export const SIMPLE_SUPPORT_EFFECTS = Object.freeze({
 // value is intentionally descriptive: it is also used by the coverage tests so
 // a newly-added support card cannot silently fall back to manual resolution.
 export const EXTENDED_SUPPORT_EFFECTS = Object.freeze({
+  "hBP09-090": "hbp09-program-090",
+  "hBP09-091": "hbp09-program-091",
+  "hBP09-092": "hbp09-program-092",
+  "hBP09-093": "hbp09-program-093",
+  "hBP09-094": "hbp09-program-094",
+  "hBP09-095": "hbp09-program-095",
+  "hBP09-096": "hbp09-program-096",
+  "hBP09-097": "hbp09-program-097",
+  "hBP09-098": "hbp09-program-098",
+  "hBP09-099": "hbp09-program-099",
+  "hBP09-100": "hbp09-program-100",
+  "hBP09-101": "hbp09-program-101",
+  "hBP09-102": "hbp09-program-102",
+  "hBP09-103": "hbp09-program-103",
+  "hBP09-104": "hbp09-program-104",
+  "hBP09-105": "hbp09-program-105",
+
   "hBP01-108": "swapOpponentCenter",
   "hBP01-110": "bluntWeapon",
   "hBP01-112": "mischiefDamage",

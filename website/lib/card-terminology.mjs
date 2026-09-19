@@ -1,6 +1,7 @@
 // Display/search vocabulary only. Never feed this output into rule evaluation.
 // Short game terms were compared with HoloTCG TW; effect sentences are our own.
 import { effectCorrections } from './effect-corrections.mjs';
+import { hbp09Translation, hbp09TagText } from './hbp09-translations.mjs';
 export const terminologyVersion = '2026-09-05.2';
 export const glossary = [
   ['ホロメン / Holomen', '成員'],
@@ -88,5 +89,8 @@ export function effectText(card, value) {
   const skills = [card.keyword, card.stageSkill, card.oshiSkill, card.spOshiSkill, ...(card.arts || [])];
   // Exact original-text guard prevents an old review overwriting a newer card revision.
   const correction = (effectCorrections[card.number] || []).find(item => item.original === value);
-  return cardText(correction?.translation ?? value, [card.name, card.jpName, card.enName, ...skills.map(skill => skill?.name)]);
+  return cardText(hbp09Translation(card, value) ?? correction?.translation ?? value, [card.name, card.jpName, card.enName, ...skills.map(skill => skill?.name)]);
 }
+
+// Display only: callers must retain the original tag in filters and game rules.
+export function cardTagText(tag) { return hbp09TagText(tag); }

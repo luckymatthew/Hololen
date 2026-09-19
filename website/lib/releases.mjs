@@ -1,12 +1,12 @@
 export const RELEASE_REPOSITORY = 'luckymatthew/Hololen';
 export const APK_FILENAME = 'HoloLens.apk';
 export const RELEASES_URL = `https://github.com/${RELEASE_REPOSITORY}/releases`;
-export const STABLE_TAG = 'v1.2.0';
+export const STABLE_TAG = 'v1.2.2';
 export const releaseUrl = tag => `${RELEASES_URL}/tag/${encodeURIComponent(tag)}`;
 export const apkUrl = tag => `${RELEASES_URL}/download/${encodeURIComponent(tag)}/${APK_FILENAME}`;
 export const APK_URL = apkUrl(STABLE_TAG);
 // Verified public release: usable even when GitHub metadata is unavailable.
-export const STABLE_METADATA = { version: STABLE_TAG, size: 599776366, date: '2026-09-17T00:00:00Z', preview: false, name: 'Hololens 1.2.0 · hBP09', downloads: 0, notes: '新增 hBP09 卡庫及 255 款官方卡圖，現有 1,392 個卡號、2,906 個版本。保留加減卡、牌組刪除／還原、Google 登入及掃描候選保留。已用原金鑰簽署。新卡效果尚未全部實作，七張新推卡技能暫不開放。Android 15 或以上、ARM64；真機更新與登入仍待實測。' };
+export const STABLE_METADATA = {"version":"v1.2.2","size":599919797,"date":"2026-09-19T00:00:00Z","preview":false,"name":"Hololens 1.2.2 · Export repair and hand count","downloads":0,"notes":"修正對手手牌張數被按鈕遮住，以及 Android 匯出期間畫面重建導致空檔。牌組、備份、效能與 AI Review JSON／ZIP 均先暫存並於寫入後讀回校驗。AI Review 改為分段讀取已保存對局；保留原簽章及現有功能。Android 15+、ARM64；模擬器升級及六種匯出測試通過。實機與原本第 4 回合停住的存檔尚未驗證，詳見發布說明。"};
 export function releaseMetadata(payload) {
   if (!payload || payload.draft || payload.prerelease || !/^v\d+\.\d+\.\d+$/.test(payload.tag_name) || !Array.isArray(payload.assets)) throw new Error('尚未有正式版本');
   const apk = payload.assets.find(asset => asset.name === APK_FILENAME && asset.state === 'uploaded');

@@ -20,3 +20,7 @@
 **/.DS_Store
 **/__pycache__/
 **/*.pyc
+
+# hBP09 integration local backups
+.hbp09-translation-backups/
+**/.hbp09-backups/

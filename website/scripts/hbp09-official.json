@@ -2,7 +2,7 @@
   "product": "ボリュームヴォルテックス",
   "releaseDate": "2026-09-19",
   "productUrl": "https://hololive-official-cardgame.com/products/post/volume-vortex/",
-  "snapshotDate": "2026-09-17",
+  "snapshotDate": "2026-09-19",
   "printings": [
     {
       "number": "hBP01-072",
@@ -6746,7 +6746,13 @@
           "images": []
         }
       },
-      "fields": []
+      "fields": [
+        {
+          "class": "extra",
+          "html": "<div class=\"extra\"><p>エクストラ</p><p>このイベントは〈牛丼〉としても扱う</p></div>",
+          "text": "エクストラこのイベントは〈牛丼〉としても扱う"
+        }
+      ]
     },
     {
       "number": "hBP09-101",
@@ -14076,7 +14082,13 @@
           "images": []
         }
       },
-      "fields": []
+      "fields": [
+        {
+          "class": "extra",
+          "html": "<div class=\"extra\"><p>エクストラ</p><p>このイベントは〈牛丼〉としても扱う</p></div>",
+          "text": "エクストラこのイベントは〈牛丼〉としても扱う"
+        }
+      ]
     },
     {
       "number": "hBP09-101",
