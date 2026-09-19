@@ -38,15 +38,17 @@ export function applyDifference(before, delta) {
   return result;
 }
 export function newRecording(state, revision, matchId, provenance, limits = {}) {
+  const baseline = clone(state);
   return { schemaVersion: 'hololens.battle-diagnostics.v2', build: REVIEW_BUILD, matchId, provenance: clone(provenance),
     limits: { maxRecords: 2048, maxCharacters: 3 * 1024 * 1024, ...limits },
-    initialState: clone(state), baseline: clone(state), baselineRevision: revision, baselineHash: stateHash(state),
+    initialState: baseline, baseline, baselineRevision: revision, baselineHash: stateHash(state),
     lastRevision: revision, droppedRecords: 0, droppedDecisions: 0, records: [], legacy: revision > 1,
     versions: [{ fromRevision: revision, provenance: clone(provenance) }] };
 }
 /** @param {any} recording @param {any} before @param {any} after @param {number} revision @param {any} action @param {any} telemetry @param {any} entropy */
 export function appendRecording(recording, before, after, revision, action, telemetry = null, entropy = null) {
-  const r = clone(recording);
+  // Records are immutable once committed; copy only the spine, never the entire history.
+  const r = { ...recording, records: [...recording.records] };
   if (revision !== r.lastRevision + 1) throw Error('Diagnostic revision discontinuity');
   const lastHash = r.records.at(-1)?.afterHash || r.baselineHash;
   if (stateHash(before) !== lastHash) throw Error('Diagnostic baseline mismatch');

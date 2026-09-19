@@ -1,3 +1,4 @@
+import { readImportJson } from "../../lib/import-json.mjs";
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { onAuthStateChanged, type User } from 'firebase/auth';
 import { firebaseConfigured, getFirebase, googleLogin, emailLogin, logout, friendlyError } from '../../lib/firebase/client';
@@ -42,7 +43,7 @@ export default function FirebaseAccount() {
       <label>密碼<input type="password" value={password} onChange={e => setPassword(e.target.value)} autoComplete={register ? 'new-password' : 'current-password'} minLength={8} required /></label>
       <button className="auth-submit" disabled={busy || !firebaseConfigured}>{busy ? '處理中…' : register ? '建立帳號' : '登入'}</button><button type="button" onClick={() => setRegister(!register)}>{register ? '已有帳號？登入' : '使用電郵建立帳號'}</button>
     </form></section> : <div className="account-actions"><button onClick={() => void attempt(() => syncNow(true))} disabled={busy}>立即同步</button><button onClick={() => { importGuestDecks(); setMessage('已匯入此裝置的未登入牌組；原始版本仍然保留。'); }}>匯入此裝置牌組</button><button onClick={() => void attempt(logout)}>登出</button></div>}
-    <div className="account-actions account-tools"><a href="/deck">＋ 建立新牌組</a><button onClick={downloadBackup}>匯出完整備份</button><label className="file-button">匯入牌組備份<input type="file" accept="application/json,.json" onChange={async e => { const file = e.target.files?.[0]; if (!file) return; try { importDecks(JSON.parse(await file.text())); setMessage('備份已匯入。'); } catch (error) { setMessage(error instanceof Error ? error.message : '無法讀取備份。'); } e.target.value = ''; }} /></label><a href="/download">下載 Android App →</a></div>
+    <div className="account-actions account-tools"><a href="/deck">＋ 建立新牌組</a><button onClick={downloadBackup}>匯出完整備份</button><label className="file-button">匯入牌組備份<input type="file" accept="application/json,.json" onChange={async e => { const file = e.target.files?.[0]; if (!file) return; try { importDecks(await readImportJson(file)); setMessage('備份已匯入。'); } catch (error) { setMessage(error instanceof Error ? error.message : '無法讀取備份。'); } e.target.value = ''; }} /></label><a href="/download">下載 Android App →</a></div>
     <div className="saved-deck-filters">
       <div className="deck-edit-modes" role="group" aria-label="牌組列表"><button type="button" aria-pressed={!showDeleted} onClick={() => setShowDeleted(false)}>我的牌組 · {decks.filter(deck => !deck.archived).length}</button><button type="button" aria-pressed={showDeleted} onClick={() => setShowDeleted(true)}>已刪除 · {decks.filter(deck => deck.archived).length}</button></div>
       <label>搜尋牌組<input type="search" value={deckSearch} onChange={event => setDeckSearch(event.target.value)} placeholder="輸入牌組名稱" /></label>

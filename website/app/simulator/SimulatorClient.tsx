@@ -1,4 +1,5 @@
 "use client";
+import { readImportJson } from "../../lib/import-json.mjs";
 import { downloadReview } from '@/lib/simulator/review-download.mjs';
 
 import { appFetch } from "@/lib/backend";
@@ -1247,7 +1248,7 @@ export default function SimulatorClient() {
   async function importDeck(file?: File) {
     if (!file) return;
     try {
-      const parsed = JSON.parse(await file.text());
+      const parsed = await readImportJson(file);
       let incoming = parsed.deck || parsed;
       if (isHoloSimDeck(parsed)) {
         incoming = fromHoloSimDeck(parsed);
@@ -1255,13 +1256,13 @@ export default function SimulatorClient() {
       if (!incoming?.oshi || !incoming?.main || !incoming?.cheer) throw new Error();
       setDeck(incoming);
       setNotice("牌組已匯入，入房前會再核對卡號及限制。 ");
-    } catch { setNotice("無法讀取這個牌組檔案。 "); }
+    } catch (error) { setNotice(error instanceof Error && error.message ? error.message : "無法讀取這個牌組檔案。 "); }
   }
 
   async function importAiDeck(file?: File) {
     if (!file) return;
     try {
-      const parsed = JSON.parse(await file.text());
+      const parsed = await readImportJson(file);
       let incoming = parsed.deck || parsed;
       if (isHoloSimDeck(parsed)) incoming = fromHoloSimDeck(parsed);
       if (!incoming?.oshi || !incoming?.main || !incoming?.cheer) throw new Error();
@@ -1269,7 +1270,7 @@ export default function SimulatorClient() {
       setAiDeckLabel(file.name.replace(/\.json$/iu, ""));
       setAiDeckChoice("__imported");
       setNotice("AI 牌組已匯入。 ");
-    } catch { setNotice("無法讀取 AI 牌組檔案。 "); }
+    } catch (error) { setNotice(error instanceof Error && error.message ? error.message : "無法讀取 AI 牌組檔案。 "); }
   }
 
   function exportReview(format: string) {

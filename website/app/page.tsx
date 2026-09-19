@@ -1,5 +1,6 @@
 "use client";
 
+import { readImportJson } from "../lib/import-json.mjs";
 import { appFetch } from "@/lib/backend";
 import { draftKey } from "@/lib/firebase/store";
 import { content as deckContent } from "@/lib/firebase/merge.mjs";
@@ -678,7 +679,7 @@ export default function Home() {
   const importDeck = async (file: File | undefined) => {
     if (!file) return;
     try {
-      const parsed = JSON.parse(await file.text());
+      const parsed = await readImportJson(file);
       const incoming = isHoloSimDeck(parsed) ? fromHoloSimDeck(parsed) : parsed.deck || parsed;
       if (!incoming.oshi || !incoming.main || !incoming.cheer) throw new Error("invalid");
       const next = emptyDeck();
@@ -719,8 +720,8 @@ export default function Home() {
       setDeckName(file.name.replace(/\.json$/i, "") || "匯入牌組");
       window.history.replaceState({}, "", "/");
       setNotice(skippedCards > 0 ? `HoloSim 牌組已匯入；略過 ${skippedCards} 張卡庫中不存在的卡。` : "HoloSim 牌組已匯入並完成卡號檢查。");
-    } catch {
-      setNotice("無法讀取這個牌組檔案。");
+    } catch (error) {
+      setNotice(error instanceof Error && error.message !== "invalid" ? error.message : "無法讀取這個牌組檔案。");
     }
   };
 
