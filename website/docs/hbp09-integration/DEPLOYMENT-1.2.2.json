@@ -1,0 +1,19 @@
+{
+  "release": "https://github.com/luckymatthew/Hololen/releases/tag/v1.2.2",
+  "site": "https://hololive-ocg.web.app",
+  "deployedSourceCommit": "ae55511595d0311d96532ec42c2c45eacdbc963d",
+  "checkedAt": "2026-09-19T14:36:10.806040+00:00",
+  "websiteFilesVerified": 18,
+  "hbp09ArtworkVerified": 255,
+  "apk": {
+    "url": "https://github.com/luckymatthew/Hololen/releases/download/v1.2.2/HoloLens.apk",
+    "bytes": 599919797,
+    "sha256": "c0326ae8e1ab9b552f466a2e90acd576fd409d42cbf933d1ecb7f8d16fbda396",
+    "anonymousDownloadVerified": true,
+    "exactRanges": 72
+  },
+  "originalSigningCertificateSha256": "92a20ef4e5e7a93e96865577fc90978ba085c0723a0145bcda58c848f5b84f4a",
+  "versionCode": 21,
+  "physicalDeviceVerified": false,
+  "reportedTurn4SaveAvailable": false
+}
