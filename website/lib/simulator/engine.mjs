@@ -22,7 +22,6 @@ function countCards(section) {
 function catalogMap(cards, state = null) {
   const map = new Map(cards.map((card) => [card.number, card]));
   map.gameState = state;
-  if (state) HBP09_MAPS.set(state, map);
   return map;
 }
 
@@ -10316,6 +10315,10 @@ function executeAction(stateInput, playerIndex, action, cards, random, diceRun) 
   normalizeLegacyState(state);
   const map = catalogMap(cards, state);
   diceRun.map = map; diceRuns.set(state, diceRun);
+  // Scope the hBP09 support lookup to this synchronous action. Its map points
+  // back to the state; explicit cleanup also supports reference-counting hosts.
+  HBP09_MAPS.set(state, map);
+  try {
   if (action?.type !== "choose") delete state.hbp09ResolvingSupport;
   assert(Number.isInteger(playerIndex) && state.players[playerIndex], "玩家身份無效。 ");
   assert(action && typeof action.type === "string", "操作格式不正確。 ");
@@ -10356,6 +10359,7 @@ function executeAction(stateInput, playerIndex, action, cards, random, diceRun) 
   }
   drainEffectQueue(state, map, random);
   return state;
+  } finally { HBP09_MAPS.delete(state); }
 }
 
 function publicUnit(stageUnit, hidden = false) {
@@ -10908,4 +10912,3 @@ function cardHasTag(card, tag) {
   return tags.some(value => normalizeCardName(value) === normalizeCardName(tag));
 }
 // END HBP09 EXECUTABLE BRIDGE v1
-

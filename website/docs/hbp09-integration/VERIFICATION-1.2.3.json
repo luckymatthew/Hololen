@@ -1,0 +1,136 @@
+{
+  "version": "1.2.3",
+  "versionCode": 22,
+  "apk": {
+    "file": "Hololens-1.2.3-arm64.apk",
+    "sha256": "4bb43a14fe6920626118205561588dc97c93108649c8b080b6482f5dc22d5523",
+    "bytes": 599936181,
+    "certificateSha256": "92a20ef4e5e7a93e96865577fc90978ba085c0723a0145bcda58c848f5b84f4a",
+    "v3": true,
+    "aligned16KiB": true,
+    "assetsVerified": 5774,
+    "version": "1.2.3",
+    "versionCode": 22,
+    "abi": "arm64"
+  },
+  "website": {
+    "regressions": 2304,
+    "syncReleaseChecks": 11,
+    "typecheck": true,
+    "build": true
+  },
+  "nativeHostTests": 58,
+  "android": {
+    "Debug": {
+      "tests": 77,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "Release": {
+      "tests": 77,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lint-debug": {
+      "Error": 0,
+      "Warning": 40
+    },
+    "lint-release": {
+      "Error": 0,
+      "Warning": 40
+    }
+  },
+  "instrumentation": {
+    "passed": 18,
+    "skipped": 1,
+    "skipReason": "Private scanner-photo fixtures unavailable",
+    "platform": "Android 15 x86_64 emulator",
+    "finalSignedBinary": true
+  },
+  "aiRepeatedFailedPosition": {
+    "probes": 60,
+    "initialBytes": 9855959,
+    "highestPostRollbackBytes": 9859668,
+    "revision": 34,
+    "source": "actual 1.2.2 failure"
+  },
+  "finalNativeGame": {
+    "revision": 208,
+    "turn": 17,
+    "status": "finished"
+  },
+  "selfplay": {
+    "games": 6,
+    "deckFamilies": 12,
+    "steps": 1390,
+    "allCompleted": true,
+    "retainedStateAndEntropyReplay": true
+  },
+  "downloads": {
+    "exports": [
+      {
+        "kind": 0,
+        "name": "Reliability-Deck (1).json",
+        "bytes": 266,
+        "sha256": "34c519ab1188832214d08669e69d3cb0af9ee616f9afa4e03525f8901c525047",
+        "publishedAfterVerification": true
+      },
+      {
+        "kind": 1,
+        "name": "Reliability-Performance (1).json",
+        "bytes": 7128,
+        "sha256": "4db126e904c02c2bbc7dc8315cab793391f5c4d7d16bcd7b34ecd6f0ccf07e9a",
+        "publishedAfterVerification": true
+      },
+      {
+        "kind": 2,
+        "name": "Holo-Arcana-Backup (1).json",
+        "bytes": 492213,
+        "sha256": "fd497e0e07e52c08bee0cffef273a53a04d0d1f707a34d3505c1616d93cab2ed",
+        "publishedAfterVerification": true
+      },
+      {
+        "kind": 3,
+        "name": "Holo-Arcana-Raw-Saves (1).zip",
+        "bytes": 30020,
+        "sha256": "2bf2cb070e1b957e03f78690adba5b5cd5779e3aba971e0322c32277b8ad6115",
+        "publishedAfterVerification": true
+      },
+      {
+        "kind": 4,
+        "name": "ai-review (1).json",
+        "bytes": 36324,
+        "sha256": "72c5033e2b263126f912fbdfd850375dbcc116a5aa812b2cd68562765663af57",
+        "publishedAfterVerification": true
+      },
+      {
+        "kind": 5,
+        "name": "Holo-Arcana-BattleLog (1).zip",
+        "bytes": 34571,
+        "sha256": "af818391df695391005a40365747107cf6313108a3d1eae9cb5603dd9e952262",
+        "publishedAfterVerification": true
+      }
+    ],
+    "afterActualRulesFailure": true,
+    "committedSavePreserved": true
+  },
+  "browserImport": {
+    "site": "https://hololive-ocg.web.app/",
+    "browser": "Codex in-app browser",
+    "source": "device/verified-download-0.json",
+    "actualAndroidDownloadsFile": true,
+    "oshi": 1,
+    "main": 50,
+    "cheer": 20,
+    "visibleCompleteDeck": true,
+    "emptyImportPreserved71Cards": true,
+    "emptyErrorTextCaptured": false
+  },
+  "limits": [
+    "Exact user phone save and OEM callback unavailable",
+    "Physical ARM64 phone, camera, fresh login and real account sync unverified",
+    "Does not certify every original acceptance gate or card interaction"
+  ]
+}
