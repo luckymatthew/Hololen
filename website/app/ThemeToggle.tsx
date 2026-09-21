@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { firebaseBuild } from '@/lib/firebase/client';
+import { getUserData, saveUserData } from '@/lib/firebase/store';
 
 type ThemePreference = "system" | "light" | "dark";
 const themeKey = "hololive-ocg-theme";
@@ -22,18 +23,18 @@ export default function ThemeToggle() {
       window.localStorage.setItem(themeKey, nextTheme);
       document.documentElement.dataset.theme = nextTheme;
     }
-    if (firebaseBuild) void import('@/lib/firebase/store').then(store => store.saveUserData('settings', { ...store.getUserData('settings'), theme: nextTheme }));
+    if (firebaseBuild) saveUserData('settings', { ...getUserData('settings'), theme: nextTheme });
   };
 
   useEffect(() => {
     if (!firebaseBuild) return;
-    const apply = () => { void import('@/lib/firebase/store').then(store => {
-      const saved = store.getUserData('settings')?.theme;
+    const apply = () => {
+      const saved = getUserData('settings')?.theme;
       if (!['system', 'light', 'dark'].includes(saved)) return;
       setTheme(saved);
       if (saved === 'system') { localStorage.removeItem(themeKey); document.documentElement.removeAttribute('data-theme'); }
       else { localStorage.setItem(themeKey, saved); document.documentElement.dataset.theme = saved; }
-    }); };
+    };
     window.addEventListener('holo-data-changed', apply); apply();
     return () => window.removeEventListener('holo-data-changed', apply);
   }, []);
