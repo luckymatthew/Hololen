@@ -19,10 +19,20 @@ function countCards(section) {
   return Object.values(section || {}).reduce((sum, value) => sum + Number(value || 0), 0);
 }
 
+const catalogIndexes = new WeakMap();
 function catalogMap(cards, state = null) {
-  const map = new Map(cards.map((card) => [card.number, card]));
-  map.gameState = state;
-  return map;
+  // Card definitions are immutable for a loaded catalog. Share only their
+  // index; the short-lived facade owns gameState and never enters the cache.
+  let index = catalogIndexes.get(cards);
+  if (!index) {
+    const entries = new Map(cards.map((card) => [card.number, card]));
+    index = { get: entries.get.bind(entries), has: entries.has.bind(entries),
+      values: entries.values.bind(entries), keys: entries.keys.bind(entries),
+      entries: entries.entries.bind(entries), size: entries.size,
+      [Symbol.iterator]: entries[Symbol.iterator].bind(entries) };
+    catalogIndexes.set(cards, index);
+  }
+  return Object.assign(Object.create(index), { gameState: state });
 }
 
 function secureRandom() {
@@ -3142,8 +3152,12 @@ function queueDrawingStreamArchive(state, playerIndex, map) {
 function hbp09Legacy_attachmentTargets(player, attachment, map) {
   const typeCode = String(attachment.typeCode || "");
   const text = String(attachment.abilityText || "");
-  const restrictionSentence = text.split(/[。\n]/u).find((sentence) => /(?:只能|只可|此(?:粉絲|應援|Fan|FAN)).*(?:裝備|附加|附著|附給|附於)/iu.test(sentence)) || "";
-  const namedRestrictions = [...restrictionSentence.matchAll(/〈([^〉]+)〉/gu)].map((match) => match[1]);
+  // Trigger sentences ("when this Fan is attached") do not restrict the
+  // recipient. Read the actual restrictive clause, including JP source text.
+  const restrictionSentences = text.split(/[。\n]/u).filter((sentence) =>
+    /(?:只能|只可|僅能|僅可).*(?:裝備|附加|附著|附給|附於|附在)|(?:だけ|のみ)に付け|only\s+(?:be\s+)?attach/iu.test(sentence));
+  const namedRestrictions = restrictionSentences.flatMap(sentence =>
+    [...sentence.matchAll(/[〈<]([^〉>]+)[〉>]/gu)].map(match => match[1]));
   return STAGE_SLOTS.filter((slot) => {
     const stageUnit = player.zones[slot];
     if (!stageUnit) return false;
@@ -6350,10 +6364,11 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
     queueAttachmentBloomEffects(state, playerIndex, action.zone, map);
   } else if (pending.type === "attachSupport") {
     assert(pending.options.includes(action.zone) && player.zones[action.zone], "這個 Holomen 不能附加該支援卡。 ");
-    const selected = removeById(player.hand, pending.cardId);
+    const selected = player.hand.find(card => card.id === pending.cardId);
     assert(selected, "手牌已改變，請重新選擇。 ");
     const attachment = map.get(selected.number);
     assert(attachmentTargets(player, attachment, map).includes(action.zone), "附加目標已改變。 ");
+    removeById(player.hand, pending.cardId);
     delete selected.risunersUsedTurn;
     player.zones[action.zone].attachments.push(selected);
     const targetCard = topCard(player.zones[action.zone]);
@@ -6469,8 +6484,10 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
       appendLog(state, `${player.name} 略過從存檔區附加支援卡。`);
     } else {
       assert(pending.options.includes(action.zone) && player.zones[action.zone], "附加目標無效。 ");
-      const support = removeById(player.archive, pending.cardId);
+      const support = player.archive.find(card => card.id === pending.cardId);
       assert(support, "存檔區的支援卡已改變。 ");
+      assert(attachmentTargets(player, map.get(support.number), map).includes(action.zone), "附加目標已改變。 ");
+      removeById(player.archive, pending.cardId);
       delete support.risunersUsedTurn;
       player.zones[action.zone].attachments.push(support);
       const targetCard = topCard(player.zones[action.zone]);
@@ -9943,6 +9960,149 @@ function hbp09Legacy_activateOshiSkill(state, playerIndex, map, random, kind = "
   appendLog(state, `${player.name}${cost ? ` 支付 ${cost} Holo Power` : ""}使用${kind === "sp" ? " SP" : ""} 推し技能「${skill.name || oshiCard.name}」。`);
 }
 
+// The same recipient rule drives play choices, stale-choice validation and AI
+// candidates. Callers may reuse a catalog Map; this never stores game state.
+export function legalAttachmentTargets(player, attachment, cardsOrMap) {
+  const map = typeof cardsOrMap?.get === "function" ? cardsOrMap : catalogMap(cardsOrMap || []);
+  return attachmentTargets(player, attachment, map);
+}
+
+function manualGiftAvailable(state, playerIndex, action, map) {
+  const player = state.players[playerIndex];
+  if (action.cardNumber === "hBP08-044" && !action.zone) {
+    return Number(player.turnsTaken || 0) > 1
+      && player.archive.filter(instance => map.get(instance.number)?.group === "holomem").length >= 10
+      && player.archive.some(instance => instance.number === "hBP08-044" && bloomTargets(player, map.get(instance.number), map, state.turn).length > 0);
+  }
+  const source = player.zones[action.zone];
+  const card = unitCard(source, map);
+  if (!card) return false;
+  const usageKey = card.number === "hSD13-013" ? `gift:${card.number}:${topCard(source).id}` : `gift:${card.number}`;
+  if (usedNamedThisTurn(player, usageKey, state.turn)) return false;
+  if (card.number === "hSD10-004") {
+    if (!cardHasName(map.get(player.oshi?.number), "輪堂千速")
+      || !stageEntries(state.players[playerIndex === 0 ? 1 : 0]).some(({unit}) => unitCard(unit, map)?.stage === "1st")
+      || card.stage !== "1st" || Number(source.bloomedTurn || 0) !== state.turn) return false;
+    const bonusPlayer = {...player, bonusBloomTurn: state.turn, bonusBloomUsedTurn: 0, bonusBloomTargetId: topCard(source)?.id || ""};
+    return player.hand.some(instance => map.get(instance.number)?.stage === "2nd" && bloomTargets(bonusPlayer, map.get(instance.number), map, state.turn).includes(action.zone));
+  }
+  if (card.number === "hBP01-045") return player.life.length <= 3 && Number(player.turnsTaken || 0) > 1
+    && Number(source.enteredTurn || 0) !== state.turn && Number(source.bloomedTurn || 0) !== state.turn
+    && player.hand.some(instance => map.get(instance.number)?.stage === "2nd" && cardHasName(map.get(instance.number), "AZKi") && Number(map.get(instance.number)?.hp || 0) > Number(source.damage || 0));
+  if (card.number === "hBP03-030") return action.zone === "center" && source.attachments.some(instance => cardHasName(map.get(instance.number), "35P"));
+  if (card.number === "hBP06-070") return action.zone === "center" && stageAttachmentOptions(player, map, (instance, attachment) => cardHasName(attachment, "ゆび")).length > 0;
+  if (card.number === "hBP07-080") return cardHasName(map.get(player.oshi?.number), "桃鈴ねね") && player.archive.some(instance => cardHasName(map.get(instance.number), "ねっ子"));
+  if (card.number === "hSD13-013") return stageEntries(player).some(({unit}) => cardHasName(unitCard(unit, map), "ジジ・ムリン") && unit.stack.slice(0, -1).some(instance => map.get(instance.number)?.group === "holomem"));
+  return false;
+}
+
+function manualAttachmentAvailable(state, playerIndex, action, map) {
+  const player = state.players[playerIndex];
+  const source = player.zones[action.zone];
+  const card = unitCard(source, map);
+  const requested = action.cardNumber || (source?.attachments?.some(instance => instance.number === "hBP04-097") ? "hBP04-097" : source?.attachments?.find(instance => instance.number === "hBP02-092")?.number);
+  if (requested === "hBP02-092") {
+    const attachment = source?.attachments?.find(instance => instance.number === requested);
+    return Boolean(attachment && cardHasName(card, "白上フブキ") && source.cheer.length >= 2
+      && !usedNamedThisTurn(player, `attachment:hBP02-092:${attachment.id}`, state.turn));
+  }
+  return requested === "hBP04-097" && Boolean(source?.attachments?.some(instance => instance.number === requested))
+    && isKoyoriCard(card) && ["1st", "2nd"].includes(card.stage) && source.cheer.length > 0
+    && stageEntries(player).some(({unit}) => unit.rested && cardHasTag(unitCard(unit, map), "#秘密結社holoX"));
+}
+
+function manualOshiAvailable(state, playerIndex, kind, map) {
+  const player = state.players[playerIndex];
+  if (state.status !== "playing" || state.activePlayer !== playerIndex || state.phase !== "main" || state.pendingChoice) return false;
+  // The X-cost bridge opens its own payment choice before the legacy resolver.
+  // Match that bridge's prerequisites, including a valid center and X = 0.
+  if (kind === "oshi" && player.oshi?.number === "hBP09-002") return Number(player.oshiSkillTurn || 0) !== state.turn
+    && cardHasName(unitCard(player.zones.center, map), "轟はじめ");
+  const card = map.get(player.oshi?.number);
+  const skill = kind === "sp" ? card?.spOshiSkill : card?.oshiSkill || (card?.number === KOYORI_OSHI ? { timing: "Holo Power -2", effect: "展示並解析牌庫頂卡。" } : null);
+  if (!skill?.effect || isReactiveOshiSkill(card.number, kind)
+    || (kind === "sp" ? player.spOshiSkillUsed : Number(player.oshiSkillTurn || 0) === state.turn)) return false;
+  const reduction = kind === "oshi" && /モコちゃん/u.test(String(skill.name || "")) && unitCard(player.zones.collab, map)?.number === "hBP08-060" ? 1 : 0;
+  return player.holoPower.length >= Math.max(0, oshiPowerCost(skill, card.number, kind) - reduction);
+}
+
+function attackCandidateAvailable(state, playerIndex, action, map) {
+  const player = state.players[playerIndex], opponent = state.players[playerIndex === 0 ? 1 : 0];
+  if (state.status !== "playing" || state.activePlayer !== playerIndex || state.phase !== "performance"
+    || state.pendingChoice || state.artsResolution || !["center", "collab"].includes(action.sourceZone)
+    || (playerIndex === state.firstPlayer && Number(player.turnsTaken || 0) === 1)) return false;
+  const source = player.zones[action.sourceZone], target = opponent.zones[action.targetZone];
+  if (!source || !target || source.rested) return false;
+  const sourceCard = unitCard(source, map), copiedArtCard = action.artSourceNumber ? map.get(action.artSourceNumber) : null;
+  if (action.artSourceNumber && (!copiedArtCard || sourceCard?.number !== "hBP07-048" || !cardHasTag(copiedArtCard, "#EN")
+    || !stageEntries(player).some(({unit}) => topCard(unit)?.number === copiedArtCard.number))) return false;
+  const artCard = copiedArtCard || sourceCard, art = artCard?.arts?.[Number(action.artIndex)];
+  if (!art || !Number.isFinite(art.damage)) return false;
+  const intrinsicBackAttack = ["hBP01-081", "hSD12-004"].includes(artCard?.number) && Number(action.artIndex) === 0;
+  const canAttackBack = HBP09.canBack(state, playerIndex, source, action.targetZone, unitCard(target, map), map)
+    || intrinsicBackAttack || (activeModifiers(source, "attackDamagedBack", state.turn).length > 0 && Number(target.damage || 0) > 0)
+    || (activeModifiers(source, "attackSecondBack", state.turn).length > 0 && BACK_SLOTS.includes(action.targetZone) && unitCard(target, map)?.stage === "2nd")
+    || activeModifiers(source, "attackBack", state.turn).length > 0 || giftAllowsBackAttack(player, source, target, action.targetZone, map);
+  if (!(canAttackBack ? STAGE_SLOTS : ["center", "collab"]).includes(action.targetZone)
+    || (defenderForcesCollabTarget(opponent, map) && action.targetZone !== "collab")
+    || (/只能以對手的(?:中央|中心)/u.test(String(art.effect || "")) && action.targetZone !== "center")) return false;
+  const artKey = `${artCard?.number}:${Number(action.artIndex)}`;
+  if (artKey === "hBP01-070:0" && source.attachments.some(instance => cardHasName(map.get(instance.number), "座員"))) return false;
+  if (artKey === "hBP07-060:1" && player.archive.filter(instance => map.get(instance.number)?.group === "support").length < 4) return false;
+  if (artKey === "hBP06-039:0" && action.sourceZone === "collab" && player.life.length > 2) return false;
+  const repeat = activeModifiers(source, "repeatArts", state.turn).find(modifier => Number(modifier.uses || 0) > 0 && modifier.artIndex != null);
+  if (repeat && Number(repeat.artIndex) !== Number(action.artIndex)) return false;
+  return cheerCanPayForUnit(source, effectiveArtCost(source, art, state, player, action.sourceZone, map), map, player);
+}
+
+// Cheap rejection of impossible candidates; the action resolver remains the
+// authority for effect-specific costs and outcomes. No cloning or simulation.
+export function isActionCandidateLegal(state, playerIndex, action, cardsOrMap) {
+  const player = state?.players?.[playerIndex];
+  if (!player || !action) return false;
+  const map = typeof cardsOrMap?.get === "function" ? cardsOrMap : catalogMap(cardsOrMap || []);
+  const pending = state.pendingChoice;
+  if (pending) {
+    if (action.type !== "choose" || pending.playerIndex !== playerIndex) return false;
+    if (!["attachSupport", "attachArchivedSupport"].includes(pending.type)) return true;
+    if (action.skip) return Boolean(pending.optional);
+    const source = pending.type === "attachSupport" ? player.hand : player.archive;
+    const attachment = source.find(instance => instance.id === pending.cardId);
+    return Boolean(attachment && pending.options?.includes(action.zone)
+      && attachmentTargets(player, map.get(attachment.number), map).includes(action.zone));
+  }
+  if (action.type === "attack") return attackCandidateAvailable(state, playerIndex, action, map);
+  if (action.type === "oshiSkill" || action.type === "spOshiSkill") return manualOshiAvailable(state, playerIndex, action.type === "spOshiSkill" ? "sp" : "oshi", map);
+  if (!["giftSkill", "attachmentSkill", "collab", "baton", "play"].includes(action.type)) return true;
+  if (state.status !== "playing" || state.activePlayer !== playerIndex || state.phase !== "main") return false;
+  if (action.type === "giftSkill") return manualGiftAvailable(state, playerIndex, action, map);
+  if (action.type === "attachmentSkill") return manualAttachmentAvailable(state, playerIndex, action, map);
+  if (action.type === "collab") return BACK_SLOTS.includes(action.zone) && Boolean(player.zones[action.zone])
+    && !player.zones[action.zone].rested && !player.zones.collab && player.collabTurn !== state.turn && player.mainDeck.length > 0;
+  if (action.type === "baton") {
+    const center = player.zones.center, replacement = player.zones[action.zone];
+    return Boolean(center && BACK_SLOTS.includes(action.zone) && replacement && !center.rested && !replacement.rested)
+      && Number(player.batonTurn || 0) !== state.turn
+      && matchingPlayerModifierBonus(player, "movementLock", center, "center", map, state.turn) === 0
+      && center.cheer.length >= effectiveBatonCost(state, playerIndex, center, "center", map);
+  }
+  const instance = player.hand.find(candidate => candidate.id === action.cardId);
+  const card = instance && map.get(instance.number);
+  if (!card) return false;
+  if (card.group === "holomem") return ["Debut", "Spot"].includes(card.stage)
+    ? stageUnitCount(player) < 6 && emptyBackSlots(player).length > 0
+    : bloomTargets(player, card, map, state.turn).length > 0;
+  if (card.group !== "support") return false;
+  if (String(card.type || "").toUpperCase().includes("LIMITED")) {
+    if (playerIndex === state.firstPlayer && Number(player.turnsTaken || 0) === 1) return false;
+    const allowance = Number(player.limitedAllowanceTurn || 0) === state.turn ? Number(player.limitedAllowance || 2) : 1;
+    const used = Number(player.limitedTurn || 0) === state.turn ? Number(player.limitedUsesCount || 1) : 0;
+    if (used >= allowance) return false;
+  }
+  return !isAttachment(card) || attachmentTargets(player, card, map).length > 0;
+}
+
+
 function activateAttachmentSkill(state, playerIndex, action, map) {
   assert(state.status === "playing" && state.activePlayer === playerIndex && state.phase === "main", "只能在自己的主要階段使用附加卡技能。 ");
   assert(!state.pendingChoice, "請先完成目前的選擇。 ");
@@ -9961,6 +10121,7 @@ function activateAttachmentSkill(state, playerIndex, action, map) {
     enqueueStageCheerSelection(state, { playerIndex, options, effect: "fuburaCheerCost", optional: true, prompt: "Fubura：按這位 Holomen 的第 1 張應援開始支付；亦可略過取消。", meta: { sourceZone: action.zone, sourceId: topCard(source).id, attachmentId: attachment.id, usageKey, remaining: 2 } });
     return;
   }
+  assert(!requestedNumber || requestedNumber === "hBP04-097", "這張附加卡沒有可主動使用的技能。 ");
   assert(source && source.attachments?.some((instance) => instance.number === "hBP04-097"), "所選 Holomen 沒有附加「綠色試管」。 ");
   assert(isKoyoriCard(sourceCard) && ["1st", "2nd"].includes(sourceCard.stage), "「綠色試管」追加技能只可由 1st 以上的博衣こより使用。 ");
   assert(source.cheer.length > 0, "需要將該 Holomen 的 1 張應援放到存檔區。 ");
@@ -10149,7 +10310,7 @@ function drainEffectQueue(state, map, random = secureRandom) {
       const calculated = effect.targetRule ? stageOptionsMatching(player, map, effect.targetRule) : stageEntries(player).filter(({ unit: stageUnit }) => !effect.tag || cardHasTag(map.get(topCard(stageUnit)?.number), effect.tag)).map(({ zone }) => zone);
       const options = Array.isArray(effect.options) ? effect.options.filter((zone) => calculated.includes(zone)) : calculated;
       if ((!effect.cheerCard && player.cheerDeck.length === 0) || options.length === 0) continue;
-      state.pendingChoice = { type: "eventCheerTarget", playerIndex: effect.playerIndex, cardNumber: effect.cheerCard?.number || player.cheerDeck[0].number, cheerCard: effect.cheerCard, options, optional: Boolean(effect.optional), shuffleAfter: Boolean(effect.shuffleAfter), afterUnrest: Boolean(effect.afterUnrest), afterEffect: effect.afterEffect || "", afterZone: effect.afterZone || "", healAmount: Number(effect.healAmount || 0), drawAfter: Number(effect.drawAfter || 0), sourceId: effect.sourceId || "", prompt: effect.prompt };
+      state.pendingChoice = { type: "eventCheerTarget", playerIndex: effect.playerIndex, cardNumber: effect.cheerCard?.number || player.cheerDeck[0].number, cheerCard: effect.cheerCard || null, options, optional: Boolean(effect.optional), shuffleAfter: Boolean(effect.shuffleAfter), afterUnrest: Boolean(effect.afterUnrest), afterEffect: effect.afterEffect || "", afterZone: effect.afterZone || "", healAmount: Number(effect.healAmount || 0), drawAfter: Number(effect.drawAfter || 0), sourceId: effect.sourceId || "", prompt: effect.prompt };
     } else if (effect.type === "lifeCheerTarget") {
       const options = stageOptions(player);
       if (options.length === 0) {
@@ -10832,6 +10993,7 @@ function effectiveCheerColors(player, stageUnit, cheer, map) {
   return colors;
 }
 function attachmentTargets(player, attachment, map) {
+  if (!attachment) return [];
   let options = hbp09Legacy_attachmentTargets(player, attachment, map);
   if (attachment.number === 'hBP09-111') return options.filter(zone => cardHasName(unitCard(player.zones[zone], map), 'カエラ・コヴァルスキア'));
   if (HBP09.arms(attachment)) {

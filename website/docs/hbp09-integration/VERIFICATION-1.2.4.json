@@ -1,0 +1,567 @@
+{
+  "schemaVersion": "hololens.public-release-verification.v1",
+  "version": "1.2.4",
+  "versionCode": 23,
+  "generatedAt": "2026-09-21T15:09:38.250822+00:00",
+  "scope": "Current source, signed APK, task-owned Android 15 x86_64 emulator and local browser verification; publication verification is separate.",
+  "sourceProvenance": {
+    "engineVersion": "sha256:1e601e6c4ffcb643a9d1b3e8b1c000bcbb8b30df3000d23813f761ab46da468d",
+    "catalogVersion": "sha256:3f4f648e7c9a62a6eb064283710d4c582dc7cdc1e2904da13c2671775e164ba3",
+    "policyVersion": "sha256:5260a9b5c4a2ed729f229f6ce6787029861e1310ffe45beebb56b555a2d04009",
+    "appBuild": "1.2.4",
+    "platform": "android"
+  },
+  "apks": [
+    {
+      "file": "Hololens-1.2.4-arm64.apk",
+      "sha256": "e201c91f8f6bd3f459a54e4907f6e668754ad7cd771b782519e2dd383da24c2a",
+      "bytes": 606583989,
+      "certificateSha256": "92a20ef4e5e7a93e96865577fc90978ba085c0723a0145bcda58c848f5b84f4a",
+      "v3": true,
+      "aligned16KiB": true,
+      "assetsVerified": 5774,
+      "version": "1.2.4",
+      "versionCode": 23,
+      "abi": "arm64"
+    },
+    {
+      "file": "Hololens-1.2.4-x86_64.apk",
+      "sha256": "54568196ad9655adf0d4d8d30e59456c70dc2b80bbcacf8afc31f18b00fbfe66",
+      "bytes": 639564963,
+      "certificateSha256": "92a20ef4e5e7a93e96865577fc90978ba085c0723a0145bcda58c848f5b84f4a",
+      "v3": true,
+      "aligned16KiB": true,
+      "assetsVerified": 5774,
+      "version": "1.2.4",
+      "versionCode": 23,
+      "abi": "x86_64"
+    }
+  ],
+  "upgrade": {
+    "profileUnchanged": true,
+    "profileBytes": 744
+  },
+  "hostTests": {
+    "website": {
+      "tests": 2350,
+      "pass": 2350,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0
+    },
+    "native": {
+      "tests": 80,
+      "pass": 80,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0
+    }
+  },
+  "websiteTypecheckAndBuild": true,
+  "prefilterSuccessfulActionAudit": {
+    "passed": 2339,
+    "failed": 0
+  },
+  "oshiFocusedTests": {
+    "passed": 13,
+    "failed": 0
+  },
+  "android": {
+    "debug": {
+      "unitTests": {
+        "tests": 82,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 82
+      },
+      "lintErrors": 0,
+      "lintWarnings": 40
+    },
+    "release": {
+      "unitTests": {
+        "tests": 82,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 82
+      },
+      "lintErrors": 0,
+      "lintWarnings": 40
+    }
+  },
+  "instrumentation": {
+    "passed": 18,
+    "failed": 0,
+    "skipped": 1,
+    "skipReason": "Private camera/photo fixtures absent",
+    "platform": "Android 15 x86_64 emulator",
+    "finalSignedBinary": true
+  },
+  "completeNativeMatch": {
+    "revision": 218,
+    "turn": 17,
+    "status": "finished"
+  },
+  "nativeAi": {
+    "passed": 3,
+    "timingDefinitions": {
+      "probe": "prepare plus reply processing; excludes initialization and subsequent rollback",
+      "continuation": "prepare, commit and telemetry extraction",
+      "search": "AI-internal elapsedMs; excludes native adapter/persistence overhead",
+      "cold": "fresh search (cacheHit=false); not a device/process cold start"
+    },
+    "probes": [
+      {
+        "revision": 122,
+        "baselineElapsedMs": 326,
+        "fixedElapsedMs": 397,
+        "baselineStatus": "prepared",
+        "fixedStatus": "prepared",
+        "baselineNodes": 15,
+        "fixedNodes": 30,
+        "fixedInvalidNodes": 0,
+        "forced": false,
+        "terminationReasons": [
+          "no_continuation",
+          "no_continuation",
+          "no_continuation"
+        ]
+      },
+      {
+        "revision": 133,
+        "baselineElapsedMs": 6261,
+        "fixedElapsedMs": 88,
+        "baselineStatus": "prepared",
+        "fixedStatus": "prepared",
+        "baselineNodes": 1260,
+        "fixedNodes": 1,
+        "fixedInvalidNodes": 0,
+        "forced": true,
+        "terminationReasons": null
+      },
+      {
+        "revision": 136,
+        "baselineElapsedMs": 6701,
+        "fixedElapsedMs": 6146,
+        "baselineStatus": "prepared",
+        "fixedStatus": "prepared",
+        "baselineNodes": 1260,
+        "fixedNodes": 697,
+        "fixedInvalidNodes": 0,
+        "forced": false,
+        "terminationReasons": [
+          "depth_limit",
+          "depth_limit",
+          "depth_limit"
+        ]
+      },
+      {
+        "revision": 140,
+        "baselineElapsedMs": 7550,
+        "fixedElapsedMs": 4585,
+        "baselineStatus": "prepared",
+        "fixedStatus": "prepared",
+        "baselineNodes": 1242,
+        "fixedNodes": 480,
+        "fixedInvalidNodes": 0,
+        "forced": false,
+        "terminationReasons": [
+          "depth_limit",
+          "depth_limit",
+          "depth_limit"
+        ]
+      },
+      {
+        "revision": 162,
+        "baselineElapsedMs": 8820,
+        "fixedElapsedMs": 10215,
+        "baselineStatus": "prepared",
+        "fixedStatus": "prepared",
+        "baselineNodes": 1260,
+        "fixedNodes": 1260,
+        "fixedInvalidNodes": 0,
+        "forced": false,
+        "terminationReasons": [
+          "node_budget",
+          "node_budget",
+          "node_budget"
+        ]
+      },
+      {
+        "revision": 169,
+        "baselineElapsedMs": 9594,
+        "fixedElapsedMs": 11583,
+        "baselineStatus": "rejected",
+        "fixedStatus": "prepared",
+        "baselineNodes": null,
+        "fixedNodes": 1260,
+        "fixedInvalidNodes": 0,
+        "forced": false,
+        "terminationReasons": [
+          "node_budget",
+          "node_budget",
+          "node_budget"
+        ]
+      }
+    ],
+    "continuations": [
+      {
+        "fromRevision": 169,
+        "toRevision": 183,
+        "actions": 14,
+        "operationElapsed": {
+          "count": 14,
+          "totalMs": 34275,
+          "minMs": 420,
+          "maxMs": 11490,
+          "medianMs": 552
+        },
+        "freshSearchOperationElapsed": {
+          "count": 4,
+          "totalMs": 29043,
+          "minMs": 3361,
+          "maxMs": 11490,
+          "medianMs": 7096
+        },
+        "cachedOperationElapsed": {
+          "count": 10,
+          "totalMs": 5232,
+          "minMs": 420,
+          "maxMs": 636,
+          "medianMs": 511.5
+        },
+        "forcedOperationElapsed": {
+          "count": 0,
+          "totalMs": 0,
+          "minMs": null,
+          "maxMs": null,
+          "medianMs": null
+        },
+        "allCacheHitsValidatedOneNode": true
+      },
+      {
+        "fromRevision": 162,
+        "toRevision": 184,
+        "actions": 22,
+        "operationElapsed": {
+          "count": 22,
+          "totalMs": 65212,
+          "minMs": 109,
+          "maxMs": 11488,
+          "medianMs": 202
+        },
+        "freshSearchOperationElapsed": {
+          "count": 8,
+          "totalMs": 62849,
+          "minMs": 2355,
+          "maxMs": 11488,
+          "medianMs": 9875
+        },
+        "cachedOperationElapsed": {
+          "count": 14,
+          "totalMs": 2363,
+          "minMs": 109,
+          "maxMs": 225,
+          "medianMs": 178
+        },
+        "forcedOperationElapsed": {
+          "count": 0,
+          "totalMs": 0,
+          "minMs": null,
+          "maxMs": null,
+          "medianMs": null
+        },
+        "allCacheHitsValidatedOneNode": true
+      }
+    ],
+    "allRetainedNewActionsAndPlanContextReplayed": true,
+    "replayedCoreActions": 36,
+    "replayedCoreCachedActions": 24,
+    "replayedActivityActions": 2,
+    "limits": [
+      "Fresh Expert searches can still take around 10–12 seconds and exhaust the configured budget.",
+      "Fixed-position timings are single observations; no statistical or physical-phone speedup claim."
+    ]
+  },
+  "downloads": {
+    "exports": [
+      {
+        "kind": "deck_json",
+        "bytes": 266,
+        "publishedAfterReadbackVerification": true
+      },
+      {
+        "kind": "performance_json",
+        "bytes": 10521,
+        "publishedAfterReadbackVerification": true
+      },
+      {
+        "kind": "backup_json",
+        "bytes": 492213,
+        "publishedAfterReadbackVerification": true
+      },
+      {
+        "kind": "raw_saves_zip",
+        "bytes": 30021,
+        "publishedAfterReadbackVerification": true
+      },
+      {
+        "kind": "ai_review_json",
+        "bytes": 39374,
+        "publishedAfterReadbackVerification": true
+      },
+      {
+        "kind": "battle_review_zip",
+        "bytes": 35552,
+        "publishedAfterReadbackVerification": true
+      }
+    ],
+    "afterActualRulesFailure": true,
+    "committedSavePreserved": true,
+    "pickerRecreation": {
+      "exportKinds": 6,
+      "allReadbackVerified": true,
+      "allDestinationsInitiallyAbsent": true,
+      "allMatchedCurrentStagedPayload": true
+    },
+    "opponentHandCountVisible": true,
+    "syntheticLargeExport": {
+      "inputBytes": 20020252,
+      "outputBytes": 38560,
+      "elapsedMs": 1578,
+      "rulesRuntimeCreated": false,
+      "syntheticStressFixture": true
+    }
+  },
+  "activity": {
+    "completed": true,
+    "failed": false,
+    "revision": 171,
+    "paused": false,
+    "reviewZipBytes": 574583
+  },
+  "scanner": {
+    "tests": {
+      "passed": 5,
+      "failed": 0,
+      "skipped": 1,
+      "skipReason": "Private camera/photo fixtures absent"
+    },
+    "sameIndexForBothEngines": true,
+    "fixtureKind": "bundled official reference art; not physical camera/photos",
+    "pipeline": "forced visual pass plus OCR-candidate refinement; confident app frames skip refinement",
+    "ocrMsIncluded": false,
+    "stats": {
+      "all": {
+        "count": 24,
+        "median": {
+          "visualMs": {
+            "legacy": 462.3005,
+            "current": 493.49615
+          },
+          "ocrRefineMs": {
+            "legacy": 508.31935,
+            "current": 0.02975
+          },
+          "totalMs": {
+            "legacy": 1006.45365,
+            "current": 495.30635
+          }
+        },
+        "mean": {
+          "visualMs": {
+            "legacy": 527.0696208333334,
+            "current": 516.9559083333334
+          },
+          "ocrRefineMs": {
+            "legacy": 542.8322708333334,
+            "current": 1.1795541666666667
+          },
+          "totalMs": {
+            "legacy": 1069.9018916666666,
+            "current": 518.1354625
+          }
+        }
+      },
+      "hBP09": {
+        "count": 15,
+        "median": {
+          "visualMs": {
+            "legacy": 444.6833,
+            "current": 434.7942
+          },
+          "ocrRefineMs": {
+            "legacy": 459.6946,
+            "current": 0.0295
+          },
+          "totalMs": {
+            "legacy": 918.8727,
+            "current": 437.2479
+          }
+        },
+        "mean": {
+          "visualMs": {
+            "legacy": 497.18176666666665,
+            "current": 507.81087333333335
+          },
+          "ocrRefineMs": {
+            "legacy": 509.0011733333333,
+            "current": 1.2891866666666667
+          },
+          "totalMs": {
+            "legacy": 1006.18294,
+            "current": 509.10006
+          }
+        }
+      },
+      "older": {
+        "count": 9,
+        "median": {
+          "visualMs": {
+            "legacy": 507.9975,
+            "current": 505.0599
+          },
+          "ocrRefineMs": {
+            "legacy": 626.1617,
+            "current": 0.0307
+          },
+          "totalMs": {
+            "legacy": 1170.2099,
+            "current": 505.0886
+          }
+        },
+        "mean": {
+          "visualMs": {
+            "legacy": 576.8827111111111,
+            "current": 532.1976333333333
+          },
+          "ocrRefineMs": {
+            "legacy": 599.2174333333334,
+            "current": 0.9968333333333333
+          },
+          "totalMs": {
+            "legacy": 1176.1001444444444,
+            "current": 533.1944666666667
+          }
+        }
+      },
+      "perCardFirstRound": {
+        "count": 8,
+        "median": {
+          "visualMs": {
+            "legacy": 487.7604,
+            "current": 505.22310000000004
+          },
+          "ocrRefineMs": {
+            "legacy": 562.70115,
+            "current": 0.030100000000000002
+          },
+          "totalMs": {
+            "legacy": 1044.44675,
+            "current": 506.39705
+          }
+        },
+        "mean": {
+          "visualMs": {
+            "legacy": 529.815925,
+            "current": 529.38685
+          },
+          "ocrRefineMs": {
+            "legacy": 551.521975,
+            "current": 1.3790624999999999
+          },
+          "totalMs": {
+            "legacy": 1081.3379,
+            "current": 530.7659125
+          }
+        }
+      },
+      "perCardRepeatedRounds": {
+        "count": 16,
+        "median": {
+          "visualMs": {
+            "legacy": 455.56635,
+            "current": 480.8279
+          },
+          "ocrRefineMs": {
+            "legacy": 480.59695,
+            "current": 0.0291
+          },
+          "totalMs": {
+            "legacy": 974.1532500000001,
+            "current": 482.72335
+          }
+        },
+        "mean": {
+          "visualMs": {
+            "legacy": 525.69646875,
+            "current": 510.7404375
+          },
+          "ocrRefineMs": {
+            "legacy": 538.48741875,
+            "current": 1.0798
+          },
+          "totalMs": {
+            "legacy": 1064.1838875,
+            "current": 511.8202375
+          }
+        }
+      }
+    },
+    "referenceRetrievalParity": true,
+    "all111ArtDecoded": true,
+    "physicalCameraVerified": false,
+    "firstPassReductionPercent": -6.747916128146092,
+    "forcedCombinedReductionPercent": 50.78696867958102,
+    "limitations": [
+      "Not physical-camera timing or photos; OCR inference duration excluded.",
+      "Forced combined path measures visual pass plus refinement; confident production frames already skip OCR.",
+      "Per-card first rounds are not process-cold measurements; small sample timing does not establish universal first-pass improvement."
+    ],
+    "compositorScreenshotVerified": true
+  },
+  "selfplay": {
+    "games": 12,
+    "completed": 12,
+    "steps": 2663,
+    "replay": true,
+    "distinctDeckFamilies": 12,
+    "search": {
+      "nodes": 35,
+      "beam": 1,
+      "depth": 1,
+      "choiceDepth": 2,
+      "samples": 1
+    },
+    "scope": "12 predeclared matched-seat games across 12 deck families at the existing beginner search budget. Final provenance matches all 12 exports. Seats are swapped, but the challenger retains deck A and the baseline retains deck B in each pair, so outcomes are confounded by deck matchup. Correctness regression comparison, not proof of stronger play or a statistically established win-rate improvement."
+  },
+  "browser": {
+    "actualDownloads": true,
+    "zipBytes": 174252,
+    "standaloneJsonBytes": 11696,
+    "decisionCount": 8,
+    "schema": true,
+    "zipCRC": true,
+    "retainedReconstruction": true,
+    "deterministicEngineAndEntropyReplay": true,
+    "uiImportVerified": false,
+    "uiImportLimit": "Browser extension file access denied the file chooser operation.",
+    "programmaticAndroidDeckImport": {
+      "valid": true,
+      "counts": {
+        "oshi": 1,
+        "main": 50,
+        "cheer": 20
+      },
+      "emptyTruncatedAndWrongReportErrorsVerified": true
+    }
+  },
+  "limits": [
+    "Physical ARM64 phone, real camera photos, fresh sign-in and real account sync were not verified in this run.",
+    "Browser file-picker UI import remains unverified; production importer was checked separately with an actual Android file.",
+    "Does not certify every card interaction or overall competitive AI strength."
+  ]
+}

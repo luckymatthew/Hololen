@@ -1,12 +1,12 @@
 export const RELEASE_REPOSITORY = 'luckymatthew/Hololen';
 export const APK_FILENAME = 'HoloLens.apk';
 export const RELEASES_URL = `https://github.com/${RELEASE_REPOSITORY}/releases`;
-export const STABLE_TAG = 'v1.2.3';
+export const STABLE_TAG = 'v1.2.4';
 export const releaseUrl = tag => `${RELEASES_URL}/tag/${encodeURIComponent(tag)}`;
 export const apkUrl = tag => `${RELEASES_URL}/download/${encodeURIComponent(tag)}/${APK_FILENAME}`;
 export const APK_URL = apkUrl(STABLE_TAG);
 // Verified public release: usable even when GitHub metadata is unavailable.
-export const STABLE_METADATA = {"version":"v1.2.3","size":599936181,"date":"2026-09-20T00:00:00Z","preview":false,"name":"Hololens 1.2.3 · Native AI and export reliability","downloads":0,"notes":"修正 Android 連續對局時 hBP09 模擬盤面未釋放、令 AI 停止並顯示 null 的問題。所有 JSON／ZIP 匯出提供直接儲存至 Downloads/Hololens，完整寫入及讀回校驗後才發布檔案；完成或失敗都會保留結果視窗。沿用原簽章，直接安裝更新可保留牌組和對局。實體手機的確切存檔尚未取得，詳見發布測試及限制。"};
+export const STABLE_METADATA = {"version":"v1.2.4","size":606583989,"date":"2026-09-21T00:00:00Z","preview":false,"name":"Hololens 1.2.4 · AI、對局記錄及掃卡修正","downloads":0,"notes":"修正 hBP06-093 後續選擇令 AI 停止、非法附加候選及重複搜尋。補齊 hBP09 掃卡辨識索引與縮圖，重用每幀影像特徵以減少 OCR 補充時的重複計算。保留原簽章、牌組、原生介面及經讀回校驗的 JSON／ZIP 匯出。複雜 AI 搜尋仍可能需時；參照卡圖測試不代表實體手機即時辨識，詳見版本測試報告。"};
 export function releaseMetadata(payload) {
   if (!payload || payload.draft || payload.prerelease || !/^v\d+\.\d+\.\d+$/.test(payload.tag_name) || !Array.isArray(payload.assets)) throw new Error('尚未有正式版本');
   const apk = payload.assets.find(asset => asset.name === APK_FILENAME && asset.state === 'uploaded');
