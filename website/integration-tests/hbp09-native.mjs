@@ -1,0 +1,52 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {pathToFileURL} from 'node:url';
+import {resolve} from 'node:path';
+import vm from 'node:vm';
+import {fixture,cards,N,instance,unit,act,answer} from '../tests/hbp09-fixtures.mjs';
+import {publicRoomState} from '../lib/simulator/engine.mjs';
+const root=resolve(process.argv[2]);
+const load=rel=>import(pathToFileURL(resolve(root,rel)));
+const {applyAction:androidApply}=await load('web/lib/simulator/engine.mjs');
+const {sampleObservation}=await load('web/lib/simulator/trainer/observation.mjs');
+const {chooseAiAction}=await load('web/lib/simulator/ai.mjs');
+const {onlineActions}=await load('web/battle/online.mjs');
+const {makeSave}=await load('web/battle/session.mjs');
+const {decks}=await load('web/battle/starter-decks.mjs');
+const copy=x=>JSON.parse(JSON.stringify(x));
+function runtime(file){const c=vm.createContext({structuredClone:copy,crypto:globalThis.crypto,console});vm.runInContext(readFileSync(resolve(root,'app/src/main/assets/native',file),'utf8'),c);return c.NativeRules;}
+const offline=runtime('engine.js'),pvp=runtime('firebase-rules.js');
+for(const f of ['dispatch','init','prepare','commit','rollback','resume','validate','importDeck','describe','onlineView'])assert.equal(typeof offline[f],'function',f);
+pvp.dispatch(JSON.stringify({op:'init',cards}));
+const stable=s=>{const out=copy(s);delete out.log;return out;};
+let transitions=0;
+function compare(s,actions){let web=copy(s),native=copy(s),bundled=copy(s);for(const a of actions){web=act(web,a);native=androidApply(native,0,a,cards,()=>.4);bundled=pvp.applyAction(bundled,0,a,cards,()=>.4);assert.deepEqual(stable(native),stable(web));assert.deepEqual(stable(bundled),stable(web));transitions++;}return web;}
+compare(fixture(),[{type:'oshiSkill'}]);
+compare(fixture(6,70),[{type:'spOshiSkill'}]);
+compare(fixture(2,21),[{type:'oshiSkill'},{type:'choose',optionId:'7'}]);
+const zero=fixture(2,21);zero.players[0].holoPower=[];compare(zero,[{type:'oshiSkill'},{type:'choose',optionId:'0'}]);
+const tw=fixture(5,53);tw.phase='performance';tw.players[0].turnEvents.arts=[N(53),N(53)];compare(tw,[{type:'advance'},{type:'choose',optionId:'yes'}]);
+const s=fixture(1,8);s.players[0].mainDeck.unshift(instance(N(10)));s.players[1].zones.back1=unit(N(17));
+let searching=answer(act(s,{type:'oshiSkill'}),{zone:'back1'});const picked=searching.pendingChoice.cards[0];
+let placing=answer(searching,{cardIds:[picked.id]});
+compare(s,[{type:'oshiSkill'},{type:'choose',zone:'back1'},{type:'choose',cardIds:[picked.id]},{type:'choose',zone:'back4'}]);
+for(let i=1;i<=100;i++){
+ const world=sampleObservation(placing,0,cards,i);
+ assert.ok(world.players[0].mainDeck.some(c=>c.id===picked.id),'selected card moved by AI hidden sampling');
+ assert.doesNotThrow(()=>androidApply(world,0,{type:'choose',zone:'back1'},cards,()=>.4));
+}
+assert.ok(chooseAiAction(placing,0,cards,new Set(),{search:{nodes:40,beam:1,depth:1,choiceDepth:2,samples:1}})?.type==='choose');
+const visible=publicRoomState(zero,0);assert.ok(onlineActions(visible,cards).some(a=>a.type==='oshiSkill'),'native PvP X=0');
+const opponent=JSON.parse(pvp.dispatch(JSON.stringify({op:'public',state:placing,player:1})));
+assert.deepEqual(opponent.pendingChoice,{type:'opponent',playerIndex:0});assert.equal(opponent.players[0].mainDeck,undefined);
+const validDeck=decks[0].deck||decks[0];
+placing.mode='solo';placing.aiPlayer=1;placing.offline={decks:[validDeck,validDeck],difficulty:'normal',stats:[{damage:0,blooms:0,plays:0,skills:0},{damage:0,blooms:0,plays:0,skills:0}]};
+const saved=makeSave(placing,10,'hbp09-native');
+const initial=offline.init({cards,saved}).saved;
+assert.equal(initial.carry.id,picked.id);assert.ok(initial.drops.some(p=>p.source==='pending'&&p.target==='0:zone:back4'));
+const prepared=offline.prepare({type:'action',revision:10,matchId:'hbp09-native',action:{type:'choose',zone:'back4'}});
+assert.equal(prepared.save.state.players[0].zones.back4.stack[0].id,picked.id);assert.ok(prepared.save.battleDiagnostics);
+offline.rollback();assert.equal(offline.resume().revision,10);
+offline.prepare({type:'action',revision:10,matchId:'hbp09-native',action:{type:'choose',zone:'back4'}});offline.commit();assert.equal(offline.resume().revision,11);
+assert.match(offline.describe(N(2)).find(x=>x.label==='推し技能').text,/存檔/);
+console.log(JSON.stringify({passed:true,parityTransitions:transitions,knownCardBeliefSamples:100,nativeDispatch:true,offlinePrepareCommitRollback:true,battleExportPreserved:true,nativePvpPrivacy:true,realAndroidDevice:false}));

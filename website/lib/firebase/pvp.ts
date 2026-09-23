@@ -1,3 +1,6 @@
+import {captureEntropy} from '../simulator/review-entropy.mjs';
+import { newRecording, restoreRecording, appendRecording, REVIEW_BUILD } from '../simulator/battle-diagnostics.mjs';
+import provenance from '../simulator/review-provenance.mjs';
 import { get, ref, set, onValue, onDisconnect, runTransaction, serverTimestamp } from 'firebase/database';
 import { signInAnonymously } from 'firebase/auth';
 import { getFirebase } from './client';
@@ -34,8 +37,8 @@ export async function createRoom(payload: any) {
     state = applyAction(state, 0, { type: 'ready', ready: true }, catalog);
     state = applyAction(state, 1, { type: 'ready', ready: true }, catalog);
     const code = `AI-${crypto.randomUUID().toUpperCase()}`;
-    const room = { code, version: 1, state }; localStorage.setItem(soloKey(code), JSON.stringify(room));
-    return { ...room, state: publicRoomState(state, 0), viewerIndex: 0, token: 'local-solo' };
+    const room = { code, version: 1, state, reviewBuild: REVIEW_BUILD, battleDiagnostics: newRecording(state,1,code,provenance,{maxCharacters:1024*1024}) }; localStorage.setItem(soloKey(code), JSON.stringify(room));
+    return { code: room.code, version: room.version, state: publicRoomState(state, 0), viewerIndex: 0, token: 'local-solo' };
   }
   const user = await identity(), { database } = getFirebase();
   await cleanupOwnedRooms().catch(() => {});
@@ -76,7 +79,7 @@ function waitValue(path: string, accept: (value: any) => boolean): Promise<any> 
 export async function loadRoom(code: string) {
   if (isSolo(code)) {
     const raw = localStorage.getItem(soloKey(code)); if (!raw) throw new Error('找不到此裝置的單人對局。');
-    const room = JSON.parse(raw); return { ...room, state: publicRoomState(room.state, 0), viewerIndex: 0 };
+    const room = JSON.parse(raw); return { code: room.code, version: room.version, state: publicRoomState(room.state, 0), viewerIndex: 0 };
   }
   codeCheck(code); const user = await identity();
   const snapshot = await get(ref(getFirebase().database, `rooms/${code}/views/${user.uid}`));
@@ -89,9 +92,13 @@ export async function sendRoomAction(code: string, payload: any) {
     if (!room) throw new Error('找不到單人對局。');
     if (room.version !== payload.expectedVersion) throw new Error('房間狀態已更新，請重試。');
     const catalog = await cards();
-    const state = payload.action.type === 'aiStep' ? runAiStep(room.state, catalog, 1) : applyAction(room.state, 0, payload.action, catalog);
-    const next = { ...room, version: room.version + 1, state }; localStorage.setItem(soloKey(code), JSON.stringify(next));
-    return { ...next, state: publicRoomState(state, 0), viewerIndex: 0 };
+    const telemetry={};
+    const captured=captureEntropy(()=>payload.action.type === 'aiStep' ? runAiStep(room.state, catalog, 1, undefined, {telemetry}) : applyAction(room.state, 0, payload.action, catalog));
+    const state=captured.result;
+    const previous=restoreRecording(room.battleDiagnostics,room.state,room.version,code,provenance);
+    const battleDiagnostics=appendRecording(previous,room.state,state,room.version+1,payload.action,(telemetry as any).actions?telemetry:null,captured.tape);
+    const next = { ...room, version: room.version + 1, state, battleDiagnostics }; localStorage.setItem(soloKey(code), JSON.stringify(next));
+    return { code: next.code, version: next.version, state: publicRoomState(state, 0), viewerIndex: 0 };
   }
   codeCheck(code); const user = await identity(), id = crypto.randomUUID();
   await set(ref(getFirebase().database, `rooms/${code}/commands/${user.uid}`), { id, expectedVersion: payload.expectedVersion, actionJson: JSON.stringify(payload.action) });

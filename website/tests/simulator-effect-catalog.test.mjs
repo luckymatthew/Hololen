@@ -25,7 +25,9 @@ test("every declarative effect points to a real support card", () => {
 
 test("the automated support list is unique and covers every effect family", () => {
   assert.equal(new Set(AUTOMATED_SUPPORT_CARDS).size, AUTOMATED_SUPPORT_CARDS.length);
-  assert.equal(AUTOMATED_SUPPORT_CARDS.length, 112);
+  assert.equal(AUTOMATED_SUPPORT_CARDS.filter(n => !n.startsWith('hBP09-')).length, 112);
+  assert.deepEqual(AUTOMATED_SUPPORT_CARDS.filter(n => n.startsWith('hBP09-')).sort(), Array.from({length:16},(_,i)=>`hBP09-${String(90+i).padStart(3,'0')}`));
+  assert.equal(AUTOMATED_SUPPORT_CARDS.length, 128);
   for (const number of [
     ...Object.keys(TOP_LOOK_EFFECTS),
     ...Object.keys(DECK_SEARCH_EFFECTS),

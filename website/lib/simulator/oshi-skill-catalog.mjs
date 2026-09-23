@@ -4,14 +4,13 @@ const DEFAULT_SP_COST = 2;
 // These cards are available to browse and build decks with, but their engine
 // resolvers are not implemented by the database import. Never assume 2/2 costs
 // or offer an activation that would spend power without resolving an effect.
-export const CATALOG_ONLY_OSHI = Object.freeze([
-  "hBP09-001", "hBP09-002", "hBP09-003", "hBP09-004",
-  "hBP09-005", "hBP09-006", "hBP09-007",
-]);
+export const CATALOG_ONLY_OSHI = Object.freeze([]); // hBP09 resolvers installed
 
 // Official Holo Power costs that differ from the common 2 / 2 template.
 // Cards without an SP skill simply never ask for the SP value.
 const COST_OVERRIDES = Object.freeze({
+  "hBP09-002": { oshi: "X" },
+  "hBP09-006": { sp: 3 },
   "hBP01-001": { oshi: 3 },
   "hBP01-004": { sp: 3 },
   "hBP01-005": { oshi: "X" },
@@ -62,6 +61,7 @@ const COST_OVERRIDES = Object.freeze({
 });
 
 export const REACTIVE_NORMAL_OSHI = Object.freeze([
+  "hBP09-005",
   "hBP01-002", "hBP01-004", "hBP01-005", "hBP01-007", "hBP01-008",
   "hBP02-005", "hBP03-008", "hBP04-004", "hBP04-006", "hBP05-001",
   "hBP05-002", "hBP06-006", "hBP06-007", "hBP08-007", "hSD01-002",
@@ -75,6 +75,7 @@ export const REACTIVE_SP_OSHI = Object.freeze([
 ]);
 
 export const ACTIVE_SP_OSHI = Object.freeze([
+  "hBP09-006",
   "hBP01-001", "hBP01-002", "hBP01-003", "hBP01-004", "hBP01-005", "hBP01-008",
   "hBP02-002", "hBP02-003", "hBP02-004", "hBP02-006", "hBP02-007",
   "hBP03-001", "hBP03-002", "hBP03-003", "hBP03-004", "hBP03-007", "hBP03-008",
@@ -148,6 +149,12 @@ export function oshiSkillPowerCost(cardNumber, kind = "oshi") {
   const override = COST_OVERRIDES[cardNumber]?.[kind];
   if (override != null) return override;
   return kind === "sp" ? DEFAULT_SP_COST : DEFAULT_OSHI_COST;
+}
+
+// X may be zero for Hajime; other variable costs retain their existing minimum.
+export function oshiSkillMinimumPower(cardNumber, kind = "oshi") {
+  const cost = oshiSkillPowerCost(cardNumber, kind);
+  return cost === "X" ? (cardNumber === "hBP09-002" && kind === "oshi" ? 0 : 1) : cost;
 }
 
 export function isReactiveNormalOshi(cardNumber) {

@@ -1,0 +1,122 @@
+{
+  "version": "1.2.5",
+  "versionCode": 24,
+  "android": [
+    {
+      "variant": "Debug",
+      "tests": 130,
+      "failures": 0,
+      "skipped": 0,
+      "lintErrors": 0,
+      "lintWarnings": 41
+    },
+    {
+      "variant": "Release",
+      "tests": 130,
+      "failures": 0,
+      "skipped": 0,
+      "lintErrors": 0,
+      "lintWarnings": 41
+    }
+  ],
+  "websiteTests": 2350,
+  "websiteTypecheckAndBuild": true,
+  "nativeHostTests": 80,
+  "deviceTests": {
+    "scanner": 9,
+    "aiAndDownloadsRegression": 2,
+    "skipped": 0
+  },
+  "camera": {
+    "fixtureKind": "AVD emulated back camera plus injected initial candidate; not physical-card accuracy",
+    "appVersion": "1.2.5",
+    "framesBeforeCandidate": 0,
+    "framesAfterCandidate": 3,
+    "newFrames": 3,
+    "elapsedMs": 1049,
+    "rescanPressed": false,
+    "autoSelected": false,
+    "generationBefore": 2,
+    "generationAfter": 3,
+    "passed": true
+  },
+  "referencePairs": 24,
+  "hbp09ArtDecoded": 111,
+  "sixDownloadsNonemptyAndVerified": true,
+  "previousFailureResumed": {
+    "fromRevision": 169,
+    "toRevision": 183,
+    "committedActions": 14
+  },
+  "upgradeProfilePreserved": {
+    "bytes": 744,
+    "sha256": "41725361930d659bce254218bd88e489121a05f2a198f0cb2a27cb8aa7471d38"
+  },
+  "preservation": {
+    "baseline": "Verified private production source 1.2.4 code23",
+    "candidate": "1.2.5 code24",
+    "baselineArchiveSha256": "2f4fc2b2c93a70a2dda178729abb298d67dbb1c8bae3576603f655b84937f9e4",
+    "filesCompared": 6055,
+    "changed": [
+      "app/build.gradle",
+      "app/src/androidTest/java/com/holocard/scanner/ScannerCardArtDeviceTest.java",
+      "app/src/androidTest/java/com/holocard/scanner/ScannerContinuousRecognitionTest.java",
+      "app/src/androidTest/java/com/holocard/scanner/ScannerLatencyTest.java",
+      "app/src/main/assets/native/engine.js",
+      "app/src/main/java/com/holocard/scanner/ScanConsensus.java",
+      "app/src/main/java/com/holocard/scanner/ScanFusion.java",
+      "app/src/main/java/com/holocard/scanner/ScanSession.java",
+      "app/src/main/java/com/holocard/scanner/ScannerActivity.java",
+      "app/src/main/java/com/holocard/scanner/nativegame/NativeGameActivity.java",
+      "app/src/test/java/com/holocard/scanner/ScanConsensusTest.java",
+      "app/src/test/java/com/holocard/scanner/ScanFusionTest.java",
+      "app/src/test/java/com/holocard/scanner/ScanSessionTest.java",
+      "app/src/test/java/com/holocard/scanner/ScannerCandidateStabilityTest.java",
+      "app/src/test/java/com/holocard/scanner/ScannerLifecycleTest.java",
+      "app/src/test/java/com/holocard/scanner/ScannerLogicTest.java",
+      "web/lib/simulator/review-provenance.mjs"
+    ],
+    "removed": [],
+    "mainAssets": 5774,
+    "unchangedMainAssets": 5773,
+    "changedMainAssets": [
+      "app/src/main/assets/native/engine.js"
+    ],
+    "engineCatalogAndAiPolicyUnchanged": true,
+    "nativeBridgeSourcesUnchanged": true,
+    "scannerIndexesAndAllArtworkUnchanged": true,
+    "appBuildMetadataOnlyInRuleSources": true
+  },
+  "apks": [
+    {
+      "file": "Hololens-1.2.5-arm64.apk",
+      "sha256": "1a17c2900730dc1f4c51cceea73d6e33bf6cc78b1d59b75c41a1cbddcb20e7cf",
+      "bytes": 606583989,
+      "certificateSha256": "92a20ef4e5e7a93e96865577fc90978ba085c0723a0145bcda58c848f5b84f4a",
+      "v3": true,
+      "aligned16KiB": true,
+      "assetsVerified": 5774,
+      "version": "1.2.5",
+      "versionCode": 24,
+      "abi": "arm64"
+    },
+    {
+      "file": "Hololens-1.2.5-x86_64.apk",
+      "sha256": "bead7b61af029348df6c89d4ea68159feba136df098a9a93163bdc00ae9f6efc",
+      "bytes": 639564963,
+      "certificateSha256": "92a20ef4e5e7a93e96865577fc90978ba085c0723a0145bcda58c848f5b84f4a",
+      "v3": true,
+      "aligned16KiB": true,
+      "assetsVerified": 5774,
+      "version": "1.2.5",
+      "versionCode": 24,
+      "abi": "x86_64"
+    }
+  ],
+  "limits": [
+    "No physical phone connected",
+    "No labeled real camera sequence supplied",
+    "No physical recognition accuracy or instant-latency claim",
+    "No fresh real-account login or complete live sync/PvP verification"
+  ]
+}

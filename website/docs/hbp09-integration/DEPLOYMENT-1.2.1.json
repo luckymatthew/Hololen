@@ -1,0 +1,154 @@
+{
+  "checkedAt": "2026-09-19T12:11:34.812277+00:00",
+  "site": "https://hololive-ocg.web.app",
+  "sourceCommit": "09b584b3a891a19dac3538be7ce78f780a7f5be2",
+  "verifiedFiles": [
+    {
+      "path": "/index.html",
+      "sha256": "ce860c8780076f84acb5fde489dcdf20cd44d6e2f99a4e88b025418a0547e3e3"
+    },
+    {
+      "path": "/sw.js",
+      "sha256": "6b20b9fd79aeaff707eddb3941fc32c64cd5e6a686199144298f010856393433"
+    },
+    {
+      "path": "/cards.json",
+      "sha256": "d599a1271984172d65284258512ec461e39cfbd8cf72226c286e6ecdaed1f010"
+    },
+    {
+      "path": "/hbp09-cards.json",
+      "sha256": "5d991f5e52f4fae3011a086272fad513f13a047ecd2e10e5e499ea7f1c19cf6d"
+    },
+    {
+      "path": "/hbp09-zh-Hant.json",
+      "sha256": "30433cb33c9376877ed7c56076e2ef598dc4d5e8d141ccf13464b13f70458a5a"
+    },
+    {
+      "path": "/assets/ConfirmDialog-kW_GtTJ3.js",
+      "sha256": "b505a694d0032369df9cfdabe1f2fbe5f86269b6b027cd59cc18101e28f90a15"
+    },
+    {
+      "path": "/assets/DownloadClient-BOvKdIUg.js",
+      "sha256": "0e3cf52cc8498d84b0e2936ebb89d495fb379b83c6ba1a9820daf99d04a37d1c"
+    },
+    {
+      "path": "/assets/FirebaseAccount-C3Wk2mm5.js",
+      "sha256": "3ff85baad71cc3bbbac8d06df3598c9b4da2bbe9b5944cd484e48d2257110468"
+    },
+    {
+      "path": "/assets/FoilCardImage-NFhIOtB4.js",
+      "sha256": "9e247efe883026a0fc0803dffa548ca7e19f5620fa31bde4bdfd0d6f430ad61c"
+    },
+    {
+      "path": "/assets/index-BJ4TH_z1.css",
+      "sha256": "d065e99038fa99c391e0201535539c065e4e0b081564b31b4181efa744372e5f"
+    },
+    {
+      "path": "/assets/index-BsdvzjfC.js",
+      "sha256": "27a57a10fe0ba172c41e387bcfad30be2bda2c5c64822bf770001e81dbaaeca1"
+    },
+    {
+      "path": "/assets/Link-BDHHfuRU.js",
+      "sha256": "b239ae440b285b2693d80656bfccc3e2ef177f99ecc11e0aa21ab627a69157f6"
+    },
+    {
+      "path": "/assets/oshi-skill-catalog-BHqJ3m6r.js",
+      "sha256": "2e6b70c8717fce47c1cdfb4cd7982c568c028121d1eca44e411c5f9fb29486bb"
+    },
+    {
+      "path": "/assets/page-BAf6_GiG.js",
+      "sha256": "691b146004effe17f7c330f82740283f9b7ad47248e1cbf3c3f4951bb65bc60e"
+    },
+    {
+      "path": "/assets/pvp-BcUnHAHh.js",
+      "sha256": "83ff975ec4ffdaf512a7bfc8984de9454a04f1b4e12271ab63bd1ce9f06034d9"
+    },
+    {
+      "path": "/assets/SimulatorClient-DoiqVjOE.js",
+      "sha256": "b5abf4f806db4b1765daed269c74899bf9989cd228a91a33393f5ec00d966ebf"
+    },
+    {
+      "path": "/assets/TerminologyNote-ByqnsMIh.js",
+      "sha256": "a4b9165de8b5d02f945d788044c8422f164f1f1c7b7b05274bcffaa378993881"
+    },
+    {
+      "path": "/assets/ThemeToggle-BguweU1G.js",
+      "sha256": "f243196ae22eb346a4bda897e2732318d2c523c2719afab03ca3260f18c05433"
+    }
+  ],
+  "printingArtworkVerified": 255,
+  "publicStableRelease": {
+    "tag": "v1.2.1",
+    "url": "https://github.com/luckymatthew/Hololen/releases/tag/v1.2.1",
+    "assets": [
+      {
+        "name": "Hololens-1.2.1-Install.zip",
+        "size": 599905309,
+        "digest": "sha256:63c09f42e94299e6dc759e22f8f9c2506bc013f5c9d21b1a94820fdf3e20478e"
+      },
+      {
+        "name": "HoloLens.apk",
+        "size": 599903413,
+        "digest": "sha256:c54f4fbf2a79b1d7526e63c795470404f7503b27cc16b16b42f257e08b9ff1c3"
+      },
+      {
+        "name": "README.txt",
+        "size": 1505,
+        "digest": "sha256:e411ed918373309f2dc288eef9bd6cb9c34fa9c821e3eab9fe5b60feba72c579"
+      },
+      {
+        "name": "SHA256SUMS.txt",
+        "size": 174,
+        "digest": "sha256:9f49cf79f5ee7ab9d5a1977421eaa27cbed1a1a4bead2c99f8f5410589da5c7e"
+      }
+    ]
+  },
+  "serviceWorker": "const VERSION = 'holo-firebase-679c3fcaabb841b1';",
+  "publicApk": {
+    "url": "https://github.com/luckymatthew/Hololen/releases/download/v1.2.1/HoloLens.apk",
+    "bytes": 599903413,
+    "sha256": "c54f4fbf2a79b1d7526e63c795470404f7503b27cc16b16b42f257e08b9ff1c3",
+    "anonymousDownloadVerified": true,
+    "exactRanges": 72
+  },
+  "release": {
+    "url": "https://github.com/luckymatthew/Hololen/releases/tag/v1.2.1",
+    "tag": "v1.2.1",
+    "draft": false,
+    "prerelease": false,
+    "id": 392058763,
+    "assets": [
+      {
+        "name": "Hololens-1.2.1-Install.zip",
+        "bytes": 599905309,
+        "digest": "sha256:63c09f42e94299e6dc759e22f8f9c2506bc013f5c9d21b1a94820fdf3e20478e",
+        "url": "https://github.com/luckymatthew/Hololen/releases/download/v1.2.1/Hololens-1.2.1-Install.zip"
+      },
+      {
+        "name": "HoloLens.apk",
+        "bytes": 599903413,
+        "digest": "sha256:c54f4fbf2a79b1d7526e63c795470404f7503b27cc16b16b42f257e08b9ff1c3",
+        "url": "https://github.com/luckymatthew/Hololen/releases/download/v1.2.1/HoloLens.apk"
+      },
+      {
+        "name": "README.txt",
+        "bytes": 1505,
+        "digest": "sha256:e411ed918373309f2dc288eef9bd6cb9c34fa9c821e3eab9fe5b60feba72c579",
+        "url": "https://github.com/luckymatthew/Hololen/releases/download/v1.2.1/README.txt"
+      },
+      {
+        "name": "SHA256SUMS.txt",
+        "bytes": 174,
+        "digest": "sha256:9f49cf79f5ee7ab9d5a1977421eaa27cbed1a1a4bead2c99f8f5410589da5c7e",
+        "url": "https://github.com/luckymatthew/Hololen/releases/download/v1.2.1/SHA256SUMS.txt"
+      }
+    ]
+  },
+  "acceptanceCounts": {
+    "not_run": 0,
+    "pass": 31,
+    "fail": 0,
+    "blocked": 0,
+    "partial": 7
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "checkedAt": "2026-09-18T16:34:15.100520+00:00",
+  "site": "https://hololive-ocg.web.app",
+  "sourceCommit": "1160db6a82c83d674916826373d02fac374425e0",
+  "verifiedFiles": [
+    {
+      "path": "/index.html",
+      "sha256": "51e537744af1751de43a1ef89418b6f56c0757172c164237623ed291df10c51b"
+    },
+    {
+      "path": "/sw.js",
+      "sha256": "0432d616c5f110e0acd5b8dd8b066e4ec918c6bbc55d43ef0133f909a78540ed"
+    },
+    {
+      "path": "/cards.json",
+      "sha256": "d599a1271984172d65284258512ec461e39cfbd8cf72226c286e6ecdaed1f010"
+    },
+    {
+      "path": "/hbp09-cards.json",
+      "sha256": "5d991f5e52f4fae3011a086272fad513f13a047ecd2e10e5e499ea7f1c19cf6d"
+    },
+    {
+      "path": "/hbp09-zh-Hant.json",
+      "sha256": "30433cb33c9376877ed7c56076e2ef598dc4d5e8d141ccf13464b13f70458a5a"
+    }
+  ],
+  "printingArtworkVerified": 255,
+  "serviceWorker": "const VERSION = 'holo-firebase-7c11213a95881d76';",
+  "livePvp": {
+    "passed": true,
+    "clients": 2,
+    "anonymousTestAccountsRemoved": true,
+    "testRoomRemoved": true,
+    "checks": [
+      "create/join",
+      "ready/setup/first cheer",
+      "hidden opponent hands",
+      "guest full-state read denied",
+      "stale action rejection",
+      "disconnect/reconnect"
+    ]
+  },
+  "publicApk": {
+    "version": "1.2.0",
+    "url": "https://github.com/luckymatthew/Hololen/releases/download/v1.2.0/HoloLens.apk",
+    "bytes": 599776366,
+    "sha256": "88d48a1b317867953f4d77e21cc9114832be3af4f08e512e820fd1d2bd3d4bfd",
+    "anonymousDownloadVerified": true,
+    "verifiedBy": "All 72 exact Content-Range responses concatenated in order and SHA-256 checked",
+    "candidatePromoted": false
+  }
+}

@@ -1,4 +1,6 @@
 "use client";
+import { readImportJson } from "../../lib/import-json.mjs";
+import { downloadReview } from '@/lib/simulator/review-download.mjs';
 
 import { appFetch } from "@/lib/backend";
 import { firebaseBuild } from "@/lib/firebase/client";
@@ -13,7 +15,7 @@ import { fromHoloSimDeck, isHoloSimDeck } from "@/lib/holosim-deck.mjs";
 import { AUTOMATED_SUPPORT_CARDS } from "@/lib/simulator/effect-catalog.mjs";
 import { displayedBatonCost, suuBatonIncrease } from "@/lib/simulator/display.mjs";
 import { buildCardReferenceIndex, cardReferenceTokens } from "@/lib/simulator/log-cards.mjs";
-import { isActivatableOshiSkill, oshiSkillPowerCost } from "@/lib/simulator/oshi-skill-catalog.mjs";
+import { isActivatableOshiSkill, oshiSkillPowerCost, oshiSkillMinimumPower } from "@/lib/simulator/oshi-skill-catalog.mjs";
 import FoilCardImage from "@/app/FoilCardImage";
 
 type DeckState = { oshi: Record<string, number>; main: Record<string, number>; cheer: Record<string, number>; printings?: Record<string, Record<string, number>> };
@@ -43,6 +45,11 @@ type CardInfo = {
   colorCodes?: string[];
   arts: { name: string; damage: number | null; cost: string[]; effect: string }[];
 };
+// Display-only localization; canonical names and card numbers stay in game state.
+function translatedCardName(card: CardInfo | null | undefined, fallback = "") {
+  return card ? effectText(card, card.name) : fallback;
+}
+
 type CardInstance = { id: string; number: string; variantId?: string };
 type StageModifier = { kind: string; amount?: number; expiresTurn?: number; uses?: number; artIndex?: number };
 type StageUnit = { stack: CardInstance[]; cheer: CardInstance[]; attachments?: CardInstance[]; modifiers?: StageModifier[]; damage: number; rested: boolean; hidden?: boolean; enteredTurn?: number; bloomedTurn?: number; collabbedTurn?: number; koyoriMascotBonusTurn?: number; returnSlot?: string | null };
@@ -199,7 +206,7 @@ function inspectorLiveStateFor(state: RoomState, reference: HoveredCardRef | nul
   const batonIncrease = reference.zone === "center" ? suuBatonIncrease(state.players[reference.playerIndex === 0 ? 1 : 0], cardMap) : 0;
   return {
     ...base,
-    hostName: hostCard?.name,
+    hostName: translatedCardName(hostCard),
     hostNumber: hostCard?.number,
     totalHp,
     damage: Number(unit.damage || 0),
@@ -226,6 +233,7 @@ function isPlayableByCore(card?: CardInfo) {
 
 function automationLabel(card?: CardInfo) {
   if (!card) return "資料未載入";
+  if (card.number.startsWith("hBP09-")) return "hBP09 自動效果 · 整合測試中";
   if (card.group === "oshi") return "主動推し技能自動結算";
   if (automatedSupportCards.has(card.number) || automatedKoyoriCards.has(card.number)) return "文字效果自動結算";
   if (isAttachment(card)) return "附加／基礎加成自動";
@@ -280,7 +288,7 @@ function buildMotionEvents(previous: RoomState, next: RoomState, cards: CardInfo
   after.forEach(({ instance, location }, id) => {
     const old = before.get(id);
     if (old && motionLocationKey(old.location) !== motionLocationKey(location)) {
-      add({ kind: "move", instanceId: instance.id, cardNumber: instance.number, variantId: instance.variantId, from: old.location, to: location, label: `${cardMap.get(instance.number)?.name || instance.number} 移動`, faceUp: true });
+      add({ kind: "move", instanceId: instance.id, cardNumber: instance.number, variantId: instance.variantId, from: old.location, to: location, label: `${translatedCardName(cardMap.get(instance.number)) || instance.number} 移動`, faceUp: true });
       return;
     }
     if (old) return;
@@ -293,7 +301,7 @@ function buildMotionEvents(previous: RoomState, next: RoomState, cards: CardInfo
     else if (available.powerDown > 0) { source = { playerIndex: location.playerIndex, place: "power" }; available.powerDown -= 1; }
     else if (available.deckDown > 0) { source = { playerIndex: location.playerIndex, place: "deck" }; available.deckDown -= 1; kind = location.place === "hand" ? "draw" : "move"; }
     else if (available.handDown > 0 || (location.playerIndex !== viewerIndex && ["holomem", "support"].includes(group || "") && ["zone", "archive"].includes(location.place))) { source = { playerIndex: location.playerIndex, place: "hand" }; available.handDown = Math.max(0, available.handDown - 1); }
-    add({ kind, instanceId: instance.id, cardNumber: instance.number, variantId: instance.variantId, from: source, to: location, label: kind === "life" ? "生命卡翻開" : kind === "cheer" ? "應援卡翻開" : kind === "draw" ? "抽牌" : source.place === "hand" ? `${cardMap.get(instance.number)?.name || instance.number} 出牌` : `${cardMap.get(instance.number)?.name || instance.number} 登場`, faceUp: location.playerIndex === viewerIndex || !["hand"].includes(location.place) });
+    add({ kind, instanceId: instance.id, cardNumber: instance.number, variantId: instance.variantId, from: source, to: location, label: kind === "life" ? "生命卡翻開" : kind === "cheer" ? "應援卡翻開" : kind === "draw" ? "抽牌" : source.place === "hand" ? `${translatedCardName(cardMap.get(instance.number)) || instance.number} 出牌` : `${translatedCardName(cardMap.get(instance.number)) || instance.number} 登場`, faceUp: location.playerIndex === viewerIndex || !["hand"].includes(location.place) });
   });
 
   before.forEach(({ instance, location }, id) => {
@@ -303,7 +311,7 @@ function buildMotionEvents(previous: RoomState, next: RoomState, cards: CardInfo
     if (available.powerUp > 0) { destination = { playerIndex: location.playerIndex, place: "power" }; available.powerUp -= 1; }
     else if (available.deckUp > 0) { destination = { playerIndex: location.playerIndex, place: "deck" }; available.deckUp -= 1; }
     else if (available.cheerUp > 0) { destination = { playerIndex: location.playerIndex, place: "cheer" }; available.cheerUp -= 1; }
-    if (destination) add({ kind: "move", instanceId: instance.id, cardNumber: instance.number, variantId: instance.variantId, from: location, to: destination, label: `${cardMap.get(instance.number)?.name || instance.number} 移動`, faceUp: location.playerIndex === viewerIndex || location.place !== "hand" });
+    if (destination) add({ kind: "move", instanceId: instance.id, cardNumber: instance.number, variantId: instance.variantId, from: location, to: destination, label: `${translatedCardName(cardMap.get(instance.number)) || instance.number} 移動`, faceUp: location.playerIndex === viewerIndex || location.place !== "hand" });
   });
 
   counters.forEach((available, playerIndex) => {
@@ -445,8 +453,8 @@ function CardFace({ instance, cardMap, small = false, hidden = false, back = "ma
   const rarity = selectedVariant?.rarity || card.rarity;
   return (
     <div className={`sim-card-face ${small ? "small" : ""}`} data-card-number={card.number} data-variant-id={selectedVariant?.id || undefined}>
-      <FoilCardImage className="sim-card-art" src={image} fallbackSrc={fallbackImages} alt={`${card.name} ${card.number}${rarity ? ` ${rarity}` : ""}`} rarity={rarity} loading="lazy" />
-      <span><code>{card.number}</code><b>{card.name}{selectedVariant ? ` · ${selectedVariant.rarity}` : ""}</b></span>
+      <FoilCardImage className="sim-card-art" src={image} fallbackSrc={fallbackImages} alt={`${effectText(card, card.name)} ${card.number}${rarity ? ` ${rarity}` : ""}`} rarity={rarity} loading="lazy" />
+      <span><code>{card.number}</code><b>{effectText(card, card.name)}{selectedVariant ? ` · ${selectedVariant.rarity}` : ""}</b></span>
     </div>
   );
 }
@@ -503,17 +511,17 @@ function StageCard({ unit, label, zone, cardMap, copiedArtCards = [], own, compa
   const batonCost = displayedBatonCost(card, unit, turn, zone === "center" ? opponentBatonIncrease : 0);
   const batonDifference = batonCost - Math.max(0, Number(card?.baton || 0));
   const underCards = unit && (lowerStack.length > 0 || attachments.length > 0 || unit.cheer.length > 0) ? <div className="sim-under-cards" aria-label={`${lowerStack.length} 張 Bloom 疊卡、${attachments.length} 張附加卡、${unit.cheer.length} 張應援`}>
-    {lowerStack.map((instance) => <button type="button" className="sim-under-card bloom" key={instance.id} title={`Bloom 疊卡：${cardMap.get(instance.number)?.name || instance.number}`} aria-label={`查看 Bloom 疊卡 ${cardMap.get(instance.number)?.name || instance.number}`} onClick={() => onInspect?.(instance)}><CardFace instance={instance} cardMap={cardMap} small /></button>)}
-    {attachments.map((instance) => <span className="sim-under-card-item" key={instance.id}><button type="button" className={`sim-under-card support ${selectedAttachmentIds.includes(instance.id) ? "selectable" : ""}`} title={`附加卡：${cardMap.get(instance.number)?.name || instance.number}`} aria-label={selectedAttachmentIds.includes(instance.id) ? `選擇附加卡 ${cardMap.get(instance.number)?.name || instance.number}` : `查看附加卡 ${cardMap.get(instance.number)?.name || instance.number}效果`} onClick={() => selectedAttachmentIds.includes(instance.id) ? onSelectAttachment?.(instance.id) : onInspect?.(instance)}><CardFace instance={instance} cardMap={cardMap} small /></button>{canUseAttachmentSkill?.(instance.number) && <button type="button" className="sim-under-card-effect" onClick={() => onAttachmentSkill?.(instance.number)} aria-label={`使用${cardMap.get(instance.number)?.name || instance.number}技能`}>技</button>}</span>)}
-    {unit.cheer.map((instance) => <button type="button" className={`sim-under-card cheer ${selectedCheerIds.includes(instance.id) ? "selectable" : ""}`} key={instance.id} title={`應援：${cardMap.get(instance.number)?.name || instance.number}`} aria-label={selectedCheerIds.includes(instance.id) ? `選擇應援 ${cardMap.get(instance.number)?.name || instance.number}` : `查看應援 ${cardMap.get(instance.number)?.name || instance.number}`} onClick={() => selectedCheerIds.includes(instance.id) ? onSelectCheer?.(instance.id) : onInspect?.(instance)}><CardFace instance={instance} cardMap={cardMap} small /></button>)}
+    {lowerStack.map((instance) => <button type="button" className="sim-under-card bloom" key={instance.id} title={`Bloom 疊卡：${translatedCardName(cardMap.get(instance.number)) || instance.number}`} aria-label={`查看 Bloom 疊卡 ${translatedCardName(cardMap.get(instance.number)) || instance.number}`} onClick={() => onInspect?.(instance)}><CardFace instance={instance} cardMap={cardMap} small /></button>)}
+    {attachments.map((instance) => <span className="sim-under-card-item" key={instance.id}><button type="button" className={`sim-under-card support ${selectedAttachmentIds.includes(instance.id) ? "selectable" : ""}`} title={`附加卡：${translatedCardName(cardMap.get(instance.number)) || instance.number}`} aria-label={selectedAttachmentIds.includes(instance.id) ? `選擇附加卡 ${translatedCardName(cardMap.get(instance.number)) || instance.number}` : `查看附加卡 ${translatedCardName(cardMap.get(instance.number)) || instance.number}效果`} onClick={() => selectedAttachmentIds.includes(instance.id) ? onSelectAttachment?.(instance.id) : onInspect?.(instance)}><CardFace instance={instance} cardMap={cardMap} small /></button>{canUseAttachmentSkill?.(instance.number) && <button type="button" className="sim-under-card-effect" onClick={() => onAttachmentSkill?.(instance.number)} aria-label={`使用${translatedCardName(cardMap.get(instance.number)) || instance.number}技能`}>技</button>}</span>)}
+    {unit.cheer.map((instance) => <button type="button" className={`sim-under-card cheer ${selectedCheerIds.includes(instance.id) ? "selectable" : ""}`} key={instance.id} title={`應援：${translatedCardName(cardMap.get(instance.number)) || instance.number}`} aria-label={selectedCheerIds.includes(instance.id) ? `選擇應援 ${translatedCardName(cardMap.get(instance.number)) || instance.number}` : `查看應援 ${translatedCardName(cardMap.get(instance.number)) || instance.number}`} onClick={() => selectedCheerIds.includes(instance.id) ? onSelectCheer?.(instance.id) : onInspect?.(instance)}><CardFace instance={instance} cardMap={cardMap} small /></button>)}
   </div> : null;
   const healControls = healAllocation != null && <div className="sim-heal-allocation" aria-label={`${label}回復分配`}><button type="button" disabled={healAllocation <= 0} onClick={() => onAdjustHeal?.(-1)}>−</button><span>回復 {healUnitAmount} × <b>{healAllocation}</b></span><button type="button" disabled={!canAddHeal} onClick={() => onAdjustHeal?.(1)}>＋</button></div>;
   const unitActions = own && !selectable && selectedCheerIds.length === 0 && card && <div className="sim-unit-actions">
     {canCollab && <button type="button" onClick={() => { setMobileActionsOpen(false); onCollab?.(); }}>合作</button>}
     {canBaton && <button type="button" onClick={() => { setMobileActionsOpen(false); onBaton?.(); }}>接力</button>}
     {canUseGiftSkill && <button type="button" disabled={giftUsed} onClick={() => { setMobileActionsOpen(false); onGiftSkill?.(); }}>{giftUsed ? "Gift 已使用" : "使用 Gift"}</button>}
-    {onArt && card.arts.map((art, index) => <button type="button" key={`${art.name}-${index}`} onClick={() => { setMobileActionsOpen(false); onArt(index); }}>{art.name} · {art.damage ?? 0} · 應援 {art.cost.length}</button>)}
-    {onArt && copiedArtCards.flatMap((copied) => copied.arts.map((art, index) => <button type="button" key={`copy-${copied.number}-${art.name}-${index}`} onClick={() => { setMobileActionsOpen(false); onArt(index, copied.number); }}>模仿 {copied.name} · {art.name} · {art.damage ?? 0} · 應援 {art.cost.length}</button>))}
+    {onArt && card.arts.map((art, index) => <button type="button" key={`${art.name}-${index}`} onClick={() => { setMobileActionsOpen(false); onArt(index); }}>{effectText(card, art.name)} · {art.damage ?? 0} · 應援 {art.cost.length}</button>)}
+    {onArt && copiedArtCards.flatMap((copied) => copied.arts.map((art, index) => <button type="button" key={`copy-${copied.number}-${art.name}-${index}`} onClick={() => { setMobileActionsOpen(false); onArt(index, copied.number); }}>模仿 {effectText(copied, copied.name)} · {effectText(copied, art.name)} · {art.damage ?? 0} · 應援 {art.cost.length}</button>))}
   </div>;
   const hasMobileActions = Boolean(healControls || unitActions);
   return (
@@ -524,16 +532,16 @@ function StageCard({ unit, label, zone, cardMap, copiedArtCards = [], own, compa
           <div className="sim-stage-visual">
             {!compact && <ResponsiveZoneLabel className="sim-card-zone-label" label={label} />}
             <div className="sim-card-control-frame">
-              <button className="sim-stage-card-inspect" type="button" onClick={() => onInspect?.(unit.stack[unit.stack.length - 1])} aria-label={`查看${card.name}卡牌資料`}><CardFace instance={unit.stack[unit.stack.length - 1]} cardMap={cardMap} /></button>
-              <button className="sim-mobile-card-effect" type="button" onClick={() => onInspect?.(unit.stack[unit.stack.length - 1])} aria-label={`查看${card.name}完整狀態`}>狀態</button>
-              {hasMobileActions && <button className="sim-mobile-card-actions" type="button" onClick={() => setMobileActionsOpen(true)} aria-label={`開啟${label}${card?.name || "Holomen"}動作`}>動作</button>}
+              <button className="sim-stage-card-inspect" type="button" onClick={() => onInspect?.(unit.stack[unit.stack.length - 1])} aria-label={`查看${effectText(card, card.name)}卡牌資料`}><CardFace instance={unit.stack[unit.stack.length - 1]} cardMap={cardMap} /></button>
+              <button className="sim-mobile-card-effect" type="button" onClick={() => onInspect?.(unit.stack[unit.stack.length - 1])} aria-label={`查看${effectText(card, card.name)}完整狀態`}>狀態</button>
+              {hasMobileActions && <button className="sim-mobile-card-actions" type="button" onClick={() => setMobileActionsOpen(true)} aria-label={`開啟${label}${translatedCardName(card) || "Holomen"}動作`}>動作</button>}
             </div>
             {!compact && underCards && <div className="sim-front-mobile-under">{underCards}</div>}
             {compact && underCards}
           </div>
           {!compact && <div className="sim-stage-side">
             <div className="sim-stage-side-head"><ResponsiveZoneLabel className="sim-slot-label" label={label} /></div>
-            <b className="sim-unit-name">{card.name}</b>
+            <b className="sim-unit-name">{effectText(card, card.name)}</b>
             <div className="sim-unit-stats">
               <span>HP {card.hp == null ? "—" : Number(card.hp) + hpBonus}{hpBonus ? ` (+${hpBonus})` : ""}</span><span>傷害 {unit.damage}</span><span>應援 {unit.cheer.length}</span><span className={batonDifference ? "modified" : ""} title={`卡面接力費 ${card.baton ?? 0}；目前需要 ${batonCost} 張應援`}>接力需 {batonCost}{batonDifference ? ` (${batonDifference > 0 ? "+" : ""}${batonDifference})` : ""}</span>
             </div>
@@ -545,8 +553,8 @@ function StageCard({ unit, label, zone, cardMap, copiedArtCards = [], own, compa
         </div>
       ) : <><ResponsiveZoneLabel className="sim-slot-label" label={label} /><span className="sim-empty-slot">空位</span></>}
       {mobileActionsOpen && <div className="sim-mobile-action-layer" role="presentation" onClick={() => setMobileActionsOpen(false)}>
-        <section className="sim-mobile-action-sheet" role="dialog" aria-modal="true" aria-label={`${label}${card?.name || "Holomen"}動作`} onClick={(event) => event.stopPropagation()}>
-          <header><div><span>{label}</span><b>{card?.name}</b></div><button type="button" onClick={() => setMobileActionsOpen(false)} aria-label="關閉卡片動作">×</button></header>
+        <section className="sim-mobile-action-sheet" role="dialog" aria-modal="true" aria-label={`${label}${translatedCardName(card) || "Holomen"}動作`} onClick={(event) => event.stopPropagation()}>
+          <header><div><span>{label}</span><b>{translatedCardName(card)}</b></div><button type="button" onClick={() => setMobileActionsOpen(false)} aria-label="關閉卡片動作">×</button></header>
           {healControls}{unitActions}
         </section>
       </div>}
@@ -682,8 +690,8 @@ function OshiPosition({ player, cardMap, canActivate = false, turn, onInspect, o
   const normalBaseCost = skillPowerCost(card?.oshiSkill, card?.number, "oshi");
   const normalCost = normalBaseCost === "X" ? "X" : Math.max(0, normalBaseCost - mocoReduction);
   const spCost = skillPowerCost(card?.spOshiSkill, card?.number, "sp");
-  const normalMinimumCost = normalCost === "X" ? 1 : normalCost;
-  const spMinimumCost = spCost === "X" ? 1 : spCost;
+  const normalMinimumCost = normalCost === "X" ? oshiSkillMinimumPower(card?.number || "") : normalCost;
+  const spMinimumCost = spCost === "X" ? oshiSkillMinimumPower(card?.number || "", "sp") : spCost;
   const normalActive = Boolean(card?.oshiSkill?.effect) && isActivatableOshiSkill(card?.number || "", "oshi");
   const spActive = Boolean(card?.spOshiSkill?.effect) && isActivatableOshiSkill(card?.number || "", "sp");
   const skillButtons = <>
@@ -693,13 +701,13 @@ function OshiPosition({ player, cardMap, canActivate = false, turn, onInspect, o
   return (
     <article className="sim-oshi-position">
       <ResponsiveZoneLabel className="sim-table-label" label="推し位置" />
-      {player.oshi ? <div className="sim-card-control-frame sim-oshi-control-frame"><button className="sim-oshi-card-inspect" type="button" onClick={() => onInspect?.(player.oshi?.number || "")} aria-label={`查看${card?.name || "推し"}卡牌資料`}><CardFace instance={player.oshi} cardMap={cardMap} /></button><button className="sim-mobile-card-effect sim-mobile-oshi-effect" type="button" onClick={() => onInspect?.(player.oshi?.number || "")} aria-label={`查看${card?.name || "推し"}效果`}>效果</button>{(normalActive || spActive) && <button className="sim-mobile-card-actions sim-mobile-oshi-actions" type="button" onClick={() => setMobileActionsOpen(true)} aria-label={`開啟${card?.name || "推し"}技能`}>動作</button>}</div> : <CardFace hidden back="cheer" cardMap={cardMap} />}
-      {card && <small>{card.life ?? 0} LIFE · {card.name}</small>}
+      {player.oshi ? <div className="sim-card-control-frame sim-oshi-control-frame"><button className="sim-oshi-card-inspect" type="button" onClick={() => onInspect?.(player.oshi?.number || "")} aria-label={`查看${translatedCardName(card) || "推し"}卡牌資料`}><CardFace instance={player.oshi} cardMap={cardMap} /></button><button className="sim-mobile-card-effect sim-mobile-oshi-effect" type="button" onClick={() => onInspect?.(player.oshi?.number || "")} aria-label={`查看${translatedCardName(card) || "推し"}效果`}>效果</button>{(normalActive || spActive) && <button className="sim-mobile-card-actions sim-mobile-oshi-actions" type="button" onClick={() => setMobileActionsOpen(true)} aria-label={`開啟${translatedCardName(card) || "推し"}技能`}>動作</button>}</div> : <CardFace hidden back="cheer" cardMap={cardMap} />}
+      {card && <small>{card.life ?? 0} LIFE · {effectText(card, card.name)}</small>}
       <div className={`sim-oshi-attached-power ${Number(player.holoPowerCount || 0) > 0 ? "" : "empty"}`} data-pile="power" aria-label={`Holo Power，${player.holoPowerCount || 0} 張`}>{Number(player.holoPowerCount || 0) > 0 ? <><span>Holo Power</span><div className="sim-pile-card"><CardFace hidden back="main" cardMap={cardMap} /><b className="sim-pile-count">{player.holoPowerCount}</b></div></> : <div className="sim-pile-card empty" aria-hidden="true" />}</div>
       {skillButtons}
       {mobileActionsOpen && <div className="sim-mobile-action-layer" role="presentation" onClick={() => setMobileActionsOpen(false)}>
-        <section className="sim-mobile-action-sheet" role="dialog" aria-modal="true" aria-label={`${card?.name || "推し"}技能`} onClick={(event) => event.stopPropagation()}>
-          <header><div><span>推し位置</span><b>{card?.name}</b></div><button type="button" onClick={() => setMobileActionsOpen(false)} aria-label="關閉推し技能">×</button></header>
+        <section className="sim-mobile-action-sheet" role="dialog" aria-modal="true" aria-label={`${translatedCardName(card) || "推し"}技能`} onClick={(event) => event.stopPropagation()}>
+          <header><div><span>推し位置</span><b>{translatedCardName(card)}</b></div><button type="button" onClick={() => setMobileActionsOpen(false)} aria-label="關閉推し技能">×</button></header>
           <div className="sim-unit-actions">{skillButtons}</div>
         </section>
       </div>}
@@ -894,7 +902,7 @@ function LogMessage({ message, referenceIndex, cardRefs = [], cardMap, onInspect
   const tokens = cardReferenceTokens(message, referenceIndex, cardRefs) as ({ type: "text"; value: string } | { type: "card"; matched: string; instance: CardInstance })[];
   const renderedIds = new Set(tokens.filter((token): token is { type: "card"; matched: string; instance: CardInstance } => token.type === "card").map((token) => token.instance.id));
   const unmentionedRefs = cardRefs.filter((instance) => !renderedIds.has(instance.id));
-  const cardButton = (instance: CardInstance, key: string, matched = instance.number) => <button className="sim-log-card" type="button" key={key} onClick={() => onInspect(instance)} aria-label={`查看 ${cardPrintingLabel(instance, cardMap)} ${cardMap.get(instance.number)?.name || matched} 效果`}><CardFace instance={instance} cardMap={cardMap} small /><span className="sim-log-card-code">{cardPrintingLabel(instance, cardMap)}</span></button>;
+  const cardButton = (instance: CardInstance, key: string, matched = instance.number) => <button className="sim-log-card" type="button" key={key} onClick={() => onInspect(instance)} aria-label={`查看 ${cardPrintingLabel(instance, cardMap)} ${translatedCardName(cardMap.get(instance.number)) || matched} 效果`}><CardFace instance={instance} cardMap={cardMap} small /><span className="sim-log-card-code">{cardPrintingLabel(instance, cardMap)}</span></button>;
   return <span className="sim-log-message">{tokens.map((token, index) => token.type === "text" ? <span key={`text-${index}`}>{token.value}</span> : cardButton(token.instance, `card-${index}-${token.instance.id}`, token.matched))}{unmentionedRefs.map((instance, index) => cardButton(instance, `ref-${index}-${instance.id}`))}</span>;
 }
 
@@ -925,8 +933,8 @@ function CardInspector({ card, cardMap, variantId, liveState, onClose, hover = f
     <aside className={`sim-card-inspector ${hover ? "hover-preview" : ""}`} aria-live="polite">
       {!hover && <button className="sim-inspector-close" type="button" onClick={onClose} aria-label="關閉卡片效果">×</button>}
       <div className="sim-inspector-head">
-        <FoilCardImage className="sim-inspector-art" src={image} fallbackSrc={fallbackImages} alt={`${card.name} ${card.number}`} rarity={rarity} loading="eager" />
-        <div><p className="eyebrow">{inspectorMode}</p><h2>{card.name}</h2><code>{card.number}{selectedVariant ? ` · ${selectedVariant.rarity}` : ""}</code><span className={isPlayableByCore(card) || card.group === "cheer" ? "automated" : "pending"}>{automationLabel(card)}</span></div>
+        <FoilCardImage className="sim-inspector-art" src={image} fallbackSrc={fallbackImages} alt={`${effectText(card, card.name)} ${card.number}`} rarity={rarity} loading="eager" />
+        <div><p className="eyebrow">{inspectorMode}</p><h2>{effectText(card, card.name)}</h2><code>{card.number}{selectedVariant ? ` · ${selectedVariant.rarity}` : ""}</code><span className={!card.number.startsWith("hBP09-") && (isPlayableByCore(card) || card.group === "cheer") ? "automated" : "pending"}>{automationLabel(card)}</span></div>
       </div>
       {liveState && <section className="sim-inspector-live">
         <div><b>{inspectingLiveHolomem ? "目前狀態" : "所在 Holomen"}</b><span>{[liveState.ownerName, liveState.location].filter(Boolean).join(" · ")}</span></div>
@@ -944,13 +952,14 @@ function CardInspector({ card, cardMap, variantId, liveState, onClose, hover = f
       </section>}
       <div className="sim-inspector-copy">
         <TerminologyNote />
-        {skills.map((skill, index) => <section key={`${skill.label}-${index}`}><b>{skill.label}{skill.timing ? ` · ${cardText(skill.timing)}` : ""}</b>{skill.name && <strong>{skill.name}</strong>}<p>{effectText(card, skill.effect)}</p></section>)}
+        {skills.map((skill, index) => <section key={`${skill.label}-${index}`}><b>{skill.label}{skill.timing ? ` · ${effectText(card, skill.timing)}` : ""}</b>{skill.name && <strong>{effectText(card, skill.name)}</strong>}<p>{effectText(card, skill.effect)}</p></section>)}
         {card.abilityText && <section><b>卡片效果</b><p>{effectText(card, card.abilityText)}</p></section>}
+        {card.number.startsWith("hBP09-") && <p role="note">繁中譯文屬 AI 翻譯，未經人工覆核；跨系列規則互動仍在驗證中。</p>}
         {card.arts.map((art, index) => {
           const required = art.cost.length;
           const attached = liveState?.cheerCount;
           const shortfall = attached == null ? null : Math.max(0, required - attached);
-          return <section key={`${art.name}-${index}`}><b>藝能（Arts）· 所需聲援 {art.cost.join(" / ") || "0"}</b><strong>{art.name} · {art.damage ?? 0}</strong>{attached != null && <small className={shortfall === 0 ? "ready" : "short"}>目前 {attached} 張／需要 {required} 張 · {shortfall === 0 ? "數量足夠（仍須符合顏色）" : `尚欠 ${shortfall} 張`}</small>}{art.effect && <p>{effectText(card, art.effect)}</p>}</section>;
+          return <section key={`${art.name}-${index}`}><b>藝能（Arts）· 所需聲援 {art.cost.join(" / ") || "0"}</b><strong>{effectText(card, art.name)} · {art.damage ?? 0}</strong>{attached != null && <small className={shortfall === 0 ? "ready" : "short"}>目前 {attached} 張／需要 {required} 張 · {shortfall === 0 ? "數量足夠（仍須符合顏色）" : `尚欠 ${shortfall} 張`}</small>}{art.effect && <p>{effectText(card, art.effect)}</p>}</section>;
         })}
         {card.extra && <section><b>補充</b><p>{effectText(card, card.extra)}</p></section>}
         {!skills.length && !card.abilityText && !card.arts.length && !card.extra && <p>這張卡沒有額外文字效果。</p>}
@@ -1239,7 +1248,7 @@ export default function SimulatorClient() {
   async function importDeck(file?: File) {
     if (!file) return;
     try {
-      const parsed = JSON.parse(await file.text());
+      const parsed = await readImportJson(file);
       let incoming = parsed.deck || parsed;
       if (isHoloSimDeck(parsed)) {
         incoming = fromHoloSimDeck(parsed);
@@ -1247,13 +1256,13 @@ export default function SimulatorClient() {
       if (!incoming?.oshi || !incoming?.main || !incoming?.cheer) throw new Error();
       setDeck(incoming);
       setNotice("牌組已匯入，入房前會再核對卡號及限制。 ");
-    } catch { setNotice("無法讀取這個牌組檔案。 "); }
+    } catch (error) { setNotice(error instanceof Error && error.message ? error.message : "無法讀取這個牌組檔案。 "); }
   }
 
   async function importAiDeck(file?: File) {
     if (!file) return;
     try {
-      const parsed = JSON.parse(await file.text());
+      const parsed = await readImportJson(file);
       let incoming = parsed.deck || parsed;
       if (isHoloSimDeck(parsed)) incoming = fromHoloSimDeck(parsed);
       if (!incoming?.oshi || !incoming?.main || !incoming?.cheer) throw new Error();
@@ -1261,9 +1270,14 @@ export default function SimulatorClient() {
       setAiDeckLabel(file.name.replace(/\.json$/iu, ""));
       setAiDeckChoice("__imported");
       setNotice("AI 牌組已匯入。 ");
-    } catch { setNotice("無法讀取 AI 牌組檔案。 "); }
+    } catch (error) { setNotice(error instanceof Error && error.message ? error.message : "無法讀取 AI 牌組檔案。 "); }
   }
 
+  function exportReview(format: string) {
+    if(!room?.code?.startsWith('AI-'))return setNotice('只可匯出此裝置嘅離線 AI 對局。');
+    try{const saved=JSON.parse(localStorage.getItem('holo-solo-v1:'+room.code)||'null');downloadReview(saved,format);setNotice('已準備 AI Review 下載，包含離線雙方手牌及牌庫。');}
+    catch(error){setNotice(error instanceof Error?error.message:'匯出失敗，對局已保留。');}
+  }
   async function copyRoomCode() {
     if (!room) return;
     try {
@@ -1308,7 +1322,7 @@ export default function SimulatorClient() {
     const card = cardMap.get(instance.number);
     if (!isPlayableByCore(card)) {
       inspectCard(instance);
-      return setNotice(`「${card?.name || instance.number}」的完整文字效果仍未接入；效果窗已打開，避免系統作出錯誤裁定。`);
+      return setNotice(`「${translatedCardName(card) || instance.number}」的完整文字效果仍未接入；效果窗已打開，避免系統作出錯誤裁定。`);
     }
     setPendingCard("");
     void sendAction({ type: "play", cardId: instance.id });
@@ -1497,7 +1511,7 @@ export default function SimulatorClient() {
     <main style={matchCanvasStyle} data-canvas-scale={lockedCanvas?.scale} className={`simulator-page sim-table-page sim-status-${state.status} ${matchActive ? `sim-match-active sim-zoom-locked ${lockedHeight < 620 ? "sim-short-canvas" : ""}` : ""}`}>
       <header className="topbar">
         <Link className="brand" href="/simulator"><span className="brand-mark">H</span><span><strong>{state.mode === "solo" ? "單人 AI 模擬器" : "私人 PvP 模擬器"}</strong><small>{state.mode === "solo" ? "CARD-AWARE EXPERT" : `ROOM ${room.code}`}</small></span></Link>
-        <div className="topbar-actions">{state.mode !== "solo" && <button className="sim-code-button" type="button" onClick={() => void copyRoomCode()}><span>房間碼</span><b>{room.code}</b></button>}<ThemeToggle /><Link className="account-button" href="/">卡庫</Link></div>
+        <div className="topbar-actions">{state.mode === 'solo' && firebaseBuild && <><button className="account-button" onClick={()=>exportReview('zip')}>AI Review ZIP</button><button className="account-button" onClick={()=>exportReview('json')}>AI Review JSON</button></>}{state.mode !== "solo" && <button className="sim-code-button" type="button" onClick={() => void copyRoomCode()}><span>房間碼</span><b>{room.code}</b></button>}<ThemeToggle /><Link className="account-button" href="/">卡庫</Link></div>
       </header>
 
       {state.status === "waiting" || state.status === "lobby" ? (
@@ -1514,9 +1528,9 @@ export default function SimulatorClient() {
           <div className="sim-turn-bar"><span>{state.status === "setup" ? "開局" : `第 ${state.turn} 回合`}</span><div className="sim-turn-phase"><b>{state.status === "finished" ? `${state.players[state.winner ?? 0]?.name} 勝出` : state.status === "setup" ? "開局設置" : `${phaseNames[state.phase] || state.phase}階段`}</b>{state.status === "playing" && myTurn && ["main", "performance"].includes(state.phase) && <button className="sim-turn-advance" type="button" disabled={busy || animationBusy || Boolean(state.pendingChoice)} onClick={() => void sendAction({ type: "advance" })}>{state.phase === "main" ? state.firstPlayer === viewerIndex && own?.turnsTaken === 1 ? "結束主要（首回合）" : "前往表演" : "結束回合"}</button>}</div><span>{state.status === "setup" ? own?.setupDone ? state.mode === "solo" ? aiPlayer?.setupDone ? "AI 已完成設置" : "AIこより準備中 · 每步 3 秒" : "等待對手" : "在手牌按次序選擇" : myTurn ? "你的回合" : state.mode === "solo" ? "AIこより思考中 · 每步 3 秒" : "對手回合"}</span></div>
           {pending && !choicePanelHidden && <section className="sim-action-dock">
             <button className="sim-panel-minimize" type="button" aria-label="暫時收起自動效果選擇" onClick={() => setHiddenChoiceKey(choicePanelKey)}>−</button>
-            <div><p className="eyebrow">AUTOMATIC EFFECT</p><h2>{pendingTitle(pending, pendingCard)}</h2><p>{pending.prompt || `${pending.cardNumber ? `處理中：${cardMap.get(pending.cardNumber)?.name || pending.cardNumber}。` : ""} 合法位置已直接標示在牌桌上。`}</p></div>
+            <div><p className="eyebrow">AUTOMATIC EFFECT</p><h2>{pendingTitle(pending, pendingCard)}</h2><p>{pending.prompt || `${pending.cardNumber ? `處理中：${translatedCardName(cardMap.get(pending.cardNumber)) || pending.cardNumber}。` : ""} 合法位置已直接標示在牌桌上。`}</p></div>
             {["cheerTarget", "lifeCheerTarget", "eventCheerTarget"].includes(pending.type) && pending.cardNumber && <CardFace instance={{ id: `revealed-${pending.cardNumber}`, number: pending.cardNumber }} cardMap={cardMap} small />}
-            {pending.type === "ordinaryComputer" && <div className="sim-debut-options">{(pending.options || []).map((number) => <button type="button" className={pendingCard === number ? "selected" : ""} onClick={() => setPendingCard(number)} key={number}><CardFace instance={{ id: number, number }} cardMap={cardMap} /><span>{cardMap.get(number)?.name}</span></button>)}</div>}
+            {pending.type === "ordinaryComputer" && <div className="sim-debut-options">{(pending.options || []).map((number) => <button type="button" className={pendingCard === number ? "selected" : ""} onClick={() => setPendingCard(number)} key={number}><CardFace instance={{ id: number, number }} cardMap={cardMap} /><span>{translatedCardName(cardMap.get(number))}</span></button>)}</div>}
             {pending.type === "cardSelection" && <div className="sim-effect-card-choice">{(pending.cards || []).map((instance) => {
               const selectable = (pending.selectableIds || []).includes(instance.id);
               const order = selectedCardIds.indexOf(instance.id);
@@ -1538,11 +1552,11 @@ export default function SimulatorClient() {
                 const selectedIndex = setupOrder.indexOf(instance.id);
                 const canAdd = setupOrder.length === 0 ? stage === "Debut" : ["Debut", "Spot"].includes(stage) && setupOrder.length < 6;
                 const label = selectedIndex === 0 ? "中央 · 第 1 張" : selectedIndex > 0 ? `後排 ${selectedIndex}` : setupOrder.length === 0 ? stage === "Debut" ? "按此設為中央" : "第一張必須 Debut" : canAdd ? `按此設為後排 ${setupOrder.length}` : "留在手牌";
-                return <div className="sim-mobile-hand-option" key={instance.id}><button type="button" disabled={selectedIndex < 0 && !canAdd} className={selectedIndex >= 0 ? "selected" : ""} onClick={() => chooseSetupCard(instance.id)}><CardFace instance={instance} cardMap={cardMap} /><span>{label}</span></button><button className="sim-mobile-card-effect" type="button" onClick={() => inspectCard(instance)} aria-label={`查看${cardMap.get(instance.number)?.name || instance.number}效果`}>效果</button></div>;
+                return <div className="sim-mobile-hand-option" key={instance.id}><button type="button" disabled={selectedIndex < 0 && !canAdd} className={selectedIndex >= 0 ? "selected" : ""} onClick={() => chooseSetupCard(instance.id)}><CardFace instance={instance} cardMap={cardMap} /><span>{label}</span></button><button className="sim-mobile-card-effect" type="button" onClick={() => inspectCard(instance)} aria-label={`查看${translatedCardName(cardMap.get(instance.number)) || instance.number}效果`}>效果</button></div>;
               })}</div>
               {forcedRedraws > 0 && <section className="sim-opening-penalty"><div><b>強制重抽補正</b><span>揀 {forcedRedraws} 張未放舞台的手牌置於主牌庫底（{setupBottom.length}/{forcedRedraws}）。</span></div><div className="sim-opening-hand">{openingCards.filter((instance) => !setupOrder.includes(instance.id)).map((instance) => <button type="button" className={setupBottom.includes(instance.id) ? "selected" : ""} disabled={!setupBottom.includes(instance.id) && setupBottom.length >= forcedRedraws} onClick={() => toggleSetupBottom(instance.id)} key={`bottom-${instance.id}`}><CardFace instance={instance} cardMap={cardMap} /><span>{setupBottom.includes(instance.id) ? `牌庫底 ${setupBottom.indexOf(instance.id) + 1}` : "放到牌庫底"}</span></button>)}</div></section>}
               <button className="sim-primary sim-setup-confirm" type="button" disabled={!setupOrder[0] || setupBottom.length !== forcedRedraws || busy || animationBusy} onClick={submitSetup}>確認舞台設置</button>
-            </> : <div className="sim-hand-row">{(own?.hand || []).map((instance, index) => instance ? <article className="sim-hand-card" key={instance.id}><button className="sim-hand-play" type="button" disabled={!myTurn || state.phase !== "main" || busy || animationBusy || Boolean(state.pendingChoice)} onClick={() => playHandCard(instance)}><CardFace instance={instance} cardMap={cardMap} /><span>{isPlayableByCore(cardMap.get(instance.number)) ? "使用" : "查看未接入效果"}</span></button><button className="sim-mobile-card-effect sim-mobile-hand-effect" type="button" onClick={() => inspectCard(instance)} aria-label={`查看${cardMap.get(instance.number)?.name || instance.number}效果`}>效果</button></article> : <CardFace key={index} hidden cardMap={cardMap} />)}</div>}
+            </> : <div className="sim-hand-row">{(own?.hand || []).map((instance, index) => instance ? <article className="sim-hand-card" key={instance.id}><button className="sim-hand-play" type="button" disabled={!myTurn || state.phase !== "main" || busy || animationBusy || Boolean(state.pendingChoice)} onClick={() => playHandCard(instance)}><CardFace instance={instance} cardMap={cardMap} /><span>{isPlayableByCore(cardMap.get(instance.number)) ? "使用" : "查看未接入效果"}</span></button><button className="sim-mobile-card-effect sim-mobile-hand-effect" type="button" onClick={() => inspectCard(instance)} aria-label={`查看${translatedCardName(cardMap.get(instance.number)) || instance.number}效果`}>效果</button></article> : <CardFace key={index} hidden cardMap={cardMap} />)}</div>}
           </section> : <button className="sim-hand-reopen" type="button" aria-label="展開手牌" onClick={() => setHandOpen(true)}><span aria-hidden="true">⌃</span>手牌 {own?.handCount || 0}</button>}
         </section>
       )}
