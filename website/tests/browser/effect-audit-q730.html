@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Q730 Browser Runtime Regression</title>
+    <style>
+      body { max-width: 720px; margin: 2rem auto; padding: 0 1rem; font: 16px/1.5 system-ui, sans-serif; }
+      #status { font-weight: 700; }
+      pre { overflow: auto; padding: 1rem; background: #f2f4f8; }
+    </style>
+  </head>
+  <body>
+    <h1>Q730 Browser Runtime Regression</h1>
+    <p>This harness imports the current simulator engine and website card catalog, then exercises the official bottom-draw ruling.</p>
+    <p id="status" role="status">Loading current card catalog…</p>
+    <pre id="result" aria-live="polite"></pre>
+    <script type="module" src="./effect-audit-q730.mjs"></script>
+  </body>
+</html>

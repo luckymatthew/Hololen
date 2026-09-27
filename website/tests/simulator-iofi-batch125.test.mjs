@@ -10,8 +10,8 @@ for(const count of [3,5,6,8,9]) for(const matching of [true,false]) test('Iofi s
  const r=applyAction(s,0,attack,pool,()=>0);
  assert.equal(r.players[1].zones.center.damage,130+(matching?Math.floor(count/3)*20:0));
 });
-test('Iofi bonus requires center',()=>{
+test('Iofi Arts restricted to Center cannot be used from Collab',()=>{
  const s=state();s.players[0].zones.collab=unit('hBP05-023');fund(s.players[0].zones.collab,['綠','無色','無色']);
  s.players[0].oshi=inst(cards.find(c=>c.group==='oshi'&&c.jpName==='アイラニ・イオフィフティーン').number);
- const r=applyAction(s,0,{...attack,sourceZone:'collab'},pool,()=>0);assert.equal(r.players[1].zones.center.damage,130);
+ assert.throws(()=>applyAction(s,0,{...attack,sourceZone:'collab'},pool,()=>0),/這個 Arts 不能從目前位置使用/);
 });

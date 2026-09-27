@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>hBP09-028 Browser Runtime Regression</title>
+    <style>
+      body { max-width: 760px; margin: 2rem auto; padding: 0 1rem; font: 16px/1.5 system-ui, sans-serif; }
+      button { margin: .45rem; padding: .65rem 1rem; }
+      #status { font-weight: 700; }
+      pre { overflow: auto; padding: 1rem; background: #f2f4f8; }
+    </style>
+  </head>
+  <body>
+    <h1>hBP09-028 Browser Runtime Regression</h1>
+    <p>Exercises the current website rules engine and catalog for the real Bloom search, reveal/add choice, Gyudon filter, and required shuffle on a miss.</p>
+    <p id="status" role="status">Loading current catalog…</p>
+    <button id="run" type="button">Run Bloom and shuffle cases</button>
+    <pre id="result" aria-live="polite"></pre>
+    <script type="module" src="./effect-audit-hbp09-028.mjs"></script>
+  </body>
+</html>

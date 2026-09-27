@@ -8,6 +8,7 @@ test('07105 required BAZO fan recovery',()=>{
  s.players[0].archive=[inst(cards.find(c=>c.typeCode==='supportFan').number,'fan')];
  s=applyAction(s,0,attack,pool,()=>0);assert.equal(s.pendingChoice.optional,false);
  s=applyAction(s,0,{type:'choose',cardIds:['fan']},pool,()=>0);assert.equal(s.players[0].hand.at(-1).id,'fan');
+ assert.equal(s.players[1].zones.center.damage,40,'BAZO adds 10 to the attached Zeta\'s 30-damage Arts');
 });
 for(const use of [true,false])test('07106 optional mascot return then required recovery '+use,()=>{
  let s=state();s.phase='main';const mio=cards.find(c=>c.group==='holomem'&&c.jpName==='大神ミオ'&&!c.keyword);

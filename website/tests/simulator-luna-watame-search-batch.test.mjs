@@ -13,7 +13,6 @@ for(const n of ['hBP03-001','hBP03-007'])test(n+' exact search type and cost',()
  assert.throws(()=>act(e,{type:'choose',cardIds:['mascot']}));
  e=act(e,{type:'choose',cardIds:[id]});assert.equal(e.players[0].hand[0].id,id);assert.equal(e.players[0].holoPower.length,0);assert.equal(e.players[0].mainDeck.length,3);
 });
-for(const n of ['hBP03-001','hBP03-007'])test(n+' hidden search decline still shuffles and pays',()=>{
- const s=start(n),before=s.players[0].mainDeck.map(c=>c.id),e=act(s,{type:'choose',skip:true});
- assert.equal(e.players[0].hand.length,0);assert.equal(e.players[0].holoPower.length,0);assert.notDeepEqual(e.players[0].mainDeck.map(c=>c.id),before);
+for(const n of ['hBP03-001','hBP03-007'])test(n+' matching search cannot be declined',()=>{
+ const e=start(n);assert.equal(e.pendingChoice.optional,false);assert.throws(()=>act(e,{type:'choose',skip:true}));
 });

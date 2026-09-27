@@ -8,7 +8,7 @@ for(const [first,turns,count] of [[1,1,2],[1,1,1],[0,1,2],[1,2,2]])test('0821 tw
  s.players[0].mainDeck=[inst('AUDIT-DUMMY','power'),...Array.from({length:count},(_,i)=>inst(c.number,'pick'+i))];
  s=applyAction(s,0,{type:'collab',zone:'back1'},pool,()=>0);
  if(first===1&&turns===1){
- assert.equal(s.pendingChoice.optional,false);assert.equal(s.pendingChoice.min,count);
+ assert.equal(s.pendingChoice.optional,false);assert.equal(s.pendingChoice.min,0);
  s=applyAction(s,0,{type:'choose',cardIds:Array.from({length:count},(_,i)=>'pick'+i)},pool,()=>0);assert.equal(s.players[0].hand.length,count);
  }else assert.equal(s.pendingChoice,null);
 });

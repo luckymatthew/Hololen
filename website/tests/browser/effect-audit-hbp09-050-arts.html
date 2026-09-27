@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>hBP09-050 Arts Browser Runtime Audit</title>
+    <style>
+      body { max-width: 720px; margin: 2rem auto; padding: 0 1rem; font: 16px/1.5 system-ui, sans-serif; }
+      #status { font-weight: 700; }
+      pre { overflow: auto; padding: 1rem; background: #f2f4f8; }
+    </style>
+  </head>
+  <body>
+    <h1>hBP09-050 Arts Browser Runtime Audit</h1>
+    <p>This harness imports the current website simulator and official card catalog, then checks hBP09-050 base Arts damage, one damage increase per own Subaru on any stage position, and the printed +50 against a purple target.</p>
+    <p id="status" role="status">Loading current card catalog…</p>
+    <pre id="result" aria-live="polite"></pre>
+    <script type="module" src="./effect-audit-hbp09-050-arts.mjs"></script>
+  </body>
+</html>

@@ -8,7 +8,7 @@ for(const count of [0,1,2])test('064 distinct available '+count,()=>{
  if(count)s.players[0].mainDeck.push(inst('hBP05-020','a'),inst('hBP05-020','duplicate'));
  if(count===2)s.players[0].mainDeck.push(inst('hBP05-030','b'));
  s=applyAction(s,0,{type:'collab',zone:'back1'},pool,()=>0);
- if(count){assert.equal(s.pendingChoice.optional,false);assert.equal(s.pendingChoice.min,count);s=applyAction(s,0,{type:'choose',cardIds:count===2?['a','b']:['a']},pool,()=>0);}
+ if(count){assert.equal(s.pendingChoice.optional,false);assert.equal(s.pendingChoice.min,0);s=applyAction(s,0,{type:'choose',cardIds:count===2?['a','b']:['a']},pool,()=>0);}
  assert.equal(s.players[0].hand.length,count);assert.equal(s.pendingChoice,null);
 });
 

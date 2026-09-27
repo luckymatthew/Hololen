@@ -15,7 +15,7 @@ import { fromHoloSimDeck, isHoloSimDeck } from "@/lib/holosim-deck.mjs";
 import { AUTOMATED_SUPPORT_CARDS } from "@/lib/simulator/effect-catalog.mjs";
 import { displayedBatonCost, suuBatonIncrease } from "@/lib/simulator/display.mjs";
 import { buildCardReferenceIndex, cardReferenceTokens } from "@/lib/simulator/log-cards.mjs";
-import { isActivatableOshiSkill, oshiSkillPowerCost, oshiSkillMinimumPower } from "@/lib/simulator/oshi-skill-catalog.mjs";
+import { isActivatableOshiSkill, oshiSkillPowerCost, oshiSkillMinimumPower, oshiSkillSpecificConditionMet } from "@/lib/simulator/oshi-skill-catalog.mjs";
 import FoilCardImage from "@/app/FoilCardImage";
 
 type DeckState = { oshi: Record<string, number>; main: Record<string, number>; cheer: Record<string, number>; printings?: Record<string, Record<string, number>> };
@@ -24,6 +24,7 @@ type CardInfo = {
   number: string;
   name: string;
   jpName?: string;
+  enName?: string;
   group: "oshi" | "holomem" | "support" | "cheer";
   stage: string;
   type: string;
@@ -96,6 +97,7 @@ type PendingChoice = {
   cards?: CardInstance[];
   selectableIds?: string[];
   min?: number;
+  nonEmptyMin?: number;
   max?: number;
   prompt?: string;
   effect?: string;
@@ -407,7 +409,7 @@ function pendingTitle(pending: PendingChoice, pendingCard: string) {
     archiveCheerForSkill: "按要放到存檔區的實際應援卡",
     unrestTarget: "按要轉為活動狀態的 Holomen",
     healTarget: "按要回復 HP 的 Holomen",
-    healDistribution: "分配每一個 20 HP 回復",
+    healDistribution: "分配逐次 HP 回復",
     eventCheerTarget: "按要附加應援的 Holomen",
     forcedCollab: "按要移到合作位置的後排 Holomen",
     endToolDamage: "按要發動「萬事爆解！」的 2nd こより",
@@ -692,11 +694,12 @@ function OshiPosition({ player, cardMap, canActivate = false, turn, onInspect, o
   const spCost = skillPowerCost(card?.spOshiSkill, card?.number, "sp");
   const normalMinimumCost = normalCost === "X" ? oshiSkillMinimumPower(card?.number || "") : normalCost;
   const spMinimumCost = spCost === "X" ? oshiSkillMinimumPower(card?.number || "", "sp") : spCost;
+  const spConditionMet = oshiSkillSpecificConditionMet(card?.number || "", "sp", cardMap.get(topNumber(player.zones?.center)));
   const normalActive = Boolean(card?.oshiSkill?.effect) && isActivatableOshiSkill(card?.number || "", "oshi");
   const spActive = Boolean(card?.spOshiSkill?.effect) && isActivatableOshiSkill(card?.number || "", "sp");
   const skillButtons = <>
     {normalActive && <button className="sim-oshi-skill" type="button" disabled={!canActivate || player.oshiSkillTurn === turn || Number(player.holoPowerCount || 0) < normalMinimumCost} onClick={() => { setMobileActionsOpen(false); onUseSkill?.(); }}>推し技能 · Power −{normalCost}</button>}
-    {spActive && <button className="sim-oshi-skill" type="button" disabled={!canActivate || player.spOshiSkillUsed || Number(player.holoPowerCount || 0) < spMinimumCost} onClick={() => { setMobileActionsOpen(false); onUseSpSkill?.(); }}>SP 推し技能 · Power −{spCost}</button>}
+    {spActive && <button className="sim-oshi-skill" type="button" disabled={!canActivate || !spConditionMet || player.spOshiSkillUsed || Number(player.holoPowerCount || 0) < spMinimumCost} onClick={() => { setMobileActionsOpen(false); onUseSpSkill?.(); }}>SP 推し技能 · Power −{spCost}</button>}
   </>;
   return (
     <article className="sim-oshi-position">
@@ -749,8 +752,16 @@ function Board({ player, playerIndex, own, cardMap, active, phase, turn, opponen
     const card = cardMap.get(topNumber(stageUnit));
     return isKoyoriHolomem(card) && ["1st", "2nd"].includes(card?.stage || "") && Boolean(stageUnit?.cheer.length);
   };
-  const canUseAttachmentSkill = (stageUnit: StageUnit | null | undefined, number: string) => {
+  const canUseAttachmentSkill = (stageUnit: StageUnit | null | undefined, number: string, zone: string) => {
     if (number === "hBP04-097") return hasRestedHoloX && canUseGreenTube(stageUnit);
+    if (number === "hBP04-103") {
+      const holder = cardMap.get(topNumber(stageUnit));
+      const attachment = stageUnit?.attachments?.find((instance) => instance.number === number);
+      const isLaplus = [holder?.name, holder?.jpName, holder?.enName].some((name) => String(name || "").replaceAll(" ", "").includes("ラプラス・ダークネス") || String(name || "").replaceAll(" ", "").includes("拉普拉斯"));
+      const hasEmptyBack = ["back1", "back2", "back3", "back4", "back5"].some((backZone) => !zoneMap[backZone]);
+      return Boolean(zone === "collab" && attachment && isLaplus && hasEmptyBack
+        && player.namedUsageTurns?.[`attachment:hBP04-103:${attachment.id}`] !== turn);
+    }
     if (number !== "hBP02-092") return false;
     const holder = cardMap.get(topNumber(stageUnit));
     const attachment = stageUnit?.attachments?.find((instance) => instance.number === number);
@@ -797,7 +808,7 @@ function Board({ player, playerIndex, own, cardMap, active, phase, turn, opponen
               onSelectCheer={onSelectCheer}
               onSelectAttachment={onSelectAttachment}
               onInspect={(number) => inspectAt(number, "collab", "合作位置")}
-              canUseAttachmentSkill={actionsEnabled && own && active && phase === "main" ? (number) => canUseAttachmentSkill(zoneMap.collab, number) : undefined}
+              canUseAttachmentSkill={actionsEnabled && own && active && phase === "main" ? (number) => canUseAttachmentSkill(zoneMap.collab, number, "collab") : undefined}
               onAttachmentSkill={(cardNumber) => onAction({ type: "attachmentSkill", zone: "collab", cardNumber })}
               canUseGiftSkill={actionsEnabled && own && active && phase === "main" && canUseGift(zoneMap.collab)}
               giftUsed={giftUsed(zoneMap.collab)}
@@ -826,7 +837,7 @@ function Board({ player, playerIndex, own, cardMap, active, phase, turn, opponen
               onSelectCheer={onSelectCheer}
               onSelectAttachment={onSelectAttachment}
               onInspect={(number) => inspectAt(number, "center", "中央位置")}
-              canUseAttachmentSkill={actionsEnabled && own && active && phase === "main" ? (number) => canUseAttachmentSkill(zoneMap.center, number) : undefined}
+              canUseAttachmentSkill={actionsEnabled && own && active && phase === "main" ? (number) => canUseAttachmentSkill(zoneMap.center, number, "center") : undefined}
               onAttachmentSkill={(cardNumber) => onAction({ type: "attachmentSkill", zone: "center", cardNumber })}
               canUseGiftSkill={actionsEnabled && own && active && phase === "main" && canUseGift(zoneMap.center)}
               giftUsed={giftUsed(zoneMap.center)}
@@ -863,7 +874,7 @@ function Board({ player, playerIndex, own, cardMap, active, phase, turn, opponen
                   onSelectCheer={onSelectCheer}
                   onSelectAttachment={onSelectAttachment}
                   onInspect={(number) => inspectAt(number, slot, slotNames[slot])}
-                  canUseAttachmentSkill={actionsEnabled && own && active && phase === "main" ? (number) => canUseAttachmentSkill(zoneMap[slot], number) : undefined}
+                  canUseAttachmentSkill={actionsEnabled && own && active && phase === "main" ? (number) => canUseAttachmentSkill(zoneMap[slot], number, slot) : undefined}
                   onAttachmentSkill={(cardNumber) => onAction({ type: "attachmentSkill", zone: slot, cardNumber })}
                   canUseGiftSkill={actionsEnabled && own && active && phase === "main" && canUseGift(zoneMap[slot])}
                   giftUsed={giftUsed(zoneMap[slot])}
@@ -1535,7 +1546,7 @@ export default function SimulatorClient() {
               const selectable = (pending.selectableIds || []).includes(instance.id);
               const order = selectedCardIds.indexOf(instance.id);
               return <button type="button" disabled={!selectable} className={order >= 0 ? "selected" : ""} onClick={() => toggleCardChoice(instance.id, cardChoiceKey, Number(pending.max || 1))} key={instance.id}><CardFace instance={instance} cardMap={cardMap} /><span>{order >= 0 ? `選擇次序 ${order + 1}` : selectable ? "按此選擇" : "不符合條件"}</span></button>;
-            })}<div className="sim-effect-choice-actions"><span>已選 {selectedCardIds.length}/{pending.min === pending.max ? pending.max : `${pending.min}–${pending.max}`}</span><button className="sim-primary" type="button" disabled={selectedCardIds.length < Number(pending.min || 0) || selectedCardIds.length > Number(pending.max || 0)} onClick={() => { void sendAction({ type: "choose", cardIds: selectedCardIds }); setCardChoice({ key: "", ids: [] }); }}>確認卡片選擇</button></div></div>}
+            })}<div className="sim-effect-choice-actions"><span>已選 {selectedCardIds.length}/{pending.min === 0 && pending.nonEmptyMin ? `0 或 ${pending.nonEmptyMin}–${pending.max}` : pending.min === pending.max ? pending.max : `${pending.min}–${pending.max}`}</span><button className="sim-primary" type="button" disabled={selectedCardIds.length > Number(pending.max || 0) || (selectedCardIds.length > 0 && selectedCardIds.length < Number(pending.nonEmptyMin ?? pending.min ?? 0)) || (selectedCardIds.length === 0 && Number(pending.min || 0) > 0)} onClick={() => { void sendAction({ type: "choose", cardIds: selectedCardIds }); setCardChoice({ key: "", ids: [] }); }}>確認卡片選擇</button></div></div>}
             {pending.type === "healDistribution" && <div className="sim-heal-confirm"><span>已分配 <b>{healAssigned}</b> / {healRequired} 個「{pending.unitAmount || 20} HP」</span><small>直接喺下方每位 Holomen 卡上按 −／＋；同一位可以獲分配多次。</small><button className="sim-primary" type="button" disabled={healAssigned !== healRequired} onClick={() => { void sendAction({ type: "choose", allocations: healAllocations }); setHealChoice({ key: "", allocations: {} }); }}>確認全部回血分配</button></div>}
             {pending.type === "optionChoice" && <div className="sim-effect-choice-actions">{(pending.modeOptions || []).map((option) => <button className="sim-primary" type="button" disabled={option.disabled} key={option.id} onClick={() => void sendAction({ type: "choose", optionId: option.id })}>{option.label}</button>)}</div>}
             {pending.optional && <button type="button" className="sim-cancel" onClick={() => { void sendAction({ type: "choose", skip: true }); setCardChoice({ key: "", ids: [] }); }}>略過可選效果</button>}

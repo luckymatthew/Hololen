@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>hBP09-010 Browser Runtime Regression</title>
+    <style>
+      body { max-width: 760px; margin: 2rem auto; padding: 0 1rem; font: 16px/1.5 system-ui, sans-serif; }
+      button { display: block; margin: .55rem 0; padding: .7rem 1rem; }
+      button[aria-pressed="true"] { background: #c7f1d1; }
+      #status { font-weight: 700; }
+      pre { overflow: auto; padding: 1rem; background: #f2f4f8; }
+    </style>
+  </head>
+  <body>
+    <h1>hBP09-010 Browser Runtime Regression</h1>
+    <p>This page loads the current browser engine and card catalog, then exposes real Arts and Collab pending choices.</p>
+    <p id="status" role="status">Loading the current catalog…</p>
+    <button id="run-art" type="button">Run hBP09-010 Arts</button>
+    <button id="run-collab" type="button">Run hBP09-010 Collab</button>
+    <div id="choices"></div>
+    <pre id="result" aria-live="polite"></pre>
+    <script type="module" src="./effect-audit-hbp09-010.mjs"></script>
+  </body>
+</html>

@@ -13,16 +13,17 @@ function start(n,p=pool){
 for(const n of ['hBP01-090','hBP01-094'])test(n+' exact colors and mandatory recipient after selection',()=>{
  let s=start(n);assert.equal(s.pendingChoice?.effect,'genericCheerDeckPick');
  assert.deepEqual(s.pendingChoice.selectableIds,n==='hBP01-090'?['c1','c3']:['c0','c3']);
+ assert.equal(s.pendingChoice.optional,false);assert.throws(()=>act(s,{type:'choose',skip:true}));
  s=act(s,{type:'choose',cardIds:[n==='hBP01-090'?'c1':'c0']});
  assert.equal(s.pendingChoice.optional,false);assert.throws(()=>act(s,{type:'choose',skip:true}));
  if(n==='hBP01-094')assert.throws(()=>act(s,{type:'choose',zone:'back2'}));
  s=act(s,{type:'choose',zone:'back1'});assert.equal(s.players[0].zones.back1.cheer.length,1);
  assert.equal(s.players[0].cheerDeck.length,5);
 });
-for(const n of ['hBP01-090','hBP01-094'])test(n+' hidden choice may decline and shuffles',()=>{
+for(const n of ['hBP01-090','hBP01-094'])test(n+' matching Cheer cannot be declined',()=>{
  const s=start(n),before=s.players[0].cheerDeck.map(c=>c.id);
- const e=act(s,{type:'choose',skip:true});assert.equal(e.pendingChoice,null);
- assert.notDeepEqual(e.players[0].cheerDeck.map(c=>c.id),before);
+ assert.equal(s.pendingChoice?.optional,false);assert.throws(()=>act(s,{type:'choose',skip:true}));
+ assert.equal(s.pendingChoice?.type,'cardSelection');assert.deepEqual(s.players[0].cheerDeck.map(c=>c.id),before);
 });
 test('same-color lookup with empty qualifying color set offers no Cheer',()=>{
  const p=pool.map(c=>c.group==='holomem'?{...c,tags:c.tags.filter(t=>t!=='#Promise')}:c);

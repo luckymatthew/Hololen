@@ -193,13 +193,15 @@ function cardSelectionCandidates(state, pending, aiIndex, map) {
   const player = state.players[aiIndex];
   const selectable = (pending.cards || []).filter((card) => (pending.selectableIds || []).includes(card.id));
   const min = Number(pending.min || 0);
+  const nonEmptyMin = Number(pending.nonEmptyMin ?? min);
   const max = Math.min(Number(pending.max || 0), selectable.length);
   const looksLikeCost = /cost|discard|archive|bottom/i.test(String(pending.effect || "")) || /成本|支付|存檔|牌庫底|放回/u.test(String(pending.prompt || ""));
   const ranked = [...selectable].sort((left, right) => {
     const difference = cardValue(map.get(right.number), player, map) - cardValue(map.get(left.number), player, map);
     return looksLikeCost ? -difference : difference;
   });
-  const counts = [...new Set([min, max, Math.min(max, Math.max(min, Math.ceil((min + max) / 2)))])].filter((count) => count >= min && count <= max);
+  const counts = [...new Set([...(min === 0 ? [0] : []), nonEmptyMin, max, Math.min(max, Math.max(nonEmptyMin, Math.ceil((nonEmptyMin + max) / 2)))])]
+    .filter((count) => count >= min && count <= max && (count === 0 || count >= nonEmptyMin));
   const actions = [];
   for (const count of counts) {
     const pool = ranked.slice(0, Math.min(ranked.length, Math.max(count + 3, 7)));

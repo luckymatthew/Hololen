@@ -97,6 +97,20 @@ test('Kaela can hold second Arms tool, but not a third',()=>{
  const s=fixture(4,44);s.players[0].zones.center.attachments=[instance(N(106))];let out=support(s,107);out=answer(out,{zone:'center'});out=settle(out);assert.equal(out.players[0].zones.center.attachments.length,2);assert.equal(out.players[0].hand.length,2);assert.throws(()=>support(out,106));
 });
 test('Pemaloe cannot attach to a non-Kaela host',()=>{assert.throws(()=>support(fixture(),111));});
+test('Pemaloe requires moving one Cheer when a legal recipient exists',()=>{
+ const s=fixture();s.turn=5;s.activePlayer=1;s.phase='performance';
+ const defeated=unit(N(39),1);defeated.damage=90;defeated.attachments=[instance(N(111))];
+ s.players[0].zones.center=defeated;s.players[0].zones.back1=unit(N(64));
+ s.players[1].zones.center=unit(N(68),1);s.players[1].zones.center.cheer=[instance(cheerNumbers[4])];
+ let out=attack(s,0,'center',cards,1);
+ assert.equal(out.pendingChoice?.effect,'koFanTransferPick');
+ assert.equal(out.pendingChoice.min,1,'the text says to transfer one Cheer when both source and recipient exist');
+ assert.equal(out.pendingChoice.optional,false);
+ const cheerId=defeated.cheer[0].id;
+ out=answer(out,{cardIds:[cheerId]});assert.equal(out.pendingChoice?.effect,'koFanTransferTarget');
+ out=answer(out,{zone:'back1'});
+ assert.ok(out.players[0].zones.back1.cheer.some(c=>c.id===cheerId));
+});
 test('Subaru stage cost removes one white cheer requirement',()=>{const s=fixture(1,8);const out=attack(s);assert.equal(out.players[1].zones.center.damage,30);});
 test('Kaela Arms gift removes red cost and Arts passive bonus applies',()=>{const s=fixture(4,41);s.players[0].zones.center.attachments=[instance(N(107))];const out=attack(s);assert.equal(out.players[1].zones.center.damage,30);});
 test('Vivi hand thresholds choose +70 or +100, never stack both',()=>{

@@ -24,6 +24,16 @@ test('Fubuki normal skill searches only Mascots',()=>{
  s.players[0].holoPower=[inst('AUDIT-DUMMY','p1'),inst('AUDIT-DUMMY','p2')];
  s.players[0].mainDeck=[inst('hBP01-119','mascot'),inst('hBP01-122','fan'),inst('AUDIT-DUMMY','holomen')];
  let e=act(s,{type:'oshiSkill'});assert.deepEqual(e.pendingChoice.selectableIds,['mascot']);
+ assert.equal(e.pendingChoice.optional,false);
+ assert.throws(()=>act(e,{type:'choose',skip:true}));
  assert.throws(()=>act(e,{type:'choose',cardIds:['fan']}));
  e=act(e,{type:'choose',cardIds:['mascot']});assert.deepEqual(e.players[0].hand.map(c=>c.id),['mascot']);
+});
+test('Fubuki normal skill completes and shuffles when the deck has no Mascot',()=>{
+ const s=state();s.phase='main';s.players[0].oshi=inst('hBP02-001');
+ s.players[0].holoPower=[inst('AUDIT-DUMMY','p1'),inst('AUDIT-DUMMY','p2')];
+ s.players[0].mainDeck=[inst('hBP01-122','fan'),inst('AUDIT-DUMMY','holomen')];
+ let rolls=0;
+ const e=applyAction(structuredClone(s),0,{type:'oshiSkill'},pool,()=>{rolls++;return .5;});
+ assert.equal(e.pendingChoice,null);assert.equal(e.players[0].mainDeck.length,2);assert.equal(rolls,1);
 });

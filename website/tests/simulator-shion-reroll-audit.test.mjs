@@ -36,20 +36,27 @@ for(const die of [1,2,3]) test('hBP02-043 misses cleanly on '+die,()=>{
 for(const die of [4,5,6]) test('hBP02-043 hit '+die+' offers one #Magic search result',()=>{
   let s=withDie(collabSetup(),{type:'choose',optionId:'roll'},die);
   assert.equal(s.pendingChoice?.effect,'deckToHandShuffle');
-  assert.equal(s.pendingChoice.optional,true);
+  assert.equal(s.pendingChoice.optional,false);
   assert.equal(s.pendingChoice.min,0);
+  assert.equal(s.pendingChoice.nonEmptyMin,1);
   assert.deepEqual(s.pendingChoice.selectableIds,['magic']);
+  assert.throws(()=>choose(s,{type:'choose',skip:true}));
   assert.throws(()=>choose(s,{type:'choose',cardIds:['wrong']}));
   s=choose(s,{type:'choose',cardIds:['magic']});
   assert.equal(s.players[0].hand[0].id,'magic');
   assert.equal(s.pendingChoice,null);
 });
 
-test('hBP02-043 successful hidden-deck search may reveal no #Magic card',()=>{
-  let s=withDie(collabSetup(),{type:'choose',optionId:'roll'},4);
-  s=choose(s,{type:'choose',skip:true});
+test('hBP02-043 successful search with no #Magic card shuffles and finishes',()=>{
+  let s=collabSetup();
+  s.players[0].mainDeck=s.players[0].mainDeck.filter(card=>card.id!=='magic');
+  const deckSize=s.players[0].mainDeck.length;
+  let calls=0;
+  s=applyAction(s,0,{type:'choose',optionId:'roll'},pool,()=>{calls++;return .5;});
   assert.equal(s.pendingChoice,null);
   assert.equal(s.players[0].hand.length,0);
+  assert.equal(s.players[0].mainDeck.length,deckSize);
+  assert.ok(calls>1,'the deck is shuffled after the unsuccessful search');
 });
 
 test('hBP02-005 may keep the original Shion die without paying',()=>{

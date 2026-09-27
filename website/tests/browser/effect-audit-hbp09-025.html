@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>hBP09-025 Browser Runtime Audit</title>
+  <style>
+    body { font: 16px/1.45 system-ui, sans-serif; margin: 2rem auto; max-width: 760px; padding: 0 1rem; }
+    button { font: inherit; padding: .7rem 1rem; }
+    #status { font-weight: 700; margin: 1rem 0; }
+    pre { background: #f3f4f6; overflow-wrap: anywhere; padding: 1rem; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>hBP09-025 Browser Runtime Audit</h1>
+  <p>Checks Noel's Stage Skill Oshi HP bonus, the no-Stage-Skill Down boundary, and the Gift expiring when Noel is covered by a Bloom card.</p>
+  <button id="run" type="button">Run hBP09-025 scenarios</button>
+  <p id="status" role="status">Loading current cards.json…</p>
+  <pre id="result"></pre>
+  <script type="module" src="./effect-audit-hbp09-025.mjs"></script>
+</body>
+</html>

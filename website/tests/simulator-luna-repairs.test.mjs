@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { applyAction } from '../lib/simulator/engine.mjs';
 import { cards, pool, inst, unit, state, attack, fund } from './fixtures/simulator-audit.mjs';
+const { applyAction } = await import(process.env.HOLO_ENGINE_TEST_TARGET || '../lib/simulator/engine.mjs');
 
 const act = (s, a) => applyAction(structuredClone(s), 0, a, pool, () => 0.5);
 function ready(number) {
@@ -93,5 +93,24 @@ test('hBP04-013 required deck search still deals damage', () => {
   assert.equal(end.players[0].mainDeck.length, 1);
   assert.equal(end.players[1].zones.center.damage, 160);
   assert.equal(end.pendingChoice, null);
+});
+
+test('hBP04-014 Bloom can recover tagged White Fox characters across Support types', () => {
+  const s = state('hBP02-010');
+  s.phase = 'main';
+  s.players[0].hand = [inst('hBP04-014', 'bloom')];
+  s.players[0].archive = [inst('hBP02-089', 'mascot'), inst('hBP02-099', 'fan')];
+
+  const pending = act(act(s, { type: 'play', cardId: 'bloom' }), { type: 'choose', zone: 'center' });
+
+  assert.equal(pending.pendingChoice?.effect, 'archiveToHand');
+  assert.equal(pending.pendingChoice.optional, true);
+  assert.equal(pending.pendingChoice.min, 0);
+  assert.equal(pending.pendingChoice.max, 2);
+  assert.deepEqual(pending.pendingChoice.cards.map(card => card.id), ['mascot', 'fan']);
+
+  const resolved = act(pending, { type: 'choose', cardIds: ['mascot', 'fan'] });
+  assert.deepEqual(resolved.players[0].hand.map(card => card.id), ['mascot', 'fan']);
+  assert.equal(resolved.players[0].archive.length, 0);
 });
 

@@ -400,7 +400,7 @@ test("hBP08-062 archives one hand card then selects an unlimited Debut from the 
   state = applyAction(state, 0, { type: "choose", cardIds: ["cost"] }, effectCards, () => 0.5);
   assert.equal(state.players[0].archive.at(-1)?.id, "cost");
   assert.equal(state.pendingChoice?.effect, "deckCardsToStage");
-  assert.equal(state.pendingChoice?.min, 1);
+  assert.equal(state.pendingChoice?.min, 0);
   assert.deepEqual(state.pendingChoice?.cards.map((card) => card.id), ["unlimited-debut"]);
   state = applyAction(state, 0, { type: "choose", cardIds: ["unlimited-debut"] }, effectCards, () => 0.5);
   assert.equal(state.pendingChoice?.effect, "placeCard");
@@ -484,10 +484,8 @@ test("ordinary computer opens a Debut selection and resolves it server-side", ()
 
   const skipHost = player("SkipHost", { mainDeck: [instance("skip-debut", "DEBUT-001")], hand: [instance("skip-pc", "hBP01-104")] });
   const skipQueued = applyAction(playingState(skipHost, player("SkipGuest"), { turn: 2 }), 0, { type: "play", cardId: "skip-pc" }, cards, () => 0.5);
-  assert.equal(skipQueued.pendingChoice.optional, true);
-  const skipped = applyAction(skipQueued, 0, { type: "choose", skip: true }, cards, () => 0.5);
-  assert.equal(skipped.players[0].zones.back1, null);
-  assert.equal(skipped.players[0].mainDeck[0].id, "skip-debut");
+  assert.equal(skipQueued.pendingChoice.optional, false);
+  assert.throws(() => applyAction(skipQueued, 0, { type: "choose", skip: true }, cards, () => 0.5));
 });
 
 test("shared top-look effects filter eligible cards, enforce the hand limit and preserve bottom order", () => {
@@ -659,6 +657,7 @@ test("Hololive Summer draws two then resolves the top-card choice", () => {
   state = applyAction(state, 0, { type: "choose", cardIds: ["pick"] }, cards, () => 0.5);
   assert.ok(state.players[0].hand.some((card) => card.id === "pick"));
   assert.ok(state.players[0].archive.some((card) => card.id === "archive"));
+  assert.equal(state.players[0].turnEvents.deckArchived, 1);
 });
 
 test("Koyori Collab on the second player's first turn searches Debut then KoyoLab", () => {

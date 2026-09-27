@@ -42,6 +42,8 @@ export function createRuntime(host) {
         if (selector.zones && !selector.zones.includes(zone)) return [];
         if (selector.back && !zone.startsWith('back')) return [];
         if (selector.excludeSource && (top(unit)?.id === context.sourceId || unit.stack?.[0]?.id === context.sourceBaseId)) return [];
+        const selectedCheer=Array.isArray(context.vars?.energyItem)?context.vars.energyItem[0]:context.vars?.energyItem;
+        if(selector.excludeCheerSource&&selectedCheer?.zone===zone)return [];
         if (selector.hasCheer && !unit.cheer.length) return [];
         if (selector.bloomedThisTurn && unit.bloomedTurn !== state.turn) return [];
         if (selector.attachment && !(unit.attachments||[]).some(a=>cardMatches(map.get(a.number),selector.attachment,state,context,map))) return [];
@@ -95,7 +97,7 @@ export function createRuntime(host) {
         case 'stageCount':return refs(state,c,{area:'stage'},map).length;
         case 'baton':return p.batonTurn===state.turn;
         case 'opponentTurn':return state.activePlayer!==c.playerIndex;
-        case 'previousDowns':return (state.knockouts||[]).filter(k=>k.ownerIndex===c.playerIndex && k.turn===state.turn-1 && k.sourcePlayerIndex===1-c.playerIndex).length;
+        case 'previousDowns':return (state.knockouts||[]).filter(k=>k.ownerIndex===c.playerIndex && k.turn===state.turn-1).length;
         case 'artsCount':return (p.turnEvents?.turn===state.turn?p.turnEvents.arts:[])?.length||0;
         case 'singingArtsCount':return (p.turnEvents?.turn===state.turn?p.turnEvents.arts:[])?.filter(n=>host.cardHasTag(map.get(n),'#歌')).length||0;
         case 'archiveBloom':return p.hbp09ArchiveBloomTurn===state.turn;
@@ -127,12 +129,19 @@ export function createRuntime(host) {
   function prompt(state,c,op,remaining,map) {
     const ctx=copy(c),owner=playerIndex(c,op.owner),kind=op.op;
     if(kind==='chooseCards') {
-      const cards=refs(state,c,op.from,map);const max=Math.min(Number(value(state,c,op.max??1,map)),cards.length);
+      const cards=refs(state,c,op.from,map);
+      const deploysStageCards=Array.isArray(op.then)&&op.then.some(step=>step.op==='deploy');
+      const legalBackSlots=SLOTS.filter(zone=>zone.startsWith('back')&&!state.players[owner].zones[zone]).length;
+      const stageRoom=Math.max(0,6-SLOTS.filter(zone=>state.players[owner].zones[zone]).length);
+      const deployCapacity=deploysStageCards?Math.min(legalBackSlots,stageRoom):Number.POSITIVE_INFINITY;
+      if(deploysStageCards&&deployCapacity===0){c.vars[op.key]=[];return false;}
+      const max=Math.min(Number(value(state,c,op.max??1,map)),cards.length,deployCapacity);
       const required=Number(value(state,c,op.min??1,map));
       if(op.cost && cards.length<required){return false;}
       if(!cards.length){c.vars[op.key]=[];return false;}
-      const min=op.search||op.optional?0:Math.min(required,max);
-      state.pendingChoice={type:'cardSelection',playerIndex:owner,cards:copy(cards),selectableIds:cards.map(r=>r.id),min,max,optional:!!op.optional,source:op.from.area||'',prompt:op.prompt||`${c.sourceNumber}：選擇卡片（依選取次序）`,effect:'hbp09',meta:{hbp09:{context:ctx,op:copy(op),remaining:copy(remaining)}}};
+        const hiddenDeckSearch=op.search&&op.from.area==='mainDeck';
+        const min=hiddenDeckSearch?0:Math.min(required,max);
+      state.pendingChoice={type:'cardSelection',playerIndex:owner,cards:copy(cards),selectableIds:cards.map(r=>r.id),min,...(hiddenDeckSearch?{nonEmptyMin:Math.min(required,max)}:{}),max,optional:!!op.optional,source:op.from.area||'',prompt:op.prompt||`${c.sourceNumber}：選擇卡片（依選取次序）`,effect:'hbp09',meta:{hbp09:{context:ctx,op:copy(op),remaining:copy(remaining)}}};
     } else if(kind==='chooseUnit') {
       const options=refs(state,c,{area:'stage',...op.from},map);
       if(!options.length){c.vars[op.key]=[];return false;}
@@ -188,6 +197,14 @@ export function createRuntime(host) {
           if(o.op==='treatStage'){t.unit.hbp09Stage={stage:o.stage,expiresTurn:state.turn};}
         }
         if(o.op==='damage' && steps.length) { enqueue(state,c,steps); return; }
+        continue;
+      }
+      if(o.op==='healDistribution') {
+        const count=Math.max(0,n(o.count)),unitAmount=Math.max(0,n(o.unitAmount));
+        if(count>0&&unitAmount>0) {
+          host.enqueueEffect(state,{type:'healDistribution',playerIndex:playerIndex(c,o.owner),count,unitAmount,sourceName:c.sourceNumber,prompt:o.prompt||`${c.sourceNumber}：將 ${count} 次「${unitAmount} HP 回復」分配到自己舞台上的 Holomen。`});
+          if(steps.length){enqueue(state,c,steps);return;}
+        }
         continue;
       }
       if(o.op==='playerBuff'){host.addPlayerModifier(p,o.kind,n(o.amount),state.turn+Number(o.duration||0),c.sourceNumber,o.rule||{});continue;}
@@ -257,7 +274,7 @@ export function createRuntime(host) {
     const data=pending.meta.hbp09,c=copy(data.context),o=data.op;const skipped=!!action.skip;
     fail(!skipped||pending.optional,'This choice cannot be skipped');let result;
     if(pending.type==='cardSelection'){
-      const ids=skipped?[]:action.cardIds;fail(Array.isArray(ids),'cardIds required');fail(new Set(ids).size===ids.length,'Duplicate selected card');fail(skipped||(ids.length>=pending.min&&ids.length<=pending.max),'Wrong selection count');
+      const ids=skipped?[]:action.cardIds;fail(Array.isArray(ids),'cardIds required');fail(new Set(ids).size===ids.length,'Duplicate selected card');const nonEmptyMin=Number(pending.nonEmptyMin??pending.min);fail(skipped||(ids.length<=pending.max&&(ids.length===0?pending.min===0:ids.length>=Math.max(pending.min,nonEmptyMin))),'Wrong selection count');
       fail(ids.every(id=>pending.selectableIds.includes(id)),'Card was not selectable');result=ids.map(id=>pending.cards.find(r=>r.id===id));fail(result.every(r=>locate(state,r)),'Selected card has moved');
       if(o.cost&&!skipped)fail(result.length>=Number(value(state,c,o.min??1,map)),'The full optional cost must be paid');
     }else if(pending.type==='stageTarget'){

@@ -19,10 +19,13 @@ test('103 exact white non-Buzz Debut/1st search',()=>{
  let s=act(setup('hBP01-103'),{type:'play',cardId:'support'});
  assert.deepEqual(s.pendingChoice.selectableIds,['d0','d1','d4']);
  assert.throws(()=>act(s,{type:'choose',cardIds:['d3']}));
+ assert.throws(()=>act(s,{type:'choose',skip:true}));
  s=act(s,{type:'choose',cardIds:['d1']});assert.equal(s.players[0].hand[0].id,'d1');
 });
 test('104 Debut placement and exclusion',()=>{
  let s=act(setup('hBP01-104'),{type:'play',cardId:'support'});
+ assert.equal(s.pendingChoice.optional,false);
+ assert.throws(()=>act(s,{type:'choose',skip:true}));
  assert.deepEqual(s.pendingChoice.options,['hBP01-015','hBP01-024']);
  assert.throws(()=>act(s,{type:'choose',cardNumber:'hBP01-017',zone:'back1'}));
  s=act(s,{type:'choose',cardNumber:'hBP01-024',zone:'back1'});
@@ -30,12 +33,23 @@ test('104 Debut placement and exclusion',()=>{
 });
 test('105 same stage color and required attachment',()=>{
  let s=act(setup('hBP01-105'),{type:'play',cardId:'support'});
+ assert.equal(s.pendingChoice.optional,false);
+ assert.throws(()=>act(s,{type:'choose',skip:true}));
  assert.deepEqual(s.pendingChoice.selectableIds,['white']);
  s=act(s,{type:'choose',cardIds:['white']});assert.throws(()=>act(s,{type:'choose',skip:true}));
  s=act(s,{type:'choose',zone:'center'});assert.equal(s.players[0].zones.center.cheer[0].id,'white');
 });
-for(const n of ['hBP01-103','hBP01-104','hBP01-105'])test(n+' hidden search decline shuffles',()=>{
- const s=act(setup(n),{type:'play',cardId:'support'});
- const key=n==='hBP01-105'?'cheerDeck':'mainDeck',before=s.players[0][key].map(c=>c.id);
- const e=act(s,{type:'choose',skip:true});assert.equal(e.pendingChoice,null);assert.notDeepEqual(e.players[0][key].map(c=>c.id),before);
+test('104 no matching Debut shuffles without offering a skip',()=>{
+ const initial=setup('hBP01-104');initial.players[0].mainDeck=['hBP01-017','hBP01-020'].map((n,i)=>inst(n,'non-debut-'+i));
+ const before=initial.players[0].mainDeck.map(c=>c.id);
+ const result=act(initial,{type:'play',cardId:'support'});
+ assert.equal(result.pendingChoice,null);assert.notDeepEqual(result.players[0].mainDeck.map(c=>c.id),before);
+ assert.deepEqual(result.players[0].mainDeck.map(c=>c.number).sort(),['hBP01-017','hBP01-020']);
+});
+test('105 no matching Cheer shuffles without offering a skip',()=>{
+ const initial=setup('hBP01-105');initial.players[0].cheerDeck=['hY02-001','hY03-001'].map((n,i)=>inst(n,'mismatch-'+i));
+ const before=initial.players[0].cheerDeck.map(c=>c.id);
+ const result=act(initial,{type:'play',cardId:'support'});
+ assert.equal(result.pendingChoice,null);assert.notDeepEqual(result.players[0].cheerDeck.map(c=>c.id),before);
+ assert.deepEqual(result.players[0].cheerDeck.map(c=>c.number).sort(),['hY02-001','hY03-001']);
 });

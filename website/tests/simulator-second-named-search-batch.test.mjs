@@ -9,16 +9,16 @@ function start(n){
  s.players[0].mainDeck=[inst(n==='hBP02-022'?'hBP02-094':lower.number,'yes'),inst('hBP01-119','wrong'),inst('AUDIT-DUMMY','tail')];
  return act(act(s,{type:'play',cardId:'bloom'}),{type:'choose',zone:'center'});
 }
-for(const n of ['hBP02-022','hBP02-032'])test(n+' exact named search',()=>{
- let e=start(n);assert.deepEqual(e.pendingChoice.selectableIds,['yes']);assert.throws(()=>act(e,{type:'choose',cardIds:['wrong']}));
+for(const n of ['hBP02-022','hBP02-032'])test(n+' exact named search is required',()=>{
+ let e=start(n);assert.equal(e.pendingChoice.optional,false);assert.deepEqual(e.pendingChoice.selectableIds,['yes']);assert.throws(()=>act(e,{type:'choose',skip:true}));assert.throws(()=>act(e,{type:'choose',cardIds:['wrong']}));
  e=act(e,{type:'choose',cardIds:['yes']});assert.deepEqual(e.players[0].hand.map(c=>c.id),['yes']);assert.equal(e.players[0].mainDeck.length,2);
 });
-for(const n of ['hBP02-022','hBP02-032'])test(n+' hidden search decline shuffles',()=>{
- const s=start(n),before=s.players[0].mainDeck.map(c=>c.id),e=act(s,{type:'choose',skip:true});
+for(const n of ['hBP02-022','hBP02-032'])test(n+' hidden search may fail to find and shuffles',()=>{
+ const s=start(n),before=s.players[0].mainDeck.map(c=>c.id),e=act(s,{type:'choose',cardIds:[]});
  assert.equal(e.players[0].hand.length,0);assert.notDeepEqual(e.players[0].mainDeck.map(c=>c.id),before);
 });
-test('Marine named Bloom once per turn includes declined first search',()=>{
- let e=act(start('hBP02-032'),{type:'choose',skip:true});
+test('Marine named Bloom once per turn includes first fail-to-find search',()=>{
+ let e=act(start('hBP02-032'),{type:'choose',cardIds:[]});
  e.players[0].hand.push(inst('hBP02-032','second'));
  e=act(act(e,{type:'play',cardId:'second'}),{type:'choose',zone:'back1'});
  assert.equal(e.pendingChoice,null);assert.equal(e.players[0].mainDeck.length,3);assert.equal(e.players[0].hand.length,0);

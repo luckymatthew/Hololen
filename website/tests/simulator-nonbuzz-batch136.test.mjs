@@ -9,6 +9,6 @@ for(const n of ['hBP05-062','hBP05-071'])test(n+' required nonBuzz first search'
  const buzz=cards.find(c=>c.stage==='1st'&&c.tags.includes(tag)&&c.type.toUpperCase().includes('BUZZ'));
  let s=state(prior.number);s.phase='main';s.players[0].hand=[inst(n,'bloom')];s.players[0].mainDeck=[...Array.from({length:count},(_,i)=>inst(valid.number,'valid'+i)),inst(buzz.number,'buzz'),inst('AUDIT-DUMMY','invalid')];
  s=applyAction(s,0,{type:'play',cardId:'bloom'},pool,()=>0);s=applyAction(s,0,{type:'choose',zone:'center'},pool,()=>0);
- assert.equal(s.pendingChoice.optional,false);assert.equal(s.pendingChoice.min,count);assert.equal(s.pendingChoice.cards.length,count);
+ assert.equal(s.pendingChoice.optional,false);assert.equal(s.pendingChoice.min,0);assert.equal(s.pendingChoice.cards.length,count);
  s=applyAction(s,0,{type:'choose',cardIds:Array.from({length:count},(_,i)=>'valid'+i)},pool,()=>0);assert.equal(s.players[0].hand.length,count);assert.equal(s.pendingChoice,null);
 });

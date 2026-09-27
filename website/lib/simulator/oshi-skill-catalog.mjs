@@ -69,7 +69,7 @@ export const REACTIVE_NORMAL_OSHI = Object.freeze([
 ]);
 
 export const REACTIVE_SP_OSHI = Object.freeze([
-  "hBP01-006", "hBP01-007", "hBP02-001", "hBP02-005", "hBP03-005", "hBP03-006",
+  "hBP01-006", "hBP01-007", "hBP02-001", "hBP02-005", "hBP02-007", "hBP03-005", "hBP03-006",
   "hBP04-001", "hBP04-003", "hBP05-001", "hBP06-002", "hSD03-001", "hSD05-001",
   "hSD08-001", "hSD11-001", "hYS01-001", "hYS01-004",
 ]);
@@ -77,7 +77,7 @@ export const REACTIVE_SP_OSHI = Object.freeze([
 export const ACTIVE_SP_OSHI = Object.freeze([
   "hBP09-006",
   "hBP01-001", "hBP01-002", "hBP01-003", "hBP01-004", "hBP01-005", "hBP01-008",
-  "hBP02-002", "hBP02-003", "hBP02-004", "hBP02-006", "hBP02-007",
+  "hBP02-002", "hBP02-003", "hBP02-004", "hBP02-006",
   "hBP03-001", "hBP03-002", "hBP03-003", "hBP03-004", "hBP03-007", "hBP03-008",
   "hBP04-002", "hBP04-004", "hBP04-005", "hBP04-006", "hBP04-007",
   "hBP05-002", "hBP05-003", "hBP05-004", "hBP05-005", "hBP05-006", "hBP05-007",
@@ -155,6 +155,13 @@ export function oshiSkillPowerCost(cardNumber, kind = "oshi") {
 export function oshiSkillMinimumPower(cardNumber, kind = "oshi") {
   const cost = oshiSkillPowerCost(cardNumber, kind);
   return cost === "X" ? (cardNumber === "hBP09-002" && kind === "oshi" ? 0 : 1) : cost;
+}
+
+// Card-specific activation requirements also gate presentation/candidate APIs;
+// keep a failed activation out of the UI instead of relying on a resolver error.
+export function oshiSkillSpecificConditionMet(cardNumber, kind, centerCard) {
+  if (cardNumber !== "hBP09-006" || kind !== "sp") return true;
+  return centerCard?.stage === "2nd" && centerCard?.jpName === "綺々羅々ヴィヴィ";
 }
 
 export function isReactiveNormalOshi(cardNumber) {

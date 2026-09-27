@@ -1,8 +1,8 @@
 // Generated from the actual current sources by update-review-provenance.mjs.
 export default {
-  "engineVersion": "sha256:f382560a5e3f0d760079a226d46b925971cce4e0769e8c135a7f677ac9694ac6",
-  "catalogVersion": "sha256:d5e90ea015b2fc6b120c5685a7e0e21d1ea749e07c935ed9758feaeca50cdb6f",
-  "policyVersion": "sha256:72a5c34791329a31904581b13dcae8dcbe07ad403dd60b404f83d840dcc0a758",
-  "appBuild": "web-ai-review-20260921",
+  "engineVersion": "sha256:99df1bfac7b8548ae48474cb6e013dd5ee2c4b660efba7898878d795568e9aff",
+  "catalogVersion": "sha256:17eb103c00ae4fbf0c47aa54dc650efb5d4414ab10f632787ddfc83e0c89456a",
+  "policyVersion": "sha256:6f6db09f4bb7be32d083ccaf1742d1a1c2f1a94ab4648dba8ead65dc4b2b7a12",
+  "appBuild": "web-1.2.6-20260928",
   "platform": "web"
 };

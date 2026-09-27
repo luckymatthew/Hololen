@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>hBP09-016 Browser Runtime Regression</title>
+    <style>
+      body { max-width: 760px; margin: 2rem auto; padding: 0 1rem; font: 16px/1.5 system-ui, sans-serif; }
+      button { margin: .45rem; padding: .65rem 1rem; }
+      #status { font-weight: 700; }
+      pre { overflow: auto; padding: 1rem; background: #f2f4f8; }
+    </style>
+  </head>
+  <body>
+    <h1>hBP09-016 Browser Runtime Regression</h1>
+    <p>Exercises the required first-turn Collab search, no-match resolution, timing restriction, and vanilla Arts.</p>
+    <p id="status" role="status">Loading the current catalog…</p>
+    <button id="find" type="button">Run second-player first-turn Collab</button>
+    <button id="single" type="button">Search with one starter match</button>
+    <button id="nomatch" type="button">Search with no eligible Hajime</button>
+    <button id="outside" type="button">Check first player and later-turn restrictions</button>
+    <button id="arts" type="button">Run vanilla Arts</button>
+    <div id="choices"></div>
+    <pre id="result" aria-live="polite"></pre>
+    <script type="module" src="./effect-audit-hbp09-016.mjs"></script>
+  </body>
+</html>

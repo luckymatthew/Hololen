@@ -15,6 +15,6 @@ test('Subaru paid Bloom search mandatory',()=>{
  let s=state(prior.number);s.phase='main';s.players[0].oshi=inst(cards.find(c=>c.group==='oshi'&&c.jpName===target.jpName).number);fund(s.players[0].zones.center,['黃']);s.players[0].hand=[inst(target.number,'bloom')];s.players[0].mainDeck=[inst(prior.number,'search')];
  s=applyAction(s,0,{type:'play',cardId:'bloom'},pool,()=>0);s=applyAction(s,0,{type:'choose',zone:'center'},pool,()=>0);
  s=applyAction(s,0,{type:'choose',zone:'center',cheerId:'cheer0'},pool,()=>0);
- assert.equal(s.pendingChoice.min,1);assert.equal(s.pendingChoice.optional,false);
+ assert.equal(s.pendingChoice.min,0);assert.equal(s.pendingChoice.optional,false);
  s=applyAction(s,0,{type:'choose',cardIds:['search']},pool,()=>0);assert.ok(s.players[0].hand.some(c=>c.id==='search'));
 });

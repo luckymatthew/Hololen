@@ -7,7 +7,7 @@ function setup(){const s=state();s.phase='main';s.players[0].oshi=inst('hBP04-00
 test('ancient weapon Oshi deck attachment required',()=>{
  let s=setup();s.players[0].mainDeck=[inst(weapon.number,'weapon')];
  s=applyAction(s,0,{type:'oshiSkill'},pool,()=>0);
- assert.equal(s.pendingChoice.min,1);assert.equal(s.pendingChoice.optional,false);
+ assert.equal(s.pendingChoice.min,0);assert.equal(s.pendingChoice.optional,false);
  assert.throws(()=>applyAction(s,0,{type:'choose',skip:true},pool,()=>0));
  s=applyAction(s,0,{type:'choose',cardIds:['weapon']},pool,()=>0);
  s=applyAction(s,0,{type:'choose',zone:'center'},pool,()=>0);

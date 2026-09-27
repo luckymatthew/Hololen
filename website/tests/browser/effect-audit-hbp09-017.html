@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>hBP09-017 Browser Runtime Audit</title>
+    <style>
+      body { max-width: 760px; margin: 2rem auto; padding: 0 1rem; font: 16px/1.5 system-ui, sans-serif; }
+      button { margin: .45rem; padding: .65rem 1rem; }
+      #status { font-weight: 700; }
+      pre { overflow: auto; padding: 1rem; background: #f2f4f8; }
+    </style>
+  </head>
+  <body>
+    <h1>hBP09-017 Browser Runtime Audit</h1>
+    <p>Uses the current website action engine and public card catalog to check Arts-only damage reduction, target zones, zero-floor behavior, and active-top-card scope.</p>
+    <p id="status" role="status">Loading current cards.json…</p>
+    <button id="allZones" type="button">Receive 100 Arts damage in Center, Collab and Back</button>
+    <button id="special" type="button">Compare Arts and Special damage</button>
+    <button id="underTop" type="button">Receive Arts damage with hBP09-017 below Bloom</button>
+    <pre id="result" aria-live="polite"></pre>
+    <script type="module" src="./effect-audit-hbp09-017.mjs"></script>
+  </body>
+</html>

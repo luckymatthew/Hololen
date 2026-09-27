@@ -11,6 +11,6 @@ for(const pay of [true,false])test('Aki tool cost '+pay,()=>{
  s=applyAction(s,0,{type:'choose',zone:'center'},pool,()=>0);
  assert.equal(s.pendingChoice.effect,'genericKeywordAttachmentCost');
  s=applyAction(s,0,pay?{type:'choose',attachmentId:'tool'}:{type:'choose',skip:true},pool,()=>0);
- if(pay){assert.equal(s.pendingChoice.optional,false);assert.equal(s.pendingChoice.min,1);assert.deepEqual(s.pendingChoice.cards.map(c=>c.id),['searchTool','member']);s=applyAction(s,0,{type:'choose',cardIds:['searchTool']},pool,()=>0);assert.ok(s.players[0].hand.some(c=>c.id==='searchTool'));}
+ if(pay){assert.equal(s.pendingChoice.optional,false);assert.equal(s.pendingChoice.min,0);assert.deepEqual(s.pendingChoice.cards.map(c=>c.id),['searchTool','member']);s=applyAction(s,0,{type:'choose',cardIds:['searchTool']},pool,()=>0);assert.ok(s.players[0].hand.some(c=>c.id==='searchTool'));}
  assert.equal(s.players[0].archive.some(c=>c.id==='tool'),pay);assert.equal(s.pendingChoice,null);
 });

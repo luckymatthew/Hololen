@@ -12,8 +12,12 @@ for(const valid of [true,false])test('0881 center Kanade recipient '+valid,()=>{
  s=applyAction(s,0,{type:'play',cardId:'bloom'},pool,()=>0);s=applyAction(s,0,{type:'choose',zone:valid?'center':'back1'},pool,()=>0);
  if(valid){assert.equal(s.pendingChoice.optional,false);s=applyAction(s,0,{type:'choose',cardIds:['cheer']},pool,()=>0);assert.deepEqual(s.pendingChoice.options,['center']);s=applyAction(s,0,{type:'choose',zone:'center'},pool,()=>0);assert.equal(s.players[0].zones.center.cheer.length,1);}else assert.equal(s.pendingChoice,null);
 });
-for(const valid of [true,false])for(const zone of ['center','collab'])test('0888 gated bonus '+valid+zone,()=>{
+for(const valid of [true,false])test('0888 Collab-only gated bonus '+valid,()=>{
  const third=cards.find(c=>c.group==='holomem'&&c.tags.includes('#3期生'));
- let s=state(zone==='center'?'hBP08-088':valid?third.number:'AUDIT-DUMMY');if(zone==='collab')s.players[0].zones.collab=unit('hBP08-088');fund(s.players[0].zones[zone],['黃','黃','白']);
- s=applyAction(s,0,{...attack,sourceZone:zone},pool,()=>0);assert.equal(s.players[1].zones.center.damage,zone==='collab'&&valid?170:140);
+ let s=state(valid?third.number:'AUDIT-DUMMY');s.players[0].zones.collab=unit('hBP08-088');fund(s.players[0].zones.collab,['黃','黃','白']);
+ s=applyAction(s,0,{...attack,sourceZone:'collab'},pool,()=>0);assert.equal(s.players[1].zones.center.damage,valid?170:140);
+});
+test('0888 Arts cannot be used from Center because its text limits it to Collab',()=>{
+ let s=state('hBP08-088');fund(s.players[0].zones.center,['黃','黃','白']);
+ assert.throws(()=>applyAction(s,0,attack,pool,()=>0),/不能從目前位置使用/u);
 });

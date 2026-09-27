@@ -16,3 +16,14 @@ for(const [zone,deck,expected] of [['center',5,true],['center',6,false],['back2'
  assert.equal(s.pendingChoice?.effect==='oshiKnockout',expected);
  if(expected){s=applyAction(s,0,{type:'choose',optionId:'use'},custom,()=>0);assert.equal(s.players[0].spOshiSkillUsed,true);assert.equal(s.players[1].life.length,4);s=applyAction(s,1,{type:'choose',zone:'back1'},custom,()=>0);assert.equal(s.players[1].life.length,3);}
 });
+
+test('Riona Oshi skill counts both archived main-deck cards this turn',()=>{
+ let s=state(flow.number);
+ s.phase='main';
+ s.players[0].oshi=inst('hBP06-002');
+ s.players[0].holoPower=Array.from({length:3},(_,i)=>inst('AUDIT-DUMMY','power'+i));
+ s.players[0].mainDeck=[inst('AUDIT-DUMMY','deck-1'),inst('AUDIT-DUMMY','deck-2'),inst('AUDIT-DUMMY','tail')];
+ s=applyAction(s,0,{type:'oshiSkill'},pool,()=>0);
+ assert.ok(['deck-1','deck-2'].every(id=>s.players[0].archive.some(card=>card.id===id)));
+ assert.equal(s.players[0].turnEvents.deckArchived,2);
+});

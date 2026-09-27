@@ -1,0 +1,340 @@
+{
+  "schemaVersion": 1,
+  "updatedOn": "2026-09-24",
+  "rules": [
+    {
+      "id": "rule-4.1.2.2-hidden-zone-counts",
+      "title": "Card counts in private zones are public; card identities remain concealed",
+      "status": "PARTIAL",
+      "ruleSource": "https://hololive-official-cardgame.com/wp-content/themes/tcg/assets/img/rule/whole_rule_ver190.pdf",
+      "ruleVersion": "1.9.0",
+      "ruleClauses": [
+        "4.1.2.2",
+        "4.1.2.3"
+      ],
+      "expectedBehavior": "Every player can see the number of cards in each zone even when the zone is private. A viewer must not receive card identities from an opponent's concealed hand unless an effect reveals them.",
+      "applicationScope": [
+        "Android PvP public-state projection",
+        "Android packaged NativeRules online orientation",
+        "Android packaged battle UI"
+      ],
+      "testIds": [
+        "android-current/tests/opponent-hand-count-release.test.mjs: both viewer orientations preserve accurate handCount while opponent card IDs and numbers remain redacted",
+        "android-current/tests/opponent-hand-count-release.test.mjs: packaged app.js renders handCount in the opponent badge and packaged CSS gives the badge visible typography",
+        "android-current/tests/opponent-hand-count-release.test.mjs: Firebase NativeRules public dispatch in both viewer orientations",
+        "website/tests/effect-audit-hbp09-q730.test.mjs and android-current/tests/hbp09-q730-release.test.mjs: Q730 drawn card identity is absent from the opponent's projected private hand"
+      ],
+      "evidence": [
+        "Website publicRoomState derives handCount from current hand length and replaces each opponent hand card with null.",
+        "Actual Android app/src/main/assets/native/engine.js online dispatch preserves handCount through NativeRules orientation for both host and guest viewers.",
+        "Actual Android app/src/main/assets/app/app.js renders battle-opponent-hand from player.handCount; matching packaged CSS styles the badge.",
+        "User-provided Android screenshot displays 對手手牌 6張.",
+        "Actual Android app/src/main/assets/native/firebase-rules.js public-state dispatch preserves public hand counts and redacts opposing card identities for both viewer indexes.",
+        "The Q730 draw enters only its owner's hand; the opponent projection exposes the updated hand count and no drawn instance identity."
+      ],
+      "regressionFound": false,
+      "repair": null,
+      "runtimeEvidence": [
+        "Current packaged NativeRules and app JS/CSS checked in Node VM/host assertions: PASS.",
+        "Android device/WebView layout on the exact newly built APK remains unverified in this environment."
+      ],
+      "outstanding": [
+        "Verify count changes after live PvP draw/discard events on Android WebView/device and check portrait landscape layout on the installed production app."
+      ]
+    },
+    {
+      "id": "rule-attachment-capacity-after-bloom",
+      "title": "Recalculate attachment caps when Bloom changes the top card",
+      "status": "PARTIAL",
+      "ruleSource": "https://hololive-official-cardgame.com/wp-content/themes/tcg/assets/img/rule/whole_rule_ver190.pdf",
+      "ruleVersion": "1.9.0",
+      "ruleClauses": [
+        "4.4.4",
+        "5.14.2",
+        "5.14.3",
+        "5.17.3.1",
+        "5.17.3.3"
+      ],
+      "officialRulingSources": [
+        "https://hololive-official-cardgame.com/cardlist/?id=2760 (Q722, 2026-09-11)",
+        "https://hololive-official-cardgame.com/cardlist/?id=2761 (Q722/Q723, 2026-09-11)"
+      ],
+      "expectedBehavior": "Bloom preserves the Holomem and its attachments, while the new top card supplies the current rules text and continuous attachment limits. If the resulting Tool limit is exceeded, one excess Tool is sent to Archive; Q722 establishes this for hBP09-044 to hBP09-043. The implemented choice is presented to the controller, and the limit is rechecked after each selection.",
+      "applicationScope": [
+        "Website simulator Bloom pipeline",
+        "Production Android offline NativeRules bundle",
+        "Production Android PvP NativeRules reducer"
+      ],
+      "testIds": [
+        "website/tests/effect-audit-hbp09-q722-q723.test.mjs: Q722 real Bloom, attachment choice, Archive state and card conservation",
+        "android-current/tests/hbp09-q722-q723-release.test.mjs: packaged offline NativeRules and PvP reducer Q722 Bloom state settlement"
+      ],
+      "evidence": [
+        "Before-fix website and packaged Android Q722 tests reproduced two Tools remaining on hBP09-043 after Bloom.",
+        "After repair, one selected Tool moves to Archive, exactly one remains, pending choice clears and full card instance conservation passes.",
+        "The same capacity checker preserves the existing hBP02-013 two-Mascot exception when that card remains on top."
+      ],
+      "regressionFound": true,
+      "repair": "Queue attachment-capacity reconciliation at the front of the post-Bloom effect queue; derive Tool and Mascot limits from the new top card, prompt for an excess attachment, archive it, and repeat until legal.",
+      "runtimeEvidence": [
+        "Website current applyAction path: PASS; actual browser UI not yet exercised.",
+        "Production Android packaged engine.js offline NativeRules and firebase-rules.js PvP reducer in Node VM adapters: PASS; Android QuickJS/JNI/device runtime unavailable."
+      ],
+      "outstanding": [
+        "Verify Q722 mandatory attachment selection in actual website browser and Android device UI.",
+        "Independently audit other capacity-changing rules and card effects; card-level coverage remains incomplete."
+      ]
+    },
+    {
+      "id": "rule-5.7-bottom-draw-hidden-and-empty-deck",
+      "title": "Bottom-deck draws take the last card face down; effect-draw failure is not deck-out loss",
+      "status": "PARTIAL",
+      "ruleSource": "https://hololive-official-cardgame.com/wp-content/themes/tcg/assets/img/rule/whole_rule_ver190.pdf",
+      "ruleVersion": "1.9.0",
+      "ruleClauses": [
+        "5.7",
+        "10.1.3.1"
+      ],
+      "officialRulingSources": [
+        "https://hololive-official-cardgame.com/cardlist/?id=2780 (Q730, 2026-09-11)",
+        "https://hololive-official-cardgame.com/cardlist/?id=1791 (Q588, 2026-03-02)",
+        "https://hololive-official-cardgame.com/rules/question/faq/ (Q195, 2024-09-21)"
+      ],
+      "expectedBehavior": "For an instruction to draw from the bottom, move the actual bottommost card to its owner's hand without exposing its face. When several are drawn in sequence the bottommost is first. Empty-deck failure for an effect draw does not itself cause a loss; inability to draw during the hand step is handled separately.",
+      "applicationScope": [
+        "Website simulator effect pipeline and publicRoomState",
+        "Production Android offline NativeRules bundle",
+        "Production Android Firebase PvP reducer and public projection"
+      ],
+      "testIds": [
+        "website/tests/effect-audit-hbp09-q730.test.mjs: bottom/middle/top ordering, hidden identity, empty deck, cross-copy use limit and conservation",
+        "website/tests/browser/effect-audit-q730.html: current browser engine and official card catalog state settlement",
+        "android-current/tests/hbp09-q730-release.test.mjs: packaged offline/PvP bundles, public privacy view and saved state"
+      ],
+      "evidence": [
+        "Official Q730 defines the card as drawn without showing its face; Q588 defines the bottommost card as the first one drawn; Q195 distinguishes empty effect draws from the hand-step loss rule.",
+        "Website and packaged Android bundle scenarios verified exact card identities/order, no reveal log, opponent redaction, empty deck continuation, and card-instance conservation."
+      ],
+      "regressionFound": false,
+      "repair": null,
+      "runtimeEvidence": [
+        "Website source tests and live browser harness: PASS.",
+        "Production Android packaged offline NativeRules and PvP reducer in Node VM adapters: PASS.",
+        "QuickJS/JNI/WebView and physical-device runtime remain unverified; the rule is PARTIAL until those gates can run."
+      ],
+      "outstanding": [
+        "Run the fixture in Android QuickJS/JNI/WebView on an available device or configured emulator.",
+        "Expand this primitive's interactions across other bottom-draw and deck-order effects before marking the shared rule verified."
+      ]
+    },
+    {
+      "id": "rule-8.6.2-limited-allowance-does-not-stack",
+      "title": "Multiple effects setting the LIMITED Support allowance do not add together",
+      "status": "PARTIAL",
+      "ruleSource": "https://hololive-official-cardgame.com/wp-content/themes/tcg/assets/img/rule/whole_rule_ver190.pdf",
+      "ruleVersion": "1.9.0",
+      "ruleClauses": [
+        "8.4.2",
+        "8.5.1",
+        "8.6.2"
+      ],
+      "officialRulingSources": [
+        "https://hololive-official-cardgame.com/cardlist/?id=2804 (Q732, 2026-09-11)",
+        "https://hololive-official-cardgame.com/cardlist/?expansion=hBP06&id=1605&view=image (Q509, 2025-12-12)"
+      ],
+      "expectedBehavior": "hBP06-008 SP Oshi Skill and hBP09-087 Collab Effect each set the total turn allowance for LIMITED Support cards to two. Activating both effects does not grant four total uses; after two LIMITED Supports have been played, another is illegal. The separate prohibition on the first player's first-turn LIMITED Support remains in force. Comprehensive Rules 8.4.2 allows any active Back Holomem, including a 2nd, to Collab.",
+      "applicationScope": [
+        "Website simulator Oshi Skill, Collab and Support actions",
+        "Production Android offline NativeRules bundle",
+        "Production Android Firebase PvP NativeRules reducer"
+      ],
+      "testIds": [
+        "website/tests/effect-audit-hbp09-q732.test.mjs: exact Q732 sequence, reverse activation order, first-turn Q509 and 2nd Collab legality",
+        "android-current/tests/hbp09-q732-release.test.mjs: packaged offline/PvP Q732 and Q509 state settlement and rejected-action immutability"
+      ],
+      "evidence": [
+        "Official Q732 says no when hBP09-087 Collab Effect is used after hBP06-008 SP Oshi Skill has already allowed and the player has used two LIMITED Supports.",
+        "Official Q509 says hBP06-008 SP does not make LIMITED Supports usable during the first player's first turn.",
+        "The actual current reducer records two LIMITED Support uses, keeps the allowance at two after each effect in both orders, and rejects the next real LIMITED Support."
+      ],
+      "regressionFound": false,
+      "repair": null,
+      "runtimeEvidence": [
+        "Website current applyAction state settlement and action-candidate legality: PASS, 4/4 tests; current source engine/card catalog Q732 browser harness: PASS.",
+        "Production Android packaged offline NativeRules and Firebase PvP reducer under Node VM adapters: PASS, 6/6 tests.",
+        "Android QuickJS/JNI/WebView and physical-device execution remain unverified; rule status stays PARTIAL."
+      ],
+      "outstanding": [
+        "Verify the same action and rejection sequence in actual Android QuickJS/JNI/WebView or on a physical device.",
+        "Exercise positive and negative Oshi-color, all-Matsuri stage, and optional Holo Power activation conditions through the real browser/device interface."
+      ]
+    },
+    {
+      "id": "rule-13.2-collab-effect-requires-collab",
+      "title": "A Collab Effect requires an actual Collab action; moving a Holomem into Collab by effect does not trigger it",
+      "status": "PARTIAL",
+      "ruleSource": "https://hololive-official-cardgame.com/wp-content/themes/tcg/assets/img/rule/whole_rule_ver190.pdf",
+      "ruleVersion": "1.9.0",
+      "ruleClauses": [
+        "5.16.1",
+        "8.4.2",
+        "13.2.1",
+        "13.2.2"
+      ],
+      "officialRulingSources": [
+        "https://hololive-official-cardgame.com/cardlist/?id=2767 (Q725, 2026-09-11)"
+      ],
+      "expectedBehavior": "A Collab Effect is a triggered ability whose condition is that its Holomem Collabs. When hBP09-050 moves an opposing Holomem into the Collab position by its effect, that movement is not treated as a Collab action and does not trigger the moved Holomem's Collab Effect (official Q725). The movement also does not record a Collab action for that opponent; this counter behavior is verified in the reducers and follows from the movement not being a Collab action.",
+      "applicationScope": [
+        "Website effect-based stage movement and automatic Collab triggers",
+        "Production Android offline NativeRules bundle",
+        "Production Android Firebase PvP reducer and public state"
+      ],
+      "testIds": [
+        "website/tests/effect-audit-hbp09-q725.test.mjs: existing-Collab swap and empty-Collab movement do not queue a second Collab Effect; controller collabTurn and moved collabbedTurn stay unchanged",
+        "website/tests/browser/effect-audit-q725.html: current source engine/card catalog, both Q725 movement branches and wrong-Oshi condition",
+        "android-current/tests/hbp09-q725-release.test.mjs: packaged offline and PvP reducers settle both branches without nested trigger and preserve Collab counters"
+      ],
+      "evidence": [
+        "Official Q725 explicitly answers no: effect-based movement into Collab is not handled as Collab, so the moved Holomem's Collab Effect does not activate. Comprehensive Rules 1.9.0 clauses 13.2.1–13.2.2 define the Collab Effect as conditioned on Collab; 5.16.1 and 8.4.2 describe the Collab action.",
+        "Website, browser source harness, and production Android packaged offline/PvP reducer state-settlement tests verify the target position, absence of a nested pending choice, and unchanged Collab action counters."
+      ],
+      "regressionFound": false,
+      "repair": null,
+      "runtimeEvidence": [
+        "Website applyAction: PASS, 3/3 focused tests.",
+        "Website source engine and official catalog browser harness: PASS, all three Q725 cases.",
+        "Production Android packaged offline NativeRules and Firebase PvP reducer in Node VM adapters: PASS, 6/6 focused tests.",
+        "Android QuickJS/JNI/WebView and physical-device behavior remain unverified; the row stays PARTIAL."
+      ],
+      "outstanding": [
+        "Run the cases through the actual Android QuickJS/JNI/WebView or physical-device app when a configured runtime/device is available.",
+        "Expand this shared rule to independently verified effect-movement card cases before marking it complete."
+      ]
+    },
+    {
+      "id": "rule-9.1-arts-counted-across-own-holomen",
+      "title": "This-turn Arts count includes Arts used by any of the controller’s Holomen",
+      "status": "PARTIAL",
+      "ruleSource": "https://hololive-official-cardgame.com/wp-content/themes/tcg/assets/img/rule/whole_rule_ver190.pdf",
+      "ruleVersion": "1.9.0",
+      "ruleClauses": [
+        "9.1.1",
+        "9.1.2",
+        "10.6.1"
+      ],
+      "officialRulingSources": [
+        "https://hololive-official-cardgame.com/cardlist/?id=2774 (Q728 and Q729, 2026-09-11)"
+      ],
+      "expectedBehavior": "Count the turn player’s committed Center and Collab Arts uses in actual event order regardless of which Holomen used them. Each Arts play is a separate performance action and reaches its own checkpoint; card-specific Q728/Q729 clarify that other Holomen Arts count toward Towa’s second/third conditions. Do not count opposing-player Arts or carry prior-turn Arts into this turn.",
+      "applicationScope": [
+        "Website current-turn Arts event accounting and conditional Arts abilities",
+        "Production Android offline NativeRules bundle",
+        "Production Android Firebase PvP NativeRules reducer"
+      ],
+      "testIds": [
+        "website/tests/effect-audit-hbp09-057-q728-q729.test.mjs: two sequential real Sora Arts followed by Towa; second-use negative",
+        "website/tests/browser/effect-audit-hbp09-057-q728-q729.mjs: current browser source engine after two committed Arts",
+        "android-current/tests/hbp09-057-q728-q729-release.test.mjs: committed Arts snapshots through offline and PvP packages"
+      ],
+      "evidence": [
+        "Official Comprehensive Rules 1.9.0 clauses 9.1.1–9.1.2 describe Center/Collab Arts and a checkpoint after each Art play. Official Q728 and Q729 expressly count Arts used by Holomen other than Towa.",
+        "Website and production Android package tests verify the count across Sora/Towa Arts and the threshold boundary."
+      ],
+      "regressionFound": false,
+      "repair": null,
+      "runtimeEvidence": [
+        "Website focused engine tests and current source-engine browser harness pass.",
+        "Production Android packaged offline NativeRules and Firebase PvP reducer host tests pass.",
+        "Android QuickJS/JNI/WebView/device tests and full-app runtime parity remain unverified; status stays PARTIAL."
+      ],
+      "outstanding": [
+        "Verify counter reset at turn rollover and broader Arts combinations.",
+        "Run production Android instrumentation/device verification.",
+        "Expand official-source-backed shared rule coverage to remaining card-specific event-counting abilities."
+      ]
+    },
+    {
+      "id": "rule-previous-opponent-turn-owned-downs",
+      "title": "Previous-turn Down conditions are keyed by the Down Holomem owner and turn, not the effect source",
+      "status": "PARTIAL",
+      "ruleSource": "https://hololive-official-cardgame.com/wp-content/themes/tcg/assets/img/rule/whole_rule_ver190.pdf",
+      "ruleVersion": "1.9.0",
+      "ruleClauses": [
+        "7.1.1",
+        "9.1.1",
+        "9.1.2"
+      ],
+      "officialRulingSources": [
+        "https://hololive-official-cardgame.com/cardlist/?id=2729 (hBP09-012)",
+        "https://hololive-official-cardgame.com/cardlist/?id=2731 (hBP09-014/Q717)",
+        "https://hololive-official-cardgame.com/cardlist/?id=2808 (hBP09-091/Q734)",
+        "https://hololive-official-cardgame.com/cardlist/?id=2811 (hBP09-094/Q738/Q739)"
+      ],
+      "expectedBehavior": "For an effect that asks whether one of your Holomen was Down during the preceding opponent turn, count Down records whose owner is the acting player and whose turn is the immediately preceding turn. The sourcePlayerIndex is not a printed condition and must not be required to equal the opponent. Do not count opponent-owned Downs or older-turn events.",
+      "applicationScope": [
+        "Website Holo Power, Arts, Support eligibility and effect conditions using previousDowns",
+        "Production Android offline NativeRules bundle",
+        "Production Android Firebase PvP NativeRules reducer"
+      ],
+      "testIds": [
+        "website/tests/effect-audit-hbp09-012.test.mjs",
+        "website/tests/effect-audit-hbp09-014-q717.test.mjs",
+        "website/tests/effect-audit-hbp09-091-q734.test.mjs",
+        "website/tests/effect-audit-hbp09-094-reset.test.mjs",
+        "android-current/tests/hbp09-012-release.test.mjs",
+        "android-current/tests/hbp09-q717-release.test.mjs",
+        "android-current/tests/hbp09-091-q734-release.test.mjs",
+        "android-current/tests/hbp09-release.test.mjs"
+      ],
+      "evidence": [
+        "Before the shared fix, previousDowns required sourcePlayerIndex to equal the opponent and missed a preceding-turn own Down caused by an own triggered effect (hBP09-012 Arts: 80 observed vs 130 expected).",
+        "The source-agnostic filter now counts by ownerIndex and turn. Positive hBP09-012/+50 and hBP09-014/+40-per-Down cases pass; opponent-owned and stale-turn controls remain negative. Support gates for hBP09-091 and hBP09-094 pass the own-source Down case."
+      ],
+      "regressionFound": true,
+      "repair": "Removed the sourcePlayerIndex==opponent predicate from website and Android HBP09 runtime previousDowns fact.",
+      "runtimeEvidence": [
+        "Website focused rules tests and current source-engine browser harness pass.",
+        "Regenerated Android offline and PvP JavaScript package tests pass in Node VM adapters. Android SDK, adb, emulator, and physical device are unavailable, so QuickJS/JNI/WebView remains blocked."
+      ],
+      "outstanding": [
+        "Run full production Android QuickJS/JNI/device gameplay when SDK or device becomes available; inspect additional cards and turn-record producer paths before promoting to VERIFIED."
+      ]
+    },
+    {
+      "id": "rule-10.7.2.3.5-hidden-zone-fail-to-find",
+      "title": "A hidden-zone search may fail to find a matching card even when one is present",
+      "status": "PARTIAL",
+      "ruleSource": "https://hololive-official-cardgame.com/wp-content/themes/tcg/assets/img/rule/whole_rule_ver190.pdf",
+      "ruleVersion": "1.9.0",
+      "ruleClauses": [
+        "10.7.2.3.5"
+      ],
+      "officialRulingSources": [
+        "https://hololive-official-cardgame.com/cardlist/?id=2808 (hBP09-091/Q734 for direct staging; hidden-zone choice governed by the Comprehensive Rules)"
+      ],
+      "expectedBehavior": "When a player must choose a card from a hidden zone and obtaining card information is necessary, the player may fail to find even if a matching card is present. Do not turn such a search into a mandatory exact-count choice. This does not mean the effect is optional when a match is visible in a public zone or when the rule/effect specifically requires a public selection.",
+      "applicationScope": [
+        "Website deck-search effects and pending cardSelection validation",
+        "Production Android offline NativeRules bundle",
+        "Production Android Firebase PvP NativeRules reducer"
+      ],
+      "testIds": [
+        "website/tests/effect-audit-hbp09-091-q734.test.mjs: cardIds:[] accepted with a matching AZKi in deck and subsequent Iroha search still resolves",
+        "android-current/tests/hbp09-091-q734-release.test.mjs: packaged offline/PvP fail-to-find-then-continue path"
+      ],
+      "evidence": [
+        "Comprehensive Rules 1.9.0 clause 10.7.2.3.5 expressly permits failing to find a card in a hidden zone even if a matching card is there.",
+        "The former test requiring min=1 when matching cards were present asserted the opposite, so it was withdrawn as an invalid test expectation. No runtime change to search minimum is retained."
+      ],
+      "regressionFound": false,
+      "repair": null,
+      "runtimeEvidence": [
+        "Website source test and browser harness directly execute empty selection and next search; packaged Android offline/PvP tests do the same under Node VM. Physical Android runtime unavailable."
+      ],
+      "outstanding": [
+        "Review other hidden-zone search abilities and their target construction independently; one hBP09-091 case does not prove all search effects conform."
+      ]
+    }
+  ]
+}

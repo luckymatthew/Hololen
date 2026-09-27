@@ -15,7 +15,7 @@ export const TOP_LOOK_EFFECTS = Object.freeze({
   "hBP03-092": { count: 4, handLimit: 6, match: { group: "holomem", tags: ["#0期生"] } },
   "hBP03-093": { count: 4, handLimit: 6, match: { group: "holomem", tags: ["#4期生"] } },
   "hBP03-094": { count: 4, handLimit: 6, match: { group: "holomem", tags: ["#シューター"] } },
-  "hBP04-090": { count: 4, handLimit: 6, groups: [{ label: "Holomen", match: { group: "holomem" } }, { label: "工具／吉祥物／粉絲", match: { typeCodes: ["supportTool", "supportMascot", "supportFan"] } }] },
+  "hBP04-090": { count: 4, handLimit: 6, groups: [{ required: true, label: "Holomen", match: { group: "holomem" } }, { required: true, label: "工具／吉祥物／粉絲", match: { typeCodes: ["supportTool", "supportMascot", "supportFan"] } }] },
   "hBP04-092": { count: 4, handLimit: 6, match: { group: "holomem", tags: ["#5期生"] } },
   "hBP04-093": { count: 4, handLimit: 6, match: { group: "holomem", tags: ["#2期生"] } },
   "hBP04-096": { count: 4, handLimit: 6, match: { group: "holomem", tags: ["#Advent"] } },
@@ -35,10 +35,10 @@ export const TOP_LOOK_EFFECTS = Object.freeze({
 });
 
 export const DECK_SEARCH_EFFECTS = Object.freeze({
-  "hBP01-103": { costHoloPower: 1, match: { group: "holomem", stages: ["Debut", "1st"], sameOshiColor: true, excludeBuzz: true } },
+  "hBP01-103": { required: true, costHoloPower: 1, match: { group: "holomem", stages: ["Debut", "1st"], sameOshiColor: true, excludeBuzz: true } },
   "hBP03-084": { required: true, costHoloPower: 1, match: { group: "holomem", stages: ["1st"], sameOshiColor: true } },
   "hBP03-089": { required: true, match: { typeCodes: ["supportFan"] } },
-  "hBP04-095": { match: { typeCodes: ["supportMascot"] } },
+  "hBP04-095": { required: true, match: { typeCodes: ["supportMascot"] } },
   "hSD01-019": { costStageCheer: 1, required: true, match: { group: "holomem", stages: ["1st", "2nd"], excludeBuzz: true } },
 });
 

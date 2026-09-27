@@ -27,7 +27,7 @@ test("Wind-up Fox requires one Cheer selection and transfers it to another Holom
   assert.equal(s.pendingChoice.max, 1);
   assert.equal(s.pendingChoice.optional, false);
   assert.deepEqual(s.pendingChoice.selectableIds, ["ko-cheer"]);
-  assert.throws(() => act(s, 1, { type: "choose", skip: true }), /選擇 1 張卡/);
+  assert.throws(() => act(s, 1, { type: "choose", skip: true }), /cannot be skipped/u);
   assert.throws(() => act(s, 1, { type: "choose", cardIds: [] }), /選擇 1 張卡/);
 
   s = act(JSON.parse(JSON.stringify(s)), 1, { type: "choose", cardIds: ["ko-cheer"] });

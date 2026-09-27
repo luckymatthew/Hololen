@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { applyAction } from '../lib/simulator/engine.mjs';
 import { cards,pool,inst,state } from './fixtures/simulator-audit.mjs';
+const { applyAction }=await import(process.env.HOLO_ENGINE_TEST_TARGET||'../lib/simulator/engine.mjs');
 const act=(s,a)=>applyAction(structuredClone(s),0,a,pool,()=>0);
 function ready(number) {
  const card=cards.find(c=>c.number===number);
@@ -19,7 +19,9 @@ test('038 Debut Bloom searches only first-stage Fuwawa and returns selected card
  const valid=cards.find(c=>c.jpName==='フワワ・アビスガード'&&c.stage==='1st');
  s.players[0].mainDeck=[inst(valid.number,'valid'),inst('hBP03-040','debut'),inst('hBP03-038','wrongName')];
  const next=bloom(s);
+ assert.equal(next.pendingChoice.optional,false);assert.equal(next.pendingChoice.nonEmptyMin,1);
  assert.deepEqual(next.pendingChoice.cards.map(c=>c.id),['valid']);
+ assert.throws(()=>act(next,{type:'choose',skip:true}));
  const done=act(next,{type:'choose',cardIds:['valid']});
  assert.equal(done.players[0].hand.some(c=>c.id==='valid'),true);
  assert.equal(done.players[0].mainDeck.length,2);

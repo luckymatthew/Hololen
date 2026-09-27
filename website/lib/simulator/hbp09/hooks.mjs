@@ -88,19 +88,19 @@ export function createHbp09(host) {
       host.queueGiftOshiSkillEffects(state,c.playerIndex,map.get(p.oshi.number).oshiSkill,'oshi',map);return true;
     }
     if(o.op==='makeup'){
-      const candidates=entries(p).filter(({unit})=>unit.bloomedTurn===state.turn&&host.cardHasTag(metadata(unit,map),'#FLOW GLOW')&&p.hand.some(r=>legalMakeup(unit,map.get(r.number),map,state.turn)));
+      const candidates=entries(p).filter(({unit})=>unit.bloomedTurn===state.turn&&host.cardHasTag(metadata(unit,map),'#FLOW GLOW')&&p.hand.some(r=>legalMakeup(unit,map.get(r.number),map,state.turn,p)));
       if(candidates.length)steps.unshift({op:'chooseUnit',from:{zones:candidates.map(x=>x.zone)},key:'makeupTarget',optional:true,then:[{op:'makeupCard'}]});return true;
     }
     if(o.op==='makeupCard'){
       const ref=c.vars.makeupTarget?.[0];const located=ref&&rt.locate(state,ref);if(!located?.unit)return true;
-      c.vars.makeupEligible=p.hand.filter(r=>legalMakeup(located.unit,map.get(r.number),map,state.turn)).map(r=>({...r,owner:c.playerIndex,area:'hand'}));
+      c.vars.makeupEligible=p.hand.filter(r=>legalMakeup(located.unit,map.get(r.number),map,state.turn,p)).map(r=>({...r,owner:c.playerIndex,area:'hand'}));
       steps.unshift(pick(R('makeupEligible'),'makeupCard',[{op:'performMakeup'}],1,1,{optional:true}));return true;
     }
     if(o.op==='performMakeup'){
       const t=c.vars.makeupTarget?.[0],ref=c.vars.makeupCard?.[0];const l=t&&rt.locate(state,t);if(!ref||!l?.unit)return true;
-      const card=map.get(ref.number);assert(legalMakeup(l.unit,card,map,state.turn),'Selected extra Bloom became illegal');
+      const card=map.get(ref.number);assert(legalMakeup(l.unit,card,map,state.turn,p),'Selected extra Bloom became illegal');
       const index=p.hand.findIndex(r=>r.id===ref.id);assert(index>=0,'Bloom card left the hand');
-      l.unit.stack.push(p.hand.splice(index,1)[0]);l.unit.bloomedTurn=state.turn;
+      l.unit.stack.push(p.hand.splice(index,1)[0]);l.unit.bloomedTurn=state.turn;l.unit.extraBloomUsedTurn=state.turn;
       host.currentTurnEvents(p,state.turn).bloomCount+=1;
       host.queueBloomEffects(state,c.playerIndex,l.zone,card,map,random);
       host.queueAttachmentBloomEffects(state,c.playerIndex,l.zone,map);
@@ -144,16 +144,18 @@ export function createHbp09(host) {
     return false;
   }
   rt=createRuntime({...host,customOp});
-  function legalMakeup(u,card,map,turn){
-    const current=metadata(u,map);return !!card&&card.group==='holomem'&&host.cardHasTag(current,'#FLOW GLOW')&&u.bloomedTurn===turn&&u.enteredTurn!==turn&&host.talentMatches(current,card)&&((card.stage==='1st'&&['Debut','1st'].includes(current.stage))||(card.stage==='2nd'&&['1st','2nd'].includes(current.stage)))&&Number(card.hp)>Number(u.damage||0);
+  function legalMakeup(u,card,map,turn,player){
+    const current=metadata(u,map);return !!card&&card.group==='holomem'&&host.cardHasTag(current,'#FLOW GLOW')&&u.bloomedTurn===turn&&Number(u.extraBloomUsedTurn||0)!==turn&&Number(player.extraBloomUsageUnknownTurn||0)!==turn&&u.enteredTurn!==turn&&host.talentMatches(current,card)&&((card.stage==='1st'&&['Debut','1st'].includes(current.stage))||(card.stage==='2nd'&&['1st','2nd'].includes(current.stage)))&&Number(card.hp)>Number(u.damage||0);
   }
   function support(state,i,instance,card,map){
     if(!isHbp09(card.number)||code(card.number)<90||code(card.number)>105)return false;
     const p=state.players[i],q=state.players[1-i],c=rt.context(state,i,card.number,'',{cardId:instance.id,event:'support'});
     const os=name=>host.cardHasName(map.get(p.oshi.number),name);
     const down=rt.value(state,c,F('previousDowns'),map)>0;
-    const checks={90:p.holoPower.length>0,91:(os('AZKi')||os('風真いろは'))&&down,92:os('綺々羅々ヴィヴィ'),94:os('大空スバル')&&down,95:os('雪花ラミィ')&&p.namedUsageTurns?.['hbp09:toast']!==state.turn,99:os('大空スバル')&&entries(p).reduce((n,x)=>n+x.unit.cheer.length,0)<entries(q).reduce((n,x)=>n+x.unit.cheer.length,0),101:os('常闇トワ'),102:os('轟はじめ'),103:os('白銀ノエル'),105:['大空スバル','白銀ノエル','雪花ラミィ'].some(os)};
-    assert(checks[code(card.number)]!==false,'The printed play requirement is not satisfied');
+    const ownStage=rt.refs(state,c,{area:'stage'},map);
+    const movableStageCheer=rt.refs(state,c,{area:'cheer'},map).some(cheer=>ownStage.some(destination=>destination.zone!==cheer.zone));
+    const checks={90:p.holoPower.length>0,91:(os('AZKi')||os('風真いろは'))&&down,92:os('綺々羅々ヴィヴィ'),93:movableStageCheer,94:os('大空スバル')&&down,95:os('雪花ラミィ')&&p.namedUsageTurns?.['hbp09:toast']!==state.turn,99:os('大空スバル')&&entries(p).reduce((n,x)=>n+x.unit.cheer.length,0)<entries(q).reduce((n,x)=>n+x.unit.cheer.length,0),101:os('常闇トワ'),102:os('轟はじめ')&&(p.mainDeck.length>0||p.holoPower.length>0),103:os('白銀ノエル'),105:['大空スバル','白銀ノエル','雪花ラミィ'].some(os)};
+    assert(checks[code(card.number)]!==false,code(card.number)===93?'需要至少 1 張可轉移至另一位 Holomem 的舞台應援。':code(card.number)===102?'牌庫與 Holo Power 均沒有卡牌，無法完成至少選 1 張的效果。':'The printed play requirement is not satisfied');
     rt.enqueue(state,c,program(card.number,'support'));return true;
   }
   function keyword(state,i,zone,card,map,event){if(!isHbp09(card?.number))return false;if(card.keyword?.type!==event)return true;assert(program(card.number,'keyword'),`Missing ${event} handler for ${card.number}`);enqueue(state,i,card.number,'keyword',zone);return true;}
@@ -217,7 +219,15 @@ export function createHbp09(host) {
     return adjustment;
   }
   function immuneDamage(state,i,zone,damage,map){const p=state.players[i];return metadata(p.zones[zone],map)?.number==='hBP09-088'&&host.cardHasName(map.get(p.oshi?.number),'桃鈴ねね')&&damage>=200?0:damage;}
-  function beforeAttack(state,i,action,map){const p=state.players[i],u=p.zones[action.sourceZone];const restriction=u?.hbp09DifferentArt;
+  function canStartAttack(state,i,action,map){const p=state.players[i],restriction=p?.zones?.center?.hbp09DifferentArt;
+    if(restriction?.turn!==state.turn||!restriction.awaiting)return true;
+    if(action.sourceZone!=='center')return false;
+    const name=metadata(p.zones.center,map)?.arts?.[Number(action.artIndex)]?.name;
+    return !!name&&name!==restriction.name;
+  }
+  function beforeAttack(state,i,action,map){const p=state.players[i],u=p.zones[action.sourceZone];
+    assert(canStartAttack(state,i,action,map),'Towa must use the different Center Arts before another Holomem can use Arts (Q711).');
+    const restriction=u?.hbp09DifferentArt;
     if(restriction?.turn===state.turn&&restriction.awaiting){const name=metadata(u,map)?.arts?.[Number(action.artIndex)]?.name;assert(name&&name!==restriction.name,'Extra Towa attack must have a DIFFERENT Arts name');}
   }
   function afterAttack(state,i,action,map){const p=state.players[i],u=p.zones[action.sourceZone];if(!u)return;
@@ -229,7 +239,14 @@ export function createHbp09(host) {
   function canBack(state,i,source,targetZone,targetCard,map){const p=state.players[i];return p.hbp09TowaBackTurn===state.turn&&named(source,'常闇トワ',map)&&(p.turnEvents?.turn===state.turn?p.turnEvents.arts.length:0)===2&&targetZone.startsWith('back')&&targetCard?.stage!=='Debut';}
   function onBaton(state,i,outgoing,map){const p=state.players[i];if(p.oshi?.number==='hBP09-002'&&host.cardHasName(outgoing,'轟はじめ')){const c=rt.context(state,i,'hBP09-002');if(rt.once(state,c,'hajime-baton'))rt.enqueue(state,c,[{op:'powerTop',amount:1}]);}}
   function onOshi(state,i,map){const p=state.players[i];if(metadata(p.zones.center,map)?.number==='hBP09-075'&&named(p.zones.collab,'ネリッサ・レイヴンクロフト',map))host.addStageModifier(p.zones.collab,'artCost:purple',-1,state.turn,'hBP09-075');}
-  function onAttach(state,i,zone,card,map){const p=state.players[i];if(p.oshi?.number==='hBP09-004'&&arms(card)&&named(p.zones[zone],'カエラ・コヴァルスキア',map)){const c=rt.context(state,i,'hBP09-004',zone);if(rt.once(state,c,'kaela-forge'))rt.enqueue(state,c,[draw(2)]);}}
+  function onAttach(state,i,zone,card,map){const p=state.players[i],unit=p.zones[zone],unitCard=metadata(unit,map);
+    // Q721: the Tool attached by hBP09-042's Arts changes that same Arts.
+    // attack() has already queued its pre-attachment damage when this choice resolves.
+    if(card?.number==='hBP09-107'&&named(unit,'カエラ・コヴァルスキア',map)&&(host.cardIsBuzz(unitCard)||unitCard?.stage==='2nd')){
+      const pendingArts=state.effectQueue.find(effect=>effect.type==='dealArtsDamage'&&effect.playerIndex===i&&effect.sourceZone===zone&&effect.artSourceNumber==='hBP09-042'&&Number(effect.artIndex)===0);
+      if(pendingArts&&!pendingArts.hbp09KaelaSwordBonusApplied){pendingArts.damage=Number(pendingArts.damage||0)+40;pendingArts.effectBonus=Number(pendingArts.effectBonus||0)+40;pendingArts.hbp09KaelaSwordBonusApplied=true;}
+    }
+    if(p.oshi?.number==='hBP09-004'&&arms(card)&&named(unit,'カエラ・コヴァルスキア',map)){const c=rt.context(state,i,'hBP09-004',zone);if(rt.once(state,c,'kaela-forge'))rt.enqueue(state,c,[draw(2)]);}}
   function onSupport(state,i,card,map){const p=state.players[i];if(p.oshi?.number==='hBP09-003'&&host.cardHasName(card,'牛丼')){const c=rt.context(state,i,'hBP09-003');if(rt.once(state,c,'noel-gyudon'))rt.enqueue(state,c,[{op:'deferSupport',then:[topCheer({names:['白銀ノエル']}),yes(atleast(count('stage',{stages:['2nd']}),1),[draw(1)])]}]);}}
   function onDamaged(state,i,zone,other,damage,kind,map){if(kind!=='arts'||state.activePlayer===i)return;const u=state.players[i].zones[zone],number=top(u)?.number,threshold={'hBP09-008':40,'hBP09-011':100,'hBP09-014':200}[number];if(!threshold||damage<threshold)return;
     const c=rt.context(state,i,number,zone);if(!rt.once(state,c,`${number}:${top(u).id}:damaged`))return;
@@ -250,7 +267,7 @@ export function createHbp09(host) {
         const c=rt.context(state,owner,'hBP09-059',zone);if(rt.once(state,c,'moona-moon-singer'))add(owner,'hBP09-059',zone,[{op:'chooseUnit',from:{back:true,excludeSource:true,rule:{tags:['#ID1期生']}},key:'recipient',then:[{op:'topCheer',target:R('recipient')}]}]);
       }
     }
-    if(state.activePlayer!==owner){for(const fan of defeated.attachments||[])if(fan.number==='hBP09-111')pendingEffects.push({type:'koFanTransfer',playerIndex:owner,eligibleIds:defeated.cheer.map(x=>x.id),targetRule:{zones:SLOTS.filter(z=>z!==options.targetZone)},colors:['白','綠','紅','藍','紫','黃','無色'],max:1,label:'Pemaloe'});}
+    if(state.activePlayer!==owner){for(const fan of defeated.attachments||[])if(fan.number==='hBP09-111')pendingEffects.push({type:'koFanTransfer',playerIndex:owner,eligibleIds:defeated.cheer.map(x=>x.id),targetRule:{zones:SLOTS.filter(z=>z!==options.targetZone)},colors:['白','綠','紅','藍','紫','黃','無色'],min:1,max:1,optional:false,label:'Pemaloe'});}
   }
   function artDown(state,effect,map){if(effect.artSourceNumber==='hBP09-076'&&effect.artIndex===0)rt.enqueue(state,rt.context(state,effect.playerIndex,'hBP09-076',effect.sourceZone,{event:'artDown'}),recover({names:['ネリッサ・レイヴンクロフト']}));}
   function endPerformance(state,i,map){
@@ -274,5 +291,5 @@ export function createHbp09(host) {
     assert(state.status==='playing'&&state.activePlayer===i&&state.phase==='main'&&!state.pendingChoice,'Oshi activation window invalid');
     assert(p.oshiSkillTurn!==state.turn&&named(p.zones.center,'轟はじめ',map),'Hajime skill has no legal center or was already used');enqueue(state,i,p.oshi.number,'oshi','center');return true;
   }
-  return {...rt,enqueueProgram:enqueue,keyword,arts,support,artCost,hpBonus,artsPassive,defense,immuneDamage,beforeAttack,afterAttack,canBack,onBaton,onOshi,onAttach,onSupport,onDamaged,onDown,artDown,endPerformance,activateX,entries,named,arms,metadata};
+  return {...rt,enqueueProgram:enqueue,keyword,arts,support,artCost,hpBonus,artsPassive,defense,immuneDamage,canStartAttack,beforeAttack,afterAttack,canBack,onBaton,onOshi,onAttach,onSupport,onDamaged,onDown,artDown,endPerformance,activateX,entries,named,arms,metadata};
 }

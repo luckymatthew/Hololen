@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>hBP09-026 Browser Runtime Regression</title>
+    <style>
+      body { max-width: 760px; margin: 2rem auto; padding: 0 1rem; font: 16px/1.5 system-ui, sans-serif; }
+      button { margin: .45rem; padding: .65rem 1rem; }
+      #status { font-weight: 700; }
+      pre { overflow: auto; padding: 1rem; background: #f2f4f8; }
+    </style>
+  </head>
+  <body>
+    <h1>hBP09-026 Browser Runtime Regression</h1>
+    <p>Exercises the current website source engine and card catalog for the second-player-first-turn Noel/Gyudon search, its single final shuffle, Q751, and timing boundaries.</p>
+    <p id="status" role="status">Loading the current catalog…</p>
+    <button id="both" type="button">Run both searches and one final shuffle</button>
+    <button id="partial" type="button">Run with the Debut Noel group absent</button>
+    <button id="none" type="button">Run with both search groups absent (Q751)</button>
+    <button id="timing" type="button">Check first-player and later-turn restrictions</button>
+    <pre id="result" aria-live="polite"></pre>
+    <script type="module" src="./effect-audit-hbp09-026.mjs"></script>
+  </body>
+</html>

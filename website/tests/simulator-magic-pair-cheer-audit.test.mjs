@@ -11,6 +11,7 @@ for(const number of Object.keys(pairs))for(const die of [1,2,3,4,5,6,null])test(
  if(die===null)assert.equal(calls,0);
  if(die!==null&&die%2===1){
   assert.equal(s.pendingChoice?.effect,'genericCheerDeckPick');
+  assert.equal(s.pendingChoice?.optional,false);assert.throws(()=>act(s,{type:'choose',skip:true}));
   assert.deepEqual(s.pendingChoice.cards.filter(c=>s.pendingChoice.selectableIds.includes(c.id)).map(c=>c.number),pairs[number]);
   const id=s.pendingChoice.selectableIds[0],before=s.players[0].cheerDeck.filter(c=>c.id!==id).map(c=>c.id);
   s=act(s,{type:'choose',cardIds:[id]});assert.deepEqual(s.players[0].cheerDeck.map(c=>c.id),before);
@@ -19,9 +20,9 @@ for(const number of Object.keys(pairs))for(const die of [1,2,3,4,5,6,null])test(
  }else assert.equal(s.players[0].zones.back2.cheer.length,0);
  assert.equal(s.pendingChoice,null);
 });
-for(const number of Object.keys(pairs))test(number+' conditional search can decline and shuffles',()=>{
- let s=applyAction(setup(number),0,{type:'choose',optionId:'roll'},pool,()=>0);const before=s.players[0].cheerDeck.map(c=>c.id);
- s=act(s,{type:'choose',skip:true});assert.equal(s.pendingChoice,null);assert.notDeepEqual(s.players[0].cheerDeck.map(c=>c.id),before);
+for(const number of Object.keys(pairs))test(number+' conditional search cannot be declined when a match exists',()=>{
+ const s=applyAction(setup(number),0,{type:'choose',optionId:'roll'},pool,()=>0);const before=s.players[0].cheerDeck.map(c=>c.id);
+ assert.equal(s.pendingChoice?.optional,false);assert.throws(()=>act(s,{type:'choose',skip:true}));assert.equal(s.pendingChoice?.effect,'genericCheerDeckPick');assert.deepEqual(s.players[0].cheerDeck.map(c=>c.id),before);
 });
 
 for(const number of Object.keys(pairs))test(number+' no recipient preserves all Cheer',()=>{

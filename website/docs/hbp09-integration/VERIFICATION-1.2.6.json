@@ -1,0 +1,80 @@
+{
+  "version": "1.2.6",
+  "versionCode": 25,
+  "websiteRegression": 3973,
+  "websiteSyncRelease": 11,
+  "androidHost": 640,
+  "androidJvmDebug": 130,
+  "androidJvmRelease": 130,
+  "lintErrors": 0,
+  "lintWarningsPerVariant": 50,
+  "physicalDeviceVerified": false,
+  "apk": [
+    {
+      "file": "Hololens-1.2.6-arm64.apk",
+      "sha256": "c41c0dbf481a7a770012fed103e50ae249404a58bae2001c513efa79e960d9ab",
+      "bytes": 606600373,
+      "certificateSha256": "92a20ef4e5e7a93e96865577fc90978ba085c0723a0145bcda58c848f5b84f4a",
+      "v3": true,
+      "aligned16KiB": true,
+      "assetsVerified": 5774,
+      "version": "1.2.6",
+      "versionCode": 25,
+      "abi": "arm64"
+    },
+    {
+      "file": "Hololens-1.2.6-x86_64.apk",
+      "sha256": "45dfbf2e9d497a2a32790d784b9f9ad4199a3a2a30068dfb314eef79368ef0a7",
+      "bytes": 639581347,
+      "certificateSha256": "92a20ef4e5e7a93e96865577fc90978ba085c0723a0145bcda58c848f5b84f4a",
+      "v3": true,
+      "aligned16KiB": true,
+      "assetsVerified": 5774,
+      "version": "1.2.6",
+      "versionCode": 25,
+      "abi": "x86_64"
+    }
+  ],
+  "package": {
+    "version": "1.2.6",
+    "versionCode": 25,
+    "sourceFiles": 6133,
+    "sourceBytes": 576732693,
+    "excludedEntriesOrTrees": {
+      "generated_history_or_private_fixture_directory": 9,
+      "test_fixture_assets": 1
+    },
+    "mode": "package",
+    "installZip": "Hololens-1.2.6-Install.zip",
+    "installBytes": 606603474,
+    "installSha256": "dc2c76049f1cf739c39f41db5ac62a7f9faecfead8adf5906e21bf23ca165f87",
+    "apk": {
+      "file": "Hololens-1.2.6-arm64.apk",
+      "sha256": "c41c0dbf481a7a770012fed103e50ae249404a58bae2001c513efa79e960d9ab",
+      "bytes": 606600373,
+      "certificateSha256": "92a20ef4e5e7a93e96865577fc90978ba085c0723a0145bcda58c848f5b84f4a",
+      "v3": true,
+      "aligned16KiB": true,
+      "assetsVerified": 5774,
+      "version": "1.2.6",
+      "versionCode": 25,
+      "abi": "arm64"
+    },
+    "privateSource": {
+      "zip": "Hololens-1.2.6-PRIVATE-source.zip",
+      "bytes": 546527585,
+      "sha256": "73334f69a1a3381b5ee14aa5f7d1be03831681421e9c518f96a967fa86d51f1b",
+      "zipIntegrity": true,
+      "entries": 6145,
+      "privateSigningMaterialExcluded": true,
+      "rawPrivateFixturesExcluded": true,
+      "instrumentationAssetFixturesExcluded": true,
+      "sourceManifestVerified": true
+    },
+    "privateSourceFiles": 6133,
+    "changedFrom1_2_5": 94,
+    "sourceAssetMatchesFinalApk": true,
+    "signingKeyExcluded": true,
+    "tests": "See RELEASE-REPORT.md; packaging does not run or imply device tests"
+  }
+}

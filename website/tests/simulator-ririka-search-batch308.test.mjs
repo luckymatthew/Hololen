@@ -16,7 +16,7 @@ for(const hasRirika of [true,false])test('Ririka accepted SP mandatory searches 
  s=applyAction(s,1,{type:'choose',optionId:'use'},pool,()=>0);
  while(s.pendingChoice?.type==='lifeCheerTarget')s=applyAction(s,1,{type:'choose',zone:'back1'},pool,()=>0);
  for(const id of [...(hasRirika?['searchRirika']:[]),'food']){
-  assert.equal(s.pendingChoice.min,1);assert.equal(Boolean(s.pendingChoice.optional),false);
+  assert.equal(s.pendingChoice.min,0);assert.equal(Boolean(s.pendingChoice.optional),false);
   assert.throws(()=>applyAction(s,1,{type:'choose',skip:true},pool,()=>0));
   s=applyAction(s,1,{type:'choose',cardIds:[id]},pool,()=>0);
   assert.ok(s.players[1].hand.some(c=>c.id===id));

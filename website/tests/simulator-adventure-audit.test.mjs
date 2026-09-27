@@ -16,16 +16,12 @@ for(const die of [1,2,3,4,5,6,null])test('Adventure optional die '+die,()=>{
  if(die!==null&&die%2===0){
   assert.equal(s.pendingChoice?.effect,'deckToHandShuffle');assert.deepEqual(s.pendingChoice.selectableIds,['candidate']);
   assert.throws(()=>act(s,{type:'choose',cardIds:['wrong']}));
+  assert.throws(()=>act(s,{type:'choose',skip:true}));
   const before=s.players[0].mainDeck.filter(c=>c.id!=='candidate').map(c=>c.id);
   s=act(JSON.parse(JSON.stringify(s)),{type:'choose',cardIds:['candidate']});
   assert.equal(s.players[0].hand[0].number,buzz.number);assert.notDeepEqual(s.players[0].mainDeck.map(c=>c.id),before);
  }else assert.equal(s.players[0].hand.length,0);
  assert.equal(s.pendingChoice,null);
-});
-test('Adventure may decline conditional hidden-deck search but still shuffles',()=>{
- let s=applyAction(setup(),0,{type:'choose',optionId:'roll'},pool,()=>.25);
- const before=s.players[0].mainDeck.map(c=>c.id);s=act(s,{type:'choose',skip:true});
- assert.equal(s.players[0].hand.length,0);assert.notDeepEqual(s.players[0].mainDeck.map(c=>c.id),before);assert.equal(s.pendingChoice,null);
 });
 test('Adventure empty Buzz search still shuffles and finishes',()=>{
  let s=setup(false);const before=s.players[0].mainDeck.map(c=>c.id);let calls=0;

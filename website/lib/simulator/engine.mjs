@@ -2,10 +2,11 @@ import {gameUUID,gameTime,gameRandom} from './review-entropy.mjs';
 import { createHbp09, isHbp09 } from './hbp09/hooks.mjs';
 import { diceRuns, diceDecision, runDiceAction } from "./dice-actions.mjs";
 import { DECK_SEARCH_EFFECTS, EXTENDED_SUPPORT_EFFECTS, SIMPLE_SUPPORT_EFFECTS, TOP_LOOK_EFFECTS } from "./effect-catalog.mjs";
-import { isReactiveOshiSkill, oshiSkillPowerCost } from "./oshi-skill-catalog.mjs";
+import { isReactiveOshiSkill, oshiSkillPowerCost, oshiSkillSpecificConditionMet } from "./oshi-skill-catalog.mjs";
 
 const STAGE_SLOTS = ["center", "collab", "back1", "back2", "back3", "back4", "back5"];
 const BACK_SLOTS = STAGE_SLOTS.filter((slot) => slot.startsWith("back"));
+const HYS01_OSHI_COLOR_SKILLS = new Set(["hYS01-001", "hYS01-002", "hYS01-003", "hYS01-004"]);
 const ORDINARY_COMPUTER = "hBP01-104";
 const AUTOMATED_EVENT_CARDS = new Set(["hEB01-030", "hBP03-088", "hBP05-080", "hBP06-089", "hBP06-090", "hBP06-093"]);
 const ASSISTANT_CARD = "hBP04-105";
@@ -78,6 +79,7 @@ function unit(card, turn = 0) {
     rested: false,
     enteredTurn: turn,
     bloomedTurn: 0,
+    extraBloomUsedTurn: 0,
     collabbedTurn: 0,
     koyoriMascotBonusTurn: 0,
     returnSlot: null,
@@ -162,17 +164,25 @@ function normalizeLegacyState(state) {
     player.bonusBloomTurn = Number(player.bonusBloomTurn || 0);
     player.bonusBloomUsedTurn = Number(player.bonusBloomUsedTurn || 0);
     player.bonusBloomTargetId = String(player.bonusBloomTargetId || "");
+    player.extraBloomUsageUnknownTurn = Number(player.extraBloomUsageUnknownTurn || 0);
+    const legacyExtraBloomMarkerMissing = STAGE_SLOTS.some((slot) => player.zones[slot] && !Object.hasOwn(player.zones[slot], "extraBloomUsedTurn"));
     for (const slot of STAGE_SLOTS) {
       const stageUnit = player.zones[slot];
       if (!stageUnit) continue;
       if (!Number.isInteger(stageUnit.enteredTurn)) stageUnit.enteredTurn = 0;
       if (!Number.isInteger(stageUnit.bloomedTurn)) stageUnit.bloomedTurn = 0;
+      if (!Number.isInteger(stageUnit.extraBloomUsedTurn)) stageUnit.extraBloomUsedTurn = Number(stageUnit.extraBloomUsedTurn || 0);
       if (!Number.isInteger(stageUnit.collabbedTurn)) stageUnit.collabbedTurn = 0;
       if (!Number.isInteger(stageUnit.koyoriMascotBonusTurn)) stageUnit.koyoriMascotBonusTurn = 0;
       if (!Array.isArray(stageUnit.attachments)) stageUnit.attachments = [];
       if (!Array.isArray(stageUnit.modifiers)) stageUnit.modifiers = [];
       stageUnit.skipUnrestTurn = Number(stageUnit.skipUnrestTurn || 0);
       if (!("returnSlot" in stageUnit)) stageUnit.returnSlot = null;
+    }
+    if (legacyExtraBloomMarkerMissing && player.bonusBloomUsedTurn === Number(state.turn)) {
+      const legacyTarget = player.bonusBloomTargetId && STAGE_SLOTS.find((slot) => player.zones[slot]?.bloomedTurn === Number(state.turn) && player.zones[slot]?.stack?.some((card) => card.id === player.bonusBloomTargetId));
+      if (legacyTarget) player.zones[legacyTarget].extraBloomUsedTurn = Number(state.turn);
+      else if (STAGE_SLOTS.some((slot) => player.zones[slot] && Number(player.zones[slot].bloomedTurn || 0) === Number(state.turn))) player.extraBloomUsageUnknownTurn = Number(state.turn);
     }
   }
 }
@@ -291,6 +301,7 @@ function materializePlayer(player, owner, cards, random) {
     bonusBloomTurn: 0,
     bonusBloomUsedTurn: 0,
     bonusBloomTargetId: "",
+    extraBloomUsageUnknownTurn: 0,
   };
 }
 
@@ -403,14 +414,14 @@ function bloomTargets(player, playedCard, map, turn) {
   if (Number(player.turnsTaken || 0) <= 1) return [];
   const allowedStages = playedCard.stage === "1st" ? ["Debut", "1st"] : playedCard.stage === "2nd" ? ["1st", "2nd"] : [];
   if (allowedStages.length === 0) return [];
-  const extraBloomAvailable = Number(player.bonusBloomTurn || 0) === turn && Number(player.bonusBloomUsedTurn || 0) !== turn;
+  const extraBloomAvailable = Number(player.bonusBloomTurn || 0) === turn && Number(player.bonusBloomUsedTurn || 0) !== turn && Number(player.extraBloomUsageUnknownTurn || 0) !== turn;
   return STAGE_SLOTS.filter((slot) => {
     const stageUnit = player.zones[slot];
     const current = map.get(topCard(stageUnit)?.number);
     const previous = map.get(stageUnit?.stack?.at(-2)?.number);
     const alreadyBloomedThisTurn = Number(stageUnit?.bloomedTurn || 0) === turn;
     const matchesRestrictedExtraBloom = !player.bonusBloomTargetId || (topCard(stageUnit)?.id === player.bonusBloomTargetId && playedCard.stage === "2nd");
-    const validExtraBloom = extraBloomAvailable && matchesRestrictedExtraBloom && ["1st", "2nd"].includes(playedCard.stage) && current?.stage === "1st" && previous?.stage === "Debut" && alreadyBloomedThisTurn;
+    const validExtraBloom = extraBloomAvailable && Number(stageUnit?.extraBloomUsedTurn || 0) !== turn && matchesRestrictedExtraBloom && ["1st", "2nd"].includes(playedCard.stage) && current?.stage === "1st" && previous?.stage === "Debut" && alreadyBloomedThisTurn;
     return current
       && current.stage !== "Spot"
       && allowedStages.includes(current.stage)
@@ -545,6 +556,7 @@ function queueDeckAttachmentToStage(state, playerIndex, rule, targetRule, map, r
     max: 1,
     optional,
     source: "deck",
+    search: true,
     effect: "deckSupportToAttach",
     prompt: `${label}：可公開 1 張符合條件的附加卡；之後直接按牌桌上的合法 Holomen。`,
     meta: { targetRule },
@@ -642,11 +654,20 @@ function currentTurnEvents(player, turn) {
   return player.turnEvents;
 }
 
+// Call only with cards already removed/revealed from the main deck, never with
+// hand, Cheer, attachment, or Archive cards.
+function archiveMainDeckCards(player, state, cards) {
+  const moved = Array.isArray(cards) ? cards : cards ? [cards] : [];
+  if (moved.length === 0) return 0;
+  player.archive.push(...moved);
+  currentTurnEvents(player, state.turn).deckArchived += moved.length;
+  return moved.length;
+}
+
 function wasKnockedOutDuringPreviousOpponentTurn(state, ownerIndex, name = "") {
   const previousTurn = Number(state.turn || 0) - 1;
   return (state.knockouts || []).some((entry) => entry.turn === previousTurn
     && entry.ownerIndex === ownerIndex
-    && entry.sourcePlayerIndex !== ownerIndex
     && (!name || cardHasName(entry.card, name)));
 }
 
@@ -702,14 +723,14 @@ function drawCards(state, playerIndex, amount) {
   return drawn;
 }
 
-function hbp09Legacy_healStageUnit(state, playerIndex, zone, amount, map, sourceIsOwn = true) {
+function hbp09Legacy_healStageUnit(state, playerIndex, zone, amount, map, sourceIsOwn = true, abilitySourceUnitId = "") {
   const player = state.players[playerIndex];
   const stageUnit = player?.zones?.[zone];
   if (!stageUnit) return 0;
   const healed = Math.min(Math.max(0, Number(amount || 0)), Number(stageUnit.damage || 0));
   stageUnit.damage -= healed;
   const card = unitCard(stageUnit, map);
-  if (healed > 0 && sourceIsOwn && stageUnit.attachments.some((instance) => instance.number === "hBP01-114") && ["1st", "2nd"].includes(card?.stage) && cardHasName(card, "アキ・ローゼンタール") && activeModifiers(stageUnit, "trigger:hBP01-114", state.turn).length === 0) {
+  if (healed > 0 && sourceIsOwn && abilitySourceUnitId && String(topCard(stageUnit)?.id) === String(abilitySourceUnitId) && stageUnit.attachments.some((instance) => instance.number === "hBP01-114") && ["1st", "2nd"].includes(card?.stage) && cardHasName(card, "アキ・ローゼンタール") && activeModifiers(stageUnit, "trigger:hBP01-114", state.turn).length === 0) {
     addStageModifier(stageUnit, "trigger:hBP01-114", 0, state.turn, "hBP01-114");
     appendLog(state, `${player.name} 因石斧的追加能力抽 ${drawCards(state, playerIndex, 1)} 張牌。`);
   }
@@ -760,10 +781,12 @@ function resolveDamageKnockout(state, ownerIndex, zone, map, sourcePlayerIndex, 
   knockOutUnit(state, ownerIndex, zone, map, sourcePlayerIndex, options);
 }
 
-function enqueueCardSelection(state, { playerIndex, cards, selectableIds, min = 1, max = 1, prompt, effect, optional = false, source = "", meta = {} }) {
+function enqueueCardSelection(state, { playerIndex, cards, selectableIds, min = 1, max = 1, prompt, effect, optional = false, source = "", search = false, meta = {} }) {
   const choices = clone(cards || []);
   const selectable = selectableIds || choices.map((card) => card.id);
-  enqueueEffect(state, { type: "cardSelection", playerIndex, cards: choices, selectableIds: selectable, min, max, prompt, effect, optional, source, meta });
+  const hiddenDeckSearch = search && source === "deck";
+  const selectionMin = hiddenDeckSearch ? 0 : min;
+  enqueueEffect(state, { type: "cardSelection", playerIndex, cards: choices, selectableIds: selectable, min: selectionMin, ...(hiddenDeckSearch ? { nonEmptyMin: min } : {}), max, prompt, effect, optional, source, meta });
 }
 
 function enqueueStageTarget(state, { playerIndex, targetPlayerIndex = playerIndex, options, rule = {}, prompt, effect, optional = false, meta = {} }) {
@@ -788,6 +811,31 @@ function stageAttachmentOptions(player, map, predicate = () => true) {
   return stageEntries(player).flatMap(({ zone, unit: stageUnit }) => (stageUnit.attachments || []).filter((instance) => predicate(instance, map.get(instance.number), zone, stageUnit)).map((instance) => ({ id: instance.id, number: instance.number, zone })));
 }
 
+function attachmentCapacity(player, stageUnit, typeCode, map) {
+  const card = unitCard(stageUnit, map);
+  const attached = (stageUnit.attachments || []).filter((instance) => map.get(instance.number)?.typeCode === typeCode);
+  if (typeCode === "supportTool" && card?.number === "hBP09-044"
+      && attached.some((instance) => cardHasTag(map.get(instance.number), "#カエラ'sアームズ"))) return 2;
+  if (typeCode === "supportMascot" && card?.number === "hBP02-013") return 2;
+  return 1;
+}
+
+function attachmentOverflow(player, zone, map) {
+  const stageUnit = player?.zones?.[zone];
+  if (!stageUnit) return null;
+  for (const typeCode of ["supportTool", "supportMascot"]) {
+    const attached = (stageUnit.attachments || []).filter((instance) => map.get(instance.number)?.typeCode === typeCode);
+    if (attached.length > attachmentCapacity(player, stageUnit, typeCode, map)) {
+      return { typeCode, options: attached.map((instance) => ({ id: instance.id, number: instance.number, zone })) };
+    }
+  }
+  return null;
+}
+
+function queueAttachmentCapacityCheck(state, playerIndex, zone) {
+  state.effectQueue.unshift({ type: "attachmentCapacityCheck", playerIndex, ownerIndex: playerIndex, zone });
+}
+
 function enqueueStageAttachmentSelection(state, { playerIndex, ownerIndex = playerIndex, options, prompt, effect, optional = false, meta = {} }) {
   enqueueEffect(state, { type: "stageAttachmentSelection", playerIndex, ownerIndex, options: clone(options || []), prompt, effect, optional, meta: clone(meta) });
 }
@@ -798,6 +846,10 @@ function enqueueOptionChoice(state, { playerIndex, options, prompt, effect, opti
 
 function enqueueArchiveCheerToTarget(state, playerIndex, { min = 1, max = 1, targetRule = {}, targetZone = "", prompt = "從存檔區選擇要附加的應援。", optional = false, effect = "archiveCheerToStage", meta = {} } = {}, map) {
   const player = state.players[playerIndex];
+  const legalTargets = targetZone
+    ? stageOptionsMatching(player, map, { zones: [targetZone] })
+    : stageOptionsMatching(player, map, targetRule);
+  if (legalTargets.length === 0) return false;
   const cards = player.archive.filter((instance) => map.get(instance.number)?.group === "cheer");
   if (cards.length === 0) return false;
   enqueueCardSelection(state, {
@@ -997,7 +1049,7 @@ function payShionReroll(state, playerIndex, map) {
 function resolveShionAbilityDie(state, playerIndex, meta, map, random) {
   const die = Number(meta?.die || 0);
   if (meta?.effect === "collabSearch") {
-    if (die >= 4) queueDeckToHand(state, playerIndex, { tags: ["#魔法"] }, map, random, { min: 1, max: 1, optional: true, label: "魔法見せてあげる" });
+    if (die >= 4) queueDeckToHand(state, playerIndex, { tags: ["#魔法"] }, map, random, { min: 1, max: 1, optional: false, label: "魔法見せてあげる" });
     return;
   }
   const threshold = meta?.effect === "artMove" ? 5 : 4;
@@ -1086,7 +1138,7 @@ function simpleKeywordCondition(state, playerIndex, zone, text, map, random, sou
   const events = currentTurnEvents(player, state.turn);
   if (!giftZoneApplies(text, zone)) return false;
   if (/從Debut(?:進化成)?Bloom時|從Debut Bloom時/u.test(text) && map.get(stageUnit?.stack?.at(-2)?.number)?.stage !== "Debut") return false;
-  if (/生命(?:值)?為?3(?:或以下|以下)/u.test(text) && player.life.length > 3) return false;
+  if (/生命(?:值)?(?:在|為)?3(?:或以下|以下)/u.test(text) && player.life.length > 3) return false;
   if (/生命(?:值)?不高於對手|生命值小於或等於對手/u.test(text) && player.life.length > opponent.life.length) return false;
   if (/生命值比對手少/u.test(text) && player.life.length >= opponent.life.length) return false;
   if (/(?:後攻|後手).*(?:第一|第1|首)回合/u.test(text) && !(playerIndex !== state.firstPlayer && Number(player.turnsTaken || 0) === 1)) return false;
@@ -1109,8 +1161,10 @@ function simpleKeywordCondition(state, playerIndex, zone, text, map, random, sou
   if (requiredTotalCheer && totalCheer(player) < Number(requiredTotalCheer[1])) return false;
   const sourceCheerColor = text.match(/(?:這位|此)(?:Holomen|Holo成員|成員)(?:已)?附有([白綠紅藍黃紫])色應援/u)?.[1];
   if (sourceCheerColor && !(stageUnit?.cheer || []).some((instance) => effectiveCheerColors(player, stageUnit, instance, map).includes(sourceCheerColor))) return false;
-  if (/舞台上的應援(?:卡)?數量多於對手/u.test(text) && totalCheer(player) <= totalCheer(opponent)) return false;
-  if (/舞台上的應援(?:卡)?數量不多於對手/u.test(text) && totalCheer(player) > totalCheer(opponent)) return false;
+  const stageCheerRelation = text.match(/(?:舞台|舞臺)(?:上)?(?:的)?應援(?:卡)?(?:的)?(?:數量|張數)(不多於對手|不比對手多|多於對手|比對手多)/u)?.[1] || "";
+  if (stageCheerRelation === "多於對手" || stageCheerRelation === "比對手多") {
+    if (totalCheer(player) <= totalCheer(opponent)) return false;
+  } else if (stageCheerRelation && totalCheer(player) > totalCheer(opponent)) return false;
   if (/對手沒有(?:合作|Collab)Holomen|對手沒有合作位置/u.test(text) && opponent.zones.collab) return false;
   if (/(?:這位|此)Holomen(?:有攜帶|裝備有|已附有|帶有)吉祥物/u.test(text) && !(stageUnit?.attachments || []).some((instance) => map.get(instance.number)?.typeCode === "supportMascot")) return false;
   const requiredAttachment = text.match(/(?:這位|此)(?:Holomen|Holo成員|ホロメン)(?:上)?(?:有攜帶|裝備有|已附有|附有|附著|帶有)[〈「]([^〉」]+)[〉」]/u)?.[1];
@@ -1145,16 +1199,21 @@ function simpleKeywordCondition(state, playerIndex, zone, text, map, random, sou
   if (usedEventTag && !events.supports.some((number) => ["supportEvent", "supportEventLimited"].includes(map.get(number)?.typeCode) && cardHasTag(map.get(number), usedEventTag))) return false;
   const previousKoTag = text.match(/前一個對手的回合中[^。]*持有(#[^的，。]+)的Holomen曾被擊倒/u)?.[1];
   if (previousKoTag && !(state.knockouts || []).some((entry) => entry.turn === state.turn - 1 && entry.ownerIndex === playerIndex && entry.sourcePlayerIndex !== playerIndex && cardHasTag(entry.card, previousKoTag))) return false;
-  const dieText = /擲.*骰/u.test(text);
+  // A die described after the effect-cost separator is part of the effect,
+  // not a condition to evaluate before offering that optional cost. In
+  // particular, hBP08-065 must let its controller pay the hand Archive cost
+  // before rolling its die.
+  const dieConditionText = String(text).split(/[：:]/u, 1)[0];
+  const dieText = /擲.*骰/u.test(dieConditionText);
   if (dieText) {
     const die = rollDie(random, state, playerIndex, 1, sourceCard); logDie(state, playerIndex, die);
-    if (/奇數/u.test(text) && die % 2 === 0) return false;
-    if (/偶數/u.test(text) && die % 2 === 1) return false;
-    const atMost = text.match(/(?:為|結果為)(\d+)(?:或以下|以下)/u);
+    if (/奇數/u.test(dieConditionText) && die % 2 === 0) return false;
+    if (/偶數/u.test(dieConditionText) && die % 2 === 1) return false;
+    const atMost = dieConditionText.match(/(?:為|結果為)(\d+)(?:或以下|以下)/u);
     if (atMost && die > Number(atMost[1])) return false;
-    const atLeast = text.match(/(?:為|結果為)(\d+)(?:或以上|以上)/u);
+    const atLeast = dieConditionText.match(/(?:為|結果為)(\d+)(?:或以上|以上)/u);
     if (atLeast && die < Number(atLeast[1])) return false;
-    const listed = text.match(/若為((?:\d+[、，或及]?)+)/u)?.[1]?.match(/\d+/gu)?.map(Number) || [];
+    const listed = dieConditionText.match(/若為((?:\d+[、，或及]?)+)/u)?.[1]?.match(/\d+/gu)?.map(Number) || [];
     if (listed.length > 0 && !listed.includes(die)) return false;
   }
   return true;
@@ -1177,11 +1236,11 @@ function simpleSearchRule(text) {
   if (names.length > 0) rule.names = [...new Set(names)];
   const stages = ["Debut", "1st", "2nd", "Spot"].filter((stage) => new RegExp(stage, "u").test(searchText));
   if (stages.length > 0) rule.stages = stages;
-  const colorText = searchText.replaceAll("#白上's角色", "").replaceAll("#白上'sキャラクター", "");
+  const colorText = searchText.replaceAll("#白上's角色", "").replaceAll("#白上'sキャラクター", "").replace(/[〈「][^〉」]+[〉」]/gu, "");
   const colors = SKILL_COLOR_WORDS.filter(([, pattern]) => pattern.test(colorText)).map(([color]) => color);
   if (colors.length > 0) rule.colors = colors;
   if (/不是Buzz|非Buzz|不是 Buzz/u.test(text)) rule.excludeBuzz = true;
-  if (/Buzz Holomen|Buzz Holo/u.test(searchText) && !rule.excludeBuzz) rule.buzz = true;
+  if (/Buzz(?:\s+(?:Holomen|Holo)|\s*成員(?:卡)?)/u.test(searchText) && !rule.excludeBuzz) rule.buzz = true;
   if (/與自己推しHolomen相同卡名/u.test(searchText)) rule.sameOshiName = true;
   if (/任意張數|不受張數限制/u.test(searchText)) rule.unlimitedDebut = true;
   if (/具有(?:綻放|Bloom)效果|有綻放效果/u.test(searchText)) rule.keywordTypes = ["bloom", "bloom_effect"];
@@ -1221,7 +1280,7 @@ function queueGenericTopLook(state, playerIndex, text, map, required = false, ru
   const max = arbitrary ? selectableIds.length : Math.min(1, selectableIds.length);
   const remainder = /剩(?:下|餘).*(?:存檔|檔案)/u.test(text) ? "archive" : /剩(?:下|餘).*(?:牌庫頂|牌庫上方)/u.test(text) ? "top" : "bottom";
   if (max === 0) {
-    if (remainder === "archive") player.archive.push(...revealed);
+    if (remainder === "archive") archiveMainDeckCards(player, state, revealed);
     else enqueueCardSelection(state, { playerIndex, cards: revealed, min: revealed.length, max: revealed.length, effect: remainder === "top" ? "topOrder" : "bottomOrder", source: "revealed", prompt: `沒有符合條件的卡；按次序放回牌庫${remainder === "top" ? "頂" : "底"}。` });
     return true;
   }
@@ -1241,7 +1300,8 @@ function queueGenericTopLook(state, playerIndex, text, map, required = false, ru
 }
 
 function cheerTargetRuleFromText(text, sourceZone = "") {
-  if (/這位Holomen|此Holomen|這位Holo成員|此成員|這位ホロメン|此ホロメン/u.test(text) && !/除(?:了)?這位|除此成員|除這位|另一位/u.test(text)) return { zones: [sourceZone] };
+  const explicitStageDestination = /(?:轉移|改附|改為附加|轉換(?:並)?附加|重新附加|重新裝備|附加|裝備)(?:到|至|給)(?:自己|我方)?(?:的)?(?:後排|後場|後台|後援|中央|中心|中場|中置|合作)/u.test(text);
+  if (/(?:這位|此)(?:Holomen|Holomem)|這位Holo成員|此成員|這位ホロメン|此ホロメン/iu.test(text) && !explicitStageDestination && !/除(?:了)?這位|除此成員|除這位|另一位/u.test(text)) return { zones: [sourceZone] };
   const rule = simpleTargetRule(text);
   const alternative = text.match(/[【\[]([^】\]]+)[】\]]/u)?.[1] || "";
   if (alternative && /(?:或|與)/u.test(alternative)) {
@@ -1257,7 +1317,7 @@ function cheerTargetRuleFromText(text, sourceZone = "") {
   if (inlineAlternative) {
     delete rule.names;
     delete rule.tags;
-    rule.namesOrTags = { names: [inlineAlternative[1]], tags: [inlineAlternative[2]] };
+    rule.namesOrTags = { names: [inlineAlternative[1]], tags: [firstEffectTag(inlineAlternative[2]) || inlineAlternative[2]] };
   }
   const namedAlternative = text.match(/(?:送給|送到|附加到|裝備到)[^。；]*?[〈「]([^〉」]+)[〉」](?:或|與)[〈「]([^〉」]+)[〉」]/u);
   if (namedAlternative) {
@@ -1425,7 +1485,7 @@ function resolveGenericKeywordRemainder(state, playerIndex, meta, map, random, p
   }
   if (card.number === "hBP05-027") {
     const candidates = player.mainDeck.filter((instance) => map.get(instance.number)?.group === "holomem" || map.get(instance.number)?.typeCode === "supportTool");
-    if (candidates.length > 0) enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: 1, optional: false, effect: "deckToHandShuffle", source: "deck", prompt: "公開 1 張 Holomen 或工具加入手牌，然後洗牌。" });
+    if (candidates.length > 0) enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: 1, optional: false, effect: "deckToHandShuffle", source: "deck", search: true, prompt: "公開 1 張 Holomen 或工具加入手牌，然後洗牌。" });
     else player.mainDeck = shuffle(player.mainDeck, random);
     return;
   }
@@ -1514,7 +1574,11 @@ function queueGenericKeywordCostEffects(state, playerIndex, zone, card, map, con
   const range = costText.match(/([1-9一二三四五])\s*(?:至|到|[～~-])\s*([1-9一二三四五])\s*張/u);
   const exact = textNumber(costText.match(/([1-9一二三四五])\s*張/u)?.[1] || "1");
   const min = range ? textNumber(range[1]) : exact;
-  const max = range ? textNumber(range[2]) : exact;
+  let max = range ? textNumber(range[2]) : exact;
+  if (context.isArt && card.number === "hBP08-074") {
+    const opponentIndex = playerIndex === 0 ? 1 : 0;
+    max = Math.min(max, stageUnitCount(state.players[opponentIndex]));
+  }
 
   if (/手牌/u.test(costText) && /(?:牌庫|牌組)底/u.test(costText)) {
     const rule = keywordCostRule(costText);
@@ -1524,6 +1588,7 @@ function queueGenericKeywordCostEffects(state, playerIndex, zone, card, map, con
   }
 
   if (/手牌/u.test(costText)) {
+    if (max < min) return true;
     const rule = keywordCostRule(costText);
     const cards = player.hand.filter((instance) => cardMatchesRule(map.get(instance.number), rule, player, map));
     enqueueHolomemHandArchive(state, { playerIndex, cards, min, max, effect: "genericKeywordHandArchiveCost", source: "hand", optional: true, prompt: `${card.keyword?.name || card.name}：可存檔 ${min === max ? min : `${min}–${max}`} 張符合條件的手牌以支付成本。`, meta }, unitCard(source, map) || card, map);
@@ -1650,6 +1715,24 @@ function queueSimpleTriggeredKeyword(state, playerIndex, zone, card, map, random
   const opponentIndex = playerIndex === 0 ? 1 : 0;
   const opponent = state.players[opponentIndex];
   if (!text) return false;
+  if (card.number === "hSD01-012") {
+    const eligible = player.archive.filter((instance) => {
+      const archived = map.get(instance.number);
+      return archived?.group === "cheer" && (archived.colors || []).some((color) => ["白", "綠"].includes(color));
+    });
+    if (eligible.length > 0 && player.zones.center) enqueueCardSelection(state, {
+      playerIndex,
+      cards: eligible,
+      min: 1,
+      max: 1,
+      optional: false,
+      effect: "archiveCheerToStage",
+      source: "archive",
+      prompt: "一起來畫畫！：選擇存檔區 1 張白色或綠色應援，附加到自己的中央成員。",
+      meta: { targetRule: { zones: ["center"] } },
+    });
+    return true;
+  }
   if (card.number === "hBP03-079") { queueCheerDeckSearch(state,playerIndex,text,zone,map,random,{optional:false,colorsOverride:["黃"],targetRuleOverride:{zones:[zone]}});return true; }
   if (card.number === "hBP04-053") { if(player.cheerDeck.length)enqueueEffect(state,{type:"eventCheerTarget",playerIndex,options:stageOptionsMatching(player,map,{tags:["#EN"]}),optional:false,prompt:"選擇EN Holomen附加應援牌庫頂1張。"});return true; }
   if (card.number === "hBP04-037") return true;
@@ -1699,7 +1782,7 @@ function queueSimpleTriggeredKeyword(state, playerIndex, zone, card, map, random
     if (playerIndex !== state.firstPlayer && Number(player.turnsTaken) === 1) {
       const candidates = player.mainDeck.filter(instance => cardHasName(map.get(instance.number), "ろぼさー"));
       const count = Math.min(2, candidates.length);
-      if (count) enqueueCardSelection(state, { playerIndex, cards: candidates, min: count, max: count, optional: true, source: "deck", effect: "deckToHandShuffle", prompt: "可公開2張ろぼさー加入手牌，然後洗牌。" });
+      if (count) enqueueCardSelection(state, { playerIndex, cards: candidates, min: count, max: count, optional: true, source: "deck", search: true, effect: "deckToHandShuffle", prompt: "可公開2張ろぼさー加入手牌，然後洗牌。" });
       else player.mainDeck = shuffle(player.mainDeck, random);
     }
     return true;
@@ -1713,7 +1796,7 @@ function queueSimpleTriggeredKeyword(state, playerIndex, zone, card, map, random
     return true;
   }
   if (card.number === "hBP06-035") {
-    if (playerIndex !== state.firstPlayer && Number(player.turnsTaken) === 1) queueDeckAttachmentToStage(state, playerIndex, { typeCodes: ["supportTool", "supportMascot", "supportFan"] }, { names: ["百鬼あやめ"] }, map, random, card.keyword.name, { optional: false });
+    if (playerIndex !== state.firstPlayer && Number(player.turnsTaken) === 1) queueDeckAttachmentToStage(state, playerIndex, { typeCodes: ["supportTool", "supportItem", "supportItemLimited", "supportMascot", "supportFan"] }, { names: ["百鬼あやめ"] }, map, random, card.keyword.name, { optional: false });
     return true;
   }
   if (card.number === "hBP06-049") {
@@ -1835,7 +1918,7 @@ function queueSimpleTriggeredKeyword(state, playerIndex, zone, card, map, random
     if (options.length) enqueueStageTarget(state, { playerIndex, targetPlayerIndex: playerIndex === 0 ? 1 : 0, options, effect: "specialDamage", optional: false, meta: { amount: 10, loseLife: true, sourceName: card.keyword.name, sourceZone: zone } });
     return true;
   }
-  if (["hSD06-002", "hSD06-007"].includes(card.number)) {
+  if (!skipBuff && ["hSD06-002", "hSD06-007"].includes(card.number)) {
     enqueueStageTarget(state, { playerIndex, rule: card.number === "hSD06-007" ? { tags: ["#秘密結社holoX"] } : {}, effect: "heal", optional: false, meta: { amount: card.number === "hSD06-007" ? 30 : 10 } });
     return true;
   }
@@ -1929,8 +2012,12 @@ function queueSimpleTriggeredKeyword(state, playerIndex, zone, card, map, random
     if (cards.length) enqueueCardSelection(state, { playerIndex, cards, min: 0, max: 1, optional: true, effect: "archiveToDeckTop", source: "archive", prompt: "可選擇 1 張支援卡放回牌庫頂。" });
     return true;
   }
-  if (["hBP08-070", "hBP08-075"].includes(card.number)) {
-    queueDeckToHand(state, playerIndex, { names: [card.number === "hBP08-075" ? "ろぼさー" : "Takodachi"] }, map, random, { min: 1, max: 1, optional: false, label: card.keyword.name });
+  if (card.number === "hBP08-070" && card.keyword?.type === "collab_effect") {
+    queueDeckToHand(state, playerIndex, { names: ["Takodachi"] }, map, random, { min: 1, max: 1, optional: false, label: card.keyword.name });
+    return true;
+  }
+  if (card.number === "hBP08-075" && ["bloom", "bloom_effect"].includes(card.keyword?.type)) {
+    queueDeckToHand(state, playerIndex, { names: ["ろぼさー"] }, map, random, { min: 1, max: 1, optional: false, label: card.keyword.name });
     return true;
   }
   if (card.number === "hBP08-056") {
@@ -1997,7 +2084,7 @@ function queueSimpleTriggeredKeyword(state, playerIndex, zone, card, map, random
   }
   if (["hBP01-033", "hBP01-039"].includes(card.number)) {
     if (card.number === "hBP01-039" && !cardHasName(map.get(player.oshi?.number), "兎田ぺこら")) return true;
-    enqueueOptionChoice(state, { playerIndex, options: [{ id: "roll", label: "擲一次骰子" }], optional: true, effect: "firstSetCollabRoll", prompt: card.keyword.name + "：可以擲一次骰子。", meta: { cardNumber: card.number } });
+    enqueueOptionChoice(state, { playerIndex, options: [{ id: "roll", label: "擲一次骰子" }], optional: true, effect: "firstSetCollabRoll", prompt: card.keyword.name + "：可以擲一次骰子。", meta: { cardNumber: card.number, sourceUnitId: topCard(player.zones[zone])?.id || "" } });
     return true;
   }
   if (card.number === "hBP04-021") {
@@ -2006,11 +2093,22 @@ function queueSimpleTriggeredKeyword(state, playerIndex, zone, card, map, random
     return true;
   }
   if (card.number === "hBP01-036") {
-    enqueueStageTarget(state, { playerIndex, effect: "heal", optional: false, prompt: "選擇自己一位 Holomen，回復 20 HP。", meta: { amount: 20 } });
+    enqueueStageTarget(state, { playerIndex, effect: "heal", optional: false, prompt: "選擇自己一位 Holomen，回復 20 HP。", meta: { amount: 20, abilitySourceUnitId: topCard(player.zones[zone])?.id || "" } });
     return true;
   }
   if (!conditionChecked && !simpleKeywordCondition(state, playerIndex, zone, text, map, random, card)) return true;
-  if (["hBP01-090", "hBP02-026", "hBP03-076"].includes(card.number)) return queueCheerDeckSearch(state, playerIndex, text, zone, map, random, { targetRuleOverride: {} });
+  if (card.number === "hSD04-010") {
+    // Its Choco-at-Center text is a trigger condition, not a restriction on
+    // which Holomen may receive the Cheer. The generic target parser would
+    // otherwise mistake the condition name for the attachment target.
+    enqueueArchiveCheerToTarget(state, playerIndex, {
+      optional: true,
+      targetRule: {},
+      prompt: "ちよこーーッ！！：可揀 1 張存檔區應援，附加到自己的 Holomen。",
+    }, map);
+    return true;
+  }
+  if (["hBP01-090", "hBP02-026", "hBP03-076"].includes(card.number)) return queueCheerDeckSearch(state, playerIndex, text, zone, map, random, { optional: false, targetRuleOverride: {} });
   if (["hBP01-041", "hBP01-050", "hBP01-054", "hBP03-020"].includes(card.number)) {
     const options = stageEntries(player).filter(({ zone: targetZone, unit: candidate }) => {
       const targetCard = unitCard(candidate, map);
@@ -2083,11 +2181,13 @@ function queueSimpleTriggeredKeyword(state, playerIndex, zone, card, map, random
     return true;
   }
 
-  if (/(?:查看|檢視).*(?:牌庫|牌組)(?:頂|上方)|從自己(?:的)?牌庫(?:頂|上方).*查看|從自己(?:的)?牌庫(?:頂|上方)(?:的)?(?:查看|檢視)/u.test(text) && !/(?:應援|加油|吶喊)牌庫/u.test(text)) return queueGenericTopLook(state, playerIndex, text, map);
+  if (/(?:查看|檢視).*(?:牌庫|牌組)(?:頂|上方)|從自己(?:的)?牌庫(?:頂|上方).*查看|從自己(?:的)?牌庫(?:頂|上方)(?:的)?(?:查看|檢視)/u.test(text) && !/(?:應援|加油|吶喊)牌庫/u.test(text)) return queueGenericTopLook(state, playerIndex, text, map, ["hBP02-036", "hBP02-045", "hBP02-067"].includes(card.number));
 
   const cheerTop = text.match(/(?:應援|加油)牌庫(?:頂|上方)(?:的)?\s*(\d+)\s*張/u);
   if (cheerTop && /查看|檢視/u.test(text)) return queueCheerDeckSearch(state, playerIndex, text, zone, map, random, { topCount: Number(cheerTop[1]) });
 
+  if (card.number === "hBP01-094") return queueCheerDeckSearch(state, playerIndex, text, zone, map, random, { optional: false, targetRuleOverride: { tags: ["#Promise"] } });
+  if (card.number === "hBP02-023") return queueCheerDeckSearch(state, playerIndex, text, zone, map, random, { optional: false, targetRuleOverride: {} });
   if (/(?:應援|加油|吶喊|艾爾)牌(?:庫|組)(?:中)?[^。；]*?(?:公開|展示|選擇|將|抽)\s*(?:1|一)\s*張/u.test(text)) return queueCheerDeckSearch(state, playerIndex, text, zone, map, random);
 
   if (/(?:檔案|存檔)區域?(?:中|的)?.*?(?:工具|吉祥物|粉絲|[〈「][^〉」]+[〉」]).*(?:裝備|附加)/u.test(text)) return queueArchiveSupportAttachment(state, playerIndex, text, zone, map);
@@ -2116,7 +2216,7 @@ function queueSimpleTriggeredKeyword(state, playerIndex, zone, card, map, random
   const damageMatch = text.match(/(?:造成|給予|特殊傷害)\s*(\d+)\s*點?(?:特殊傷害)?/u) || text.match(/(?:造成|給予)(?:特殊傷害)?\s*(\d+)/u) || text.match(/給予[^。；]*?(\d+)點特殊傷害/u);
   if (damageMatch && !/每有[^。；]*(?:造成|特殊傷害)|按每張[^。；]*(?:造成|特殊傷害)/u.test(text)) {
     const amount = Number(damageMatch[1]);
-    const loseLife = !/不會.*生命減少|不會減少.*生命|不會讓.*生命減少|生命不會減少/u.test(text);
+    const loseLife = !/不會.*生命(?:值)?減少|不會減少.*生命(?:值)?|不會讓.*生命(?:值)?減少|生命(?:值)?(?:也)?不會減少/u.test(text);
     const sourceName = card.keyword?.name || card.name;
     const specialMeta = { amount, loseLife, sourceName, sourceZone: zone };
     const centerAndCollab = /(?:中央|中心|中場|前排).*(?:合作|Collab)|(?:合作|Collab).*(?:中央|中心|中場|前排)/iu.test(text);
@@ -2144,7 +2244,7 @@ function queueSimpleTriggeredKeyword(state, playerIndex, zone, card, map, random
       if (options.length > 0) enqueueStageTarget(state, { playerIndex, targetPlayerIndex: opponentIndex, options, effect: "multiSpecialDamage", optional: false, prompt: `${sourceName}：直接按第 1 位後排，造成 ${amount} 點特殊傷害。`, meta: { ...specialMeta, remaining: Math.min(backTargetCount, options.length), selectedZones: [] } });
     } else if (/後排|後台|後場/u.test(text)) {
       enqueueStageTarget(state, { playerIndex, targetPlayerIndex: opponentIndex, rule: { zones: BACK_SLOTS }, effect: "specialDamage", optional: card.number !== "hBP01-091", prompt: `${card.keyword?.name || "卡片效果"}：直接按對手後排，造成 ${amount} 點特殊傷害。`, meta: { amount, loseLife, sourceName: card.keyword?.name || card.name, sourceZone: zone } });
-    } else if (/(?:1位|一位|一名|任意1位)(?:非Debut的?)?(?:Holomen|Holomem|成員)/iu.test(text)) {
+    } else if (/(?:1位|1名|一位|一名|任意1位)(?:非Debut的?)?(?:Holomen|Holomem|成員)/iu.test(text)) {
       enqueueStageTarget(state, { playerIndex, targetPlayerIndex: opponentIndex, rule: /非Debut/u.test(text) ? { excludeStages: ["Debut"] } : {}, effect: "specialDamage", optional: false, prompt: `${sourceName}：直接按對手 1 位合法 Holomen，造成 ${amount} 點特殊傷害。`, meta: specialMeta });
     } else if (opponent.zones.center) enqueueEffect(state, { type: "specialDamage", playerIndex, targetPlayerIndex: opponentIndex, targetZone: "center", amount, loseLife, sourceName: card.keyword?.name || card.name, sourceZone: zone });
     handled = true;
@@ -2170,14 +2270,17 @@ function queueSimpleTriggeredKeyword(state, playerIndex, zone, card, map, random
   const healMatch = text.match(/(?:回復|恢復)(?:該Holomen|這位Holomen|自己的一位[^。]*)?\s*(\d+)\s*(?:點)?HP/u);
   if (healMatch) {
     const amount = Number(healMatch[1]);
-    if (/這位Holomen|此Holomen|該Holomen/u.test(text)) healStageUnit(state, playerIndex, zone, amount, map);
-    else enqueueStageTarget(state, { playerIndex, rule: { damaged: true, ...simpleTargetRule(text) }, effect: "heal", optional: !["hBP03-017", "hBP05-019"].includes(card.number), prompt: `${card.keyword?.name || "卡片效果"}：直接按自己 1 位受傷 Holomen，回復 ${amount} HP。`, meta: { amount } });
+    const sourceUnit = player.zones[zone];
+    const abilitySourceUnitId = sourceUnit && unitCard(sourceUnit, map)?.number === card.number ? topCard(sourceUnit)?.id || "" : "";
+    if (/這位Holomen|此Holomen|該Holomen/u.test(text)) healStageUnit(state, playerIndex, zone, amount, map, true, abilitySourceUnitId);
+    else enqueueStageTarget(state, { playerIndex, rule: { damaged: true, ...simpleTargetRule(text) }, effect: "heal", optional: !["hBP03-017", "hBP05-019"].includes(card.number), prompt: `${card.keyword?.name || "卡片效果"}：直接按自己 1 位受傷 Holomen，回復 ${amount} HP。`, meta: { amount, abilitySourceUnitId } });
     handled = true;
   }
 
   if (/(?:從)?(?:自己|你的|我方)(?:的)?(?:牌庫|牌組)(?:中)?(?:公開|展示)\s*(?:1|2|一|二|兩)張/u.test(text) && /加入手牌/u.test(text) && !/牌庫頂/u.test(text)) {
     const amount = textNumber(text.match(/(?:公開|展示)\s*([1-9一二兩三四五])張/u)?.[1] || "1");
-    queueDeckToHand(state, playerIndex, simpleSearchRule(text), map, random, { min: amount, max: amount, label: card.keyword?.name || card.name });
+    const optional = !["hBP02-011", "hBP02-016", "hBP02-022", "hBP03-029"].includes(card.number);
+    queueDeckToHand(state, playerIndex, simpleSearchRule(text), map, random, { min: amount, max: amount, optional, label: card.keyword?.name || card.name });
     handled = true;
   }
 
@@ -2197,7 +2300,7 @@ function queueSimpleTriggeredKeyword(state, playerIndex, zone, card, map, random
     handled = true;
   }
 
-  if (/(?:檔案|存檔)區域?(?:中|的)?.*應援.*(?:送|附加)/u.test(text)) {
+  if (/(?:檔案|存檔)區域?(?:中|的)?.*(?:(?:應援|加油|吶喊).*?(?:送|附加)|(?:送|附加).*?(?:應援|加油|吶喊))/u.test(text)) {
     const range = text.match(/([1-9一二兩三四五])\s*(?:到|至|[～~-])\s*([1-9一二兩三四五])\s*(?:張|位)/u);
     const exact = textNumber(text.match(/(?:中的?|將|把|各送出|送出|選擇)\s*([1-9一二兩三四五])\s*張/u)?.[1] || "1");
     const perRestedJustice = /每有1位.*休息.*#Justice/u.test(text) ? stageOptionsMatching(player, map, { tags: ["#Justice"], rested: true }).length : 0;
@@ -2211,6 +2314,14 @@ function queueSimpleTriggeredKeyword(state, playerIndex, zone, card, map, random
 
 function hbp09Legacy_queueBloomEffects(state, playerIndex, zone, card, map, random) {
   const player = state.players[playerIndex];
+  if (card.number === "hBP02-058") {
+    queueArchiveToHand(state, playerIndex, { group: "support", names: ["森カリオペの鎌", "Death-sensei"] }, map, { min: 1, max: 1, optional: true, label: card.keyword?.name || card.name });
+    return;
+  }
+  if (card.number === "hBP01-071") {
+    queueArchiveToHand(state, playerIndex, { typeCodes: ["supportFan"], names: ["座員"] }, map, { min: 1, max: 1, optional: true, label: card.keyword?.name || card.name });
+    return;
+  }
   if (card.number === "hBP04-052") {
     enqueueStageTarget(state, { playerIndex, targetPlayerIndex: playerIndex === 0 ? 1 : 0, rule: { zones: BACK_SLOTS }, effect: "specialDamage", optional: false, prompt: "選擇對手後排，造成 20 點特殊傷害；因此擊倒不扣生命。", meta: { amount: 20, loseLife: false, sourceName: card.keyword.name, sourceZone: zone } });
     return;
@@ -2227,7 +2338,7 @@ function hbp09Legacy_queueBloomEffects(state, playerIndex, zone, card, map, rand
   }
   if (card.number === "hBP03-038") {
     const stack = player.zones[zone]?.stack || [];
-    if (map.get(stack.at(-2)?.number)?.stage === "Debut") queueDeckToHand(state, playerIndex, { group: "holomem", stages: ["1st"], names: ["フワワ・アビスガード"] }, map, random, { label: card.keyword.name });
+    if (map.get(stack.at(-2)?.number)?.stage === "Debut") queueDeckToHand(state, playerIndex, { group: "holomem", stages: ["1st"], names: ["フワワ・アビスガード"] }, map, random, { min: 1, max: 1, optional: false, label: card.keyword.name });
     return;
   }
   if (card.number === "hBP01-012") {
@@ -2281,7 +2392,7 @@ function hbp09Legacy_queueBloomEffects(state, playerIndex, zone, card, map, rand
     const usageKey = "bloom:hBP02-032";
     if (!usedNamedThisTurn(player, usageKey, state.turn)) {
       markNamedUsage(player, usageKey, state.turn);
-      queueDeckToHand(state, playerIndex, { group: "holomem", names: ["宝鐘マリン", "寶鐘瑪琳"] }, map, random, { min: 1, max: 1, optional: true, label: card.keyword?.name || card.name });
+      queueDeckToHand(state, playerIndex, { group: "holomem", names: ["宝鐘マリン", "寶鐘瑪琳"] }, map, random, { min: 1, max: 1, optional: false, label: card.keyword?.name || card.name });
     }
   } else if (card.number === "hBP05-044") {
     const usageKey = "bloom:hBP05-044";
@@ -2326,6 +2437,9 @@ function hbp09Legacy_queueBloomEffects(state, playerIndex, zone, card, map, rand
     if (options.length > 0) enqueueStageTarget(state, { playerIndex, targetPlayerIndex: opponentIndex, options, effect: "specialDamageThenOpponentDraw", prompt: "わたビーーーーーーーム！！！！！！：直接按對手中央或合作 Holomen，造成 30 點特殊傷害；之後對手抽 1 張。", meta: { amount: 30, sourceName: card.keyword?.name || card.name, sourceZone: zone, drawPlayerIndex: opponentIndex } });
   } else if (card.number === "hBP07-019") {
     queueDeckAttachmentToStage(state, playerIndex, { names: ["BAZO", "Zecretary"] }, { names: ["ベスティア・ゼータ", "Vestia Zeta"] }, map, random, card.keyword?.name || card.name, { optional: false });
+  } else if (card.number === "hBP07-027") {
+    const options = stageOptionsMatching(player, map, { zones: BACK_SLOTS }).filter((targetZone) => targetZone !== zone);
+    if (options.length > 0) enqueueStageTarget(state, { playerIndex, options, effect: "addModifier", optional: false, prompt: "ハートの女王の采配：直接按自己另一位後排 Holomen，本回合 Arts +30。", meta: { kind: "arts", amount: 30, sourceNumber: card.number } });
   } else if (card.number === "hBP07-033") {
     const options = stageEntries(player).filter(({ unit: target }) => Number(target.bloomedTurn || 0) === state.turn && cardHasTag(unitCard(target, map), "#FLOW GLOW")).map(({ zone: targetZone }) => targetZone);
     if (options.length > 0) enqueueStageTarget(state, { playerIndex, options, effect: "addModifier", prompt: "ティールマーメイド：直接按本回合曾 Bloom 的 1 位 #FLOW GLOW Holomen，本回合 Arts +30。", meta: { kind: "arts", amount: 30, sourceNumber: card.number } });
@@ -2354,15 +2468,21 @@ function hbp09Legacy_queueBloomEffects(state, playerIndex, zone, card, map, rand
   } else if (card.number === "hSD17-007") {
     if (BACK_SLOTS.includes(zone)) enqueueStageTarget(state, { playerIndex, targetPlayerIndex: opponentIndex, rule: { zones: BACK_SLOTS }, effect: "specialDamage", optional: false, prompt: "Message for You：選擇對手 1 位後排成員，造成 10 特殊傷害。", meta: { amount: 10, loseLife: true, sourceZone: zone, sourceName: card.keyword.name } });
   } else if (card.number === "hBP02-059") {
-    if (player.mainDeck.length > 0) enqueueCardSelection(state, { playerIndex, cards: player.mainDeck, min: 1, max: 1, effect: "deckToArchiveShuffle", source: "deck", prompt: "Soul Voice：公開牌庫 1 張卡放到存檔區，之後洗牌。" });
+    const archived = player.mainDeck.shift();
+    if (archived) {
+      player.archive.push(archived);
+      currentTurnEvents(player, state.turn).deckArchived += 1;
+      player.mainDeck = shuffle(player.mainDeck, random);
+    }
+    appendLog(state, `${player.name} 因「Soul Voice」將牌庫頂 ${archived ? 1 : 0} 張放到存檔區，然後洗牌。`, archived ? [archived] : []);
   } else if (card.number === "hBP03-036") {
     const candidates = player.mainDeck.filter((instance) => cardHasName(map.get(instance.number), "小鳥遊キアラ"));
-    if (candidates.length > 0) enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: Math.min(4, candidates.length), optional: false, effect: "kiaraReveal", source: "deck", prompt: "公開1～4張小鳥遊キアラ。" });
+    if (candidates.length > 0) enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: Math.min(4, candidates.length), optional: false, effect: "kiaraReveal", source: "deck", search: true, prompt: "公開1～4張小鳥遊キアラ。" });
     else player.mainDeck = shuffle(player.mainDeck, random);
   } else if (card.number === "hBP01-037") {
     if (player.cheerDeck.length > 0) enqueueEffect(state, { type: "eventCheerTarget", playerIndex, afterEffect: "healSource", afterZone: zone, healAmount: 40, prompt: "ゴシックドール：直接按自己 1 位 Holomen，附加應援牌庫頂 1 張。" });
     else if ((player.zones[zone]?.attachments || []).some((instance) => map.get(instance.number)?.typeCode === "supportTool")) {
-      const healed = healStageUnit(state, playerIndex, zone, 40, map);
+      const healed = healStageUnit(state, playerIndex, zone, 40, map, true, topCard(player.zones[zone])?.id || "");
       appendLog(state, `${card.name} 因裝備工具回復 ${healed} HP。`);
     }
   } else if (card.number === "hBP02-021") {
@@ -2453,9 +2573,8 @@ function hbp09Legacy_queueBloomEffects(state, playerIndex, zone, card, map, rand
   } else if (card.number === "hBP07-038") {
     enqueueEffect(state,{type:"haatoRoll",playerIndex,meta:{mode:"bloom",sourceNumber:card.number,sourceZone:zone,sourceId:topCard(player.zones[zone]).id,label:card.keyword?.name||card.name}});
   } else if (card.number === "hBP07-072") {
-    const odd = rollDice(random, state, playerIndex, 3, card, "因 Bloom 效果擲 3 次骰").filter((die) => die % 2 === 1).length;
     const options = stageOptionsMatching(player, map, { tags: ["#秘密結社holoX"] });
-    if (options.length > 0) enqueueStageTarget(state, { playerIndex, options, effect: "addModifier", prompt: `直接按自己 1 位 #秘密結社holoX Holomen，本回合 Arts +${odd * 10}。`, meta: { kind: "arts", amount: odd * 10, sourceNumber: card.number } });
+    if (options.length > 0) enqueueStageTarget(state, { playerIndex, options, rule: { tags: ["#秘密結社holoX"] }, effect: "hBP07LaplusBloomDiceArts", prompt: "先選擇自己舞台上 1 位 #秘密結社holoX Holomen，再擲 3 次骰。", meta: { sourceNumber: card.number } });
   } else if (card.number === "hBP04-037") {
     enqueueOptionChoice(state,{playerIndex,options:[{id:"roll",label:"擲一次骰子"}],optional:true,effect:"ririkaKpgRoll",prompt:"KPG：可以擲一次骰子。"});
   } else if (card.number === "hBP02-051") {
@@ -2495,9 +2614,12 @@ function hbp09Legacy_queueBloomEffects(state, playerIndex, zone, card, map, rand
     if (candidates.length > 0) enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: Math.min(4, candidates.length), prompt: "Bloom：可按次序揀 1–4 張「博衣こより」放到牌庫底。", effect: "koyoriBottom", source: "archive", optional: true, meta: { zone } });
   } else if (card.number === "hBP04-012") {
     const candidates = player.mainDeck.filter((instance) => cardHasTag(map.get(instance.number), "#こよラボ") && map.get(instance.number)?.group === "support");
-    if (candidates.length > 0) enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: 1, prompt: "Bloom：公開牌庫中 1 張 #こよラボ 支援卡加入手牌。", effect: "deckToHandShuffle", source: "deck", optional: false });
+    if (candidates.length > 0) enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: 1, prompt: "Bloom：公開牌庫中 1 張 #こよラボ 支援卡加入手牌。", effect: "deckToHandShuffle", source: "deck", search: true, optional: false });
     else player.mainDeck = shuffle(player.mainDeck, random);
-  } else if (card.number !== "hBP06-042" && ["bloom", "bloom_effect"].includes(card.keyword?.type)) queueSimpleTriggeredKeyword(state, playerIndex, zone, card, map, random);
+  } else if (card.number === "hBP04-014") {
+    queueArchiveToHand(state, playerIndex, { tags: ["#白上'sキャラクター"] }, map, { min: 1, max: 2, optional: true, label: card.keyword?.name || card.name });
+  } else if (card.number !== "hBP06-042" && ["bloom", "bloom_effect"].includes(card.keyword?.type)
+    && (card.number !== "hBP02-016" || map.get(player.zones[zone]?.stack?.at(-2)?.number)?.stage === "Debut")) queueSimpleTriggeredKeyword(state, playerIndex, zone, card, map, random);
 
   for (const modifier of (player.modifiers || []).filter((item) => item.kind === "flowGlowBloomCheer" && Number(item.expiresTurn || 0) >= state.turn)) {
     if (!cardHasTag(card, "#FLOW GLOW") || player.cheerDeck.length === 0) continue;
@@ -2511,6 +2633,9 @@ function queueAttachmentBloomEffects(state, playerIndex, zone, map) {
   const stageUnit = player.zones[zone];
   const card = unitCard(stageUnit, map);
   if (!stageUnit || !card) return;
+  // Bloom changes which continuous attachment limits apply. Reconcile those
+  // limits before resolving the newly visible Bloom and attached-card triggers.
+  queueAttachmentCapacityCheck(state, playerIndex, zone);
   const has = (number) => stageUnit.attachments.some((instance) => instance.number === number);
   const udinTriggers = has("hBP02-097") && cardHasName(card, "クレイジー・オリー");
   let draws = 0;
@@ -2707,7 +2832,7 @@ function hbp09Legacy_queueCollabEffects(state, playerIndex, card, map, random) {
       const candidates = player.mainDeck.filter((instance) => map.get(instance.number)?.stage === "Debut");
       const distinct = candidates.filter((c, i) => !candidates.slice(0, i).some(other => talentMatches(map.get(c.number), map.get(other.number))));
       const count = Math.min(2, distinct.length);
-      if (count) enqueueCardSelection(state, { playerIndex, cards: candidates, min: count, max: count, optional: false, effect: "differentNamedDeckToHand", source: "deck", prompt: "公開卡名不同的 Debut Holomen 加入手牌。" });
+      if (count) enqueueCardSelection(state, { playerIndex, cards: candidates, min: count, max: count, optional: false, effect: "differentNamedDeckToHand", source: "deck", search: true, prompt: "公開卡名不同的 Debut Holomen 加入手牌。" });
       else player.mainDeck = shuffle(player.mainDeck, random);
     }
   } else if (card.number === "hBP06-064") {
@@ -2770,7 +2895,7 @@ function hbp09Legacy_queueCollabEffects(state, playerIndex, card, map, random) {
     }
   } else if (card.number === "hSD13-015") {
     const options = stageCheerOptions(player, map);
-    if (options.length > 0) enqueueStageCheerSelection(state, { playerIndex, options, effect: "cheerBottomThenSearch", optional: true, prompt: "可直接按自己舞台 1 張實際應援放回應援牌庫底；之後搜尋並附加 1 張應援。", meta: { sourceZone: "collab" } });
+    if (options.length > 0) enqueueStageCheerSelection(state, { playerIndex, options, effect: "cheerBottomThenSearch", optional: true, prompt: "可將自己舞台 1 張應援放回應援牌庫底；支付後公開應援牌庫頂 1 張並附加到自己的 Holomen，然後洗牌。", meta: { sourceZone: "collab" } });
   } else if (card.number === "hBP01-095") {
     const options = stageEntries(opponent).filter(({ zone, unit: stageUnit }) => BACK_SLOTS.includes(zone) && stageUnit.stack.length > 1 && stageUnit.stack.some((instance) => map.get(instance.number)?.stage === "Debut")).map(({ zone }) => zone);
     if (options.length > 0) enqueueStageTarget(state, { playerIndex, targetPlayerIndex: opponentIndex, options, effect: "collabDebloom", prompt: "巻き戻し：直接按對手 1 位後排 Bloom Holomen，令其變回 Debut。" });
@@ -2819,6 +2944,11 @@ function hbp09Legacy_queueCollabEffects(state, playerIndex, card, map, random) {
     }
   } else if (card.number === "hBP08-034") {
     if (playerIndex !== state.firstPlayer && Number(player.turnsTaken || 0) === 1 && emptyBackSlots(player).length >= 1 && stageUnitCount(player) < 6) queueDeckCardsToStage(state, playerIndex, { group: "holomem", stages: ["Debut"], names: ["フワワ・アビスガード", "Fuwawa Abyssgard"] }, map, random, { min: 1, max: 1, optional: false, label: "相信 FUWAMOCO！（Fuwawa）", afterEffect: "fuwamocoMococo" });
+  } else if (card.number === "hBP08-038") {
+    const oshi = map.get(player.oshi?.number);
+    if (cardHasName(oshi, "FUWAMOCO") && (oshi?.colors || []).includes("藍")) {
+      queueArchiveToHand(state, playerIndex, { group: "holomem", tags: ["#Advent"] }, map, { min: 1, max: 1, optional: true, label: card.keyword?.name || card.name });
+    }
   } else if (card.number === "hBP08-040") {
     if ((player.zones.collab?.attachments || []).some((instance) => cardHasName(map.get(instance.number), "鬼神刀「阿修羅」")) && !opponent.zones.collab && BACK_SLOTS.some((targetZone) => opponent.zones[targetZone])) enqueueEffect(state, { type: "forcedCollab", playerIndex: opponentIndex, prompt: "桜の気配に誘われて：直接按自己 1 位後排 Holomen 移到合作位置（不視為合作）。" });
   } else if (card.number === "hSD12-014") {
@@ -3040,8 +3170,7 @@ function hbp09Legacy_queueGiftOshiSkillEffects(state, playerIndex, skill, kind, 
       enqueueEffect(state, { type: "eventCheerTarget", playerIndex, targetRule: { tags: ["#Advent"] }, optional: false, prompt: "モゴジャ～～ン！！！：直接按自己 1 位 #Advent Holomen，附加應援牌庫頂 1 張。" });
     }
     if (giftCard.number === "hBP07-045" && kind === "sp" && player.mainDeck.length > 0) {
-      player.holoPower.push(player.mainDeck.shift());
-      appendLog(state, `${player.name} 因「テンション上がってきた！」將牌庫頂 1 張放到 Holo Power。`);
+      enqueueEffect(state, { type: "hbp07BaeSpGiftPower", playerIndex });
     }
   }
 }
@@ -3208,7 +3337,7 @@ function hbp09Legacy_queueAttachmentEntryEffects(state, playerIndex, targetZone,
   }
   if (attachment.number === ASSISTANT_CARD) queueAssistantCheerMove(state, playerIndex, targetZone);
   if (source === "hand" && attachment.number === "hBP02-088" && cardHasName(targetCard, "森カリオペ") && ["1st", "2nd"].includes(targetCard?.stage) && player.mainDeck.length > 0) {
-    player.archive.push(player.mainDeck.shift());
+    archiveMainDeckCards(player, state, player.mainDeck.shift());
     appendLog(state, `${player.name} 因森美聲的鐮刀將牌庫頂 1 張放到存檔區。`);
   }
   if (source === "hand" && attachment.number === "hBP01-125" && player.hand.length > 0) enqueueHandToDestination(state, playerIndex, { min: 0, max: 1, optional: true, effect: "kfpDiscard", prompt: "KFP：可將 1 張手牌放到存檔區；若有支付便抽 1 張。" });
@@ -3229,6 +3358,13 @@ function hbp09Legacy_queueAttachmentEntryEffects(state, playerIndex, targetZone,
 
 function isAttachment(card) {
   return ["supportTool", "supportMascot", "supportFan"].includes(String(card?.typeCode || ""));
+}
+
+function hasStarStarTFirstTurnPermission(state, playerIndex, player, card, map) {
+  return card?.number === "hEB01-032"
+    && playerIndex === state.firstPlayer
+    && Number(player.turnsTaken || 0) === 1
+    && cardHasName(map.get(player.oshi?.number), "ときのそら");
 }
 
 function hbp09Legacy_commitSupport(state, playerIndex, cardInstance, card) {
@@ -3338,8 +3474,23 @@ function queueDeckSearch(state, playerIndex, rule, map, random, label) {
   const player = state.players[playerIndex];
   const candidates = player.mainDeck.filter((instance) => cardMatchesRule(map.get(instance.number), rule.match, player, map));
   if (candidates.length > 0) {
-    enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: 1, prompt: `${label}：可從牌庫公開 1 張符合條件的卡加入手牌，亦可不公開。`, effect: "deckToHandShuffle", source: "deck", optional: !rule.required });
+    const prompt = rule.required
+      ? `${label}：必須從牌庫公開 1 張符合條件的卡加入手牌。`
+      : `${label}：可從牌庫公開 1 張符合條件的卡加入手牌，亦可不公開。`;
+    enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: 1, prompt, effect: "deckToHandShuffle", source: "deck", search: true, optional: !rule.required });
   } else player.mainDeck = shuffle(player.mainDeck, random);
+}
+
+function finishTwoColorComputer(state, playerIndex, ids, map, random) {
+  const player = state.players[playerIndex];
+  const moved = ids.filter(Boolean).map((id) => {
+    const card = removeById(player.mainDeck, id);
+    assert(card, "雙色電腦所選卡片已改變。");
+    return card;
+  });
+  player.hand.push(...moved);
+  player.mainDeck = shuffle(player.mainDeck, random);
+  appendLog(state, `${player.name} 將 ${moved.length} 張符合條件的 1st Holomen 加入手牌並洗牌。`, moved);
 }
 
 function queueDeckCardsToStage(state, playerIndex, rule, map, random, { min = 1, max = 1, optional = true, label = "牌庫登場效果", afterEffect = "", afterMeta = {} } = {}) {
@@ -3363,6 +3514,7 @@ function queueDeckCardsToStage(state, playerIndex, rule, map, random, { min = 1,
     prompt: `${label}：從牌庫公開 ${min === max ? min : `${min}–${selectableMax}`} 張符合條件的 Debut；之後逐張直接按牌桌空位。`,
     effect: "deckCardsToStage",
     source: "deck",
+    search: true,
     optional,
     meta: { afterEffect, afterMeta },
   });
@@ -3400,9 +3552,10 @@ function queueDeckToHand(state, playerIndex, rule, map, random, { min = 1, max =
     cards: candidates,
     min: optional ? 0 : Math.min(min, selectableMax),
     max: selectableMax,
-    prompt: `${label}：可公開${min === max ? ` ${min} 張` : ` ${min}–${selectableMax} 張`}符合條件的卡加入手牌。`,
+    prompt: `${label}：${optional ? "可公開" : "公開"}${min === max ? ` ${min} 張` : ` ${min}–${selectableMax} 張`}符合條件的卡加入手牌。`,
     effect,
     source: "deck",
+    search: true,
     optional,
     meta,
   });
@@ -3422,7 +3575,7 @@ function queueGroupedDeckToHand(state, playerIndex, groups, map, random, label =
     queueGroupedDeckToHand(state, playerIndex, remainingGroups, map, random, label);
     return;
   }
-  enqueueCardSelection(state, { playerIndex, cards, min: group.required ? 1 : 0, max: 1, optional: !group.required, effect: "groupedDeckToHand", source: "deck", prompt: `${label}：可公開 1 張${group.label || "符合條件的卡"}加入手牌。`, meta: { remainingGroups, label } });
+  enqueueCardSelection(state, { playerIndex, cards, min: group.required ? 1 : 0, max: 1, optional: !group.required, effect: "groupedDeckToHand", source: "deck", search: true, prompt: `${label}：可公開 1 張${group.label || "符合條件的卡"}加入手牌。`, meta: { remainingGroups, label } });
 }
 
 function queueArchiveToHand(state, playerIndex, rule, map, { min = 1, max = 1, optional = true, label = "存檔區回收", effect = "archiveToHand", meta = {} } = {}) {
@@ -3502,7 +3655,7 @@ function playSimpleSupport(state, playerIndex, cardInstance, card, effect, map, 
     commitSupport(state, playerIndex, cardInstance, card);
     const stageColors = new Set(stageEntries(player).flatMap(({ unit: stageUnit }) => unitCard(stageUnit, map)?.colors || []));
     const candidates = player.cheerDeck.filter((instance) => (map.get(instance.number)?.colors || []).some((color) => stageColors.has(color)));
-    if (candidates.length > 0) enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: 1, prompt: "應援棒：可公開 1 張與自己 Holomen 同色的應援；下一步直接按牌桌目標。", effect: "cheerStickCheer", source: "cheerDeck", optional: true });
+    if (candidates.length > 0) enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: 1, prompt: "應援棒：公開 1 張與自己 Holomen 同色的應援；下一步直接按牌桌目標。", effect: "cheerStickCheer", source: "cheerDeck", optional: false });
     else player.cheerDeck = shuffle(player.cheerDeck, random);
   } else if (effect === "swapOwnCenter") {
     commitSupport(state, playerIndex, cardInstance, card);
@@ -3582,7 +3735,7 @@ function playAutomatedEvent(state, playerIndex, cardInstance, card, map, random)
     }
   } else if (card.number === "hBP06-093") {
     const candidates = player.mainDeck.filter((instance) => cardHasTag(map.get(instance.number), "#秘密結社holoX") && map.get(instance.number)?.group === "holomem");
-    if (candidates.length > 0) enqueueCardSelection(state, { playerIndex, cards: candidates, min: Math.min(2, candidates.length), max: Math.min(2, candidates.length), prompt: "山田琉依54世：公開 2 張 #秘密結社holoX Holomen 加入手牌。", effect: "holoXSearch", source: "deck", optional: false, meta: { opponentIndex } });
+    if (candidates.length > 0) enqueueCardSelection(state, { playerIndex, cards: candidates, min: Math.min(2, candidates.length), max: Math.min(2, candidates.length), prompt: "山田琉依54世：公開 2 張 #秘密結社holoX Holomen 加入手牌。", effect: "holoXSearch", source: "deck", search: true, optional: false, meta: { opponentIndex } });
     else {
       player.mainDeck = shuffle(player.mainDeck, random);
       if (totalCheer(player) < totalCheer(opponent) && player.cheerDeck.length > 0) enqueueEffect(state, { type: "eventCheerTarget", playerIndex, optional: true, prompt: "自己的應援較少：可以按一位 Holomen，從應援牌庫附加 1 張應援。" });
@@ -3642,7 +3795,7 @@ function playExtendedSupport(state, playerIndex, cardInstance, card, effect, map
     const drawn = drawCards(state, playerIndex, 2);
     const die = rollDie(random, state, playerIndex); logDie(state, playerIndex, die);
     appendLog(state, `${player.name} 先抽 ${drawn} 張牌。`);
-    if ([3, 5, 6].includes(die)) queueDeckToHand(state, playerIndex, { group: "holomem", stages: ["Debut"] }, map, random, { min: 1, max: 1, label: "Mikkorone 24", optional: true });
+    if ([3, 5, 6].includes(die)) queueDeckToHand(state, playerIndex, { group: "holomem", stages: ["Debut"] }, map, random, { min: 1, max: 1, label: "Mikkorone 24", optional: false });
     else if ([2, 4].includes(die)) appendLog(state, `${player.name} 再抽 ${drawCards(state, playerIndex, 1)} 張牌。`);
   } else if (effect === "dualMonitorComputer") {
     commitSupport(state, playerIndex, cardInstance, card);
@@ -3681,8 +3834,14 @@ function playExtendedSupport(state, playerIndex, cardInstance, card, effect, map
     if (wasKnockedOutDuringPreviousOpponentTurn(state, playerIndex) && player.life.length < opponent.life.length) enqueueArchiveCheerToTarget(state, playerIndex, { optional: false, prompt: "條件成立：揀 1 張存檔區應援；下一步直接按 Holomen。" }, map);
   } else if (effect === "favoriteComputer") {
     commitSupport(state, playerIndex, cardInstance, card);
-    const debuts = player.mainDeck.filter((instance) => map.get(instance.number)?.stage === "Debut");
-    assert(debuts.length > 0, "牌庫沒有 Debut Holomen。 ");
+    const hasBuzzGoods = player.mainDeck.some((instance) => map.get(instance.number)?.group === "support" && cardHasTag(map.get(instance.number), "#Buzzグッズ"));
+    const buzz = player.mainDeck.filter((instance) => map.get(instance.number)?.group === "holomem" && cardIsBuzz(map.get(instance.number)));
+    const debuts = player.mainDeck.filter((instance) => {
+      const debut = map.get(instance.number);
+      return hasBuzzGoods && debut?.group === "holomem" && debut.stage === "Debut"
+        && buzz.some((candidate) => talentMatches(map.get(candidate.number), debut));
+    });
+    assert(debuts.length > 0, "牌庫沒有可配對的 Debut、同名 Buzz Holomen 及 #Buzzグッズ 支援卡。 ");
     enqueueCardSelection(state, { playerIndex, cards: debuts, min: 1, max: 1, effect: "favoriteComputerDebut", source: "deck", prompt: "最愛電腦：先公開 1 張 Debut；系統會再找同名 Buzz 與 #Buzzグッズ 支援。" });
   } else if (effect === "madeWithLove") {
     commitSupport(state, playerIndex, cardInstance, card);
@@ -3965,7 +4124,8 @@ function playFromHand(state, playerIndex, action, map, random) {
   assert(card.group === "support", "這張卡不能在主要階段直接使用。 ");
   const limited = String(card.type || "").toUpperCase().includes("LIMITED");
   if (limited) {
-    assert(!(playerIndex === state.firstPlayer && Number(player.turnsTaken || 0) === 1), "先攻玩家第 1 回合不可使用 LIMITED 支援卡。 ");
+    assert(!(playerIndex === state.firstPlayer && Number(player.turnsTaken || 0) === 1)
+      || hasStarStarTFirstTurnPermission(state, playerIndex, player, card, map), "先攻玩家第 1 回合不可使用 LIMITED 支援卡。 ");
     const allowance = Number(player.limitedAllowanceTurn || 0) === state.turn ? Number(player.limitedAllowance || 2) : 1;
     const used = Number(player.limitedTurn || 0) === state.turn ? Number(player.limitedUsesCount || 1) : 0;
     assert(used < allowance, `本回合最多只可使用 ${allowance} 張 LIMITED 支援卡。 `);
@@ -4001,7 +4161,7 @@ function playFromHand(state, playerIndex, action, map, random) {
       appendLog(state, `${player.name} 使用普通電腦，但牌庫或舞台沒有可選目標；牌庫已洗牌。`);
       return;
     }
-    state.pendingChoice = { type: "ordinaryComputer", playerIndex, sourceNumber: card.number, options, zones, optional: true, prompt: "普通電腦：可先揀 1 張 Debut，再直接按牌桌上的後排空位；亦可不公開卡片並洗牌。" };
+    state.pendingChoice = { type: "ordinaryComputer", playerIndex, sourceNumber: card.number, options, zones, optional: false, prompt: "普通電腦：揀 1 張 Debut 公開，再直接按牌桌上的後排空位。" };
     appendLog(state, `${player.name} 使用普通電腦；正在牌庫選擇 Debut Holomen。`);
     return;
   }
@@ -4018,9 +4178,16 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
   const player = state.players[playerIndex];
   state.pendingChoice = null;
   if (pending.type === "cardSelection") {
-    const skipped = Boolean(action.skip && pending.optional);
+    assert(!action.skip || pending.optional, "This choice cannot be skipped. ");
+    const skipped = Boolean(action.skip);
     const selectedIds = skipped ? [] : [...new Set(Array.isArray(action.cardIds) ? action.cardIds : [])];
-    assert(skipped || (selectedIds.length >= Number(pending.min || 0) && selectedIds.length <= Number(pending.max || 0)), `請選擇 ${pending.min === pending.max ? pending.min : `${pending.min}–${pending.max}`} 張卡。`);
+    const min = Number(pending.min || 0);
+    const nonEmptyMin = Number(pending.nonEmptyMin ?? min);
+    const countLabel = min === 0
+      ? nonEmptyMin > 0 ? `0 或 ${nonEmptyMin === pending.max ? nonEmptyMin : `${nonEmptyMin}–${pending.max}`}` : `0–${pending.max}`
+      : pending.min === pending.max ? `${pending.min}` : `${pending.min}–${pending.max}`;
+    assert(skipped || (selectedIds.length <= Number(pending.max || 0)
+      && ((selectedIds.length === 0 ? min === 0 : selectedIds.length >= Math.max(min, nonEmptyMin)))), `請選擇 ${countLabel} 張卡。`);
     assert(selectedIds.every((id) => pending.selectableIds.includes(id)), "卡片選擇無效。 ");
     const selected = selectedIds.map((id) => pending.cards.find((card) => card.id === id));
     assert(selected.every(Boolean), "所選卡片已改變。 ");
@@ -4030,19 +4197,15 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
       queueBottomOrder(state, playerIndex, unselected, "查看效果餘下卡片：按次序選擇；第 1 張會最先放到牌庫底。");
       appendLog(state, selected.length ? `${player.name} 公開 ${cardCodes(selected)} 加入手牌。` : `${player.name} 沒有從查看的卡片中公開卡片。`, selected);
     } else if (pending.effect === "lastCupArchive") {
-      player.archive.push(...selected);
+      archiveMainDeckCards(player, state, selected);
       player.mainDeck.unshift(...unselected);
       appendLog(state, player.name + " 將查看的 1 張卡放到存檔區。", selected);
     } else if (pending.effect === "genericTopLook") {
       player.hand.push(...selected);
       const remainder = pending.meta?.remainder || "bottom";
-      if (remainder === "archive") player.archive.push(...unselected);
+      if (remainder === "archive") archiveMainDeckCards(player, state, unselected);
       else if (unselected.length > 0) enqueueCardSelection(state, { playerIndex, cards: unselected, min: unselected.length, max: unselected.length, effect: remainder === "top" ? "topOrder" : "bottomOrder", source: "revealed", prompt: `按次序將餘下卡放回牌庫${remainder === "top" ? "頂" : "底"}。` });
       appendLog(state, selected.length ? `${player.name} 公開 ${cardCodes(selected)} 加入手牌。` : `${player.name} 沒有從查看的卡片中公開卡片。`, selected);
-    } else if (pending.effect === "raoraCheerSearch") {
-      const cheer = removeById(player.cheerDeck, selected[0]?.id);
-      assert(cheer, "公開的應援已改變。");
-      enqueueEffect(state, { type: "eventCheerTarget", playerIndex, cheerCard: cheer, optional: false, shuffleAfter: true, prompt: "正義の諧調：選擇自己1位成員附加公開應援，然後洗牌。" });
     } else if (["genericCheerTopPick", "genericCheerDeckPick"].includes(pending.effect)) {
       let cheer = selected[0] || null;
       if (pending.effect === "genericCheerDeckPick") {
@@ -4110,7 +4273,7 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
       }
     } else if (pending.effect === "summerPick") {
       player.hand.push(...selected);
-      player.archive.push(...unselected);
+      archiveMainDeckCards(player, state, unselected);
       appendLog(state, `${player.name} 將 1 張牌加入手牌，其餘放到存檔區。`);
     } else if (pending.effect === "sorazPick") {
       player.hand.push(...selected);
@@ -4341,8 +4504,7 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
       enqueueStageTarget(state, { playerIndex, options: [pending.meta.sourceZone], effect: "giftOverwriteBloom", prompt: "Overwrite：直接按牌桌上的 AZKi 完成 2nd Bloom。", meta: { sourceZone: pending.meta.sourceZone, cardId: selected[0].id } });
     } else if (pending.effect === "giftSlotSupportPick") {
       player.hand.push(...selected);
-      player.archive.push(...unselected);
-      currentTurnEvents(player, state.turn).deckArchived += unselected.length;
+      archiveMainDeckCards(player, state, unselected);
       if (selected.length > 0) markNamedUsage(player, pending.meta?.usageKey || "gift:hBP02-039", state.turn);
       appendLog(state, selected.length ? `${player.name} 以「ぷいぷいぷい～」將公開的支援卡加入手牌，其餘 ${unselected.length} 張放到存檔區。` : `${player.name} 略過 Gift，將公開的 ${unselected.length} 張卡放到存檔區。`);
     } else if (["genericKeywordHandArchiveCost", "genericKeywordHandBottomCost", "genericKeywordUnderArchiveCost"].includes(pending.effect)) {
@@ -4517,7 +4679,6 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
         player.archive.push(cheer);
         enqueueEffect(state, { type: "attachArchiveCheerCard", playerIndex, cardId: cheer.id, targetRule: pending.meta?.targetRule || {}, prompt: "直接按一位合法 Holomen 附加所選應援。" });
       });
-      triggerCheerArchivedGift(state, playerIndex, map, selected.length);
       player.cheerDeck = shuffle(player.cheerDeck, random);
     } else if (pending.effect === "deckSupportsToAttach") {
       selected.forEach((card) => {
@@ -4567,10 +4728,10 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
       player.hand.push(...selected);
       const selectableIds = unselected.filter((instance) => String(map.get(instance.number)?.typeCode || "").includes("Staff")).map((instance) => instance.id);
       if (selectableIds.length > 0) enqueueCardSelection(state, { playerIndex, cards: unselected, selectableIds, min: 1, max: 1, optional: false, effect: "oshiStaffPick", source: "revealed", prompt: "成功體驗－！！！：再公開 1 張工作人員；餘下卡放到存檔區。" });
-      else player.archive.push(...unselected);
+      else archiveMainDeckCards(player, state, unselected);
     } else if (pending.effect === "oshiStaffPick") {
       player.hand.push(...selected);
-      player.archive.push(...unselected);
+      archiveMainDeckCards(player, state, unselected);
       appendLog(state, `${player.name} 將公開卡加入手牌，其餘 ${unselected.length} 張放到存檔區。`);
     } else if (pending.effect === "oshiRobocoDiscard") {
       selected.forEach((card) => {
@@ -4616,7 +4777,16 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
       if (paidCount === 2 && pending.meta?.afterEffect === "challengerDraw") appendLog(state, `${player.name} 因 challenger 抽 ${drawCards(state, playerIndex, 3)} 張牌。`);
       const bonus = paidCount > 0 ? Number(pending.meta?.fixedBonus || 0) + paidCount * Number(pending.meta?.perBonus || 0) : 0;
       adjustQueuedArtsDamage(state, playerIndex, pending.meta?.sourceZone, bonus);
-      if (paidCount > 0 && pending.meta?.afterEffect === "buffSong") enqueueStageTarget(state, { playerIndex, rule: { tags: ["#歌"] }, effect: "artBuffTarget", prompt: `Arts 效果：直接按自己 1 位 #歌 Holomen，本回合 Arts +${paidCount * Number(pending.meta?.afterMeta?.perBonus || 0)}。`, meta: { kind: "arts", amount: paidCount * Number(pending.meta?.afterMeta?.perBonus || 0), sourceNumber: "arts", sourceZone: pending.meta?.sourceZone } });
+      if (paidCount > 0 && pending.meta?.afterEffect === "buffSong") {
+        const amount = Number(pending.meta?.afterMeta?.perBonus || 0);
+        for (let index = 0; index < paidCount; index += 1) enqueueStageTarget(state, {
+          playerIndex,
+          rule: { tags: ["#歌"] },
+          effect: "artBuffTarget",
+          prompt: `Arts 效果：為存檔的第 ${index + 1} 張手牌選擇自己 1 位 #歌 Holomen，Arts +${amount}。`,
+          meta: { kind: "arts", amount, sourceNumber: "arts", sourceZone: pending.meta?.sourceZone },
+        });
+      }
       if (paidCount > 0 && pending.meta?.afterEffect === "buffCenterAyame" && player.zones.center && cardHasName(unitCard(player.zones.center, map), "百鬼あやめ")) addStageModifier(player.zones.center, "arts", Number(pending.meta?.afterMeta?.amount || 0), state.turn, "arts");
       appendLog(state, paidCount ? `${player.name} 已支付 ${paidCount} 張卡成本${bonus ? `，這次 Arts +${bonus}` : ""}。` : `${player.name} 略過 Arts 的可選成本。`);
     } else if (pending.effect === "artUnderCardCost") {
@@ -4661,6 +4831,11 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
       });
       player.mainDeck = shuffle(player.mainDeck, random);
       appendLog(state, selected.length ? `${player.name} 公開 ${cardCodes(selected)} 加入手牌，並洗牌。` : `${player.name} 沒有從牌庫公開卡片；牌庫已洗牌。`, selected);
+      if (pending.meta?.afterEffect === "matsuriTopToHoloPower" && player.mainDeck.length > 0) {
+        const top = player.mainDeck.shift();
+        player.holoPower.push(top);
+        appendLog(state, `${player.name} 將牌庫頂 1 張卡放到 Holo Power。`);
+      }
       if (pending.meta?.afterEffect === "promiseTimeBuff") enqueueStageTarget(state, { playerIndex, effect: "addModifier", prompt: "自己的生命較少：直接按自己 1 位 Holomen，本回合 Arts +20。", meta: { kind: "arts", amount: 20 } });
       if (pending.meta?.afterEffect === "reglossDrawDiscard") {
         appendLog(state, `${player.name} 因舞台 Holomen 較少再抽 ${drawCards(state, playerIndex, 1)} 張牌。`);
@@ -4694,7 +4869,7 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
         const candidate = map.get(instance.number);
         return candidate?.stage === "1st" && !cardIsBuzz(candidate) && talentMatches(candidate, debutCard);
       });
-      if (candidates.length > 0) enqueueCardSelection(state, { playerIndex, cards: candidates, min: 0, max: 1, effect: "deckToHandShuffle", source: "deck", optional: true, prompt: "客製化電腦：可公開 1 張同名非 Buzz 1st Holomen 加入手牌。" });
+      if (candidates.length > 0) enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: 1, effect: "deckToHandShuffle", source: "deck", optional: false, prompt: "客製化電腦：公開 1 張同名非 Buzz 1st Holomen 加入手牌。" });
       else player.mainDeck = shuffle(player.mainDeck, random);
     } else if (pending.effect === "irohaNamedCheerPick") {
       state.effectQueue.unshift(...selected.map(cheer => ({ type: "attachArchiveCheerCard", playerIndex, cardId: cheer.id, targetRule: pending.meta.targetRule, prompt: "選擇指定名字的 Holomen 附加應援。" })));
@@ -4813,7 +4988,7 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
       if (player.archive.filter((instance) => cardHasName(map.get(instance.number), "限界飯")).length >= 3) addPlayerModifier(player, "arts", 50, state.turn, "hBP08-096", { names: ["一条莉々華", "一條莉々華"] });
     } else if (pending.effect === "mythologyPick") {
       player.hand.push(...selected);
-      player.archive.push(...unselected);
+      archiveMainDeckCards(player, state, unselected);
       appendLog(state, `${player.name} 將 ${selected.length} 張公開卡加入手牌，其餘 ${unselected.length} 張放到存檔區。`);
     } else if (pending.effect === "keepGrowingCheer") {
       selected.forEach((cheer) => enqueueEffect(state, { type: "attachArchiveCheerCard", playerIndex, cardId: cheer.id, targetRule: { zones: ["center", "collab"] }, maxCheerFromEffect: 2, effectBatch: "keepGrowing", prompt: "直接按中央或合作 Holomen 附加所選應援；每位最多收到 2 張。" }));
@@ -4834,16 +5009,10 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
         const candidate = map.get(instance.number);
         return candidate?.stage === "1st" && !cardIsBuzz(candidate) && (candidate.colors || []).includes(pending.meta?.secondColor) && instance.id !== selected[0].id;
       });
-      assert(second.length > 0, `牌庫沒有符合 ${pending.meta?.secondColor} 色的非 Buzz 1st Holomen。`);
-      enqueueCardSelection(state, { playerIndex, cards: second, min: 1, max: 1, effect: "twoColorFinish", source: "deck", prompt: `雙色電腦：公開 1 張 ${pending.meta?.secondColor} 色非 Buzz 1st Holomen。`, meta: { firstId: selected[0].id } });
+      if (second.length > 0) enqueueCardSelection(state, { playerIndex, cards: second, min: 1, max: 1, effect: "twoColorFinish", source: "deck", prompt: `雙色電腦：公開 1 張 ${pending.meta?.secondColor} 色非 Buzz 1st Holomen。`, meta: { firstId: selected[0].id } });
+      else finishTwoColorComputer(state, playerIndex, [selected[0]?.id], map, random);
     } else if (pending.effect === "twoColorFinish") {
-      [pending.meta?.firstId, selected[0]?.id].filter(Boolean).forEach((id) => {
-        const moved = removeById(player.mainDeck, id);
-        assert(moved, "雙色電腦所選卡片已改變。 ");
-        player.hand.push(moved);
-      });
-      player.mainDeck = shuffle(player.mainDeck, random);
-      appendLog(state, `${player.name} 將兩張不同顏色的 1st Holomen 加入手牌並洗牌。`);
+      finishTwoColorComputer(state, playerIndex, [pending.meta?.firstId, selected[0]?.id], map, random);
     } else if (pending.effect === "stackBottomOrder") {
       assert(selected.length === pending.cards.length, "需要為全部重疊 Holomen 決定次序。 ");
       player.mainDeck.push(...selected);
@@ -5034,8 +5203,10 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
         const moved = removeById(player.archive, pending.meta?.cardId);
         const movedCard = moved && map.get(moved.number);
         assert(moved && movedCard && bloomTargets(player, movedCard, map, state.turn).includes(action.zone), "光，再次點亮的 Bloom 目標已改變。 ");
+        const usedExtraBloom = Number(target.bloomedTurn || 0) === state.turn;
         target.stack.push(moved);
         target.bloomedTurn = state.turn;
+        if (usedExtraBloom) target.extraBloomUsedTurn = state.turn;
         currentTurnEvents(player, state.turn).bloomCount += 1;
         appendLog(state, `${player.name} 從存檔區讓 ${moved.number} Bloom。`, [moved]);
         queueBloomEffects(state, playerIndex, action.zone, movedCard, map, random);
@@ -5095,7 +5266,7 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
       } else if (pending.effect === "hBP01-008SpecialDamage") {
         state.effectQueue.unshift({ type: "specialDamage", playerIndex, targetPlayerIndex, targetZone: action.zone, amount: pending.meta?.amount, loseLife: pending.meta?.loseLife, sourceCardNumber: pending.meta?.sourceCardNumber, sourceName: pending.meta?.sourceName || "卡牌效果", sourceZone: pending.meta?.sourceZone || "", reactionsChecked: false });
       } else if (pending.effect === "specialDamage") {
-        const effect = { type: "specialDamage", playerIndex, targetPlayerIndex, targetZone: action.zone, amount: pending.meta?.amount, loseLife: pending.meta?.loseLife, sourceCardNumber: pending.meta?.sourceCardNumber, sourceName: pending.meta?.sourceName || "卡牌效果", sourceZone: pending.meta?.sourceZone || "", reactionsChecked: false };
+        const effect = { type: "specialDamage", playerIndex, targetPlayerIndex, targetZone: action.zone, amount: pending.meta?.amount, loseLife: pending.meta?.loseLife, sourceCardNumber: pending.meta?.sourceCardNumber, sourceName: pending.meta?.sourceName || "卡牌效果", sourceZone: pending.meta?.sourceZone || "", skipHbp01SuiseiReaction: Boolean(pending.meta?.skipHbp01SuiseiReaction), reactionsChecked: false };
         if (pending.meta?.beforeArts) state.effectQueue.unshift(effect);
         else enqueueEffect(state, effect);
       } else if (pending.effect === "oshiMarineSpecialDamage") {
@@ -5148,6 +5319,13 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
         const amount = cardIsBuzz(targetCard) || targetCard?.stage === "2nd" ? 50 : 20;
         addStageModifier(target, "arts", amount, state.turn, pending.meta?.sourceNumber || "hBP08-028");
         appendLog(state, `${targetCard?.name || action.zone} 因「ホロナツ大盛りパフェ」本回合 Arts +${amount}。`);
+      } else if (pending.effect === "hBP07LaplusBloomDiceArts") {
+        assert(cardHasTag(unitCard(target, map), "#秘密結社holoX"), "請選擇自己舞台上持有 #秘密結社holoX 的 Holomen。 ");
+        const sourceNumber = pending.meta?.sourceNumber || "hBP07-072";
+        const dice = rollDice(random, state, playerIndex, 3, map.get(sourceNumber), "因 Bloom 效果擲 3 次骰");
+        const amount = dice.filter((die) => die % 2 === 1).length * 10;
+        if (amount > 0) addStageModifier(target, "arts", amount, state.turn, sourceNumber);
+        appendLog(state, `${unitCard(target, map)?.name || action.zone} 因 Bloom 效果的奇數骰，本回合 Arts +${amount}。`);
       } else if (pending.effect === "addModifier") {
         addStageModifier(target, pending.meta?.kind || "arts", pending.meta?.amount, state.turn, pending.meta?.sourceNumber || "support", { uses: pending.meta?.uses });
         appendLog(state, `${unitCard(target, map)?.name || action.zone} 獲得本回合 ${pending.meta?.kind || "Arts"} ${Number(pending.meta?.amount || 0) >= 0 ? "+" : ""}${pending.meta?.amount} 修正。`);
@@ -5308,6 +5486,11 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
         appendLog(state, `${unitCard(target, map)?.name || action.zone} 有 ${target.cheer.length} 張應援，本回合 Arts +${amount}。`);
       } else if (pending.effect === "oshiKanadeSwap") {
         assert(BACK_SLOTS.includes(action.zone) && player.zones.center, "奏出的旋律互換目標已改變。 ");
+        const skill = map.get(player.oshi?.number)?.oshiSkill;
+        const cost = oshiPowerCost(skill, player.oshi?.number, "oshi");
+        assert(Number(player.oshiSkillTurn || 0) !== state.turn, "本回合已使用過推し技能。 ");
+        assert(player.holoPower.length >= cost, `Holo Power 不足，這個推し技能需要 ${cost}。 `);
+        if (cost > 0) player.archive.push(...player.holoPower.splice(-cost).reverse());
         const center = player.zones.center;
         player.zones.center = target;
         player.zones[action.zone] = center;
@@ -5324,7 +5507,7 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
         const healed = healStageUnit(state, targetPlayerIndex, action.zone, pending.meta?.heal, map);
         appendLog(state, `${unitCard(target, map)?.name || action.zone} 回復 ${healed} HP，並獲得接力費用修正。`);
       } else if (pending.effect === "heal") {
-        const healed = jacketProtectsHp(state, target, targetPlayer, player, map) ? 0 : healStageUnit(state, targetPlayerIndex, action.zone, pending.meta?.amount, map);
+        const healed = jacketProtectsHp(state, target, targetPlayer, player, map) ? 0 : healStageUnit(state, targetPlayerIndex, action.zone, pending.meta?.amount, map, true, pending.meta?.abilitySourceUnitId || "");
         appendLog(state, `${unitCard(target, map)?.name || action.zone} 回復 ${healed} HP。`);
       } else if (pending.effect === "healFull") {
         const healed = jacketProtectsHp(state, target, targetPlayer, player, map) ? 0 : Number(target.damage || 0);
@@ -5347,8 +5530,15 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
           const candidate = map.get(instance.number);
           return candidate?.stage === "1st" && !cardIsBuzz(candidate) && (candidate.colors || []).includes(colors[0]);
         });
-        assert(first.length > 0, `牌庫沒有符合 ${colors[0]} 色的非 Buzz 1st Holomen。`);
-        enqueueCardSelection(state, { playerIndex, cards: first, min: 1, max: 1, effect: "twoColorFirstSearch", source: "deck", prompt: `雙色電腦：公開 1 張 ${colors[0]} 色非 Buzz 1st Holomen。`, meta: { secondColor: colors[1] } });
+        if (first.length > 0) enqueueCardSelection(state, { playerIndex, cards: first, min: 1, max: 1, effect: "twoColorFirstSearch", source: "deck", prompt: `雙色電腦：公開 1 張 ${colors[0]} 色非 Buzz 1st Holomen。`, meta: { secondColor: colors[1] } });
+        else {
+          const second = player.mainDeck.filter((instance) => {
+            const candidate = map.get(instance.number);
+            return candidate?.stage === "1st" && !cardIsBuzz(candidate) && (candidate.colors || []).includes(colors[1]);
+          });
+          if (second.length > 0) enqueueCardSelection(state, { playerIndex, cards: second, min: 1, max: 1, effect: "twoColorFinish", source: "deck", prompt: `雙色電腦：公開 1 張 ${colors[1]} 色非 Buzz 1st Holomen。`, meta: {} });
+          else finishTwoColorComputer(state, playerIndex, [], map, random);
+        }
       } else if (pending.effect === "maitakeTarget") {
         const options = stageCheerOptions(player, map).filter((option) => option.zone !== action.zone);
         if (options.length > 0) enqueueStageCheerSelection(state, { playerIndex, options, min: 1, max: 1, effect: "moveSelectedCheerToZone", optional: true, prompt: "可直接按舞台上 1 張實際應援，改附到所選儒烏風亭らでん（最多 2 張）。", meta: { targetZone: action.zone, remaining: 2, after: "maitakeBonus" } });
@@ -5413,8 +5603,9 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
       } else if (pending.effect === "boundaryTransferTarget") {
         assert(cardHasName(unitCard(target, map), pending.meta.targetName), "請選擇指定成員。 ");
         const sourceZone = pending.meta.sourceZone;
-        const options = stageCheerOptions(player, map, { colors: [pending.meta.color], stage: { zones: [sourceZone] } }).filter(option => option.zone !== action.zone);
-        if (options.length > 0) enqueueStageCheerSelection(state, { playerIndex, options, effect: "boundaryTransferCheer", optional: true, prompt: `選擇此攻擊者的${pending.meta.color}色應援，改附到已選成員；可略過完成。`, meta: { ...pending.meta, targetZone: action.zone } });
+        const cheerRule = { colors: [pending.meta.color], ...(!pending.meta.anySource ? { stage: { zones: [sourceZone] } } : {}) };
+        const options = stageCheerOptions(player, map, cheerRule).filter(option => option.zone !== action.zone);
+        if (options.length > 0) enqueueStageCheerSelection(state, { playerIndex, options, effect: "boundaryTransferCheer", optional: true, prompt: `選擇自己舞台上的${pending.meta.color}色應援，改附到已選成員；可略過完成。`, meta: { ...pending.meta, targetZone: action.zone } });
       } else if (pending.effect === "genericReceiveMovedCheer") {
         const cheer = pending.meta?.cheer;
         assert(cheer, "要改附的應援已改變。 ");
@@ -5504,10 +5695,11 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
       assert(cheer, "找不到所選應援。 ");
       if (pending.effect === "boundaryTransferCheer") {
         const target = player.zones[pending.meta.targetZone];
-        assert(option.zone === pending.meta.sourceZone && target && cardHasName(unitCard(target, map), pending.meta.targetName) && effectiveCheerColors(player, source, cheer, map).includes(pending.meta.color), "應援或接收者已改變。 ");
+        assert((pending.meta.anySource || option.zone === pending.meta.sourceZone) && target && cardHasName(unitCard(target, map), pending.meta.targetName) && effectiveCheerColors(player, source, cheer, map).includes(pending.meta.color), "應援或接收者已改變。 ");
         attachCheerCards(state, target, [cheer]);
-        appendLog(state, `${player.name} 將攻擊者的 1 張${pending.meta.color}色應援改附到 ${pending.meta.targetName}。`);
-        const options = stageCheerOptions(player, map, { colors: [pending.meta.color], stage: { zones: [pending.meta.sourceZone] } }).filter(candidate => candidate.zone !== pending.meta.targetZone);
+        appendLog(state, `${player.name} 將 1 張${pending.meta.color}色應援改附到 ${pending.meta.targetName}。`);
+        const cheerRule = { colors: [pending.meta.color], ...(!pending.meta.anySource ? { stage: { zones: [pending.meta.sourceZone] } } : {}) };
+        const options = stageCheerOptions(player, map, cheerRule).filter(candidate => candidate.zone !== pending.meta.targetZone);
         if (options.length > 0) enqueueStageCheerSelection(state, { playerIndex, options, effect: pending.effect, optional: true, prompt: pending.prompt, meta: pending.meta });
       } else if (pending.effect === "opponentMoveCheerSource") {
         const targetOptions = stageOptions(owner).filter((targetZone) => targetZone !== option.zone);
@@ -5522,7 +5714,9 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
         queueDeckToHand(state, playerIndex, pending.meta?.rule || {}, map, random, { min: 1, max: 1, optional: false, label: pending.meta?.label || "卡牌效果" });
       } else if (pending.effect === "cheerBottomThenSearch") {
         owner.cheerDeck.push(cheer);
-        enqueueCardSelection(state, { playerIndex, cards: player.cheerDeck, min: 1, max: 1, optional: false, effect: "raoraCheerSearch", source: "cheerDeck", prompt: "正義の諧調：公開1張應援，附加到自己成員後洗牌。" });
+        const revealed = owner.cheerDeck.shift();
+        assert(revealed, "支付應援已放回應援牌庫後，牌庫應至少有 1 張可公開的應援。 ");
+        enqueueEffect(state, { type: "eventCheerTarget", playerIndex, cheerCard: revealed, shuffleAfter: true, prompt: "正義の諧調：選擇自己 1 位 Holomen，附加公開的應援，然後洗牌。" });
       } else if (pending.effect === "fuburaCheerCost") {
         const skillSource = owner.zones[pending.meta?.sourceZone];
         const attachment = skillSource?.attachments?.find((instance) => instance.id === pending.meta?.attachmentId && instance.number === "hBP02-092");
@@ -5647,7 +5841,22 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
         triggerCheerArchivedGift(state, playerIndex, map, 1);
         const remaining = Number(pending.meta?.remaining || 1) - 1;
         appendLog(state, `${player.name} 將舞台 1 張應援放到存檔區。`);
-        if (remaining > 0 && stageCheerOptions(player, map).length > 0) enqueueStageCheerSelection(state, { playerIndex, effect: pending.effect, prompt: `啪啪謝謝你！：再按舞台應援放到存檔區（尚餘 ${remaining} 張）。`, meta: { remaining } });
+        if (remaining > 0) {
+          const options = stageCheerOptions(player, map);
+          if (options.length > 0) state.effectQueue.unshift({
+            type: "stageCheerSelection",
+            playerIndex,
+            ownerIndex: playerIndex,
+            options,
+            rule: {},
+            min: 1,
+            max: 1,
+            prompt: `啪啪謝謝你！：再按舞台應援放到存檔區（尚餘 ${remaining} 張）。`,
+            effect: pending.effect,
+            optional: false,
+            meta: { remaining },
+          });
+        }
       } else if (pending.effect === "archiveSelectedStageCheer" || pending.effect === "fieldStaffCost" || pending.effect === "holotoriDrawCost" || pending.effect === "geowCost" || pending.effect === "oshiIofiCheerCost") {
         owner.archive.push(cheer);
         triggerCheerArchivedGift(state, ownerIndex, map, 1);
@@ -5721,6 +5930,10 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
       } else if (pending.effect === "towaArchiveTool") {
         owner.archive.push(moved);
         appendLog(state, `${owner.name} 將工具「${map.get(moved.number)?.name || moved.number}」放到存檔區。`);
+      } else if (pending.effect === "archiveExcessAttachment") {
+        owner.archive.push(moved);
+        appendLog(state, `${owner.name} 將超出附加上限的「${map.get(moved.number)?.name || moved.number}」放到存檔區。`);
+        state.effectQueue.unshift({ type: "attachmentCapacityCheck", playerIndex, ownerIndex, zone: option.zone });
       } else if (pending.effect === "lunaiteArchiveCost") {
         owner.archive.push(moved);
         const lunaOptions = stageOptionsMatching(player, map, { names: ["姫森ルーナ"] });
@@ -5775,20 +5988,20 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
         const die = rollDie(random, state, playerIndex, 1, card);
         logDie(state, playerIndex, die);
         const typeCodes = card.number === "hBP02-072" ? ["supportEvent", "supportEventLimited"] : card.number === "hBP02-073" ? ["supportFan"] : ["supportTool"];
-        if (die % 2 === 0) queueDeckToHand(state, playerIndex, { group: "support", typeCodes }, map, random, { optional: true, label: card.keyword.name });
+        if (die % 2 === 0) queueDeckToHand(state, playerIndex, { group: "support", typeCodes }, map, random, { optional: false, label: card.keyword.name });
       } else if (pending.effect === "magicPairCheerRoll") {
         const card = map.get(pending.meta.cardNumber);
         const die = rollDie(random, state, playerIndex, 1, card);
         logDie(state, playerIndex, die);
         if (die % 2 === 1) {
-          if (stageOptionsMatching(player, map, { zones: BACK_SLOTS }).length) queueCheerDeckSearch(state, playerIndex, card.keyword.effect, "collab", map, random, { targetRuleOverride: { zones: BACK_SLOTS } });
+          if (stageOptionsMatching(player, map, { zones: BACK_SLOTS }).length) queueCheerDeckSearch(state, playerIndex, card.keyword.effect, "collab", map, random, { optional: false, targetRuleOverride: { zones: BACK_SLOTS } });
           else player.cheerDeck = shuffle(player.cheerDeck, random);
         }
       } else if (pending.effect === "adventureRoll") {
         const card = map.get("hBP01-096");
         const die = rollDie(random, state, playerIndex, 1, card);
         logDie(state, playerIndex, die);
-        if (die % 2 === 0) queueDeckToHand(state, playerIndex, { group: "holomem", buzz: true }, map, random, { min: 1, max: 1, optional: true, label: card.keyword.name });
+        if (die % 2 === 0) queueDeckToHand(state, playerIndex, { group: "holomem", buzz: true }, map, random, { min: 1, max: 1, optional: false, label: card.keyword.name });
       } else if (pending.effect === "edinburghRoll") {
         const die = rollDie(random, state, playerIndex, 1, map.get("hBP01-099"));
         logDie(state, playerIndex, die);
@@ -5914,6 +6127,23 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
       } else if (pending.effect === "handInspection") {
         const amount = Number(pending.meta?.draw || 0);
         appendLog(state, `${player.name} 查看了對手手牌${amount > 0 ? `，因當中有支援卡抽 ${drawCards(state, playerIndex, amount)} 張牌` : "；當中沒有支援卡"}。`);
+      } else if (pending.effect === "hSD10PufferActivate") {
+        const sourceZone = pending.meta?.sourceZone;
+        const source = player.zones[sourceZone];
+        const tool = source?.attachments.find(instance => instance.id === pending.meta?.toolId && instance.number === "hSD10-013");
+        assert(source && topCard(source)?.id === pending.meta?.sourceId && tool
+          && Number(source.lastArtsTurn || 0) === Number(pending.meta?.triggerTurn)
+          && cardHasTag(unitCard(source, map), "#FLOW GLOW"), "河豚太郎的發動條件已改變。 ");
+        const candidates = player.mainDeck.filter(instance => {
+          const card = map.get(instance.number);
+          return card?.group === "holomem" && ["Debut", "Spot"].includes(card.stage) && cardHasTag(card, "#FLOW GLOW");
+        });
+        if (candidates.length > 0 && emptyBackSlots(player).length > 0) {
+          enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: 1, effect: "deckCardsToStage", source: "deck", prompt: "河豚太郎：公開 1 張 #FLOW GLOW Debut／Spot 登場；之後直接按牌桌空位。", meta: { afterEffect: "returnPuffer", afterMeta: { sourceZone } } });
+        } else {
+          player.mainDeck = shuffle(player.mainDeck, random);
+          player.mainDeck.push(removeById(source.attachments, tool.id));
+        }
       } else if (pending.effect === "bluntWeaponMode") {
         if (option.id === "mumei") {
           player.namedUsageTurns.bluntWeaponGame = 1;
@@ -5944,11 +6174,13 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
         player.mainDeck.unshift(mascot);
         queueArchiveToHand(state, playerIndex, { group: "holomem" }, map, { min: 1, max: 1, optional: false, label: "HatoTaurus" });
       } else if (pending.effect === "slimDogReturn") {
+        const defeated = player.zones[pending.meta?.targetZone];
+        const index = defeated?.attachments.findIndex((instance) => instance.id === pending.meta?.attachmentId && instance.number === "hBP03-103") ?? -1;
         assert(player.holoPower.length > 0, "Holo Power 已不足。 ");
+        assert(defeated?.downPending && index >= 0, "觸發瘦狗已離開倒下中的 Holomen。 ");
+        const [mascot] = defeated.attachments.splice(index, 1);
         player.archive.push(player.holoPower.pop());
-        const mascot = player.archive.find((instance) => instance.number === "hBP03-103");
-        assert(mascot, "瘦狗已離開存檔區。 ");
-        player.hand.push(removeById(player.archive, mascot.id));
+        player.hand.push(mascot);
         appendLog(state, `${player.name} 支付 1 Holo Power，將瘦狗返回手牌。`);
       } else if (pending.effect === "damageReaction") {
         const target = player.zones[pending.meta?.targetZone];
@@ -5984,12 +6216,14 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
         const dice = rollDice(random, state, playerIndex, card.number === "hBP01-043" ? 3 : 1, card);
         if (card.number === "hBP01-072") {
           if (dice[0] % 2 === 1) queueFixedSpecialDamage(state, playerIndex, pending.meta.sourceZone, ["collab"], 20, pending.meta.sourceName);
+        } else if (card.number === "hBP01-038") {
+          adjustQueuedArtsDamage(state, playerIndex, pending.meta.sourceZone, dice[0] % 2 === 0 ? 20 : 0);
         } else adjustQueuedArtsDamage(state, playerIndex, pending.meta.sourceZone, (card.number === "hBP01-043" ? dice.filter(die => die === 1).length : dice[0]) * 10);
       } else if (pending.effect === "firstSetCollabRoll") {
         const card = map.get(pending.meta.cardNumber);
         const die = rollDie(random, state, playerIndex, 1, card);
         logDie(state, playerIndex, die);
-        if (card.number === "hBP01-033" && die % 2 === 1) enqueueStageTarget(state, { playerIndex, rule: { colors: ["綠"] }, effect: "heal", optional: false, prompt: "選擇自己一位綠色 Holomen，回復 20 HP。", meta: { amount: 20 } });
+        if (card.number === "hBP01-033" && die % 2 === 1) enqueueStageTarget(state, { playerIndex, rule: { colors: ["綠"] }, effect: "heal", optional: false, prompt: "選擇自己一位綠色 Holomen，回復 20 HP。", meta: { amount: 20, abilitySourceUnitId: pending.meta.sourceUnitId || "" } });
         if (card.number === "hBP01-039" && die % 2 === 0 && player.cheerDeck.length) enqueueEffect(state, { type: "eventCheerTarget", playerIndex, optional: false, prompt: "選擇自己一位 Holomen，附加應援牌庫頂 1 張。" });
       } else if (pending.effect === "pekoraCuteRoll") {
         const die = rollDie(random, state, playerIndex, 1, map.get("hBP05-014")); logDie(state, playerIndex, die);
@@ -6115,7 +6349,7 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
         if (die >= 2 && state.players[opponentIndex].zones.center) enqueueEffect(state, { type: "specialDamage", playerIndex, targetPlayerIndex: opponentIndex, targetZone: "center", amount: 10, loseLife: true, sourceName: card.keyword.name, sourceZone: "collab" });
       } else if (pending.effect === "pekoraFanSearchRoll") {
         const die = rollDie(random, state, playerIndex, 1, map.get("hBP03-023")); logDie(state, playerIndex, die);
-        if (die % 2 === 0) queueDeckToHand(state, playerIndex, { typeCodes: ["supportFan"] }, map, random, { label: "あんたたちぃ" });
+        if (die % 2 === 0) queueDeckToHand(state, playerIndex, { typeCodes: ["supportFan"] }, map, random, { min: 1, max: 1, optional: false, label: "あんたたちぃ" });
       } else if (pending.effect === "miko35pRoll") {
         const die = rollDie(random, state, playerIndex, 1, map.get(player.oshi.number)); logDie(state, playerIndex, die);
         const count = [3, 5].includes(die) ? 2 : 1;
@@ -6145,6 +6379,26 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
         const amount = group === "holomem" ? 20 : group === "support" ? 50 : 0;
         if (amount) assert(adjustQueuedArtsDamage(state, playerIndex, pending.meta?.sourceZone, amount), "Arts 傷害已改變。");
         appendLog(state, `タロットの導き：牌庫頂卡存檔，這次 Arts +${amount}。`, [moved]);
+      } else if (pending.effect === "hBP07MioTopArchiveArt") {
+        const moved = player.mainDeck.shift();
+        assert(moved, "牌庫頂已改變。 ");
+        player.archive.push(moved);
+        currentTurnEvents(player, state.turn).deckArchived += 1;
+        const movedCard = map.get(moved.number);
+        const amount = movedCard?.group === "support" ? 50 : 0;
+        if (amount) assert(adjustQueuedArtsDamage(state, playerIndex, pending.meta?.sourceZone, amount), "Arts 傷害已改變。 ");
+        if (pending.meta?.sourceNumber === "hBP07-029" && movedCard?.group === "holomem") {
+          enqueueEffect(state, { type: "eventCheerTarget", playerIndex, prompt: `${pending.meta?.artName || "Upright Leading"}：直接按自己 1 位 Holomen，附加應援牌庫上方 1 張。` });
+        }
+        appendLog(state, `${pending.meta?.artName || "Arts"}：${movedCard?.name || moved.number} 放到檔案區${amount ? "，這次 Arts +50" : ""}。`, [moved]);
+      } else if (pending.effect === "hBP07MiofaArchiveTop") {
+        const moved = player.mainDeck.shift();
+        assert(moved, "牌庫頂已改變。 ");
+        player.archive.push(moved);
+        currentTurnEvents(player, state.turn).deckArchived += 1;
+        const amount = map.get(moved.number)?.group === "support" ? 30 : 0;
+        if (amount) assert(adjustQueuedArtsDamage(state, playerIndex, pending.meta?.sourceZone, amount), "Arts 傷害已改變。 ");
+        appendLog(state, `ミオファ：${map.get(moved.number)?.name || moved.number} 存檔${amount ? "，這次 Arts +30" : ""}。`, [moved]);
       } else if (pending.effect === "mumeiMemoryFragment") {
         const revealed = player.mainDeck.shift();
         assert(revealed, "七詩ムメイ的牌庫頂已改變。 ");
@@ -6203,7 +6457,7 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
         } else throw new Error("Gift 防禦模式無效。 ");
       } else if (pending.effect === "giftFlowGlowKo") {
         const archived = player.mainDeck.splice(0, Math.min(2, player.mainDeck.length));
-        player.archive.push(...archived);
+        archiveMainDeckCards(player, state, archived);
         queueFlowGlowArchivedCards(state, playerIndex, map.get("hBP06-020"), archived, map);
         const names = new Set(stageEntries(player).filter(({ unit: stageUnit }) => cardHasTag(unitCard(stageUnit, map), "#FLOW GLOW")).map(({ unit: stageUnit }) => unitCard(stageUnit, map)?.jpName || unitCard(stageUnit, map)?.name).filter(Boolean));
         const drawn = drawCards(state, playerIndex, names.size);
@@ -6220,7 +6474,7 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
       } else if (pending.effect === "oshiTopThreeMode") {
         const cards = clone(pending.meta?.cards || []);
         if (option.id === "archive") {
-          player.archive.push(...cards);
+          archiveMainDeckCards(player, state, cards);
           appendLog(state, `${player.name} 將查看的 ${cards.length} 張牌全部放到存檔區。`);
         } else if (cards.length > 0) {
           enqueueCardSelection(state, { playerIndex, cards, min: cards.length, max: cards.length, effect: "topOrder", source: "revealed", prompt: "按次序放回牌庫頂；第 1 張會成為最頂。" });
@@ -6266,13 +6520,13 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
           const cards = (pending.meta.fanIds || []).map((id) => defeatedCardPool(skillPlayer).find((instance) => instance.id === id)).filter(Boolean);
           if (cards.length > 0) enqueueCardSelection(state, { playerIndex: skillPlayerIndex, cards, min: 1, max: 1, effect: "archiveToHand", source: "archive", meta: { fromDefeated: true }, prompt: "我愛你：揀 1 張倒下 Holomen 的粉絲返回手牌。" });
         } else if (pending.meta?.trigger === "robocoReturn") {
-          skillPlayer.archive.push(...skillPlayer.mainDeck.splice(0, 2));
+          archiveMainDeckCards(skillPlayer, state, skillPlayer.mainDeck.splice(0, 2));
           queueArchiveToHand(state, skillPlayerIndex, { group: "holomem", names: ["ロボ子さん", "蘿蔔子"] }, map, { min: 1, max: 1, optional: false, label: "我才不是PON呢！！" });
         } else if (pending.meta?.trigger === "noelSearch") {
           queueDeckToHand(state, skillPlayerIndex, { group: "holomem", tags: ["#3期生"] }, map, random, { optional: false, label: "白銀的騎士們" });
         } else if (pending.meta?.trigger === "ririkaSearch") {
           const cards = skillPlayer.mainDeck.filter((instance) => cardHasName(map.get(instance.number), "一条莉々華"));
-          if (cards.length > 0) enqueueCardSelection(state, { playerIndex: skillPlayerIndex, cards, min: 1, max: 1, optional: false, effect: "oshiRirikaSearch", source: "deck", prompt: "先公開 1 張一条莉々華；之後公開 1 張限界飯。" });
+          if (cards.length > 0) enqueueCardSelection(state, { playerIndex: skillPlayerIndex, cards, min: 1, max: 1, optional: false, effect: "oshiRirikaSearch", source: "deck", search: true, prompt: "先公開 1 張一条莉々華；之後公開 1 張限界飯。" });
           else queueDeckToHand(state, skillPlayerIndex, { nameIncludes: ["限界飯"] }, map, random, { optional: false, label: "かわいい！ ポジティブ！ ジーニアス！" });
         } else if (pending.meta?.trigger === "fubukiMascotLife") {
           let success = false;
@@ -6295,11 +6549,22 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
         if (["suiseiBack50", "suiseiMirror"].includes(pending.meta?.trigger)) {
           const amount = pending.meta.trigger === "suiseiMirror" ? Number(pending.meta?.damage || 0) : 50;
           const options = stageOptionsMatching(state.players[opponentIndex], map, { zones: BACK_SLOTS });
-          if (options.length > 0) enqueueStageTarget(state, { playerIndex, targetPlayerIndex: opponentIndex, options, effect: "specialDamage", prompt: `推し技能：直接按對手 1 位後排，造成 ${amount} 點特殊傷害。`, meta: { amount, loseLife: true, sourceName: map.get(player.oshi?.number)?.name || "推し技能", sourceZone: pending.meta?.sourceZone || "" } });
+          if (options.length > 0) enqueueStageTarget(state, { playerIndex, targetPlayerIndex: opponentIndex, options, effect: "specialDamage", prompt: `推し技能：直接按對手 1 位後排，造成 ${amount} 點特殊傷害。`, meta: { amount, loseLife: true, sourceName: map.get(player.oshi?.number)?.name || "推し技能", sourceZone: pending.meta?.sourceZone || "", skipHbp01SuiseiReaction: true } });
         } else if (pending.meta?.trigger === "backshot") {
           if (state.players[opponentIndex].zones[pending.meta?.targetZone]) enqueueEffect(state, { type: "specialDamage", playerIndex, targetPlayerIndex: opponentIndex, targetZone: pending.meta.targetZone, amount: 50, loseLife: true, sourceName: "後方射擊", sourceZone: pending.meta?.sourceZone || "", oshiReactionChecked: false });
         } else if (pending.meta?.trigger === "shionCenter") {
           if (state.players[opponentIndex].zones.center) enqueueEffect(state, { type: "specialDamage", playerIndex, targetPlayerIndex: opponentIndex, targetZone: "center", amount: Number(pending.meta?.amount || 0), loseLife: true, sourceName: "シオンのすごい魔法", sourceZone: pending.meta?.sourceZone || "" });
+        } else if (pending.meta?.trigger === "calliopeRepeatArts") {
+          const source = player.zones[pending.meta?.sourceZone];
+          assert(source && topCard(source)?.id === pending.meta?.sourceId
+            && Number(source.lastArtsTurn || 0) === state.turn
+            && cardHasName(unitCard(player.zones.center, map), "森カリオペ")
+            && cardHasName(unitCard(source, map), "森カリオペ"), "死神說唱的 Arts 來源已離開舞台。 ");
+          const repeatedArtIndex = Number(pending.meta?.artIndex);
+          assert(Number.isInteger(repeatedArtIndex) && repeatedArtIndex >= 0, "死神說唱的 Arts 已改變。 ");
+          addStageModifier(source, "repeatArts", 1, state.turn, "hBP02-007", { uses: 1, artIndex: repeatedArtIndex });
+          source.rested = false;
+          appendLog(state, `${unitCard(source, map)?.name || "森カリオペ"} 可再使用一次相同 Arts。`);
         } else if (pending.meta?.trigger === "moonaFanout") {
           queueFixedSpecialDamage(state, playerIndex, pending.meta?.sourceZone || "", ["center", "collab"], 20, "滿月的光輝");
         }
@@ -6358,7 +6623,10 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
     player.zones[action.zone].stack.push(selected);
     player.zones[action.zone].bloomedTurn = state.turn;
     currentTurnEvents(player, state.turn).bloomCount += 1;
-    if (usedBonusBloom) player.bonusBloomUsedTurn = state.turn;
+    if (usedBonusBloom) {
+      player.bonusBloomUsedTurn = state.turn;
+      player.zones[action.zone].extraBloomUsedTurn = state.turn;
+    }
     appendLog(state, `${player.name} 讓 ${selected.number} Bloom。`, [selected]);
     queueBloomEffects(state, playerIndex, action.zone, map.get(selected.number), map, random);
     queueAttachmentBloomEffects(state, playerIndex, action.zone, map);
@@ -6438,6 +6706,16 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
       assert(cheer, "應援牌庫已空。 ");
       attachCheerCards(state, player.zones[action.zone], [cheer]);
       if (pending.afterUnrest) player.zones[action.zone].rested = false;
+      if (pending.ceciliaUnrestBatch) {
+        player.zones[action.zone].ceciliaUnrestBatchTurn = state.turn;
+        if (pending.ceciliaUnrestBatchFinal) {
+          stageEntries(player).forEach(({ unit: recipient }) => {
+            if (Number(recipient.ceciliaUnrestBatchTurn || 0) !== state.turn) return;
+            recipient.rested = false;
+            delete recipient.ceciliaUnrestBatchTurn;
+          });
+        }
+      }
       if (pending.shuffleAfter) player.cheerDeck = shuffle(player.cheerDeck, random);
       const targetCard = topCard(player.zones[action.zone]);
       appendLog(state, `${player.name} 從應援牌庫將 ${cheer.number} 附加到 ${targetCard.number}${pending.shuffleAfter ? "，並洗牌" : ""}。`, [cheer, targetCard]);
@@ -6450,7 +6728,7 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
       } else if (pending.afterEffect === "healSource") {
         const source = player.zones[pending.afterZone];
         if (source && (source.attachments || []).some((instance) => map.get(instance.number)?.typeCode === "supportTool")) {
-          const healed = healStageUnit(state, playerIndex, pending.afterZone, pending.healAmount, map);
+          const healed = healStageUnit(state, playerIndex, pending.afterZone, pending.healAmount, map, true, topCard(source)?.id || "");
           appendLog(state, `${unitCard(source, map)?.name || pending.afterZone} 因裝備工具回復 ${healed} HP。`);
         }
       } else if (pending.afterEffect === "returnCollabActiveToBack") {
@@ -6464,6 +6742,7 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
           appendLog(state, `${unitCard(source, map)?.name || "效果來源"} 因骰子為 1 移到後排。`);
         }
       }
+      if (pending.followUpCheerCard) enqueueEffect(state, { type: "eventCheerTarget", playerIndex, cheerCard: pending.followUpCheerCard, options: [action.zone], prompt: "わため沒有錯對吧？（2/2）：將第 2 張應援附加到剛才選擇的角巻わため。" });
     }
   } else if (pending.type === "lifeCheerTarget") {
     assert(pending.options.includes(action.zone) && player.zones[action.zone], "生命應援的附加目標無效。 ");
@@ -6502,6 +6781,7 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
     assert(selected && selectedCard && bloomTargets(player, selectedCard, map, state.turn).includes(action.zone), "額外 Bloom 的卡片或目標已改變。 ");
     player.zones[action.zone].stack.push(selected);
     player.zones[action.zone].bloomedTurn = state.turn;
+    player.zones[action.zone].extraBloomUsedTurn = state.turn;
     currentTurnEvents(player, state.turn).bloomCount += 1;
     player.bonusBloomUsedTurn = state.turn;
     appendLog(state, `${player.name} 因「綻放舞台」讓 ${selected.number} 額外 Bloom。`, [selected]);
@@ -6520,11 +6800,11 @@ function hbp09Legacy_resolveChoice(state, playerIndex, action, map, random) {
       const opponentIndex = playerIndex === 0 ? 1 : 0;
       const opponent = state.players[opponentIndex];
       if (opponent.zones.center) {
-        if (!jacketProtectsHp(state, opponent.zones.center, opponent, player, map)) opponent.zones.center.damage += 30;
-        appendLog(state, `${player.name} 將「萬事爆解！」放到存檔區，給對手中央 Holomen 30 點特殊傷害。`);
-        const centerCard = map.get(topCard(opponent.zones.center)?.number);
-        const hp = Number(centerCard?.hp || Infinity) + attachmentHpBonus(opponent.zones.center, map, "center", opponent) + holomemHpBonus(opponent.zones.center, map, "center", opponent);
-        if (opponent.zones.center.damage >= hp) knockOutUnit(state, opponentIndex, "center", map, playerIndex);
+        appendLog(state, `${player.name} 將「萬事爆解！」放到存檔區。`);
+        enqueueEffect(state, {
+          type: "specialDamage", playerIndex, targetPlayerIndex: opponentIndex, targetZone: "center",
+          amount: 30, loseLife: true, sourceName: "萬事爆解！", sourceZone: action.zone, sourceCardNumber: "hEB01-034",
+        });
       } else appendLog(state, `${player.name} 將「萬事爆解！」放到存檔區，但對手中央位置為空。`);
     }
   } else if (pending.type === "ordinaryComputer") {
@@ -6733,7 +7013,9 @@ function hbp09Legacy_finishTurn(state, playerIndex, map) {
   if (endedPerformance) {
     const defenderIndex = playerIndex === 0 ? 1 : 0;
     const defender = state.players[defenderIndex];
-    const kanadeSwapOptions = player.oshi?.number === "hBP08-007" && Number(player.oshiSkillTurn || 0) !== state.turn && player.zones.center && cardHasName(unitCard(player.zones.center, map), "音乃瀬奏") && Number(player.zones.center.lastArtsTurn || 0) === state.turn
+    const kanadeSkill = player.oshi?.number === "hBP08-007" ? map.get(player.oshi.number)?.oshiSkill : null;
+    const kanadeCost = kanadeSkill ? oshiPowerCost(kanadeSkill, player.oshi.number, "oshi") : 0;
+    const kanadeSwapOptions = kanadeSkill && Number(player.oshiSkillTurn || 0) !== state.turn && player.holoPower.length >= kanadeCost && player.zones.center && cardHasName(unitCard(player.zones.center, map), "音乃瀬奏") && Number(player.zones.center.lastArtsTurn || 0) === state.turn
       ? stageOptionsMatching(player, map, { zones: BACK_SLOTS, tags: ["#ReGLOSS"] })
       : [];
     const archiveCheerAtEnd = (player.modifiers || []).find((modifier) => modifier.kind === "archiveCheerAtEnd" && Number(modifier.expiresTurn || 0) >= state.turn);
@@ -6892,6 +7174,10 @@ function attachmentBlocks(card) {
   return String(card?.abilityText || "").replaceAll("\r", "").split(/◆/u).map((text) => text.trim()).filter(Boolean);
 }
 
+const ATTACHMENT_TEXT_NAME_ALIASES = Object.freeze({
+  "AkiRosenthal": "アキ・ローゼンタール",
+});
+
 function attachmentBlockApplies(block, stageUnit, zone, map, player, opponent = null) {
   const card = unitCard(stageUnit, map);
   const requiredOshi = block.match(/自己的推しHolomen是〈([^〉]+)〉/u)?.[1];
@@ -6899,7 +7185,8 @@ function attachmentBlockApplies(block, stageUnit, zone, map, player, opponent = 
   const conditionalLead = block.match(/(?:若|如果|如|當).*?(?:附著|附加|附在|裝備|所在|帶有)[^。\n]*/u)?.[0] || "";
   const directLead = !conditionalLead && /(?:裝備|附著|附加)[^。\n]*〈[^〉]+〉/u.test(block) ? block.split(/[。\n]/u)[0] : "";
   const lead = conditionalLead || directLead;
-  const names = [...lead.matchAll(/〈([^〉]+)〉/gu)].map((match) => match[1]);
+  const names = [...lead.matchAll(/〈([^〉]+)〉/gu)].map((match) =>
+    ATTACHMENT_TEXT_NAME_ALIASES[normalizeCardName(match[1])] || match[1]);
   if (names.length > 0 && !names.some((name) => cardHasName(card, name))) return false;
   if (/1st以上/u.test(lead) && !["1st", "2nd"].includes(card?.stage)) return false;
   if (/2nd(?:以上|位置)?/u.test(lead) && card?.stage !== "2nd") return false;
@@ -7022,13 +7309,13 @@ function hbp09Legacy_giftDamageAdjustment(state, targetPlayerIndex, targetZone, 
     if (giftCard.number === "hBP06-072" && giftUnit === target && kind === "arts" && sourceCard?.stage === "1st") adjustment -= 30;
     if (giftCard.number === "hBP06-082" && kind === "arts" && ["center", "collab"].includes(targetZone) && cardHasName(map.get(owner.oshi?.number), "アーニャ・メルフィッサ") && stageHasNamedAttachment(target, map, ["古代武器"])) adjustment -= 30;
     if (giftCard.number === "hBP07-088" && kind === "special" && BACK_SLOTS.includes(targetZone) && targetCard?.stage === "1st" && cardHasTag(targetCard, "#FLOW GLOW")) immune = true;
-    if (giftCard.number === "hBP08-015" && giftUnit === target && kind === "arts") adjustment -= 10;
+    if (giftCard.number === "hBP08-015" && giftUnit === target && kind === "arts" && sourcePlayerIndex !== targetPlayerIndex) adjustment -= 10;
     if (giftCard.number === "hSD07-009" && giftUnit === target) adjustment -= 10;
     if (giftCard.number === "hSD19-005" && giftUnit === target && sourcePlayerIndex !== targetPlayerIndex && source && sourceZone === "center") adjustment -= 10;
     if (kind === "special" && state.activePlayer === sourcePlayerIndex && state.phase === "main") {
-      if (giftCard.number === "hBP03-065" && targetZone === "center" && cardHasName(targetCard, "戌神ころね")) immune = true;
+      if (giftCard.number === "hBP03-065" && sourcePlayerIndex !== targetPlayerIndex && targetZone === "center" && cardHasName(targetCard, "戌神ころね")) immune = true;
       if (giftCard.number === "hBP04-024" && giftUnit === target) immune = true;
-      if (giftCard.number === "hBP08-024" && target?.rested && cardHasName(targetCard, "セシリア・イマーグリーン")) immune = true;
+      if (giftCard.number === "hBP08-024" && sourcePlayerIndex !== targetPlayerIndex && target?.rested && cardHasName(targetCard, "セシリア・イマーグリーン")) immune = true;
     }
   }
   return { adjustment, immune };
@@ -7077,7 +7364,7 @@ function hbp09Legacy_attachmentArtsBonus(stageUnit, map, turn, zone = "", player
     const card = map.get(instance.number);
     return sum + attachmentBlocks(card).reduce((blockTotal, block) => {
       if (!attachmentBlockApplies(block, stageUnit, zone, map, player, opponent)) return blockTotal;
-      return blockTotal + sumBonuses(block, /(?:Arts|藝術值|藝術|藝能值|藝能傷害|藝能|アーツ|術式)\s*(?:傷害)?\s*[+＋\-−]\s*(\d+)/giu);
+      return blockTotal + sumBonuses(block, /(?:Arts(?:值|値)?|藝術值|藝術|藝能值|藝能傷害|藝能|アーツ|術式)\s*(?:傷害)?\s*(?:再|額外)?\s*[+＋\-−]\s*(\d+)/giu);
     }, 0);
   }, 0);
   const ancientWeapons = (stageUnit.attachments || []).filter((instance) => instance.number === "hBP04-099").length;
@@ -7188,7 +7475,10 @@ function resolveKoyoriArtEffects(state, playerIndex, sourceZone, artIndex, map, 
   const source = player.zones[sourceZone];
   const sourceCard = unitCard(source, map);
   let bonus = 0;
-  if (sourceCard?.number === "hEB01-018" && source.attachments?.some((instance) => cardHasTag(map.get(instance.number), "#こよラボ"))) bonus += 20;
+  if (sourceCard?.number === "hEB01-018" && source.attachments?.some((instance) => {
+    const attachment = map.get(instance.number);
+    return attachment?.group === "support" && cardHasTag(attachment, "#こよラボ");
+  })) bonus += 20;
   if (sourceCard?.number === "hEB01-022" && stageEntries(player).some(({ unit: stageUnit }) => map.get(topCard(stageUnit)?.number)?.stage === "2nd")) bonus += 20;
   if (sourceCard?.number === "hEB01-020" && artIndex === 1) {
     const revealed = player.mainDeck.splice(0, Math.min(revealCount(player), player.mainDeck.length));
@@ -7247,12 +7537,16 @@ function artConditionApplies(state, playerIndex, sourceZone, targetZone, text, m
   const opponent = state.players[playerIndex === 0 ? 1 : 0];
   const source = player.zones[sourceZone];
   const sourceCard = unitCard(source, map);
+  if (sourceCard?.number === "hEB01-018" && !(source.attachments || []).some((instance) => {
+    const attachment = map.get(instance.number);
+    return attachment?.group === "support" && cardHasTag(attachment, "#こよラボ");
+  })) return false;
   const target = opponent.zones[targetZone];
   const targetCard = unitCard(target, map);
   const events = currentTurnEvents(player, state.turn);
   if (!giftZoneApplies(text, sourceZone)) return false;
   if (/生命(?:值)?(?:為|在)?3(?:或)?以下/u.test(text) && player.life.length > 3) return false;
-  if (/生命(?:值)?(?:為|在)?2(?:或)?以下/u.test(text) && player.life.length > 2) return false;
+  if (/生命(?:值)?(?:為|在)?2(?:或)?以下/u.test(text) && player.life.length > 2 && !/若生命值為2以下，則改為/u.test(text)) return false;
   if (/生命(?:值)?為4以下/u.test(text) && player.life.length > 4) return false;
   if (/手牌為?2張以下|手牌在2張以下/u.test(text) && player.hand.length > 2) return false;
   if (/手牌數比對手少/u.test(text) && player.hand.length >= opponent.hand.length) return false;
@@ -7261,12 +7555,12 @@ function artConditionApplies(state, playerIndex, sourceZone, targetZone, text, m
   if (/裝備有工具|裝備了工具|附有工具/u.test(text) && !(source.attachments || []).some((instance) => map.get(instance.number)?.typeCode === "supportTool")) return false;
   if (/裝備有道具或吉祥物/u.test(text) && !(source.attachments || []).some((instance) => ["supportTool", "supportMascot", "supportItem", "supportItemLimited"].includes(map.get(instance.number)?.typeCode))) return false;
   if (/(?:這位|這個|此)(?:Holomen|Holo成員|ホロメン)(?:上)?有吉祥物或粉絲/u.test(text) && !(source.attachments || []).some((instance) => ["supportMascot", "supportFan"].includes(map.get(instance.number)?.typeCode))) return false;
-  const namedAttachment = text.match(/(?:這位Holomen|此Holomen|這個Holomen|這個成員|此成員|這張ホロメン)(?:已|有)?(?:裝備|附有|附著|帶著|帶有)(?:了)?\s*(\d+張以上的?)?[▲△]?[〈「]([^〉」]+)[〉」]/u);
+  const namedAttachment = text.match(/(?:這位Holomen|此Holomen|這個Holomen|這個成員|此成員|這張ホロメン)(?:已|有)?(?:裝備(?:有|了)?|附有|附著|帶著|帶有)(?:了)?\s*(\d+張以上的?)?[▲△]?[〈「]([^〉」]+)[〉」]/u);
   if (namedAttachment) {
     const count = (source.attachments || []).filter((instance) => cardHasName(map.get(instance.number), namedAttachment[2])).length;
     if (count < Number(namedAttachment[1]?.match(/\d+/u)?.[0] || 1)) return false;
   }
-  const cheerAtLeast = text.match(/(?:附有|裝備了?|已附加)\s*(\d+)張以上(?:的)?(?:[白綠紅藍黃紫]色)?應援/u);
+  const cheerAtLeast = text.match(/(?:附有|裝備了?|已附加)\s*(\d+)張以上(?:的)?(?:[白綠紅藍黃紫]色)?(?:應援|加油)/u);
   if (cheerAtLeast && source.cheer.length < Number(cheerAtLeast[1])) return false;
   for (const [color, pattern] of SKILL_COLOR_WORDS) {
     if (new RegExp(`(?:附有|裝備)(?:了)?[^。；]*${pattern.source}應援`, "u").test(text) && !source.cheer.some((instance) => effectiveCheerColors(player, source, instance, map).includes(color))) return false;
@@ -7304,7 +7598,7 @@ function artConditionApplies(state, playerIndex, sourceZone, targetZone, text, m
   const centerColor = skillColor(text.match(/中央Holomen顏色為[白綠紅藍黃紫]色/u)?.[0]);
   if (centerColor && !(unitCard(player.zones.center, map)?.colors || []).includes(centerColor)) return false;
   const oshiCard = map.get(player.oshi?.number);
-  const oshiName = text.match(/(?:(?:推し|主推|應援|喜推)Holomen|(?:自己)?所支持的Holomen|本命Holomen)(?:為|是)[〈「]([^〉」]+)[〉」]/u)?.[1];
+  const oshiName = text.match(/(?:(?:推し|主推|應援|喜推)(?:Holomen|Holomem|Holo成員)|(?:自己)?所支持的(?:Holomen|Holomem|Holo成員)|本命(?:Holomen|Holomem|Holo成員))(?:為|是)[〈「]([^〉」]+)[〉」]/iu)?.[1];
   const oshiColorClause = text.match(/(?:(?:推し|主推|應援)Holomen(?:的)?顏色|支持的Holo成員顏色)(?:為|是)([白綠紅藍黃紫、，或與及／/]+)/u)?.[1] || "";
   const allowedOshiColors = [...new Set([...oshiColorClause].filter((value) => "白綠紅藍黃紫".includes(value)))];
   const oshiNameMatches = !oshiName || cardHasName(oshiCard, oshiName);
@@ -7313,7 +7607,8 @@ function artConditionApplies(state, playerIndex, sourceZone, targetZone, text, m
   if (alternativeOshiCondition ? !oshiNameMatches && !oshiColorMatches : !oshiNameMatches || !oshiColorMatches) return false;
   if (/曾使用過支援卡/u.test(text) && events.supports.length === 0) return false;
   if (/曾使用過事件卡|有使用過事件卡/u.test(text) && !events.supports.some((number) => ["supportEvent", "supportEventLimited"].includes(map.get(number)?.typeCode))) return false;
-  if (/使用過LIMITED(?:的)?支援卡|使用過LIMITED事件/u.test(text) && !events.supports.some((number) => String(map.get(number)?.type || "").toUpperCase().includes("LIMITED"))) return false;
+  if (/使用過LIMITED(?:的)?支援卡/u.test(text) && !events.supports.some((number) => String(map.get(number)?.type || "").toUpperCase().includes("LIMITED"))) return false;
+  if (/使用過LIMITED事件/u.test(text) && !events.supports.some((number) => map.get(number)?.typeCode === "supportEventLimited")) return false;
   const usedNamedSupport = text.match(/曾使用過[〈「]([^〉」]+)[〉」]/u)?.[1];
   if (usedNamedSupport && !events.supports.some((number) => cardHasName(map.get(number), usedNamedSupport))) return false;
   if (/Holomen曾經?Bloom過|有Holomen進行過Bloom/u.test(text) && events.bloomCount === 0) return false;
@@ -7357,7 +7652,9 @@ function resolveDiceArtEffects(state, playerIndex, sourceZone, artIndex, card, a
   const source = player.zones[sourceZone];
   const roll = () => rollArtDie(state, playerIndex, card, random);
   let bonus = 0;
-  if (key === "hBP01-038:0") bonus += roll() % 2 === 0 ? 20 : 0;
+  if (key === "hBP01-038:0") {
+    enqueueOptionChoice(state, { playerIndex, options: [{ id: "roll", label: "擲骰" }], optional: true, effect: "firstSetArtsRoll", prompt: art.name + "：可以擲一次骰子。", meta: { sourceZone, cardNumber: card.number, sourceName: art.name } });
+  }
   else if (key === "hBP01-023:0") {
     if (roll() % 2 === 1) addStageModifier(source, "repeatArts", 0, state.turn, card.number, { uses: 1, artIndex: null });
   }
@@ -7441,6 +7738,11 @@ function queueGenericArtCostEffects(state, playerIndex, sourceZone, artIndex, ca
   const key = `${card.number}:${artIndex}`;
   const player = state.players[playerIndex];
   const source = player.zones[sourceZone];
+  // hSD10-006's Cheer is conditional on a Center knockout and is calculated
+  // from excess damage in queueArtKnockoutEffects; never parse it as an
+  // optional pre-attack search from the Cheer deck.
+  if (key === "hSD10-006:1") return true;
+  if (key === "hBP04-048:0") return queueArtCheerArchiveCost(state, playerIndex, sourceZone, stageCheerOptions(player, map, { stage: { zones: [sourceZone] } }), { afterEffect: "hBP04-048SpecialDamage", prompt: "可將這位 Holomen 身上的 1 張應援存檔；若支付，選擇對手中央或後排 1 位 Holomen，造成 30 點特殊傷害。" });
   if (key === "hBP03-035:0") {
     if (!cardHasName(map.get(player.oshi?.number), "鷹嶺ルイ") || player.hand.length < 2) return false;
     return queueArtHandArchiveCost(state, playerIndex, sourceZone, card, map, { min: 2, max: 2, afterEffect: "challengerDraw", prompt: "可存檔 2 張手牌，然後抽 3 張牌。" });
@@ -7503,9 +7805,12 @@ function queueGenericArtCostEffects(state, playerIndex, sourceZone, artIndex, ca
     enqueueCardSelection(state, { playerIndex, cards, min: 1, max: 1, optional: true, effect: "artArchiveToHandCost", source: "archive", prompt: "Arts 效果：可揀存檔區 1 張 #食べ物 事件返回手牌；若使用，Arts +20。", meta: { sourceZone, fixedBonus: 20 } });
     return true;
   }
-  if (key === "hEB01-017:0" && cardHasName(map.get(player.oshi?.number), "宝鐘マリン")) {
+  if (key === "hEB01-017:0") {
+    // Consume this conditional Art even when its Oshi gate is false. Otherwise
+    // the generic colon-cost parser offers the undercard payment anyway.
+    if (!cardHasName(map.get(player.oshi?.number), "宝鐘マリン")) return true;
     const cards = source.stack.slice(0, -1);
-    if (cards.length === 0) return false;
+    if (cards.length === 0) return true;
     enqueueCardSelection(state, { playerIndex, cards, min: cards.length, max: cards.length, optional: true, effect: "artUnderCardCost", source: "stack", prompt: "Arts 效果：可將攻擊者下方全部 Holomen 放到存檔區；1 張以上 Arts +100，5 張以上再造成特殊傷害。", meta: { sourceZone, fixedBonus: 100, afterEffect: "marineUnderFive" } });
     return true;
   }
@@ -7559,6 +7864,20 @@ function queueGenericArtCostEffects(state, playerIndex, sourceZone, artIndex, ca
 }
 
 function completeArtCheerCost(state, playerIndex, meta, map, random) {
+  if (meta?.afterEffect === "hBP04-048SpecialDamage") {
+    const opponentIndex = playerIndex === 0 ? 1 : 0;
+    const opponent = state.players[opponentIndex];
+    const sourceCard = unitCard(state.players[playerIndex]?.zones?.[meta.sourceZone], map);
+    if (opponent && (opponent.zones.center || BACK_SLOTS.some((zone) => opponent.zones[zone]))) enqueueStageTarget(state, {
+      playerIndex,
+      targetPlayerIndex: opponentIndex,
+      rule: { zones: ["center", ...BACK_SLOTS] },
+      effect: "specialDamage",
+      optional: false,
+      prompt: `${sourceCard?.arts?.[0]?.name || "Arts 效果"}：選擇對手中央或後排 1 位 Holomen，造成 30 點特殊傷害。`,
+      meta: { amount: 30, loseLife: true, sourceZone: meta.sourceZone, sourceName: sourceCard?.arts?.[0]?.name || "Arts 效果" },
+    });
+  }
   if (meta?.afterEffect === "fuwamocoNonDebutDamage") enqueueStageTarget(state, { playerIndex, targetPlayerIndex: playerIndex === 0 ? 1 : 0, rule: { excludeStages: ["Debut"] }, effect: "specialDamage", optional: false, prompt: "選擇對手 1 位非 Debut 成員。", meta: { amount: 50, loseLife: true, sourceZone: meta.sourceZone, sourceName: "今度はこっちの番だよ！" } });
   if (meta?.afterEffect === "marineTopCheer" && state.players[playerIndex].cheerDeck.length) enqueueEffect(state, { type: "eventCheerTarget", playerIndex, options: stageOptions(state.players[playerIndex]), optional: false });
   if (Number(meta?.paid || 0) > 0 && cardHasTag(unitCard(state.players[playerIndex]?.zones?.[meta.sourceZone], map), "#FLOW GLOW")) queueHsd11SpOshiTrigger(state, playerIndex, Number(meta.paid), map);
@@ -7579,6 +7898,17 @@ function hbp09Legacy_resolveGenericArtEffects(state, playerIndex, sourceZone, ar
   const art = card?.arts?.[artIndex];
   const text = String(art?.effect || "");
   if (!source || !text) return 0;
+  // This Arts heals its own Holomen from the final damage amount in the
+  // dealArtsDamage resolver. Do not send its "for every 10 damage" sentence
+  // through the generic damage/heal text parser, which mistakes the 10-point
+  // increment for separate special damage and an optional target heal.
+  if (card.number === "hSD04-006" && artIndex === 0) return 0;
+  if (card.number === "hBP04-019" && artIndex === 0) {
+    return cardHasTag(unitCard(player.zones.center, map), "#絵") ? 80 : 0;
+  }
+  if (card.number === "hBP01-027" && artIndex === 0) {
+    return cardHasTag(unitCard(player.zones.center, map), "#ID") ? 50 : 0;
+  }
   if (card.number === "hBP01-095") {
     const cards = player.hand.filter(c => fastForwardBloomTargets(player, map.get(c.number), map, state.turn).length);
     if (cards.length) enqueueCardSelection(state, { playerIndex, cards, min: 1, max: 1, optional: true, effect: "fastForwardBloomCard", source: "hand", prompt: "可選手牌 1st，讓本回合出場的後排 Debut Bloom。" });
@@ -7623,8 +7953,7 @@ function hbp09Legacy_resolveGenericArtEffects(state, playerIndex, sourceZone, ar
   }
   if (card.number === "hBP07-044" && artIndex === 0) {
     const archived = player.mainDeck.splice(0, 2);
-    player.archive.push(...archived);
-    currentTurnEvents(player, state.turn).deckArchived += archived.length;
+    archiveMainDeckCards(player, state, archived);
     queueArchiveToHand(state, playerIndex, { names: ["スタッフ"] }, map, { min: 0, max: 1, optional: true, label: art.name });
     return 0;
   }
@@ -7685,6 +8014,16 @@ function hbp09Legacy_resolveGenericArtEffects(state, playerIndex, sourceZone, ar
     if (playerIndex !== state.firstPlayer && Number(player.turnsTaken) === 1) queueDeckToHand(state, playerIndex, { names: ["座員"] }, map, random, { optional: false, label: card.arts[0].name });
     return 0;
   }
+  if (card.number === "hBP05-069" && artIndex === 0) {
+    if (player.cheerDeck.length > 0) enqueueEffect(state, {
+      type: "eventCheerTarget",
+      playerIndex,
+      options: [sourceZone],
+      optional: true,
+      prompt: `${art.name}：可直接按發動者，將應援牌庫頂 1 張附加到這位 Holomen。`,
+    });
+    return 0;
+  }
   if (card.number === "hBP04-014" && artIndex === 0) return stageEntries(player).some(({ unit }) => cardHasTag(unitCard(unit, map), "#ゲーマーズ") && !cardHasName(unitCard(unit, map), "白上フブキ")) ? 50 : 0;
   if (card.number === "hBP04-013" && artIndex === 0) {
     if (player.zones[sourceZone].attachments.some(instance => map.get(instance.number)?.group === "support" && cardHasTag(map.get(instance.number), "#こよラボ"))) queueDeckToHand(state, playerIndex, { group: "support", tags: ["#こよラボ"] }, map, random, { optional: false, label: card.arts[0].name });
@@ -7728,9 +8067,18 @@ function hbp09Legacy_resolveGenericArtEffects(state, playerIndex, sourceZone, ar
     if (stageOptionsMatching(player, map, { names: ["パヴォリア・レイネ"] }).length) enqueueArchiveCheerToTarget(state, playerIndex, { min: 1, max: 2, optional: false, effect: "archiveCheerOneRecipient", targetRule: { names: ["パヴォリア・レイネ"] } }, map);
     return 0;
   }
+  if (card.number === "hBP08-028" && artIndex === 0) {
+    const rule = { hasAttachmentType: "supportTool" };
+    const options = stageOptionsMatching(player, map, rule);
+    if (options.length > 0) enqueueStageTarget(state, { playerIndex, options, rule, effect: "heal", optional: false, prompt: "選擇自己 1 位裝備工具的 Holomen，回復 30 HP。", meta: { amount: 30 } });
+    return 0;
+  }
   if (card.number === "hBP08-031" && artIndex === 0) {
     const archived = player.cheerDeck.shift();
-    if (archived) player.archive.push(archived);
+    if (archived) {
+      player.archive.push(archived);
+      triggerCheerArchivedGift(state, playerIndex, map, 1);
+    }
     const colors = new Set(stageEntries(player).flatMap(({ unit }) => unit.cheer.flatMap(cheer => effectiveCheerColors(player, unit, cheer, map))));
     if (colors.size) enqueueStageTarget(state, { playerIndex, effect: "heal", optional: false, prompt: "選擇自己 1 位 Holomen，按舞台應援顏色種類回復 HP。", meta: { amount: colors.size * 10 } });
     return 0;
@@ -8077,8 +8425,9 @@ function hbp09Legacy_resolveGenericArtEffects(state, playerIndex, sourceZone, ar
     return 0;
   }
   if (card.number === "hSD12-004" && artIndex === 1) {
+    const archivedSupportCount = player.archive.filter(instance => map.get(instance.number)?.group === "support").length;
     const options = stageOptionsMatching(player, map, { tags: ["#Advent"] });
-    if (player.cheerDeck.length > 0 && options.length > 0) enqueueEffect(state, { type: "eventCheerTarget", playerIndex, options, targetRule: { tags: ["#Advent"] }, optional: false, prompt: "Rebellion：公開應援牌庫頂 1 張，附加到自己 1 位 #Advent Holomen。" });
+    if (archivedSupportCount >= 4 && player.cheerDeck.length > 0 && options.length > 0) enqueueEffect(state, { type: "eventCheerTarget", playerIndex, options, targetRule: { tags: ["#Advent"] }, optional: false, prompt: "Rebellion：公開應援牌庫頂 1 張，附加到自己 1 位 #Advent Holomen。" });
     return 0;
   }
   if (card.number === "hSD12-006" && artIndex === 0) {
@@ -8101,15 +8450,17 @@ function hbp09Legacy_resolveGenericArtEffects(state, playerIndex, sourceZone, ar
     return 0;
   }
   if (["hBP08-059", "hBP08-039"].includes(card.number) && artIndex === 0) {
-    // The previous Mococo Art controls only +50. The transfer is independent,
-    // takes red cheer only from this attacker, and uses one fixed recipient.
+    // Fuwawa can transfer red Cheer from anywhere on her own stage. Mococo's
+    // separate text limits its blue Cheer transfer to this Holomen.
     const fuwawa = card.number === "hBP08-059";
     const color = fuwawa ? "紅" : "藍";
     const targetName = fuwawa ? "モココ・アビスガード" : "フワワ・アビスガード";
     const usedMococo = currentTurnEvents(player, state.turn).arts.some(number => cardHasName(map.get(number), "モココ・アビスガード"));
-    const options = stageCheerOptions(player, map, { colors: [color], stage: { zones: [sourceZone] } });
+    const anySource = fuwawa;
+    const cheerRule = { colors: [color], ...(!anySource ? { stage: { zones: [sourceZone] } } : {}) };
+    const options = stageCheerOptions(player, map, cheerRule);
     const targets = stageOptionsMatching(player, map, { names: [targetName] }).filter(zone => zone !== sourceZone);
-    if (options.length > 0 && targets.length > 0) enqueueStageTarget(state, { playerIndex, options: targets, effect: "boundaryTransferTarget", optional: true, prompt: `選擇 1 位 ${targetName} 接收此攻擊者的${color}色應援；可略過以選擇 0 張。`, meta: { sourceZone, color, targetName } });
+    if (options.length > 0 && targets.length > 0) enqueueStageTarget(state, { playerIndex, options: targets, effect: "boundaryTransferTarget", optional: true, prompt: `選擇 1 位 ${targetName} 接收${color}色應援；可略過以選擇 0 張。`, meta: { sourceZone, color, targetName, anySource } });
     return fuwawa ? (usedMococo ? 50 : 0) : options.length * 20;
   }
   // Only the draw is conditional; the following deck archive always resolves.
@@ -8150,7 +8501,7 @@ function hbp09Legacy_resolveGenericArtEffects(state, playerIndex, sourceZone, ar
   if (card.number === "hBP03-022" && artIndex === 0) {
     if (cardHasName(map.get(player.oshi?.number), "アキ・ローゼンタール")) {
       for (const { zone, unit } of stageEntries(player)) {
-        if (unit.attachments.some(c => map.get(c.number)?.typeCode === "supportTool")) healStageUnit(state, playerIndex, zone, 10, map);
+        if (unit.attachments.some(c => map.get(c.number)?.typeCode === "supportTool")) healStageUnit(state, playerIndex, zone, 10, map, true, topCard(source)?.id || "");
       }
     }
     return 0;
@@ -8162,6 +8513,17 @@ function hbp09Legacy_resolveGenericArtEffects(state, playerIndex, sourceZone, ar
   if (card.number === "hBP03-035" && artIndex === 0) return 0;
   let bonus = dice.bonus;
   const key = `${card.number}:${artIndex}`;
+  if (key === "hBP07-024:0") {
+    if (player.mainDeck.length > 0) enqueueOptionChoice(state, {
+      playerIndex,
+      options: [{ id: "archive", label: "可將牌庫頂 1 張放到檔案區" }],
+      optional: true,
+      effect: "hBP07MiofaArchiveTop",
+      prompt: "我重要的家人：可將牌庫頂 1 張放到檔案區；若是支援卡，這個 Arts +30。",
+      meta: { sourceZone },
+    });
+    return bonus;
+  }
   if (key === "hBP04-043:0") {
     enqueueStageTarget(state, { playerIndex, targetPlayerIndex: playerIndex === 0 ? 1 : 0, effect: "specialDamage", prompt: "こんらみ～：選對手 1 位成員，造成 10 點特殊傷害；因此擊倒不扣生命。", meta: { amount: 10, loseLife: false, sourceName: art.name, sourceZone } });
     return bonus;
@@ -8229,6 +8591,25 @@ function hbp09Legacy_resolveGenericArtEffects(state, playerIndex, sourceZone, ar
     const targetRule = { names: ["姫森ルーナ"] };
     const candidates = player.archive.filter(c => cardHasName(map.get(c.number), "ルーナイト"));
     if (candidates.length && stageOptionsMatching(player, map, targetRule).length) enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: 1, optional: false, effect: "genericArchiveSupportPick", source: "archive", prompt: "ムーンギャラクシー：選擇 1 張存檔區ルーナイト，附加到姫森ルーナ。", meta: { targetRule } });
+    return bonus;
+  }
+  if (key === "hBP05-017:0") {
+    const targetRule = { zones: [sourceZone] };
+    const candidates = player.archive.filter(instance => {
+      const attachment = map.get(instance.number);
+      return cardHasName(attachment, "ルーナイト") && attachmentTargets(player, attachment, map).includes(sourceZone);
+    });
+    if (candidates.length > 0) enqueueCardSelection(state, {
+      playerIndex,
+      cards: candidates,
+      min: 0,
+      max: 1,
+      optional: true,
+      effect: "genericArchiveSupportPick",
+      source: "archive",
+      prompt: "レトロロマン：可選存檔區 1 張ルーナイト，附加到這位姫森ルーナ。",
+      meta: { targetRule },
+    });
     return bonus;
   }
   if (key === "hBP07-042:1") return bonus + (currentTurnEvents(player, state.turn).stageReturned > 0 ? 50 : 0);
@@ -8425,8 +8806,9 @@ function hbp09Legacy_resolveGenericArtEffects(state, playerIndex, sourceZone, ar
   }
   if (key === "hSD10-005:0") {
     if (currentTurnEvents(player, state.turn).bloomCount > 0) {
-      const options = stageOptionsMatching(player, map, { names: ["輪堂千速"] });
-      if (options.length > 0) enqueueStageTarget(state, { playerIndex, options, effect: "addModifier", optional: false, prompt: "行きます！！！！：直接按自己 1 位輪堂千速，本回合 Arts +20。", meta: { kind: "arts", amount: 20, sourceNumber: card.number } });
+      stageOptionsMatching(player, map, { names: ["輪堂千速"] }).forEach((zone) => {
+        addStageModifier(player.zones[zone], "arts", 20, state.turn, card.number);
+      });
     }
     return bonus;
   }
@@ -8484,8 +8866,19 @@ function hbp09Legacy_resolveGenericArtEffects(state, playerIndex, sourceZone, ar
   }
   const dynamic = /每(?:有|1|重疊|減少|使用|放入|送入|公開|擲出|出現)|每張|每位|每名|每種|×/u.test(text);
   const fixed = text.match(/(?:此|這個|這張)(?:技能|Arts|藝術(?:卡|牌)?|招式|戰技|藝能)(?:的)?(?:力量|威力|數值|攻擊力|傷害|效果)?\s*(?:就|額外|獲得)?\s*[+＋]\s*(\d+)/iu);
-  if (fixed && !dynamic && !dice.handled && !/(?:可以|可)將[^：。]+[：:]|若生命值為2以下，則改為/u.test(text)) bonus += Number(fixed[1]);
-  const perCheer = text.match(/每(?:有)?1張(?:這位Holomen的|此Holomen的|附在這位Holomen上的)?應援[^。]*?(?:技能|Arts|藝術|藝能)?\s*[+＋]\s*(\d+)/iu);
+  const stageCheerThresholdBonus = text.match(/(對手)?舞台上有\s*(\d+)\s*張以上的應援[^。]*?(?:此|這個|這張)(?:技能|Arts|藝術(?:卡|牌)?|招式|戰技|藝能)[^+。]*[+＋]\s*(\d+)/u);
+  if (stageCheerThresholdBonus && totalCheer(stageCheerThresholdBonus[1] ? opponent : player) >= Number(stageCheerThresholdBonus[2])) bonus += Number(stageCheerThresholdBonus[3]);
+  const deferredTopArchiveArtBonus = ["hBP07-028", "hBP07-029"].includes(card.number)
+    && /可(?:以)?將自己牌庫(?:上方|頂)1張卡?放(?:進|到)檔案區/u.test(text);
+  // hBP08-067's +50/+70 hand-count branches are fully evaluated below.
+  // Letting the generic fixed-bonus parser consume the first printed value
+  // adds +50 on top of the selected branch, including when the hand is empty.
+  if (fixed && !dynamic && !stageCheerThresholdBonus && !dice.handled && !deferredTopArchiveArtBonus && !["hBP08-067", "hBP08-081", "hEB01-018", "hEB01-022"].includes(card.number) && !/(?:可以|可)將[^：。]+[：:]|若生命值為2以下，則改為/u.test(text)) bonus += Number(fixed[1]);
+  // A generic cheer count refers to Cheer attached to this source. Do not
+  // count it again when the same clause explicitly scopes Cheer to an Archive
+  // or both players' stages; those scoped parsers below own those counts.
+  const hasScopedCheerCount = /(?:檔案區域|存檔區域|雙方舞台上)/u.test(text);
+  const perCheer = hasScopedCheerCount ? null : text.match(/每(?:有)?1張(?:(?:這位|這個|此)(?:Holomen|Holomem|Holo成員)(?:的|上的)?|附在(?:這位|這個|此)?(?:Holomen|Holomem|Holo成員)上的)?應援[^。]*?(?:技能|Arts|藝術|藝能)?\s*[+＋]\s*(\d+)/iu);
   if (perCheer) {
     const maximum = Number(text.match(/最多(?:只)?(?:計算)?\s*(\d+)張/u)?.[1] || source.cheer.length);
     bonus += Math.min(source.cheer.length, maximum) * Number(perCheer[1]);
@@ -8506,7 +8899,7 @@ function hbp09Legacy_resolveGenericArtEffects(state, playerIndex, sourceZone, ar
   if (totalFans) bonus += stageEntries(player).reduce((count, { unit: stageUnit }) => count + stageUnit.attachments.filter((instance) => map.get(instance.number)?.typeCode === "supportFan").length, 0) * Number(totalFans[1]);
   const perBack = text.match(/每有1位在自己後排的Holomen[^。]*?[+＋]\s*(\d+)/u);
   if (perBack) bonus += BACK_SLOTS.filter((zone) => player.zones[zone]).length * Number(perBack[1]);
-  const perStageTag = text.match(/舞台上每有1位(?:持有|擁有)(?:不同卡名的)?(#[^的，。\]]+)(?:的)?Holom(?:en|em)[^。]*?[+＋]\s*(\d+)/u);
+  const perStageTag = text.match(/舞台上每有1位(?:持有|擁有)(?:不同卡名的)?(#[^的，。\]]+)(?:的)?(?:Holom(?:en|em)|成員)[^。]*?[+＋]\s*(\d+)/u);
   if (perStageTag) {
     const cards = stageEntries(player).map(({ unit: stageUnit }) => unitCard(stageUnit, map)).filter((candidate) => cardHasTag(candidate, perStageTag[1]));
     const count = /不同卡名/u.test(text) ? new Set(cards.map((candidate) => candidate.jpName || candidate.enName || candidate.name)).size : cards.length;
@@ -8527,6 +8920,12 @@ function hbp09Legacy_resolveGenericArtEffects(state, playerIndex, sourceZone, ar
   if (perCheerColor) {
     const colors = new Set(stageEntries(player).flatMap(({ unit: stageUnit }) => stageCheerColors(player, stageUnit, map)));
     bonus += colors.size * Number(perCheerColor[1]);
+  }
+  const bothArchiveCheer = text.match(/雙方檔案區域(?:中|內)?(?:的)?每1張(?:應援|加油)[^。]*?[+＋]\s*(\d+)/u);
+  if (bothArchiveCheer) {
+    const ownCount = player.archive.filter((instance) => map.get(instance.number)?.group === "cheer").length;
+    const opponentCount = opponent.archive.filter((instance) => map.get(instance.number)?.group === "cheer").length;
+    bonus += (ownCount + opponentCount) * Number(bothArchiveCheer[1]);
   }
   const bothStageCheer = text.match(/雙方舞台上(?:的)?每有1張應援[^。]*?[+＋]\s*(\d+)/u);
   if (bothStageCheer) bonus += Math.min(totalCheer(player) + totalCheer(opponent), Number(text.match(/最多(?:只)?(?:計算)?\s*(\d+)張/u)?.[1] || Infinity)) * Number(bothStageCheer[1]);
@@ -8588,10 +8987,19 @@ function hbp09Legacy_resolveGenericArtEffects(state, playerIndex, sourceZone, ar
     const revealed = player.mainDeck.splice(0, Math.min(topRevealCount, player.mainDeck.length));
     const amount = Number(text.match(/每公開1張(?:ホロメン|Holomen)[^。]*?[+＋]\s*(\d+)/u)?.[1] || 0);
     bonus += revealed.filter((instance) => map.get(instance.number)?.group === "holomem").length * amount;
-    if (/放(?:進|入)(?:檔案|存檔)/u.test(text)) player.archive.push(...revealed);
+    if (/(?:放(?:進|入)|加入)(?:檔案|存檔)(?:區域)?/u.test(text)) archiveMainDeckCards(player, state, revealed);
     else player.mainDeck = shuffle([...player.mainDeck, ...revealed], random);
     if (/其中有事件卡[^。]*抽2張/u.test(text) && revealed.some((instance) => ["supportEvent", "supportEventLimited"].includes(map.get(instance.number)?.typeCode))) appendLog(state, `${player.name} 因公開到事件卡抽 ${drawCards(state, playerIndex, 2)} 張牌。`);
     appendLog(state, `${player.name} 公開 ${cardCodes(revealed)}，令「${art.name}」+${revealed.filter((instance) => map.get(instance.number)?.group === "holomem").length * amount}。`, revealed);
+  } else if (!dice.handled && deferredTopArchiveArtBonus) {
+    if (player.mainDeck.length > 0) enqueueOptionChoice(state, {
+      playerIndex,
+      options: [{ id: "archive", label: "可將牌庫頂 1 張放到檔案區" }],
+      optional: true,
+      effect: "hBP07MioTopArchiveArt",
+      prompt: `${art.name}：可以將牌庫頂 1 張放到檔案區。支援卡會令這個 Arts +50${card.number === "hBP07-029" ? "；Holomen 會附加應援牌庫頂 1 張" : ""}。`,
+      meta: { sourceZone, sourceNumber: card.number, artName: art.name },
+    });
   } else if (!dice.handled && /牌庫(?:頂|上方)的?1張.*(?:放進|放到|存入)檔案/u.test(text)) {
     const moved = player.mainDeck.shift();
     if (moved) {
@@ -8604,11 +9012,15 @@ function hbp09Legacy_resolveGenericArtEffects(state, playerIndex, sourceZone, ar
     }
   }
 
-  const complexCost = costQueued || /(?:可以|可)將[^：。]+[：:]|將自己(?:手牌|舞台|檔案|Holo[Pp]ower)[^：。]+[：:]/u.test(text);
+  const complexCost = costQueued || deferredTopArchiveArtBonus || /(?:可以|可)將[^：。]+[：:]|將自己(?:手牌|舞台|檔案|Holo[Pp]ower)[^：。]+[：:]/u.test(text);
   if (complexCost) bonus = dice.bonus;
   if (!dice.handled && !complexCost) {
     const selfDamageBuff = /(?:此|這個|這張)(?:技能|Arts|藝術|招式|戰技|藝能)/iu.test(text);
     queueSimpleTriggeredKeyword(state, playerIndex, sourceZone, fauxCard, map, random, { skipBuff: selfDamageBuff, conditionChecked: true });
+  }
+  if (key === "hBP07-043:0") {
+    const attached35P = source.attachments.filter((instance) => cardHasName(map.get(instance.number), "35P")).length;
+    if (attached35P > 0) appendLog(state, `${player.name} 因「${art.name}」每張附著的 35P 抽 1 張，共抽 ${drawCards(state, playerIndex, attached35P)} 張牌。`);
   }
   if (bonus > 0) appendLog(state, `${player.name} 的「${art.name}」由文字效果獲得 +${bonus} 傷害。`);
   return bonus;
@@ -8629,10 +9041,20 @@ function queueAttachmentArtEffects(state, playerIndex, sourceZone, map, random) 
     if ([3, 5].includes(die)) enqueueStageTarget(state, { playerIndex, rule: { excludeZones: [sourceZone] }, effect: "specialDamage", prompt: "槌子骰子觸發：直接按自己另一位 Holomen，造成 50 點特殊傷害。", meta: { amount: 50, loseLife: true, sourceName: "角卷綿芽的槌子" } });
   }
   if (has("hBP07-105") && cardHasName(card, "ベスティア・ゼータ")) queueArchiveToHand(state, playerIndex, { typeCodes: ["supportFan"] }, map, { min: 1, max: 1, optional: false, label: "BAZO" });
-  if (has("hEB01-033") && cardHasTag(card, "#サマー")) {
-    const options = stageOptionsMatching(player, map, { zones: ["center", "collab"], tags: ["#サマー"] }).filter((zone) => zone !== sourceZone);
-    if (options.length > 0) enqueueStageTarget(state, { playerIndex, options, effect: "moveAttachment", optional: true, prompt: "沙灘球：可直接按另一位 #サマー 中央／合作 Holomen，將沙灘球移過去。", meta: { sourceZone, attachmentNumber: "hEB01-033" } });
+  // Q702 confirms Beach Ball moves after Arts damage, then the same Art may
+  // repeat. The caller schedules this trigger after the damage batch.
+  return has("hEB01-033") && cardHasTag(card, "#サマー");
+}
+
+function insertAfterDamageBatch(state, damageBatchId, effect) {
+  let lastHitIndex = -1;
+  for (let index = 0; index < state.effectQueue.length; index += 1) {
+    const queued = state.effectQueue[index];
+    if (queued.type === "dealArtsDamage" && queued.damageBatchId === damageBatchId) lastHitIndex = index;
   }
+  const completionIndex = state.effectQueue.findIndex(queued => queued.type === "completeArtsResolution");
+  const index = lastHitIndex >= 0 ? lastHitIndex + 1 : completionIndex >= 0 ? completionIndex : state.effectQueue.length;
+  state.effectQueue.splice(index, 0, effect);
 }
 
 function archiveUnit(player, stageUnit) {
@@ -8676,8 +9098,13 @@ function queueKnockoutAttachmentEffects(state, ownerIndex, defeated, defeatedCar
   if (onOpponentTurn && defeatedAttachments.has("hBP01-122") && cardHasName(defeatedCard, "アキ・ローゼンタール") && owner.cheerDeck.length > 0) pendingEffects.push({ type: "eventCheerTarget", playerIndex: ownerIndex, tag: null, targetRule: { names: ["アキ・ローゼンタール"] }, optional: false, prompt: "羅森隊：直接按自己另一位亞綺·羅森塔爾，附加應援牌庫頂 1 張。" });
   if (onOpponentTurn && defeatedAttachments.has("hBP01-124") && cardHasName(defeatedCard, "AZKi")) queueTransfer({}, 1, null, false);
   if (defeatedAttachments.has("hBP02-090") && cardHasName(defeatedCard, "白上フブキ")) queueTransfer({}, 1, null, false);
-  if (onOpponentTurn && defeatedAttachments.has("hBP02-101") && cardHasName(defeatedCard, "大神ミオ")) appendLog(state, `${owner.name} 因 MioFa 抽 ${drawCards(state, ownerIndex, 1)} 張牌。`);
-  if (defeatedAttachments.has("hBP03-103") && cardHasName(defeatedCard, "戌神ころね") && owner.holoPower.length > 0) pendingEffects.push({ type: "optionChoice", playerIndex: ownerIndex, options: [{ id: "use", label: "支付 1 Holo Power，將瘦狗返回手牌" }], prompt: "瘦狗：可支付成本返回手牌。", effect: "slimDogReturn", optional: true, meta: {} });
+  if (onOpponentTurn && cardHasName(defeatedCard, "大神ミオ")) for (const fan of defeated.attachments || []) {
+    if (fan.number === "hBP02-101") appendLog(state, `${owner.name} 因 MioFa 抽 ${drawCards(state, ownerIndex, 1)} 張牌。`);
+  }
+  if (cardHasName(defeatedCard, "戌神ころね")) for (const mascot of defeated.attachments || []) {
+    if (mascot.number !== "hBP03-103" || owner.holoPower.length === 0) continue;
+    pendingEffects.push({ type: "optionChoice", playerIndex: ownerIndex, options: [{ id: "use", label: "支付 1 Holo Power，將瘦狗返回手牌" }], prompt: "瘦狗：可支付成本返回手牌。", effect: "slimDogReturn", optional: true, meta: { targetZone: options.targetZone, attachmentId: mascot.id } });
+  }
   for (const fan of defeated.attachments || []) {
     if (onOpponentTurn && fan.number === "hBP03-109" && ["フワワ・アビスガード", "モココ・アビスガード"].some(name => cardHasName(defeatedCard, name))) {
       pendingEffects.push({type:"koFanTransfer",playerIndex:ownerIndex,max:1,colors:["藍"],targetRule:{names:["フワワ・アビスガード"]},label:"Ruffians"});
@@ -8691,12 +9118,26 @@ function queueKnockoutAttachmentEffects(state, ownerIndex, defeated, defeatedCar
     pendingEffects.push({ type: "cardSelection", playerIndex: ownerIndex, cards: clone(owner.hand), selectableIds: owner.hand.map((card) => card.id), min: 0, max: 1, prompt: "古代武器：可存檔 1 張手牌，將古代武器返回手牌。", effect: "ancientWeaponReturn", source: "hand", optional: true, meta: { attachmentId: weapon?.id } });
   }
   if (onOpponentTurn && defeatedAttachments.has("hBP05-085") && cardHasName(defeatedCard, "さくらみこ") && sourcePlayer.hand.length > 0) pendingEffects.push({ type: "cardSelection", playerIndex: sourcePlayerIndex, cards: clone(sourcePlayer.hand), selectableIds: sourcePlayer.hand.map((card) => card.id), min: 1, max: 1, prompt: "MikoDanye：揀自己 1 張手牌放到存檔區。", effect: "handToArchive", source: "hand", optional: false, meta: {} });
-  if (onOpponentTurn && defeatedAttachments.has("hBP05-087") && cardHasName(defeatedCard, "ネリッサ・レイヴンクロフト")) queueTransfer({ tags: ["#歌"] });
+  if (onOpponentTurn && cardHasName(defeatedCard, "ネリッサ・レイヴンクロフト")) {
+    const eligibleCheerIds = cheerCards.map((instance) => instance.id);
+    const eligibleColors = [...new Set(cheerCards.flatMap((instance) => map.get(instance.number)?.colors || []))];
+    for (const fan of defeated.attachments || []) {
+      if (fan.number !== "hBP05-087") continue;
+      pendingEffects.push({ type: "koFanTransfer", playerIndex: ownerIndex, max: 1, colors: eligibleColors, eligibleIds: eligibleCheerIds, targetRule: { tags: ["#歌"] }, label: "Jailbird" });
+    }
+  }
   if (onOpponentTurn && defeatedAttachments.has("hBP06-102") && cardHasName(defeatedCard, "夏色まつり")) queueTransfer({ names: ["夏色まつり"] }, 1, ["黃"]);
   if (onOpponentTurn && defeatedAttachments.has("hBP06-104") && cardHasName(defeatedCard, "大空スバル") && owner.cheerDeck.length > 0) pendingEffects.push({ type: "eventCheerTarget", playerIndex: ownerIndex, targetRule: { names: ["大空スバル"] }, optional: true, prompt: "昴友：可直接按自己另一位大空スバル，附加應援牌庫頂 1 張。" });
-  if (onOpponentTurn && defeatedAttachments.has("hBP08-106") && cardHasName(defeatedCard, "IRyS")) queueTransfer({}, 1, null, false);
-  if (onOpponentTurn && defeatedAttachments.has("hBP08-108") && ["フワワ・アビスガード", "モココ・アビスガード"].some((name) => cardHasName(defeatedCard, name)) && cheerCards.some((instance) => (map.get(instance.number)?.colors || []).includes("紅"))) appendLog(state, `${owner.name} 因淘氣的 Ruffians 抽 ${drawCards(state, ownerIndex, 1)} 張牌。`);
-  if (onOpponentTurn && defeatedAttachments.has("hBP08-109") && cardHasName(defeatedCard, "鷹嶺ルイ")) queueTransfer({}, 1, ["紅", "紫"]);
+  for (const fan of defeated.attachments || []) {
+    if (!onOpponentTurn) continue;
+    if (fan.number === "hBP08-106" && cardHasName(defeatedCard, "IRyS")) queueTransfer({}, 1, null, false);
+    if (fan.number === "hBP08-108"
+      && ["フワワ・アビスガード", "モココ・アビスガード"].some((name) => cardHasName(defeatedCard, name))
+      && cheerCards.some((instance) => (map.get(instance.number)?.colors || []).includes("紅"))) {
+      appendLog(state, `${owner.name} 因淘氣的 Ruffians 抽 ${drawCards(state, ownerIndex, 1)} 張牌。`);
+    }
+    if (fan.number === "hBP08-109" && cardHasName(defeatedCard, "鷹嶺ルイ")) queueTransfer({}, 1, ["紅", "紫"]);
+  }
   if (cardHasName(defeatedCard,"さくらみこ")) for (const fan of defeated.attachments || []) {
     if (fan.number === "hBP03-107") pendingEffects.push({type:"optionChoice",playerIndex:ownerIndex===0?1:0,options:[{id:"draw",label:"抽 1 張牌"}],optional:true,effect:"koFanDraw",prompt:"35P：可抽 1 張牌，亦可略過。",meta:{}});
   }
@@ -8745,7 +9186,7 @@ function queueOshiKnockoutEffects(state, ownerIndex, defeated, defeatedCard, map
 
   if (onOpponentTurn && owner.oshi?.number === "hBP01-004" && Number(owner.oshiSkillTurn || 0) !== state.turn) {
     const cheerIds = defeated.cheer.filter((instance) => (map.get(instance.number)?.colors || []).includes("綠")).map((instance) => instance.id);
-    if (cheerIds.length > 0 && stageUnitCount(owner) > 0) push(ownerIndex, "normal", "pekoraCheer", "野兎たち～：分配倒下 Holomen 的全部綠色應援", { cheerIds });
+    if (cheerIds.length > 0 && stageOptionsMatching(owner, map, {}).length > 0) push(ownerIndex, "normal", "pekoraCheer", "野兎たち～：分配倒下 Holomen 的全部綠色應援", { cheerIds });
   }
   if (onOpponentTurn && owner.oshi?.number === "hBP01-006" && !owner.spOshiSkillUsed && (defeatedCard?.colors || []).includes("紅")) {
     push(ownerIndex, "sp", "kiaraReturn", "Rise from the ashes：生命 -1，將被擊倒的紅色 Holomen 及其重疊卡返回手牌", { returnIds: (defeated.stack || []).map((instance) => instance.id) });
@@ -8865,10 +9306,11 @@ function hbp09Legacy_queueGiftKnockoutEffects(state, ownerIndex, defeated, defea
     appendLog(state, `${sourcePlayer.name} 因擊倒 Gift 將牌庫頂 1 張放到 Holo Power。`);
   }
   if (false && sourceCard?.number === "hBP09-037") pendingEffects.push({ type: "stageTarget", playerIndex: sourcePlayerIndex, targetPlayerIndex: sourcePlayerIndex, options: null, rule: { zones: BACK_SLOTS, tags: ["#FLOW GLOW"] }, prompt: "Gift：可直接按自己 1 位 #FLOW GLOW 後排，將整個重疊組返回手牌。", effect: "giftReturnStageStack", optional: true, meta: {} });
-  if (sourceCard?.number === "hSD12-007" && !usedNamedThisTurn(sourcePlayer, "gift:hSD12-007", state.turn)) {
+  const hsd12GiftUsage = `gift:hSD12-007:${topCard(source)?.id || options.sourceZone || "unknown"}`;
+  if (sourceCard?.number === "hSD12-007" && !usedNamedThisTurn(sourcePlayer, hsd12GiftUsage, state.turn)) {
     const cards = sourcePlayer.archive.filter((instance) => map.get(instance.number)?.group === "support" && !String(map.get(instance.number)?.type || "").toUpperCase().includes("LIMITED"));
     if (cards.length > 0) {
-      markNamedUsage(sourcePlayer, "gift:hSD12-007", state.turn);
+      markNamedUsage(sourcePlayer, hsd12GiftUsage, state.turn);
       pendingEffects.push({ type: "cardSelection", playerIndex: sourcePlayerIndex, cards: clone(cards), selectableIds: cards.map((card) => card.id), min: 1, max: 1, prompt: "Gift：揀存檔區 1 張非 LIMITED 支援卡返回手牌。", effect: "archiveToHand", source: "archive", optional: false, meta: {} });
     }
   }
@@ -9205,29 +9647,64 @@ function queueGiftDamageDealtTriggers(state, playerIndex, sourceZone, targetPlay
   }
 }
 
-function queueOshiAfterArtsDamage(state, sourcePlayerIndex, sourceZone, targetPlayerIndex, targetZone, damage, map) {
+function queueHbp01SuiseiAfterDamage(state, sourcePlayerIndex, sourceZone, targetPlayerIndex, targetZone, damage, map) {
+  const sourcePlayer = state.players[sourcePlayerIndex];
+  if (sourcePlayer?.oshi?.number !== "hBP01-007" || sourcePlayerIndex === targetPlayerIndex || Number(damage || 0) <= 0) return;
+  const sourceCard = unitCard(sourcePlayer.zones?.[sourceZone], map);
+  if (!sourceCard) return;
+  const isBlue = (sourceCard.colors || []).includes("藍");
+  const isSuisei = cardHasName(sourceCard, "星街すいせい");
+  const push = (kind, trigger, label) => enqueueOptionChoice(state, {
+    playerIndex: sourcePlayerIndex,
+    options: [{ id: "use", label }],
+    optional: true,
+    prompt: "造成傷害後：可使用推し技能。",
+    effect: "oshiAfterDamage",
+    meta: { kind, trigger, sourceZone, targetPlayerIndex, targetZone, damage },
+  });
+
+  if (Number(sourcePlayer.oshiSkillTurn || 0) !== state.turn && BACK_SLOTS.includes(targetZone) && (isSuisei || isBlue)) {
+    push("normal", "suiseiBack50", "彗星：對對手 1 位後排造成 50 點特殊傷害");
+  }
+  if (!sourcePlayer.spOshiSkillUsed && ["center", "collab"].includes(targetZone) && isBlue) {
+    push("sp", "suiseiMirror", "Shooting Star：對對手 1 位後排造成相同數值的特殊傷害");
+  }
+}
+
+function queueOshiAfterArtsDamage(state, sourcePlayerIndex, sourceZone, targetPlayerIndex, targetZone, damage, map, artIndex = null) {
   const sourcePlayer = state.players[sourcePlayerIndex];
   const source = sourcePlayer?.zones?.[sourceZone];
   const sourceCard = unitCard(source, map);
   const oshiNumber = sourcePlayer?.oshi?.number;
   const push = (kind, trigger, label, meta = {}) => enqueueOptionChoice(state, { playerIndex: sourcePlayerIndex, options: [{ id: "use", label }], optional: true, prompt: "Arts 已造成傷害：可使用推し技能。", effect: "oshiAfterDamage", meta: { kind, trigger, sourceZone, targetPlayerIndex, targetZone, damage, ...meta } });
-  if (oshiNumber === "hBP01-007" && Number(sourcePlayer.oshiSkillTurn || 0) !== state.turn && BACK_SLOTS.includes(targetZone) && (sourceCard?.colors || []).includes("藍")) push("normal", "suiseiBack50", "彗星：對對手 1 位後排造成 50 點特殊傷害");
-  if (oshiNumber === "hBP01-007" && !sourcePlayer.spOshiSkillUsed && ["center", "collab"].includes(targetZone) && (sourceCard?.colors || []).includes("藍")) push("sp", "suiseiMirror", "Shooting Star：對對手 1 位後排造成相同數值的特殊傷害");
+  queueHbp01SuiseiAfterDamage(state, sourcePlayerIndex, sourceZone, targetPlayerIndex, targetZone, damage, map);
   if (["hSD03-001", "hYS01-004"].includes(oshiNumber) && !sourcePlayer.spOshiSkillUsed && BACK_SLOTS.includes(targetZone)) push("sp", "backshot", "後方射擊：對該後排 Holomen 造成 50 點特殊傷害");
   if (oshiNumber === "hBP02-005" && !sourcePlayer.spOshiSkillUsed && sourceZone === "center" && (sourceCard?.colors || []).includes("紫") && state.players[targetPlayerIndex].zones.center) {
     const amount = state.players[targetPlayerIndex].zones.center.cheer.length * 50;
     push("sp", "shionCenter", "シオンのすごい魔法：對手中央受到 " + amount + " 點特殊傷害", { amount });
   }
+  if (oshiNumber === "hBP02-007" && !sourcePlayer.spOshiSkillUsed
+    && ["center", "collab"].includes(sourceZone)
+    && cardHasName(unitCard(sourcePlayer.zones.center, map), "森カリオペ")
+    && cardHasName(sourceCard, "森カリオペ")
+    && Number.isInteger(Number(artIndex))
+    && !state.effectQueue.some(effect => effect.effect === "oshiAfterDamage"
+      && effect.meta?.trigger === "calliopeRepeatArts"
+      && effect.meta?.sourceZone === sourceZone
+      && Number(effect.meta?.artIndex) === Number(artIndex))) {
+    push("sp", "calliopeRepeatArts", "死神說唱：本回合可再使用剛才相同的 Arts", { artIndex: Number(artIndex), sourceId: topCard(source)?.id || "" });
+  }
 }
 
-function queueOshiAfterSpecialDamage(state, sourcePlayerIndex, sourceZone, targetPlayerIndex, targetZone, damage, map) {
+function queueOshiAfterSpecialDamage(state, sourcePlayerIndex, sourceZone, targetPlayerIndex, targetZone, damage, map, { skipHbp01SuiseiReaction = false } = {}) {
   const player = state.players[sourcePlayerIndex];
-  if (player?.oshi?.number === "hSD03-001" && !player.spOshiSkillUsed && sourcePlayerIndex !== targetPlayerIndex && BACK_SLOTS.includes(targetZone) && unitCard(player.zones[sourceZone], map)?.group === "holomem") enqueueOptionChoice(state, { playerIndex: sourcePlayerIndex, options: [{ id: "use", label: "後方射擊：造成 50 點特殊傷害" }], optional: true, effect: "oshiAfterDamage", meta: { kind: "sp", trigger: "backshot", sourceZone, targetPlayerIndex, targetZone, damage } });
+  if (!skipHbp01SuiseiReaction) queueHbp01SuiseiAfterDamage(state, sourcePlayerIndex, sourceZone, targetPlayerIndex, targetZone, damage, map);
+  if (["hSD03-001", "hYS01-004"].includes(player?.oshi?.number) && !player.spOshiSkillUsed && sourcePlayerIndex !== targetPlayerIndex && BACK_SLOTS.includes(targetZone) && unitCard(player.zones[sourceZone], map)?.group === "holomem") enqueueOptionChoice(state, { playerIndex: sourcePlayerIndex, options: [{ id: "use", label: "後方射擊：造成 50 點特殊傷害" }], optional: true, effect: "oshiAfterDamage", meta: { kind: "sp", trigger: "backshot", sourceZone, targetPlayerIndex, targetZone, damage } });
   if (player?.oshi?.number !== "hBP06-006" || Number(player.oshiSkillTurn || 0) === state.turn) return;
   enqueueOptionChoice(state, { playerIndex: sourcePlayerIndex, options: [{ id: "use", label: "滿月的光輝：對手中央與合作各造成 20 點特殊傷害" }], optional: true, prompt: "已造成特殊傷害：可使用推し技能。", effect: "oshiAfterDamage", meta: { kind: "normal", trigger: "moonaFanout", sourceZone } });
 }
 
-function queueGiftArtUseEffects(state, playerIndex, sourceZone, sourceCard, map) {
+function queueGiftArtUseEffects(state, playerIndex, sourceZone, sourceCard, map, random) {
   const player = state.players[playerIndex];
   const opponentIndex = playerIndex === 0 ? 1 : 0;
   const source = player.zones[sourceZone];
@@ -9240,7 +9717,12 @@ function queueGiftArtUseEffects(state, playerIndex, sourceZone, sourceCard, map)
       enqueueCardSelection(state, { playerIndex, cards: player.hand, min: 0, max: 1, optional: true, effect: "giftDiscardDraw", source: "hand", prompt: "冬之旅：可揀 1 張手牌放到存檔區；若支付，抽 1 張牌。" });
     }
     if (giftCard.number === "hBP06-066" && zone === "center" && sourceZone === "collab" && cardHasTag(sourceCard, "#0期生") && player.mainDeck.length > 0) {
-      enqueueCardSelection(state, { playerIndex, cards: player.mainDeck, min: 1, max: 1, effect: "deckToArchiveShuffle", source: "deck", prompt: "どり～む_コネクト.zero：公開牌庫 1 張卡放到存檔區，然後洗牌。" });
+      const revealed = player.mainDeck.shift();
+      if (revealed) {
+        archiveMainDeckCards(player, state, [revealed]);
+        player.mainDeck = shuffle(player.mainDeck, random);
+        appendLog(state, `${player.name} 因「${giftCard.keyword?.name || giftCard.name}」公開 ${revealed.number} 並將它放到存檔區，然後洗牌。`, [revealed]);
+      }
     }
   }
 
@@ -9271,7 +9753,7 @@ function hbp09Legacy_queueArtKnockoutEffects(state, effect, targetCard, damage, 
     appendLog(state, `${player.name} 因「${effect.artName}」抽 ${drawCards(state, playerIndex, 1)} 張牌。`);
     if (cardHasName(map.get(player.oshi?.number), "アキ・ローゼンタール")) {
       let healed = 0;
-      stageEntries(player).forEach(({ zone }) => { healed += healStageUnit(state, playerIndex, zone, 20, map); });
+      stageEntries(player).forEach(({ zone }) => { healed += healStageUnit(state, playerIndex, zone, 20, map, true, topCard(source)?.id || ""); });
       appendLog(state, `${player.name} 的全體 Holomen 合共回復 ${healed} HP。`);
     }
   }
@@ -9318,7 +9800,12 @@ function attack(state, playerIndex, action, map, random) {
   assert(!defenderForcesCollabTarget(opponent, map) || action.targetZone === "collab", "對手的 Gift 令 Arts 只能以合作 Holomen 為對象。 ");
   const art = artCard?.arts?.[Number(action.artIndex)];
   assert(art && Number.isFinite(art.damage), "所選 Arts 無效。 ");
+  assert(giftZoneApplies(String(art.effect || ""), action.sourceZone), "這個 Arts 不能從目前位置使用。 ");
   assert(!/只能以對手的(?:中央|中心)/u.test(String(art.effect || "")) || action.targetZone === "center", "這個 Arts 只能以對手中央 Holomen 為對象。 ");
+  const repeatContinuation = pendingRepeatArts(player, state.turn);
+  assert(!repeatContinuation || (repeatContinuation.zone === action.sourceZone
+    && repeatContinuation.artIndex === Number(action.artIndex)
+    && (!repeatContinuation.targetId || repeatContinuation.targetId === topCard(target)?.id)), "Resolve the pending repeated Arts against the same Holomem before using another Arts.");
   HBP09.beforeAttack(state, playerIndex, action, map);
   const artKey = `${artCard?.number}:${Number(action.artIndex)}`;
   if (artKey === "hBP01-070:0") assert(!(source.attachments || []).some((instance) => cardHasName(map.get(instance.number), "座員")), "這個 Arts 只能在攻擊者沒有座員時使用。 ");
@@ -9357,6 +9844,14 @@ function attack(state, playerIndex, action, map, random) {
   const grantedRepeat = activeModifiers(source, "repeatArts", state.turn).find((modifier) => Number(modifier.uses || 0) > 0 && modifier.artIndex == null);
   if (grantedRepeat) {
     grantedRepeat.artIndex = Number(action.artIndex);
+    // Sora hBP01-023 explicitly repeats against the same Holomem until it is
+    // down. Other repeat-Arts effects (for example hEB01-010) do not carry
+    // that target restriction, so keep the lock specific to that card text.
+    if (grantedRepeat.sourceNumber === "hBP01-023") {
+      grantedRepeat.targetZone = action.targetZone;
+      grantedRepeat.targetId = topCard(target)?.id || "";
+      grantedRepeat.sourceId = topCard(source)?.id || "";
+    }
     source.rested = false;
     appendLog(state, `${sourceCard.name} 可再使用一次相同 Arts。`);
   }
@@ -9364,8 +9859,8 @@ function attack(state, playerIndex, action, map, random) {
     player.holoPower.push(player.mainDeck.shift());
     appendLog(state, `${player.name} 因「ドドドライブ」將牌庫頂 1 張放到 Holo Power。`);
   }
-  queueAttachmentArtEffects(state, playerIndex, action.sourceZone, map, random);
-  queueGiftArtUseEffects(state, playerIndex, action.sourceZone, sourceCard, map);
+  const moveBeachBallAfterDamage = queueAttachmentArtEffects(state, playerIndex, action.sourceZone, map, random);
+  queueGiftArtUseEffects(state, playerIndex, action.sourceZone, sourceCard, map, random);
   const archiveCheerColors = new Set(player.archive.filter((instance) => map.get(instance.number)?.group === "cheer").flatMap((instance) => map.get(instance.number)?.colors || []));
   const damageBatchId = gameUUID();
   splitTargets.forEach((splitTargetZone) => {
@@ -9396,6 +9891,11 @@ function attack(state, playerIndex, action, map, random) {
     });
   });
   if (ownsResolution) enqueueEffect(state, { type: "completeArtsResolution", playerIndex });
+  if (moveBeachBallAfterDamage) {
+    insertAfterDamageBatch(state, damageBatchId, {
+      type: "hEB01BeachBallAfterArts", playerIndex, sourceId: topCard(source)?.id || "",
+    });
+  }
 }
 
 function batonPass(state, playerIndex, action, map) {
@@ -9428,6 +9928,29 @@ function batonPass(state, playerIndex, action, map) {
   }
 }
 
+function hSD14MascotFubukiTargets(player, map) {
+  return stageOptionsMatching(player, map, { names: ["白上フブキ", "白上吹雪"] })
+    .filter((zone) => player.zones[zone].attachments.some((instance) => map.get(instance.number)?.typeCode === "supportMascot"));
+}
+
+function hSD16MikoFanTargets(player, map) {
+  return stageOptionsMatching(player, map, { names: ["さくらみこ", "櫻巫女"] })
+    .filter((zone) => player.zones[zone].attachments.some((instance) => map.get(instance.number)?.typeCode === "supportFan"));
+}
+
+function hYS01NormalCollabColorMatches(player, oshiCard, map) {
+  const color = skillColor(oshiCard?.oshiSkill?.effect || "");
+  const collabCard = unitCard(player?.zones?.collab, map);
+  return Boolean(color && (collabCard?.colors || []).includes(color));
+}
+
+function hYS01RedArchiveTargets(player, map) {
+  return (player?.archive || []).filter((instance) => {
+    const card = map.get(instance.number);
+    return card?.group === "holomem" && (card.colors || []).includes("紅");
+  });
+}
+
 function hbp09Legacy_resolveNormalOshiSkill(state, playerIndex, oshiCard, map, random) {
   const player = state.players[playerIndex];
   const opponentIndex = playerIndex === 0 ? 1 : 0;
@@ -9451,7 +9974,7 @@ function hbp09Legacy_resolveNormalOshiSkill(state, playerIndex, oshiCard, map, r
     const toHand = revealed.filter((instance) => map.get(instance.number)?.group === "holomem" && map.get(instance.number)?.stage !== "Debut");
     const toArchive = revealed.filter((instance) => !toHand.some((selected) => selected.id === instance.id));
     player.hand.push(...toHand);
-    player.archive.push(...toArchive);
+    archiveMainDeckCards(player, state, toArchive);
     appendLog(state, `${player.name} 展示 ${cardCodes(revealed)}；${toHand.length} 張非 Debut Holomen 加入手牌${holomemCount >= 3 ? "，本回合所有博衣こより Arts +30" : ""}。`, revealed);
     return;
   }
@@ -9467,7 +9990,7 @@ function hbp09Legacy_resolveNormalOshiSkill(state, playerIndex, oshiCard, map, r
   } else if (["hBP01-006", "hSD19-001"].includes(number)) {
     queueArchiveToHand(state, playerIndex, { group: "holomem" }, map, { min: 1, max: 1, optional: false, label: oshiCard.oshiSkill?.name || "推し技能" });
   } else if (number === "hBP02-001") {
-    queueDeckToHand(state, playerIndex, { typeCodes: ["supportMascot"] }, map, random, { label: "吉祥物創造" });
+    queueDeckToHand(state, playerIndex, { typeCodes: ["supportMascot"] }, map, random, { optional: false, label: "吉祥物創造" });
   } else if (number === "hBP02-002") {
     const greenCheer = player.archive.filter((instance) => map.get(instance.number)?.group === "cheer" && (map.get(instance.number)?.colors || []).includes("綠"));
     assert(greenCheer.length > 0 && player.cheerDeck.length > 0 && stageUnitCount(player) > 0, "需要存檔區 1 張綠色應援、非空的應援牌庫及舞台 Holomen。 ");
@@ -9497,7 +10020,7 @@ function hbp09Legacy_resolveNormalOshiSkill(state, playerIndex, oshiCard, map, r
     assert(player.hand.length >= 2, "需要 2 張手牌。 ");
     enqueueCardSelection(state, { playerIndex, cards: player.hand, min: 2, max: 2, effect: "oshiDiscardForArchiveEn", source: "hand", prompt: "取樣：揀 2 張手牌放到存檔區；之後可揀 2 張 #EN Holomen 返回手牌。" });
   } else if (number === "hBP03-001") {
-    queueDeckToHand(state, playerIndex, { typeCodes: ["supportItem", "supportItemLimited"], nameIncludes: ["パソコン", "電腦"] }, map, random, { label: "如果是電腦的話我懂的啦" });
+    queueDeckToHand(state, playerIndex, { typeCodes: ["supportItem", "supportItemLimited"], nameIncludes: ["パソコン", "電腦"] }, map, random, { optional: false, label: "如果是電腦的話我懂的啦" });
   } else if (["hBP03-002", "hBP04-002"].includes(number)) {
     const targetRule = number === "hBP03-002" ? { zones: BACK_SLOTS, names: ["獅白ぼたん", "獅白牡丹"] } : { tags: ["#ReGLOSS"] };
     enqueueArchiveCheerToTarget(state, playerIndex, { targetRule, optional: false, prompt: `${oshiCard.oshiSkill?.name}：揀 1 張存檔區應援；下一步直接按合法 Holomen。` }, map);
@@ -9515,7 +10038,7 @@ function hbp09Legacy_resolveNormalOshiSkill(state, playerIndex, oshiCard, map, r
     assert(options.length > 0, "舞台沒有休息中的戌神ころね。 ");
     enqueueStageTarget(state, { playerIndex, options, effect: "unrest", prompt: "無限的體力：直接按 1 位休息中的戌神ころね，轉為活動狀態。", meta: { infiniteStamina: true } });
   } else if (number === "hBP03-007") {
-    queueDeckToHand(state, playerIndex, { typeCodes: ["supportFan"] }, map, random, { label: "Member sheep 歡迎光臨！" });
+    queueDeckToHand(state, playerIndex, { typeCodes: ["supportFan"] }, map, random, { optional: false, label: "Member sheep 歡迎光臨！" });
   } else if (number === "hBP04-001") {
     const options = stageOptionsMatching(player, map, { names: ["博衣こより"], hasAttachmentType: null }).filter((zone) => player.zones[zone].attachments.some((instance) => cardHasTag(map.get(instance.number), "#こよラボ")));
     assert(options.length > 0, "舞台沒有附加 #こよラボ 支援卡的博衣こより。 ");
@@ -9547,7 +10070,7 @@ function hbp09Legacy_resolveNormalOshiSkill(state, playerIndex, oshiCard, map, r
     const collabName = unitCard(player.zones.collab, map)?.jpName || unitCard(player.zones.collab, map)?.name;
     queueDeckToHand(state, playerIndex, { group: "holomem", names: [collabName] }, map, random, { label: "BIG CAT means…" });
   } else if (number === "hBP06-002") {
-    player.archive.push(...player.mainDeck.splice(0, 2));
+    archiveMainDeckCards(player, state, player.mainDeck.splice(0, 2));
     addMatchingStageModifiers(state, playerIndex, map, { zones: ["center", "collab"], tags: ["#FLOW GLOW"] }, 20, number);
   } else if (number === "hBP06-003") {
     const options = stageEntries(player).filter(({ unit: stageUnit }) => cardIsBuzz(unitCard(stageUnit, map)) || (cardHasName(unitCard(stageUnit, map), "風真いろは") && stageUnit.stack.some((instance) => cardIsBuzz(map.get(instance.number))))).map(({ zone }) => zone);
@@ -9564,11 +10087,24 @@ function hbp09Legacy_resolveNormalOshiSkill(state, playerIndex, oshiCard, map, r
   } else if (number === "hBP06-008") {
     const die = rollDie(random, state, playerIndex, 1, oshiCard); logDie(state, playerIndex, die);
     const life = player.life.length;
-    if (die >= life) queueDeckToHand(state, playerIndex, {}, map, random, { min: 1, max: 1, optional: false, label: "おまつりわっしょーい！！！" });
-    if (die <= life && player.mainDeck.length > 0) {
+    const moveTopToHoloPower = () => {
+      if (player.mainDeck.length === 0) return;
       const top = player.mainDeck.shift();
       player.holoPower.push(top);
       appendLog(state, `${player.name} 將牌庫頂 1 張卡放到 Holo Power。`);
+    };
+    if (die >= life) {
+      const powerFollowsSearch = die <= life && player.mainDeck.length > 0;
+      const searchQueued = queueDeckToHand(state, playerIndex, {}, map, random, {
+        min: 1,
+        max: 1,
+        optional: false,
+        label: "おまつりわっしょーい！！！",
+        meta: powerFollowsSearch ? { afterEffect: "matsuriTopToHoloPower" } : {},
+      });
+      if (powerFollowsSearch && !searchQueued) moveTopToHoloPower();
+    } else if (die <= life) {
+      moveTopToHoloPower();
     }
   } else if (number === "hBP07-001") {
     addMatchingStageModifiers(state, playerIndex, map, { names: ["角巻わため", "角卷綿芽"] }, 100, number);
@@ -9599,7 +10135,15 @@ function hbp09Legacy_resolveNormalOshiSkill(state, playerIndex, oshiCard, map, r
     const options = stageOptionsMatching(player, map, { names: ["セシリア・イマーグリーン", "Cecilia Immergreen"], rested: true });
     assert(options.length > 0 && player.cheerDeck.length > 0, "舞台沒有休息中的 Cecilia Immergreen，或應援牌庫已空。 ");
     const cheers = player.cheerDeck.splice(0, Math.min(2, player.cheerDeck.length));
-    cheers.forEach((cheer, index) => enqueueEffect(state, { type: "eventCheerTarget", playerIndex, cheerCard: cheer, options, prompt: `SPIN TO WIN!（${index + 1}/${cheers.length}）：直接按一位休息中的 Cecilia 附加應援。`, afterUnrest: true }));
+    cheers.forEach((cheer, index) => enqueueEffect(state, {
+      type: "eventCheerTarget",
+      playerIndex,
+      cheerCard: cheer,
+      options,
+      prompt: `SPIN TO WIN!（${index + 1}/${cheers.length}）：直接按一位休息中的 Cecilia 附加應援。`,
+      ceciliaUnrestBatch: true,
+      ceciliaUnrestBatchFinal: index === cheers.length - 1,
+    }));
   } else if (number === "hBP08-003") {
     const hasRed = stageHasAnyCheerColor(player, "紅", map);
     const hasBlue = stageHasAnyCheerColor(player, "藍", map);
@@ -9662,8 +10206,7 @@ function hbp09Legacy_resolveNormalOshiSkill(state, playerIndex, oshiCard, map, r
     const canSwap = opponent.zones.center && opponent.zones.collab && ["center", "collab"].every(zone => matchingPlayerModifierBonus(opponent, "movementLock", opponent.zones[zone], zone, map, state.turn) === 0);
     if (canSwap) [opponent.zones.center, opponent.zones.collab] = [opponent.zones.collab, opponent.zones.center];
   } else if (number === "hSD14-001") {
-    const options = stageOptionsMatching(player, map, { names: ["白上フブキ", "白上吹雪"] }).filter((zone) => player.zones[zone].attachments.some((instance) => map.get(instance.number)?.typeCode === "supportMascot"));
-
+    const options = hSD14MascotFubukiTargets(player, map);
     enqueueStageTarget(state, { playerIndex, options, effect: "addModifier", prompt: "大家一起上啦～！：直接按合法白上フブキ，本回合 Arts +20。", meta: { kind: "arts", amount: 20, sourceNumber: number } });
   } else if (number === "hSD15-001") {
     queueDeckToHand(state, playerIndex, { group: "support", typeCodes: ["supportEvent", "supportEventLimited"], tags: ["#きのこ"] }, map, random, { optional: false, label: "稍等一下松茸～♪" });
@@ -9746,9 +10289,11 @@ function hbp09Legacy_resolveSpOshiSkill(state, playerIndex, oshiCard, map, rando
     assert(candidates.length > 0, "牌庫沒有ルーナイト。 ");
     enqueueCardSelection(state, { playerIndex, cards: candidates, min: 1, max: Math.min(4, candidates.length), effect: "deckSupportsToAttach", source: "deck", prompt: "ルーナイト集合：揀 1～4 張ルーナイト；之後逐張直接按合法 Holomen。", meta: { targetRule: {} } });
   } else if (number === "hBP03-002") {
-    assert(player.zones.center && (unitCard(player.zones.center, map)?.colors || []).includes("綠"), "自己的中央 Holomen 必須是綠色。 ");
-    assert(opponent.zones.center && unitCard(opponent.zones.center, map)?.stage !== "Debut", "對手中央必須是非 Debut Holomen。 ");
-    enqueueStageTarget(state, { playerIndex, targetPlayerIndex: opponentIndex, options: ["center"], effect: "specialDamage", prompt: "狙撃：直接按對手非 Debut 中央 Holomen，造成 100 點特殊傷害。", meta: { amount: 100, loseLife: true, sourceCardNumber: oshiCard.number, sourceName: oshiCard.spOshiSkill?.name || "狙撃" } });
+    const hasGreenFront = ["center", "collab"].some(zone => player.zones[zone] && (unitCard(player.zones[zone], map)?.colors || []).includes("綠"));
+    assert(hasGreenFront, "自己的前場 Holomen 必須有綠色。 ");
+    const options = ["center", "collab"].filter(zone => opponent.zones[zone] && unitCard(opponent.zones[zone], map)?.stage !== "Debut");
+    assert(options.length > 0, "對手沒有非 Debut 前場 Holomen。 ");
+    enqueueStageTarget(state, { playerIndex, targetPlayerIndex: opponentIndex, options, effect: "specialDamage", prompt: "狙撃：直接按對手非 Debut 前場 Holomen，造成 100 點特殊傷害。", meta: { amount: 100, loseLife: true, sourceCardNumber: oshiCard.number, sourceName: oshiCard.spOshiSkill?.name || "狙撃" } });
   } else if (number === "hBP03-003") {
     assert(player.zones.center && (unitCard(player.zones.center, map)?.colors || []).includes("紅"), "中央 Holomen 必須是紅色。 ");
     if (player.hand.length > 0) enqueueCardSelection(state, { playerIndex, cards: player.hand, min: 0, max: player.hand.length, optional: true, effect: "handToBottomThenDrawFive", source: "hand", prompt: "不放棄的心にぇ：揀任意張手牌按選擇次序放到牌庫底，再抽到 5 張。" });
@@ -9761,7 +10306,7 @@ function hbp09Legacy_resolveSpOshiSkill(state, playerIndex, oshiCard, map, rando
     const options = stageOptionsMatching(player, map, { names: ["角巻わため", "角卷綿芽"] });
     assert(options.length > 0 && player.cheerDeck.length > 0, "舞台沒有角巻わため，或應援牌庫已空。 ");
     const cheers = player.cheerDeck.splice(0, Math.min(2, player.cheerDeck.length));
-    cheers.forEach((cheer, index) => enqueueEffect(state, { type: "eventCheerTarget", playerIndex, cheerCard: cheer, options, prompt: "わため沒有錯對吧？（" + (index + 1) + "/" + cheers.length + "）：直接按角巻わため附加應援。" }));
+    enqueueEffect(state, { type: "eventCheerTarget", playerIndex, cheerCard: cheers[0], followUpCheerCard: cheers[1] || null, options, prompt: "わため沒有錯對吧？：選擇 1 位角巻わため，將應援附加到該角色。" });
   } else if (number === "hBP03-008") {
     addMatchingStageModifiers(state, playerIndex, map, { names: ["アユンダ・リス", "Ayunda Risu"] }, 50, number);
   } else if (number === "hBP04-002") {
@@ -9794,7 +10339,7 @@ function hbp09Legacy_resolveSpOshiSkill(state, playerIndex, oshiCard, map, rando
     else {
       const staffIds = revealed.filter(instance => String(map.get(instance.number)?.typeCode || "").includes("Staff")).map(instance => instance.id);
       if (staffIds.length) enqueueCardSelection(state, { playerIndex, cards: revealed, selectableIds: staffIds, min: 1, max: 1, optional: false, effect: "oshiStaffPick", source: "revealed", prompt: "成功體驗－！！！：公開 1 張工作人員；餘下卡放到存檔區。" });
-      else player.archive.push(...revealed);
+      else archiveMainDeckCards(player, state, revealed);
     }
   } else if (number === "hBP05-004") {
     assert(opponent.zones.center, "對手沒有中央 Holomen。 ");
@@ -9851,7 +10396,7 @@ function hbp09Legacy_resolveSpOshiSkill(state, playerIndex, oshiCard, map, rando
     assert(player.zones.center && unitCard(player.zones.center, map)?.stage === "2nd" && cardHasName(unitCard(player.zones.center, map), "オーロ・クロニー"), "中央必須是 2nd オーロ・クロニー。 ");
     player.extraTurnPending = Number(player.extraTurnPending || 0) + 1;
   } else if (number === "hBP07-007") {
-    queueDeckCardsToStage(state, playerIndex, { group: "holomem", stages: ["Debut"], names: ["桃鈴ねね", "桃鈴音音"] }, map, random, { min: 1, max: 4, optional: true, label: "ねねち的大・暴・走！" });
+    queueDeckCardsToStage(state, playerIndex, { group: "holomem", stages: ["Debut"], names: ["桃鈴ねね", "桃鈴音音"] }, map, random, { min: 1, max: 4, optional: false, label: "ねねち的大・暴・走！" });
   } else if (number === "hBP08-001") {
     const units = stageEntries(player).filter(({ unit: stageUnit }) => cardHasName(unitCard(stageUnit, map), "IRyS")).map(({ unit: stageUnit }) => stageUnit);
     assert(units.length > 0, "舞台沒有 IRyS。 ");
@@ -9882,7 +10427,7 @@ function hbp09Legacy_resolveSpOshiSkill(state, playerIndex, oshiCard, map, rando
     assert(targets.length > 0, "舞台沒有綠色 Holomen。 ");
     enqueueStageTarget(state, { playerIndex, options: targets, effect: "oshiArchiveCheerFixedTarget", prompt: "右手握著麥克風：先按 1 位綠色 Holomen；之後揀任意張存檔區應援。", meta: { max: cheers.length, min: 0 } });
   } else if (["hSD02-001", "hSD09-001", "hYS01-003"].includes(number)) {
-    queueArchiveToHand(state, playerIndex, { group: "holomem", colors: ["紅"] }, map, { optional: !["hSD02-001", "hSD09-001"].includes(number), label: oshiCard.spOshiSkill?.name || "SP 推し技能" });
+    queueArchiveToHand(state, playerIndex, { group: "holomem", colors: ["紅"] }, map, { optional: false, label: oshiCard.spOshiSkill?.name || "SP 推し技能" });
   } else if (number === "hSD04-001") {
     appendLog(state, player.name + " 抽 " + drawCards(state, playerIndex, 2) + " 張牌。");
     if (player.hand.length > 0) enqueueCardSelection(state, { playerIndex, cards: player.hand, min: 1, max: 1, effect: "handToArchive", source: "hand", prompt: "卡片更換：揀 1 張手牌放到存檔區。" });
@@ -9919,8 +10464,7 @@ function hbp09Legacy_resolveSpOshiSkill(state, playerIndex, oshiCard, map, rando
     enqueueEffect(state, { type: "eventCheerTarget", playerIndex, options, prompt: "去擴展你的世界吧：直接按儒烏風亭らでん附加應援牌庫頂 1 張。" });
     enqueueEffect(state, { type: "oshiMushroomArchiveReturn", playerIndex });
   } else if (number === "hSD16-001") {
-    const options = stageOptionsMatching(player, map, { names: ["さくらみこ", "櫻巫女"] }).filter((zone) => player.zones[zone].attachments.some((instance) => map.get(instance.number)?.typeCode === "supportFan"));
-
+    const options = hSD16MikoFanTargets(player, map);
     enqueueStageTarget(state, { playerIndex, options, effect: "addModifier", prompt: "35P出發囉！：直接按合法さくらみこ，本回合 Arts +50。", meta: { kind: "arts", amount: 50, sourceNumber: number } });
   } else if (number === "hSD17-001") {
     if (cardHasName(unitCard(player.zones.center, map), "星街すいせい")) enqueueStageTarget(state, { playerIndex, targetPlayerIndex: opponentIndex, rule: { zones: BACK_SLOTS }, effect: "specialDamage", prompt: "流星：直接按對手後排，造成 50 點特殊傷害。", meta: { amount: 50, loseLife: true, sourceName: oshiCard.spOshiSkill?.name || oshiCard.name } });
@@ -9940,11 +10484,16 @@ function hbp09Legacy_activateOshiSkill(state, playerIndex, map, random, kind = "
   assert(!state.pendingChoice, "請先完成目前的選擇。 ");
   const player = state.players[playerIndex];
   const oshiCard = map.get(player.oshi?.number);
+  if (kind === "oshi" && oshiCard?.number === "hSD14-001") assert(hSD14MascotFubukiTargets(player, map).length > 0, "沒有附著吉祥物的白上フブキ可選擇。 ");
+  if (kind === "sp" && oshiCard?.number === "hSD16-001") assert(hSD16MikoFanTargets(player, map).length > 0, "沒有附著粉絲的さくらみこ可選擇。 ");
   const skill = kind === "sp" ? oshiCard?.spOshiSkill : oshiCard?.oshiSkill || (oshiCard?.number === KOYORI_OSHI ? { timing: "Holo Power -2", name: "解析完了！", effect: "展示並解析牌庫頂卡。" } : null);
   assert(skill?.effect, "這張推し Holomen 沒有這個技能。 ");
   assert(!isReactiveOshiSkill(oshiCard.number, kind), "這是反應式推し技能，系統只會在合法觸發時顯示。 ");
   if (kind === "sp") assert(!player.spOshiSkillUsed, "本場對局已使用過 SP 推し技能。 ");
   else assert(Number(player.oshiSkillTurn || 0) !== state.turn, "本回合已使用過推し技能。 ");
+  if (kind === "oshi" && HYS01_OSHI_COLOR_SKILLS.has(oshiCard.number)) assert(hYS01NormalCollabColorMatches(player, oshiCard, map), "合作 Holomen 不是推し技能指定的顏色。 ");
+  if (kind === "sp" && oshiCard.number === "hYS01-003") assert(hYS01RedArchiveTargets(player, map).length > 0, "存檔區沒有紅色 Holomen。 ");
+  assert(oshiSkillSpecificConditionMet(oshiCard.number, kind, unitCard(player.zones.center, map)), "Vivi SP requires a center 2nd Vivi.");
   const mocoReduction = kind === "oshi" && /モコちゃん/u.test(String(skill.name || "")) && unitCard(player.zones.collab, map)?.number === "hBP08-060" ? 1 : 0;
   const cost = Math.max(0, oshiPowerCost(skill, oshiCard.number, kind) - mocoReduction);
   assert(player.holoPower.length >= cost, `Holo Power 不足，這個推し技能需要 ${cost}。 `);
@@ -10000,7 +10549,13 @@ function manualAttachmentAvailable(state, playerIndex, action, map) {
   const player = state.players[playerIndex];
   const source = player.zones[action.zone];
   const card = unitCard(source, map);
-  const requested = action.cardNumber || (source?.attachments?.some(instance => instance.number === "hBP04-097") ? "hBP04-097" : source?.attachments?.find(instance => instance.number === "hBP02-092")?.number);
+  const requested = action.cardNumber || (source?.attachments?.some(instance => instance.number === "hBP04-097") ? "hBP04-097" : source?.attachments?.find(instance => ["hBP02-092", "hBP04-103"].includes(instance.number))?.number);
+  if (requested === "hBP04-103") {
+    const attachment = source?.attachments?.find(instance => instance.number === requested);
+    return Boolean(action.zone === "collab" && attachment && cardHasName(card, "ラプラス・ダークネス")
+      && emptyBackSlots(player).length > 0
+      && !usedNamedThisTurn(player, `attachment:hBP04-103:${attachment.id}`, state.turn));
+  }
   if (requested === "hBP02-092") {
     const attachment = source?.attachments?.find(instance => instance.number === requested);
     return Boolean(attachment && cardHasName(card, "白上フブキ") && source.cheer.length >= 2
@@ -10022,8 +10577,28 @@ function manualOshiAvailable(state, playerIndex, kind, map) {
   const skill = kind === "sp" ? card?.spOshiSkill : card?.oshiSkill || (card?.number === KOYORI_OSHI ? { timing: "Holo Power -2", effect: "展示並解析牌庫頂卡。" } : null);
   if (!skill?.effect || isReactiveOshiSkill(card.number, kind)
     || (kind === "sp" ? player.spOshiSkillUsed : Number(player.oshiSkillTurn || 0) === state.turn)) return false;
+  if (!oshiSkillSpecificConditionMet(card.number, kind, unitCard(player.zones.center, map))) return false;
+  if (kind === "oshi" && card.number === "hSD14-001" && hSD14MascotFubukiTargets(player, map).length === 0) return false;
+  if (kind === "sp" && card.number === "hSD16-001" && hSD16MikoFanTargets(player, map).length === 0) return false;
+  if (kind === "oshi" && HYS01_OSHI_COLOR_SKILLS.has(card.number) && !hYS01NormalCollabColorMatches(player, card, map)) return false;
+  if (kind === "sp" && card.number === "hYS01-003" && hYS01RedArchiveTargets(player, map).length === 0) return false;
   const reduction = kind === "oshi" && /モコちゃん/u.test(String(skill.name || "")) && unitCard(player.zones.collab, map)?.number === "hBP08-060" ? 1 : 0;
   return player.holoPower.length >= Math.max(0, oshiPowerCost(skill, card.number, kind) - reduction);
+}
+
+function pendingRepeatArts(player, turn) {
+  for (const zone of STAGE_SLOTS) {
+    const source = player?.zones?.[zone];
+    if (!source) continue;
+    const modifier = activeModifiers(source, "repeatArts", turn).find(item => Number(item.uses || 0) > 0 && item.artIndex != null);
+    if (modifier) return {
+      zone,
+      artIndex: Number(modifier.artIndex),
+      targetZone: modifier.targetZone || "",
+      targetId: modifier.targetId || "",
+    };
+  }
+  return null;
 }
 
 function attackCandidateAvailable(state, playerIndex, action, map) {
@@ -10031,6 +10606,10 @@ function attackCandidateAvailable(state, playerIndex, action, map) {
   if (state.status !== "playing" || state.activePlayer !== playerIndex || state.phase !== "performance"
     || state.pendingChoice || state.artsResolution || !["center", "collab"].includes(action.sourceZone)
     || (playerIndex === state.firstPlayer && Number(player.turnsTaken || 0) === 1)) return false;
+  const repeatContinuation = pendingRepeatArts(player, state.turn);
+  if (repeatContinuation && (repeatContinuation.zone !== action.sourceZone
+    || repeatContinuation.artIndex !== Number(action.artIndex)
+    || (repeatContinuation.targetId && repeatContinuation.targetId !== topCard(opponent.zones[action.targetZone])?.id))) return false;
   const source = player.zones[action.sourceZone], target = opponent.zones[action.targetZone];
   if (!source || !target || source.rested) return false;
   const sourceCard = unitCard(source, map), copiedArtCard = action.artSourceNumber ? map.get(action.artSourceNumber) : null;
@@ -10038,6 +10617,8 @@ function attackCandidateAvailable(state, playerIndex, action, map) {
     || !stageEntries(player).some(({unit}) => topCard(unit)?.number === copiedArtCard.number))) return false;
   const artCard = copiedArtCard || sourceCard, art = artCard?.arts?.[Number(action.artIndex)];
   if (!art || !Number.isFinite(art.damage)) return false;
+  if (!giftZoneApplies(String(art.effect || ""), action.sourceZone)) return false;
+  if (!HBP09.canStartAttack(state, playerIndex, action, map)) return false;
   const intrinsicBackAttack = ["hBP01-081", "hSD12-004"].includes(artCard?.number) && Number(action.artIndex) === 0;
   const canAttackBack = HBP09.canBack(state, playerIndex, source, action.targetZone, unitCard(target, map), map)
     || intrinsicBackAttack || (activeModifiers(source, "attackDamagedBack", state.turn).length > 0 && Number(target.damage || 0) > 0)
@@ -10064,6 +10645,15 @@ export function isActionCandidateLegal(state, playerIndex, action, cardsOrMap) {
   const pending = state.pendingChoice;
   if (pending) {
     if (action.type !== "choose" || pending.playerIndex !== playerIndex) return false;
+    if (pending.type === "cardSelection") {
+      if (action.skip) return Boolean(pending.optional);
+      const selectedIds = [...new Set(Array.isArray(action.cardIds) ? action.cardIds : [])];
+      const min = Number(pending.min || 0);
+      const nonEmptyMin = Number(pending.nonEmptyMin ?? min);
+      return selectedIds.length <= Number(pending.max || 0)
+        && ((selectedIds.length === 0 ? min === 0 : selectedIds.length >= Math.max(min, nonEmptyMin)))
+        && selectedIds.every(id => (pending.selectableIds || []).includes(id));
+    }
     if (!["attachSupport", "attachArchivedSupport"].includes(pending.type)) return true;
     if (action.skip) return Boolean(pending.optional);
     const source = pending.type === "attachSupport" ? player.hand : player.archive;
@@ -10093,8 +10683,11 @@ export function isActionCandidateLegal(state, playerIndex, action, cardsOrMap) {
     ? stageUnitCount(player) < 6 && emptyBackSlots(player).length > 0
     : bloomTargets(player, card, map, state.turn).length > 0;
   if (card.group !== "support") return false;
+  const topLookRule = TOP_LOOK_EFFECTS[card.number];
+  if (Number.isInteger(topLookRule?.handLimit) && player.hand.length - 1 > topLookRule.handLimit) return false;
   if (String(card.type || "").toUpperCase().includes("LIMITED")) {
-    if (playerIndex === state.firstPlayer && Number(player.turnsTaken || 0) === 1) return false;
+    if (playerIndex === state.firstPlayer && Number(player.turnsTaken || 0) === 1
+      && !hasStarStarTFirstTurnPermission(state, playerIndex, player, card, map)) return false;
     const allowance = Number(player.limitedAllowanceTurn || 0) === state.turn ? Number(player.limitedAllowance || 2) : 1;
     const used = Number(player.limitedTurn || 0) === state.turn ? Number(player.limitedUsesCount || 1) : 0;
     if (used >= allowance) return false;
@@ -10103,13 +10696,32 @@ export function isActionCandidateLegal(state, playerIndex, action, cardsOrMap) {
 }
 
 
-function activateAttachmentSkill(state, playerIndex, action, map) {
+function activateAttachmentSkill(state, playerIndex, action, map, random) {
   assert(state.status === "playing" && state.activePlayer === playerIndex && state.phase === "main", "只能在自己的主要階段使用附加卡技能。 ");
   assert(!state.pendingChoice, "請先完成目前的選擇。 ");
   const player = state.players[playerIndex];
   const source = player.zones[action.zone];
   const sourceCard = unitCard(source, map);
-  const requestedNumber = action.cardNumber || (source?.attachments?.some((instance) => instance.number === "hBP04-097") ? "hBP04-097" : source?.attachments?.find((instance) => instance.number === "hBP02-092")?.number);
+  const requestedNumber = action.cardNumber || (source?.attachments?.some((instance) => instance.number === "hBP04-097") ? "hBP04-097" : source?.attachments?.find((instance) => ["hBP02-092", "hBP04-103"].includes(instance.number))?.number);
+  if (requestedNumber === "hBP04-103") {
+    const attachment = source?.attachments?.find((instance) => instance.number === requestedNumber);
+    const usageKey = `attachment:hBP04-103:${attachment?.id || ""}`;
+    assert(source && action.zone === "collab" && attachment && cardHasName(sourceCard, "ラプラス・ダークネス"), "「烏鴉」追加技能只可由合作位置的拉普拉斯使用。 ");
+    assert(!usedNamedThisTurn(player, usageKey, state.turn), "「烏鴉」追加技能本回合已使用。 ");
+    const destinations = emptyBackSlots(player);
+    assert(destinations.length > 0, "後排沒有空位，無法使用「烏鴉」追加技能。 ");
+    markNamedUsage(player, usageKey, state.turn);
+    const die = rollDie(random, state, playerIndex, 1, sourceCard);
+    logDie(state, playerIndex, die, "因烏鴉技能擲骰");
+    if (die % 2 === 1) {
+      const destination = destinations[0];
+      player.zones.collab = null;
+      player.zones[destination] = source;
+      source.returnSlot = null;
+      appendLog(state, `${player.name} 因「烏鴉」擲出奇數，將拉普拉斯移到後排。`);
+    } else appendLog(state, `${player.name} 因「烏鴉」擲出偶數，拉普拉斯留在合作位置。`);
+    return;
+  }
   if (requestedNumber === "hBP02-092") {
     const attachment = source?.attachments?.find((instance) => instance.number === "hBP02-092");
     assert(source && attachment, "所選 Holomen 沒有附加 Fubura。 ");
@@ -10199,11 +10811,36 @@ function drainEffectQueue(state, map, random = secureRandom) {
     if (!player && effect.type !== "startNextTurn") continue;
     if (effect.type === "hbp09Program") { HBP09.run(state, effect.context, effect.steps, map, random); continue; }
     if (effect.type === "hbp09FinishTurn") { if (state.effectQueue.length) { state.effectQueue.push(effect); continue; } hbp09Legacy_finishTurn(state, effect.playerIndex, map); continue; }
+    if (effect.type === "attachmentCapacityCheck") {
+      const ownerIndex = Number.isInteger(effect.ownerIndex) ? effect.ownerIndex : effect.playerIndex;
+      const overflow = attachmentOverflow(state.players[ownerIndex], effect.zone, map);
+      if (!overflow) continue;
+      state.pendingChoice = {
+        type: "stageAttachmentSelection",
+        playerIndex: effect.playerIndex,
+        ownerIndex,
+        options: overflow.options.map((option) => option.id),
+        attachmentOptions: overflow.options,
+        optional: false,
+        effect: "archiveExcessAttachment",
+        prompt: "Bloom 後的附加卡上限已降低；揀 1 張超出上限的工具或吉祥物存檔。",
+        meta: { zone: effect.zone, typeCode: overflow.typeCode },
+      };
+      continue;
+    }
     if (effect.type === "koFanTransfer") {
       if (!stageOptionsMatching(player,map,effect.targetRule).length) continue;
       const cards=(effect.eligibleIds ? defeatedCardPool(player) : player.archive).filter(c=>map.get(c.number)?.group==="cheer" && (map.get(c.number)?.colors||[]).some(color=>effect.colors.includes(color)) && (!effect.eligibleIds || effect.eligibleIds.includes(c.id)));
       if (!cards.length) continue;
-      state.pendingChoice={type:"cardSelection",playerIndex:effect.playerIndex,cards:clone(cards),selectableIds:cards.map(c=>c.id),min:0,max:Math.min(effect.max,cards.length),source:"archive",optional:true,effect:"koFanTransferPick",prompt:effect.label+"：可選應援改附到另一位合法 Holomen。",meta:{targetRule:effect.targetRule,fromDefeated:Boolean(effect.eligibleIds)}};
+      const max=Math.min(effect.max,cards.length),optional=effect.optional!==false;
+      const min=optional?0:Math.min(Number(effect.min??1),max);
+      state.pendingChoice={type:"cardSelection",playerIndex:effect.playerIndex,cards:clone(cards),selectableIds:cards.map(c=>c.id),min,max,source:"archive",optional,effect:"koFanTransferPick",prompt:effect.prompt||(optional?effect.label+"：可選應援改附到另一位合法 Holomen。":effect.label+"：選擇 1 張應援改附到另一位合法 Holomen。"),meta:{targetRule:effect.targetRule,fromDefeated:Boolean(effect.eligibleIds)}};
+    } else if (effect.type === "hbp07BaeSpGiftPower") {
+      const moved = player.mainDeck.shift();
+      if (moved) {
+        player.holoPower.push(moved);
+        appendLog(state, `${player.name} 因「テンション上がってきた！」將牌庫頂 1 張放到 Holo Power。`);
+      }
     } else if (effect.type === "haatoRoll") {
       rollHaatoDie(state,effect.playerIndex,effect.meta,map,random);
     } else if (effect.type === "risunersArtsBonus") {
@@ -10220,6 +10857,18 @@ function drainEffectQueue(state, map, random = secureRandom) {
       queueArchiveToHand(state, effect.playerIndex, { group: "support", typeCodes: ["supportEvent", "supportEventLimited"], tags: ["#きのこ"] }, map, { min: 1, max: 1, optional: false, label: "去擴展你的世界吧" });
     } else if (effect.type === "finishDownLife") {
       finishKnockoutLife(state, effect.ownerIndex, effect.zone, map, effect.sourcePlayerIndex, effect.options, effect.context);
+    } else if (effect.type === "hEB01BeachBallAfterArts") {
+      const sourceEntry = stageEntries(player).find(({ unit: source }) => topCard(source)?.id === effect.sourceId);
+      if (!sourceEntry || !sourceEntry.unit.attachments.some(instance => instance.number === "hEB01-033")) continue;
+      const options = stageOptionsMatching(player, map, { zones: ["center", "collab"], tags: ["#サマー"] })
+        .filter(zone => zone !== sourceEntry.zone);
+      if (options.length === 0) continue;
+      state.pendingChoice = {
+        type: "stageTarget", playerIndex: effect.playerIndex, targetPlayerIndex: effect.playerIndex,
+        options, effect: "moveAttachment", optional: true,
+        prompt: "沙灘球：藝能傷害結算後，可直接按另一位 #サマー 中央／合作 Holomen，將沙灘球移過去。",
+        meta: { sourceZone: sourceEntry.zone, attachmentNumber: "hEB01-033" },
+      };
     } else if (effect.type === "completeArtsResolution") {
       const pending = state.artsResolution?.knockouts || [];
       delete state.artsResolution;
@@ -10229,6 +10878,25 @@ function drainEffectQueue(state, map, random = secureRandom) {
         if (topCard(current)?.id !== entry.targetId || Number(current?.damage || 0) < stageMaximumHp(state.players[entry.ownerIndex], entry.zone, map)) continue;
         knockOutUnit(state, entry.ownerIndex, entry.zone, map, entry.sourcePlayerIndex, entry.options);
         if (entry.artEvidence) queueArtKnockoutEffects(state, entry.artEvidence.effect, entry.artEvidence.targetCard, entry.artEvidence.damage, entry.artEvidence.remainingHpBefore, map, random);
+      }
+      // hBP01-023 repeats against the same Holomem only until that target is
+      // down. The lethal hit is deferred until the Arts-resolution boundary,
+      // so clear its repeat marker after the queued knockout is committed.
+      for (let ownerIndex = 0; ownerIndex < state.players.length; ownerIndex += 1) {
+        const owner = state.players[ownerIndex];
+        const opponent = state.players[ownerIndex === 0 ? 1 : 0];
+        for (const zone of STAGE_SLOTS) {
+          const source = owner.zones[zone];
+          if (!source) continue;
+          for (const modifier of activeModifiers(source, "repeatArts", state.turn)) {
+            if (!Number(modifier.uses || 0) || modifier.targetId == null) continue;
+            const targetStillInPlay = stageEntries(opponent).some(({ unit: target }) => topCard(target)?.id === modifier.targetId);
+            if (targetStillInPlay) continue;
+            modifier.uses = 0;
+            if (!modifier.sourceId || modifier.sourceId === topCard(source)?.id) source.rested = true;
+            appendLog(state, `${unitCard(source, map)?.name || topCard(source)?.number || "Holomem"} 的同一目標已倒下；結束重複 Arts。`);
+          }
+        }
       }
     } else if (effect.type === "resolveDamagedGiftHeal") {
       const target = stageEntries(player).find(({ unit: candidate }) => topCard(candidate)?.id === effect.targetId);
@@ -10245,7 +10913,11 @@ function drainEffectQueue(state, map, random = secureRandom) {
       const drawn = drawCards(state, effect.playerIndex, Number(effect.amount || 0));
       appendLog(state, `${player.name} 因「${effect.label || "卡牌效果"}」抽 ${drawn} 張牌。`);
     } else if (effect.type === "cardSelection") {
-      const selectableIds = effect.selectableIds.filter((id) => effect.cards.some((card) => card.id === id));
+      const liveDefeatedCardIds = effect.effect === "koTransferCheer"
+        ? new Set(defeatedCardPool(player).map((card) => card.id))
+        : null;
+      const selectableIds = effect.selectableIds.filter((id) => effect.cards.some((card) => card.id === id)
+        && (!liveDefeatedCardIds || liveDefeatedCardIds.has(id)));
       const max = Math.min(Number(effect.max || 1), selectableIds.length);
       const min = Math.min(Number(effect.min || 0), max);
       if (selectableIds.length === 0) continue;
@@ -10284,6 +10956,10 @@ function drainEffectQueue(state, map, random = secureRandom) {
     } else if (effect.type === "optionChoice") {
       if (["oshiKnockout", "oshiAfterDamage"].includes(effect.effect)
         && !canPayReactiveOshi(state, effect.playerIndex, effect.meta?.kind, map)) continue;
+      if (effect.effect === "slimDogReturn") {
+        const defeated = player.zones?.[effect.meta?.targetZone];
+        if (!player.holoPower.length || !defeated?.downPending || !defeated.attachments.some((instance) => instance.id === effect.meta?.attachmentId && instance.number === "hBP03-103")) continue;
+      }
       const options = (effect.options || []).filter((option) => !option.disabled);
       if (options.length === 0) continue;
       state.pendingChoice = { ...effect, type: "optionChoice", options: [], modeOptions: options };
@@ -10310,7 +10986,7 @@ function drainEffectQueue(state, map, random = secureRandom) {
       const calculated = effect.targetRule ? stageOptionsMatching(player, map, effect.targetRule) : stageEntries(player).filter(({ unit: stageUnit }) => !effect.tag || cardHasTag(map.get(topCard(stageUnit)?.number), effect.tag)).map(({ zone }) => zone);
       const options = Array.isArray(effect.options) ? effect.options.filter((zone) => calculated.includes(zone)) : calculated;
       if ((!effect.cheerCard && player.cheerDeck.length === 0) || options.length === 0) continue;
-      state.pendingChoice = { type: "eventCheerTarget", playerIndex: effect.playerIndex, cardNumber: effect.cheerCard?.number || player.cheerDeck[0].number, cheerCard: effect.cheerCard || null, options, optional: Boolean(effect.optional), shuffleAfter: Boolean(effect.shuffleAfter), afterUnrest: Boolean(effect.afterUnrest), afterEffect: effect.afterEffect || "", afterZone: effect.afterZone || "", healAmount: Number(effect.healAmount || 0), drawAfter: Number(effect.drawAfter || 0), sourceId: effect.sourceId || "", prompt: effect.prompt };
+      state.pendingChoice = { type: "eventCheerTarget", playerIndex: effect.playerIndex, cardNumber: effect.cheerCard?.number || player.cheerDeck[0].number, cheerCard: effect.cheerCard || null, followUpCheerCard: effect.followUpCheerCard || null, options, optional: Boolean(effect.optional), shuffleAfter: Boolean(effect.shuffleAfter), afterUnrest: Boolean(effect.afterUnrest), ceciliaUnrestBatch: Boolean(effect.ceciliaUnrestBatch), ceciliaUnrestBatchFinal: Boolean(effect.ceciliaUnrestBatchFinal), afterEffect: effect.afterEffect || "", afterZone: effect.afterZone || "", healAmount: Number(effect.healAmount || 0), drawAfter: Number(effect.drawAfter || 0), sourceId: effect.sourceId || "", prompt: effect.prompt };
     } else if (effect.type === "lifeCheerTarget") {
       const options = stageOptions(player);
       if (options.length === 0) {
@@ -10355,7 +11031,7 @@ function drainEffectQueue(state, map, random = secureRandom) {
       queueAttachmentDamagedTriggers(state, effect.targetPlayerIndex, effect.targetZone, effect.playerIndex, damage, map);
       queueGiftDamagedTriggers(state, effect.targetPlayerIndex, effect.targetZone, effect.playerIndex, damage, "arts", map);
       queueGiftDamageDealtTriggers(state, effect.playerIndex, effect.sourceZone, effect.targetPlayerIndex, effect.targetZone, damage, "arts", map);
-      queueOshiAfterArtsDamage(state, effect.playerIndex, effect.sourceZone, effect.targetPlayerIndex, effect.targetZone, damage, map);
+      queueOshiAfterArtsDamage(state, effect.playerIndex, effect.sourceZone, effect.targetPlayerIndex, effect.targetZone, damage, map, effect.artIndex);
       });
       const targetCard = unitCard(target, map);
       const targetHp = Number(targetCard?.hp || Infinity) + attachmentHpBonus(target, map, effect.targetZone, targetPlayer) + holomemHpBonus(target, map, effect.targetZone, targetPlayer);
@@ -10372,7 +11048,7 @@ function drainEffectQueue(state, map, random = secureRandom) {
       const damage = applySpecialDamage(state, effect.playerIndex, effect.targetPlayerIndex, effect.targetZone, effect.amount, map, { loseLife: effect.loseLife, sourceName: effect.sourceName, sourceZone: effect.sourceZone, sourceCardNumber: effect.sourceCardNumber, reactionReduction: effect.reactionReduction, giftImmune: effect.giftImmune });
       queueDamageTriggers(state, () => {
       queueGiftDamageDealtTriggers(state, effect.playerIndex, effect.sourceZone, effect.targetPlayerIndex, effect.targetZone, damage, "special", map, effect.sourceCardNumber);
-      if (damage > 0) queueOshiAfterSpecialDamage(state, effect.playerIndex, effect.sourceZone, effect.targetPlayerIndex, effect.targetZone, damage, map);
+      if (damage > 0) queueOshiAfterSpecialDamage(state, effect.playerIndex, effect.sourceZone, effect.targetPlayerIndex, effect.targetZone, damage, map, { skipHbp01SuiseiReaction: effect.skipHbp01SuiseiReaction });
       });
     } else if (effect.type === "iofiDamaged") {
       const owner = state.players[effect.playerIndex];
@@ -10449,15 +11125,7 @@ function drainEffectQueue(state, map, random = secureRandom) {
       const source = player.zones[effect.sourceZone];
       const tool = source?.attachments.find((instance) => instance.number === "hSD10-013");
       if (!source || !tool || Number(source.lastArtsTurn || 0) !== state.turn) continue;
-      const candidates = player.mainDeck.filter((instance) => {
-        const card = map.get(instance.number);
-        return card?.group === "holomem" && ["Debut", "Spot"].includes(card.stage) && cardHasTag(card, "#FLOW GLOW");
-      });
-      if (candidates.length > 0 && emptyBackSlots(player).length > 0) enqueueCardSelection(state, { playerIndex: effect.playerIndex, cards: candidates, min: 0, max: 1, effect: "deckCardsToStage", source: "deck", optional: true, prompt: "河豚太郎：可公開 1 張 #FLOW GLOW Debut／Spot 登場；之後直接按牌桌空位。", meta: { afterEffect: "returnPuffer", afterMeta: { sourceZone: effect.sourceZone } } });
-      else {
-        player.mainDeck = shuffle(player.mainDeck, random);
-        player.mainDeck.push(removeById(source.attachments, tool.id));
-      }
+      enqueueOptionChoice(state, { playerIndex: effect.playerIndex, options: [{ id: "activate", label: "公開 1 張 #FLOW GLOW Debut／Spot 登場；之後將河豚太郎放到牌庫底" }], optional: true, effect: "hSD10PufferActivate", prompt: "河豚太郎：可發動結束階段效果。", meta: { sourceZone: effect.sourceZone, sourceId: topCard(source)?.id, toolId: tool.id, triggerTurn: state.turn } });
     } else if (effect.type === "startNextTurn") {
       startNextTurn(state, map);
     } else if (effect.type === "completeEndStep") {
@@ -10512,7 +11180,7 @@ function executeAction(stateInput, playerIndex, action, cards, random, diceRun) 
   } else if (action.type === "spOshiSkill") {
     activateOshiSkill(state, playerIndex, map, random, "sp");
   } else if (action.type === "attachmentSkill") {
-    activateAttachmentSkill(state, playerIndex, action, map);
+    activateAttachmentSkill(state, playerIndex, action, map, random);
   } else if (action.type === "giftSkill") {
     activateGiftSkill(state, playerIndex, action, map, random);
   } else {
@@ -10968,10 +11636,13 @@ function effectiveBatonCost(state, playerIndex, stageUnit, zone, map) {
 }
 function hbp09WithoutNewAttachments(u) { return u ? { ...u, attachments: (u.attachments || []).filter(a => !isHbp09(a.number)) } : u; }
 function attachmentHpBonus(stageUnit, map, zone = '', player = null) {
-  const base = hbp09Legacy_attachmentHpBonus(hbp09WithoutNewAttachments(stageUnit), map, zone, player);
+  const geowCount = (stageUnit?.attachments || []).filter(instance => instance.number === 'hSD12-016').length;
+  const legacyUnit = hbp09WithoutNewAttachments(stageUnit);
+  const hpTextUnit = geowCount ? { ...legacyUnit, attachments: (legacyUnit.attachments || []).filter(instance => instance.number !== 'hSD12-016') } : legacyUnit;
+  const base = hbp09Legacy_attachmentHpBonus(hpTextUnit, map, zone, player);
   const card = unitCard(stageUnit, map);
   const extra = cardHasName(card, 'カエラ・コヴァルスキア') && (cardIsBuzz(card) || card?.stage === '2nd') ? 40 * (stageUnit?.attachments || []).filter(a => a.number === 'hBP09-106').length : 0;
-  return base + extra;
+  return base + extra + geowCount * 20;
 }
 function holomemHpBonus(stageUnit, map, zone = '', player = null) {
   if (isHbp09(topCard(stageUnit)?.number)) return topCard(stageUnit)?.number === 'hBP09-025' && map.get(player?.oshi?.number)?.stageSkill ? 20 : 0;
@@ -11054,13 +11725,13 @@ function stageMatchesRule(stageUnit, zone, rule, map, player = null) {
   }
   return hbp09Legacy_stageMatchesRule(stageUnit, zone, rule, map, player);
 }
-function healStageUnit(state, playerIndex, zone, amount, map, sourceIsOwn = true) {
+function healStageUnit(state, playerIndex, zone, amount, map, sourceIsOwn = true, abilitySourceUnitId = "") {
   const current = state.players[playerIndex].zones[zone];
   if (sourceIsOwn && topCard(current)?.number === 'hBP09-031' && cardHasName(map.get(state.hbp09ResolvingSupport), '牛丼')) {
     const c = HBP09.context(state, playerIndex, 'hBP09-031', zone);
     if (HBP09.once(state, c, `gyudon-heal:${topCard(current).id}`)) amount = Number(amount) + 100;
   }
-  return hbp09Legacy_healStageUnit(state, playerIndex, zone, amount, map, sourceIsOwn);
+  return hbp09Legacy_healStageUnit(state, playerIndex, zone, amount, map, sourceIsOwn, abilitySourceUnitId);
 }
 function cardHasTag(card, tag) {
   if (hbp09Legacy_cardHasTag(card, tag)) return true;

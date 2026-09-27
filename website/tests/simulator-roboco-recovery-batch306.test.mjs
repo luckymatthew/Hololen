@@ -8,6 +8,7 @@ test('Roboco knockout recovery is mandatory after accepting skill',()=>{
  s.players[1].zones.center.damage=Number(robo.hp)-10;
  s.players[1].zones.back1=unit('AUDIT-DUMMY');
  s.players[1].oshi=inst('hBP06-007');s.players[1].archive=[inst(robo.number,robo.number)];
+ s.players[1].mainDeck=[inst('AUDIT-DUMMY','deck-1'),inst('AUDIT-DUMMY','deck-2')];
  s.players[1].holoPower=Array.from({length:5},(_,i)=>inst('AUDIT-DUMMY','hp'+i));
  s=applyAction(s,0,attack,pool,()=>0);
  for(let i=0;i<5&&s.pendingChoice?.effect!=='oshiKnockout';i++){
@@ -22,5 +23,5 @@ test('Roboco knockout recovery is mandatory after accepting skill',()=>{
  assert.throws(()=>applyAction(s,1,{type:'choose',skip:true},pool,()=>0));
  s=applyAction(s,1,{type:'choose',cardIds:[robo.number]},pool,()=>0);
  assert.ok(s.players[1].hand.some(c=>c.number===robo.number));
+ assert.equal(s.players[1].turnEvents.deckArchived,2);
 });
-

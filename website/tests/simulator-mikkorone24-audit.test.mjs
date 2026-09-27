@@ -28,8 +28,9 @@ for (const die of [1, 2, 3, 4, 5, 6]) test(`Mikkorone 24 die ${die}`, () => {
     assert.equal(s.pendingChoice.type, "cardSelection");
     assert.equal(s.pendingChoice.effect, "deckToHandShuffle");
     assert.equal(s.pendingChoice.min, 0);
+    assert.equal(s.pendingChoice.nonEmptyMin, 1);
     assert.equal(s.pendingChoice.max, 1);
-    assert.equal(s.pendingChoice.optional, true);
+    assert.equal(s.pendingChoice.optional, false);
     assert.deepEqual(s.pendingChoice.selectableIds, ["debut"]);
   } else {
     assert.equal(s.pendingChoice, null);
@@ -37,12 +38,13 @@ for (const die of [1, 2, 3, 4, 5, 6]) test(`Mikkorone 24 die ${die}`, () => {
   }
 });
 
-test("Mikkorone 24 may treat an eligible Debut in the hidden deck as absent and still shuffles", () => {
+test("Mikkorone 24 must take an eligible Debut after a successful roll", () => {
   let s = act(setup(), { type: "play", cardId: "event" }, 3);
   const before = s.players[0].mainDeck.map((card) => card.id);
-  s = act(s, { type: "choose", skip: true }, 1, () => 0);
+  assert.throws(() => act(s, { type: "choose", skip: true }, 1, () => 0), /cannot be skipped/i);
+  s = act(s, { type: "choose", cardIds: ["debut"] }, 1, () => 0);
   assert.equal(s.pendingChoice, null);
-  assert.equal(s.players[0].hand.some((card) => card.id === "debut"), false);
+  assert.equal(s.players[0].hand.some((card) => card.id === "debut"), true);
   assert.notDeepEqual(s.players[0].mainDeck.map((card) => card.id), before);
 });
 

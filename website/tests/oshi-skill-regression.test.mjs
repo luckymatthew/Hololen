@@ -107,8 +107,10 @@ test("all 155 pre-hBP09 Oshi retain their exact cost and activation coverage", (
   });
   assert.equal(oshiCards.filter((card) => isActivatableOshiSkill(card.number, "oshi")).length, 139);
   assert.equal(oshiCards.filter((card) => isReactiveOshiSkill(card.number, "oshi")).length, 16);
-  assert.equal(oshiCards.filter((card) => card.spOshiSkill && isActivatableOshiSkill(card.number, "sp")).length, 129);
-  assert.equal(oshiCards.filter((card) => card.spOshiSkill && isReactiveOshiSkill(card.number, "sp")).length, 16);
+  // hBP02-007's SP moved from the active bucket to the reactive-after-Arts
+  // bucket when its repeated-Arts window was fixed.
+  assert.equal(oshiCards.filter((card) => card.spOshiSkill && isActivatableOshiSkill(card.number, "sp")).length, 128);
+  assert.equal(oshiCards.filter((card) => card.spOshiSkill && isReactiveOshiSkill(card.number, "sp")).length, 17);
 });
 
 test("all seven hBP09 Oshi preserve official costs and expose implemented activation windows", () => {

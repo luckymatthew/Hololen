@@ -1,4 +1,6 @@
-# 完整效果逐卡校對 — 進度紀錄
+# 完整效果逐卡校對 — 歷史紀錄
+
+> **Current task:** the active scope is now the user's card-text-to-engine alignment audit, which trusts the existing local card text and does not require renewed official research, full-match simulations, or per-card browser/device checks. Use [ACTIVE_CHECKPOINT.md](ACTIVE_CHECKPOINT.md) and [EFFECT_TEXT_ENGINE_ALIGNMENT.csv](EFFECT_TEXT_ENGINE_ALIGNMENT.csv) for current scope, coverage, and status. The dated checkpoint and report below remain historical evidence; their former multi-week acceptance gates are no longer active.
 
 **已逐項處理全卡庫清單；仍有官方來源缺口及2項待裁定，不能標示全卡100%已核實。**
 
