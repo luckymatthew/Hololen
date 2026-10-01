@@ -1,6 +1,7 @@
 """Read-only official card evidence capture; never marks a translation reviewed."""
 import argparse, concurrent.futures, datetime, hashlib, json, pathlib, re, urllib.request
 from html.parser import HTMLParser
+from urllib.parse import urljoin
 
 class Node:
     def __init__(self, tag='', attrs=(), parent=None):
@@ -41,7 +42,8 @@ def extract(html,url):
         names=li.all(lambda n:n.tag=='p' and n.has('name'))
         if not names:continue
         links=li.all(lambda n:n.tag=='a')
-        row={'number':number.text().strip(),'jpName':names[0].text().strip(),'sourceUrl':'https://hololive-official-cardgame.com'+links[0].attrs['href'] if links else url,'listUrl':url,'fields':[],'info':{}}
+        art=next((image for image in li.all(lambda n:n.tag=='img') if '/images/cardlist/' in image.attrs.get('src','')),None)
+        row={'number':number.text().strip(),'jpName':names[0].text().strip(),'sourceUrl':urljoin('https://hololive-official-cardgame.com',links[0].attrs['href']) if links else url,'listUrl':url,'imageUrl':urljoin('https://hololive-official-cardgame.com',art.attrs['src']) if art else '','fields':[],'info':{}}
         for dl in li.all(lambda n:n.tag=='dl'):
             term=''
             for node in dl.children:
@@ -70,7 +72,7 @@ def main():
         except Exception as e:return {'page':page,'url':url,'error':str(e)}
     first=fetch(1)
     if 'error' in first:raise RuntimeError(first)
-    total=int(re.search(r'var max_page = (\d+)',(raw/'001.html').read_text()).group(1))
+    total=int(re.search(r'var max_page = (\d+)',(raw/'001.html').read_text(encoding='utf-8')).group(1))
     results=[first]
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
         for result in pool.map(fetch,range(2,total+1)):
