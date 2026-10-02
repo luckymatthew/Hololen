@@ -1,6 +1,7 @@
 "use client";
 
 import { readImportJson } from "../lib/import-json.mjs";
+import { projectLegacyPrintings } from "../lib/printing-compatibility.mjs";
 import { appFetch } from "@/lib/backend";
 import { draftKey } from "@/lib/firebase/store";
 import { content as deckContent } from "@/lib/firebase/merge.mjs";
@@ -393,7 +394,12 @@ export default function Home() {
   const [visibleCount, setVisibleCount] = useState(72);
   const [activeCard, setActiveCard] = useState<Card | null>(null);
   const [activeVariantId, setActiveVariantId] = useState("");
-  const [deck, setDeck] = useState<DeckState>(emptyDeck);
+  const [rawDeck, setRawDeck] = useState<DeckState>(emptyDeck);
+  const deck: DeckState = useMemo(() => projectLegacyPrintings(rawDeck), [rawDeck]);
+  // Reading an old deck must not rewrite its durable draft. Explicit edits work
+  // on the corrected projection; saved records change only when the user saves.
+  const setDeck = (next: DeckState | ((previous: DeckState) => DeckState)) =>
+    setRawDeck(previous => typeof next === "function" ? next(projectLegacyPrintings(previous)) : next);
   const [deckReady, setDeckReady] = useState(false);
   const [activeDeckId, setActiveDeckId] = useState<string | null>(null);
   const [editorBase, setEditorBase] = useState("");
@@ -435,8 +441,8 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (deckReady) { try { window.localStorage.setItem(draftStorageKey, JSON.stringify(deck)); } catch { setNotice("儲存空間不足，請立即匯出牌組備份。"); } }
-  }, [deck, deckReady]);
+    if (deckReady) { try { window.localStorage.setItem(draftStorageKey, JSON.stringify(rawDeck)); } catch { setNotice("儲存空間不足，請立即匯出牌組備份。"); } }
+  }, [rawDeck, deckReady]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reset pagination whenever the filter contract changes
@@ -646,6 +652,9 @@ export default function Home() {
       setActiveDeckId(payload.deck.id);
       setEditorBase(deckContent(payload.deck));
       setDeckName(payload.deck.name);
+      // A successful explicit save commits this projection, unless a newer edit
+      // was made while the save was in flight.
+      setRawDeck(previous => previous === rawDeck ? deck : previous);
       window.history.replaceState({}, "", `/?deck=${encodeURIComponent(payload.deck.id)}`);
       setNotice(firebaseBuild ? `「${payload.deck.name}」已保存在此裝置；登入後會同步。` : `「${payload.deck.name}」已保存到你的帳號。`);
     } catch (error) {
@@ -680,7 +689,7 @@ export default function Home() {
     if (!file) return;
     try {
       const parsed = await readImportJson(file);
-      const incoming = isHoloSimDeck(parsed) ? fromHoloSimDeck(parsed) : parsed.deck || parsed;
+      const incoming = projectLegacyPrintings(isHoloSimDeck(parsed) ? fromHoloSimDeck(parsed) : parsed.deck || parsed);
       if (!incoming.oshi || !incoming.main || !incoming.cheer) throw new Error("invalid");
       const next = emptyDeck();
       let skippedCards = 0;
@@ -775,6 +784,7 @@ export default function Home() {
       </div>
 
       <section className="deck-workbench" id="deck-workbench" aria-label="牌組構築器" hidden={workspace !== "deck"} tabIndex={-1}>
+        {deck !== rawDeck && <p role="status">舊版應援 S 卡圖已按官方卡號顯示；原始已存牌組未改動，編輯或保存時會使用更正後的卡號。</p>}
         <div className="deck-workbench-head">
           <div>
             <p className="eyebrow">MY DECK</p>

@@ -7,11 +7,12 @@ import { cards as websiteCards, dummy, oshi, state, unit, inst, attack } from '.
 
 const runtimes = [{ name: 'Website', applyAction: websiteApplyAction, cards: websiteCards }];
 const androidEngineUrl = new URL('../../../android-current/web/lib/simulator/engine.mjs', import.meta.url);
-const androidCardsUrl = new URL('../../../android-current/app/src/main/assets/cards.json', import.meta.url);
+// Use the actual shipped offline runtime catalog, whose printed icons were correct.
+const androidCardsUrl = new URL('../../../android-current/app/src/main/assets/app/offline-cards.json', import.meta.url);
 if (existsSync(fileURLToPath(androidEngineUrl)) && existsSync(fileURLToPath(androidCardsUrl))) {
   const { applyAction: androidApplyAction } = await import(androidEngineUrl.href);
   const androidCards = JSON.parse(readFileSync(androidCardsUrl, 'utf8')).cards;
-  runtimes.push({ name: 'Android source', applyAction: androidApplyAction, cards: androidCards });
+  runtimes.push({ name: 'Android source engine with shipped offline catalog', applyAction: androidApplyAction, cards: androidCards });
 }
 for (const runtime of runtimes) runtime.pool = [...runtime.cards, dummy, oshi];
 
@@ -145,13 +146,14 @@ for (const runtime of runtimes) {
     assert.equal(s.lifeLosses.filter(loss => loss.ownerIndex === 1).length, 2);
   });
 
-  test(`${runtime.name}: hEB01-016 receives +50 Arts only with three or more stacked cards`, () => {
+  test(`${runtime.name}: hEB01-016 stacks its printed White +50 independently of its three-underlay +50`, () => {
     const whiteTarget = cards.find(card => card.group === 'holomem' && card.colors.includes('白') && card.hp >= 200);
-    assert.ok(whiteTarget, 'catalog must include a durable white Holomen for the unrelated target-color bonus guard');
+    assert.ok(whiteTarget, 'catalog must include a durable white Holomen for the printed target-color bonus');
     for (const { stack, target, expected } of [
       { stack: [inst('hEB01-011', 'under'), inst('hEB01-016', 'top')], target: 'AUDIT-DUMMY', expected: 40 },
-      { stack: [inst('hEB01-011', 'under-1'), inst('hEB01-012', 'under-2'), inst('hEB01-016', 'top')], target: whiteTarget.number, expected: 40 },
+      { stack: [inst('hEB01-011', 'under-1'), inst('hEB01-012', 'under-2'), inst('hEB01-016', 'top')], target: whiteTarget.number, expected: 90 },
       { stack: [inst('hEB01-011', 'under-1'), inst('hEB01-012', 'under-2'), inst('hEB01-013', 'under-3'), inst('hEB01-016', 'top')], target: 'AUDIT-DUMMY', expected: 90 },
+      { stack: [inst('hEB01-011', 'under-1'), inst('hEB01-012', 'under-2'), inst('hEB01-013', 'under-3'), inst('hEB01-016', 'top')], target: whiteTarget.number, expected: 140 },
     ]) {
       let s = state('hEB01-016', target);
       s.players[0].zones.center.stack = stack;
@@ -163,7 +165,7 @@ for (const runtime of runtimes) {
 
   test(`${runtime.name}: hEB01-017 Bloom attaches an Archive Cheer; its Marine-only Arts threshold archives all underlays`, () => {
     const redTarget = cards.find(card => card.group === 'holomem' && card.colors.includes('紅') && card.hp >= 260);
-    assert.ok(redTarget, 'catalog must include a red target that can survive the printed 200 damage');
+    assert.ok(redTarget, 'catalog must include a red target that can survive the combined 250 damage');
     let bloom = state('hEB01-013');
     bloom.phase = 'main';
     bloom.players[0].hand = [inst('hEB01-017', 'marine-bloom')];
@@ -189,14 +191,14 @@ for (const runtime of runtimes) {
     assert.equal(s.pendingChoice.effect, 'artUnderCardCost');
     s = applyAction(s, 0, { type: 'choose', cardIds: ['under-1', 'under-2', 'under-3', 'under-4', 'under-5'] }, pool, () => 0);
     assert.equal(s.players[0].archive.filter(card => card.id.startsWith('under-')).length, 5);
-    assert.equal(s.effectQueue.find(effect => effect.type === 'dealArtsDamage')?.damage, 200, '100 printed Arts plus the +100 for archiving one or more underlays');
+    assert.equal(s.effectQueue.find(effect => effect.type === 'dealArtsDamage')?.damage, 250, '100 base +100 paid-underlay bonus +50 printed Red target bonus');
     assert.equal(s.players[1].zones.center.damage, 0, 'the Arts damage remains queued while the optional special-damage target is being chosen');
     assert.equal(s.pendingChoice.effect, 'specialDamage');
     assert.deepEqual(s.pendingChoice.options, ['back1'], 'the extra 100 targets only a non-Debut Back');
     s = applyAction(s, 0, { type: 'choose', zone: 'back1' }, pool, () => 0);
     assert.equal(s.players[1].zones.back1.damage, 100);
     assert.equal(s.players[1].zones.back2.damage, 0);
-    assert.equal(s.players[1].zones.center.damage, 200, 'the queued Arts damage resolves after its special-damage choice');
+    assert.equal(s.players[1].zones.center.damage, 250, 'the queued Arts damage resolves after its special-damage choice');
 
     let withoutMarineOshi = state('hEB01-017');
     withoutMarineOshi.players[0].oshi = inst('hEB01-001', 'sora-oshi');

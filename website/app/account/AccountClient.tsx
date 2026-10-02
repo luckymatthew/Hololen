@@ -2,6 +2,7 @@
 
 import { appFetch } from "@/lib/backend";
 import { firebaseBuild } from "@/lib/firebase/client";
+import { projectLegacyPrintings } from "@/lib/printing-compatibility.mjs";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -19,13 +20,15 @@ function sectionCount(section: Record<string, number>) {
 }
 
 export function DeckPreview({ deck, cardMap }: { deck: SavedDeck; cardMap: Map<string, Card> }) {
+  const previewDeck: DeckState = projectLegacyPrintings(deck.deck);
   return (
     <div className="saved-deck-sections">
+      {previewDeck !== deck.deck && <p>舊版應援 S 卡圖已按官方卡號顯示，原始已存牌組保留。</p>}
       {(["oshi", "main", "cheer"] as const).map((section) => {
-        const rows = Object.entries(deck.deck[section]).flatMap(([number, total]) => {
+        const rows = Object.entries(previewDeck[section]).flatMap(([number, total]) => {
           const card = cardMap.get(number);
           const variants = card?.variants || [];
-          const allocation = deck.deck.printings?.[number] || {};
+          const allocation = previewDeck.printings?.[number] || {};
           let allocated = 0;
           const printingRows = Object.entries(allocation).flatMap(([variantId, rawCount]) => {
             const variant = variants.find((candidate) => candidate.id === variantId);
@@ -42,7 +45,7 @@ export function DeckPreview({ deck, cardMap }: { deck: SavedDeck; cardMap: Map<s
           <section className="saved-deck-section" key={section}>
             <div className="saved-section-title">
               <b>{section === "oshi" ? "推し Holomen" : section === "main" ? "主牌組" : "應援牌組"}</b>
-              <span>{sectionCount(deck.deck[section])}</span>
+              <span>{sectionCount(previewDeck[section])}</span>
             </div>
             <div className="saved-card-strip">
               {rows.length === 0 && <p>尚未加入卡片</p>}

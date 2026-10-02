@@ -1,5 +1,6 @@
 "use client";
 import { readImportJson } from "../../lib/import-json.mjs";
+import { projectLegacyPrintings, projectLegacyCardReference } from "../../lib/printing-compatibility.mjs";
 import { downloadReview } from '@/lib/simulator/review-download.mjs';
 
 import { appFetch } from "@/lib/backend";
@@ -433,12 +434,13 @@ function CardFace({ instance, cardMap, small = false, hidden = false, back = "ma
     {/* eslint-disable-next-line @next/next/no-img-element */}
     <img src={back === "cheer" ? "/card-backs/cheer-oshi.png" : "/card-backs/main.png"} alt={back === "cheer" ? "應援／推し卡背" : "主牌卡背"} />
   </div>;
-  const card = cardMap.get(instance.number);
+  const displayInstance: CardInstance = projectLegacyCardReference(instance);
+  const card = cardMap.get(displayInstance.number);
   if (!card) return <div className={`sim-card-back main ${small ? "small" : ""}`}>
     {/* eslint-disable-next-line @next/next/no-img-element */}
-    <img src="/card-backs/main.png" alt="主牌卡背" /><code>{instance.number}</code>
+    <img src="/card-backs/main.png" alt="主牌卡背" /><code>{displayInstance.number}</code>
   </div>;
-  const selectedVariant = (card.variants || []).find((variant) => variant.id === instance.variantId);
+  const selectedVariant = (card.variants || []).find((variant) => variant.id === displayInstance.variantId);
   const backImage = card.group === "cheer" ? "/card-backs/cheer-oshi.png" : "/card-backs/main.png";
   const image = selectedVariant?.image || card.image || backImage;
   const sameColorCheer = card.group === "cheer" ? [...cardMap.values()]
@@ -897,6 +899,7 @@ function Board({ player, playerIndex, own, cardMap, active, phase, turn, opponen
 }
 
 function cardPrintingLabel(instance: CardInstance, cardMap: Map<string, CardInfo>) {
+  instance = projectLegacyCardReference(instance);
   const card = cardMap.get(instance.number);
   const printing = card?.variants?.find((variant) => variant.id === instance.variantId);
   const rarity = printing?.rarity || card?.rarity || "";
@@ -918,6 +921,9 @@ function LogMessage({ message, referenceIndex, cardRefs = [], cardMap, onInspect
 }
 
 function CardInspector({ card, cardMap, variantId, liveState, onClose, hover = false }: { card: CardInfo; cardMap: Map<string, CardInfo>; variantId?: string; liveState?: InspectorLiveState; onClose?: () => void; hover?: boolean }) {
+  const reference = projectLegacyCardReference({ number: card.number, variantId });
+  card = cardMap.get(reference.number) || card;
+  variantId = reference.variantId;
   const skills = [
     card.stageSkill && { label: "舞台技能", ...card.stageSkill },
     card.oshiSkill && { label: "主推技能", ...card.oshiSkill },
@@ -981,8 +987,10 @@ function CardInspector({ card, cardMap, variantId, liveState, onClose, hover = f
 
 export default function SimulatorClient() {
   const [cards, setCards] = useState<CardInfo[]>([]);
-  const [deck, setDeck] = useState<DeckState>(emptyDeck);
-  const [aiDeck, setAiDeck] = useState<DeckState | null>(null);
+  const [rawDeck, setDeck] = useState<DeckState>(emptyDeck);
+  const [rawAiDeck, setAiDeck] = useState<DeckState | null>(null);
+  const deck: DeckState = useMemo(() => projectLegacyPrintings(rawDeck), [rawDeck]);
+  const aiDeck: DeckState | null = useMemo(() => projectLegacyPrintings(rawAiDeck), [rawAiDeck]);
   const [aiDeckLabel, setAiDeckLabel] = useState("與我相同牌組（鏡像）");
   const [aiDeckChoice, setAiDeckChoice] = useState("__mirror");
   const [savedDecks, setSavedDecks] = useState<SavedDeck[]>([]);
@@ -1400,6 +1408,7 @@ export default function SimulatorClient() {
           <section className="sim-room-card">
             <p className="eyebrow">ENTER THE TABLE</p>
             <h2>準備牌組</h2>
+            {(deck !== rawDeck || aiDeck !== rawAiDeck) && <p role="status">舊版應援 S 卡圖會以官方更正卡號用於對局；原始已存牌組未改動。</p>}
             <label><span>玩家名稱</span><input value={name} maxLength={24} onChange={(event) => setName(event.target.value)} placeholder="例如：こより助手" /></label>
             {savedDecks.length > 0 && <label><span>已保存牌組</span><select defaultValue="" onChange={(event) => { const selected = savedDecks.find((item) => item.id === event.target.value); if (selected) setDeck(selected.deck); }}><option value="" disabled>選擇牌組…</option>{savedDecks.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}</select></label>}
             <label className="sim-import">匯入網站／HoloSim JSON<input type="file" accept="application/json,.json" onChange={(event) => { void importDeck(event.target.files?.[0]); event.target.value = ""; }} /></label>

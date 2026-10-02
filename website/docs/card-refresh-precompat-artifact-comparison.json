@@ -1,0 +1,144 @@
+[
+  {
+    "productionPath": "/assets/ConfirmDialog-DWt5p2lc.js",
+    "productionSha256": "ebf9429a812551c8f84ebbf53ba4960f8c8a3a6d3747295d6b5080b36b812b34",
+    "localPath": "/tmp/ocg-precompat-dist-firebase/assets/ConfirmDialog-BI7JtDYR.js",
+    "localSha256": "1410b6a8be98f99f933b7b83e9afdfc0222d32c8772a497da161d71690e51b1a",
+    "exactBytes": false,
+    "equalAfterOnlyAssetNameReferences": true
+  },
+  {
+    "productionPath": "/assets/DownloadClient-BSD_RC2T.js",
+    "productionSha256": "f9dbd74f262a1e973eacd83d6ea9bb2da44a064aa9c0807bd37e50ffcefbdf50",
+    "localPath": "/tmp/ocg-precompat-dist-firebase/assets/DownloadClient-G7rfAk9c.js",
+    "localSha256": "2856edcc6e2df6e483fd947a0d90b571d2aee0e9febe5c5c2f64835aecc4841c",
+    "exactBytes": false,
+    "equalAfterOnlyAssetNameReferences": true
+  },
+  {
+    "productionPath": "/assets/FirebaseAccount-2DQ9fUoS.js",
+    "productionSha256": "721bc7d3983a5a4ee07cb39f070544818781030c764d3e7836e1e9064e34ecbe",
+    "localPath": "/tmp/ocg-precompat-dist-firebase/assets/FirebaseAccount-C8g192s7.js",
+    "localSha256": "2bd15cab07f7b0f4424f19a94b35f915eda54acd8ead92420c517c7738b9f18d",
+    "exactBytes": false,
+    "equalAfterOnlyAssetNameReferences": true
+  },
+  {
+    "productionPath": "/assets/FoilCardImage-DCVkB6-7.js",
+    "productionSha256": "6fb8a9295cd0087cc04809c77e3059f36474d0489cf9afcb13835b09f9a4ce7a",
+    "localPath": "/tmp/ocg-precompat-dist-firebase/assets/FoilCardImage-BZSoPZcM.js",
+    "localSha256": "a89042c91d5260f14ce4b13e29f2727390a77f721a97af83355b90b115bd058c",
+    "exactBytes": false,
+    "equalAfterOnlyAssetNameReferences": true
+  },
+  {
+    "productionPath": "/assets/Link-BUSIjz8Q.js",
+    "productionSha256": "98124a262f43b137315385343ae1e66154fb6dd2c0e9aee8ac8cbc03de8e179d",
+    "localPath": "/tmp/ocg-precompat-dist-firebase/assets/Link-GrLhd3mh.js",
+    "localSha256": "d6e18e67386cb849a62312f3705fdf4852ae51d079612589ec1acab4a659177d",
+    "exactBytes": false,
+    "equalAfterOnlyAssetNameReferences": true
+  },
+  {
+    "productionPath": "/assets/SimulatorClient-CUtLRdOV.js",
+    "productionSha256": "d4825d2444d90c6554ed9a01c248c7fa2295258068ff7a8528250a095b88b66d",
+    "localPath": "/tmp/ocg-precompat-dist-firebase/assets/SimulatorClient-B1iuv6Dk.js",
+    "localSha256": "4aec20704806ac9a716c67f3a31c57daf51c20dd80c13c94a775cbf660bc81dc",
+    "exactBytes": false,
+    "equalAfterOnlyAssetNameReferences": true
+  },
+  {
+    "productionPath": "/assets/TerminologyNote-mIn20gx6.js",
+    "productionSha256": "754fb2c28694e827e343c9a8aee0d5bc8940eb50261f15e3f0513852e0ae36db",
+    "localPath": "/tmp/ocg-precompat-dist-firebase/assets/TerminologyNote-BCY4ihUo.js",
+    "localSha256": "04116ef4a816e4b89e6c0c5ba1a4bff6ca4887e6e4d68f29baf25e96264e1abc",
+    "exactBytes": false,
+    "equalAfterOnlyAssetNameReferences": true
+  },
+  {
+    "productionPath": "/assets/ThemeToggle-BXlyreRc.js",
+    "productionSha256": "618a9ecb52b0a8cc7d1ede7da8dd00190af16f518252f0764da8560ce4dfe9d1",
+    "localPath": "/tmp/ocg-precompat-dist-firebase/assets/ThemeToggle-BjJVIR60.js",
+    "localSha256": "379d87717a867d9fcbc15346fe8c2d81124490fa1485953803710b3a5714ed08",
+    "exactBytes": false,
+    "equalAfterOnlyAssetNameReferences": true
+  },
+  {
+    "productionPath": "/assets/index-BebaVl7g.css",
+    "productionSha256": "9b16807c57cbf65dab3875d11674638911b025c8d7b351e5e2feb60da27b79ff",
+    "localPath": "/tmp/ocg-precompat-dist-firebase/assets/index-PVyYSUiQ.css",
+    "localSha256": "a11707399b79b314637b4ee6271195bf435c54588cce5ccbb6c2541cce08e976",
+    "exactBytes": false,
+    "equalAfterOnlyAssetNameReferences": false,
+    "differences": [
+      {
+        "operation": "delete",
+        "before": ".absolute{position:absolute",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "productionPath": "/assets/index-Cojei_PJ.js",
+    "productionSha256": "928ca3f818a8b8a06d10368ee6a880a1de0018781c44f7b9df11793411ee84a2",
+    "localPath": "/tmp/ocg-precompat-dist-firebase/assets/index-xZmtG7yY.js",
+    "localSha256": "122c8986426075037562dc1955eaca22cc2d38498f4c7ee1dd351dc51373df55",
+    "exactBytes": false,
+    "equalAfterOnlyAssetNameReferences": false,
+    "differences": [
+      {
+        "operation": "insert",
+        "before": "",
+        "after": "VITE_FIREBASE_EMULATORS:`false`,"
+      }
+    ]
+  },
+  {
+    "productionPath": "/assets/oshi-skill-catalog-dSw-ng5V.js",
+    "productionSha256": "4ab6d40e31844b1fbfbd03385879ff9ed47d4a1c0dbf522c02a2dfaa3d73c7c1",
+    "localPath": "/tmp/ocg-precompat-dist-firebase/assets/oshi-skill-catalog-dSw-ng5V.js",
+    "localSha256": "4ab6d40e31844b1fbfbd03385879ff9ed47d4a1c0dbf522c02a2dfaa3d73c7c1",
+    "exactBytes": true,
+    "equalAfterOnlyAssetNameReferences": true
+  },
+  {
+    "productionPath": "/assets/page-Bwfgl7Py.js",
+    "productionSha256": "1e528b8aed89434fd33da65787b4a736569f7b9d947eb73593abcdb4fe3c1596",
+    "localPath": "/tmp/ocg-precompat-dist-firebase/assets/page-BVs0aq2A.js",
+    "localSha256": "ea21574dea89544b2c7a79525e2ea0d969216f30b110da1ee8e58a72826fbe7c",
+    "exactBytes": false,
+    "equalAfterOnlyAssetNameReferences": true
+  },
+  {
+    "productionPath": "/assets/pvp-CjeFfVO6.js",
+    "productionSha256": "0b0fe7c1996aeda16714913362f8332a7c8078bdba3149af78e54bbad362ea0c",
+    "localPath": "/tmp/ocg-precompat-dist-firebase/assets/pvp-DxruYEbn.js",
+    "localSha256": "cd3b83c282539cf985ad47f6f37fbfacf36bb87a6d506210f38d4adc2cf7599f",
+    "exactBytes": false,
+    "equalAfterOnlyAssetNameReferences": true
+  },
+  {
+    "productionPath": "/hbp09-cards.json",
+    "productionSha256": "5d991f5e52f4fae3011a086272fad513f13a047ecd2e10e5e499ea7f1c19cf6d",
+    "localPath": "/tmp/ocg-precompat-dist-firebase/hbp09-cards.json",
+    "localSha256": "5d991f5e52f4fae3011a086272fad513f13a047ecd2e10e5e499ea7f1c19cf6d",
+    "exactBytes": true,
+    "equalAfterOnlyAssetNameReferences": true
+  },
+  {
+    "productionPath": "/hbp09-zh-Hant.json",
+    "productionSha256": "30433cb33c9376877ed7c56076e2ef598dc4d5e8d141ccf13464b13f70458a5a",
+    "localPath": "/tmp/ocg-precompat-dist-firebase/hbp09-zh-Hant.json",
+    "localSha256": "30433cb33c9376877ed7c56076e2ef598dc4d5e8d141ccf13464b13f70458a5a",
+    "exactBytes": true,
+    "equalAfterOnlyAssetNameReferences": true
+  },
+  {
+    "productionPath": "/index.html",
+    "productionSha256": "64adfad58d82dce524f4f08921e92abc9c371ec81e44a4039225cdc2f8312175",
+    "localPath": "/tmp/ocg-precompat-dist-firebase/index.html",
+    "localSha256": "293f49c5cec61454dc933aa606f7184e50cc41dfe74b44626a4095b8ee6b1b6d",
+    "exactBytes": false,
+    "equalAfterOnlyAssetNameReferences": true
+  }
+]

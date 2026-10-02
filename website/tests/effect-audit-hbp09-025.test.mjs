@@ -20,13 +20,19 @@ function attackNoel(state) {
   return act(state, { type: 'attack', sourceZone: 'center', artIndex: 0, targetZone: 'center' }, 0, cards);
 }
 
-test('hBP09-025 official identity, Gift text, and C/S printings match the local catalog', () => {
+test('hBP09-025 official identity, Gift text, and C/S and reviewed PR printings match the local catalog', () => {
   const noel = cards.find(card => card.number === 'hBP09-025');
   assert.ok(noel);
   assert.equal(noel.jpName, '白銀ノエル');
   assert.equal(noel.stage, 'Debut');
   assert.equal(noel.hp, 130);
-  assert.deepEqual(noel.variants.map(variant => variant.rarity).sort(), ['C', 'S']);
+  assert.deepEqual(noel.variants.map(variant => variant.rarity).sort(), ['C', 'P', 'S']);
+  assert.deepEqual(noel.variants.filter(variant => variant.rarity === 'P'), [{
+    id: 'official-hBP09-025-2980', rarity: 'P',
+    image: 'https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-025_P.png',
+    sets: ['PRカード'],
+    sourceUrl: 'https://hololive-official-cardgame.com/cardlist/?id=2980&%2Fcardlist%2Fcardsearch_ex=&view=text',
+  }]);
   assert.equal(noel.keyword?.type, 'gift');
   assert.equal(noel.keyword?.name, 'カジュアルノエル');
   assert.equal(noel.keyword?.effect, '自分の推しホロメンが推しステージスキルを持つなら、このホロメンのHP+20。');

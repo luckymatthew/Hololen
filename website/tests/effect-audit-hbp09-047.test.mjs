@@ -28,14 +28,20 @@ function battle({ center = 'hBP09-041', subaruZone = null, subaruUnderCard = fal
   return state;
 }
 
-test('hBP09-047 C/S official Japanese identity, Collab text, and Arts text are represented in the catalog', () => {
+test('hBP09-047 C/S/PR official Japanese identity, Collab text, and Arts text are represented in the catalog', () => {
   assert.ok(card047);
   assert.equal(card047.jpName, 'ハコス・ベールズ');
   assert.equal(card047.stage, 'Debut');
   assert.equal(card047.hp, 100);
   assert.deepEqual(card047.colors, ['紅']);
   assert.equal(card047.baton, 0);
-  assert.deepEqual(new Set(card047.variants.map(variant => variant.rarity)), new Set(['C', 'S']));
+  assert.deepEqual(card047.variants.map(variant => variant.rarity).sort(), ['C', 'P', 'S']);
+  assert.deepEqual(card047.variants.filter(variant => variant.rarity === 'P'), [{
+    id: 'official-hBP09-047-2982', rarity: 'P',
+    image: 'https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-047_P.png',
+    sets: ['PRカード'],
+    sourceUrl: 'https://hololive-official-cardgame.com/cardlist/?id=2982&%2Fcardlist%2Fcardsearch_ex=&view=text',
+  }]);
   assert.equal(card047.keyword.effect, '自分のセンターが〈大空スバル〉なら、自分のデッキを1枚引く。');
   assert.equal(card047.arts[0].name, '風船はいかが？');
   assert.deepEqual(card047.arts[0].cost, ['無色']);

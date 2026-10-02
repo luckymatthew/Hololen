@@ -12,11 +12,12 @@ const tick = {
 };
 const runtimes = [{ name: 'Website', applyAction: websiteApplyAction, cards: websiteCards }];
 const androidEngineUrl = new URL('../../../android-current/web/lib/simulator/engine.mjs', import.meta.url);
-const androidCardsUrl = new URL('../../../android-current/app/src/main/assets/cards.json', import.meta.url);
+// Use the actual shipped offline runtime catalog, whose printed icons were correct.
+const androidCardsUrl = new URL('../../../android-current/app/src/main/assets/app/offline-cards.json', import.meta.url);
 if (existsSync(fileURLToPath(androidEngineUrl)) && existsSync(fileURLToPath(androidCardsUrl))) {
   const { applyAction: androidApplyAction } = await import(androidEngineUrl.href);
   const androidCards = JSON.parse(readFileSync(androidCardsUrl, 'utf8')).cards;
-  runtimes.push({ name: 'Android source', applyAction: androidApplyAction, cards: androidCards });
+  runtimes.push({ name: 'Android source engine with shipped offline catalog', applyAction: androidApplyAction, cards: androidCards });
 }
 for (const runtime of runtimes) runtime.pool = [...runtime.cards, dummy, oshi, tick];
 
@@ -70,12 +71,12 @@ for (const runtime of runtimes) {
     assert.equal(s.players[0].archive.some(card => card.id === 'assistant-c'), true);
   });
 
-  test(`${runtime.name}: hEB01-023 draws only to Assistant count, has no unprinted White Arts bonus, and bottoms up to four Koyori`, () => {
+  test(`${runtime.name}: hEB01-023 draws only to Assistant count, keeps its printed White +50, and bottoms up to four Koyori`, () => {
     const whiteTarget = cards.find(card => card.group === 'holomem' && card.colors.includes('白') && card.hp >= 200);
     assert.ok(whiteTarget);
     const sourceCard = cards.find(card => card.number === 'hEB01-023');
-    assert.deepEqual(sourceCard.arts[0].specialTargets || [], [], 'the local Arts text has no White-target bonus');
-    assert.deepEqual(sourceCard.arts[0].specialValues || [], []);
+    assert.deepEqual(sourceCard.arts[0].specialTargets, ['白'], 'official printed icon supplies White +50 independently of effect prose');
+    assert.deepEqual(sourceCard.arts[0].specialValues, [50]);
 
     let s = state('hEB01-023', whiteTarget.number);
     cheer(s.players[0].zones.center, ['hY01-001', 'hY01-001']);
@@ -84,7 +85,7 @@ for (const runtime of runtimes) {
     s.players[0].hand = [inst('AUDIT-DUMMY', 'already-held')];
     s.players[0].mainDeck = [inst('AUDIT-DUMMY', 'draw-1'), inst('AUDIT-DUMMY', 'draw-2'), inst('AUDIT-DUMMY', 'draw-3')];
     s = applyAction(s, 0, attack, pool, () => 0);
-    assert.equal(s.players[1].zones.center.damage, 50, 'White target must not receive an unrelated +50');
+    assert.equal(s.players[1].zones.center.damage, 100, '50 base +50 printed White target bonus');
     assert.equal(s.players[0].hand.length, 3, 'draw only until the three Assistant cards and hand size match');
 
     const labSupport = cards.find(card => card.group === 'support' && card.tags.includes('#こよラボ'));
@@ -106,11 +107,11 @@ for (const runtime of runtimes) {
     assert.ok(bloom.players[0].zones.center.attachments.some(card => card.id === 'lab-support'));
   });
 
-  test(`${runtime.name}: hEB01-024 Assistant Gift reduces one colorless cost and applies HP per Assistant; Arts has no unprinted White bonus`, () => {
+  test(`${runtime.name}: hEB01-024 Assistant Gift reduces one colorless cost and applies HP per Assistant; Arts keeps its printed White +50`, () => {
     const whiteTarget = cards.find(card => card.group === 'holomem' && card.colors.includes('白') && card.hp >= 200);
     const sourceCard = cards.find(card => card.number === 'hEB01-024');
-    assert.deepEqual(sourceCard.arts[0].specialTargets || [], [], 'the local Arts text has no White-target bonus');
-    assert.deepEqual(sourceCard.arts[0].specialValues || [], []);
+    assert.deepEqual(sourceCard.arts[0].specialTargets, ['白'], 'official printed icon supplies White +50 independently of effect prose');
+    assert.deepEqual(sourceCard.arts[0].specialValues, [50]);
     let s = state('hEB01-024', whiteTarget.number);
     // Printed cost is Yellow + 2 Colorless; one Assistant reduces only a Colorless requirement.
     cheer(s.players[0].zones.center, ['hY06-001', 'hY01-001']);
@@ -123,7 +124,7 @@ for (const runtime of runtimes) {
     assert.equal(s.pendingChoice.count, 1);
     s = applyAction(s, 0, { type: 'choose', allocations: { back1: 1 } }, pool, () => 0);
     assert.equal(s.players[0].zones.back1.damage, 10);
-    assert.equal(s.players[1].zones.center.damage, 140, '120 base +20 for the revealed Holomen, with no unrelated White bonus');
+    assert.equal(s.players[1].zones.center.damage, 190, '120 base +20 revealed Holomen +50 printed White target bonus');
 
     const withGift = (assistants) => {
       let incoming = state('AUDIT-TICK', 'hEB01-024');

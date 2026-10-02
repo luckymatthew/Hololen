@@ -6,6 +6,7 @@ import { signInAnonymously } from 'firebase/auth';
 import { getFirebase } from './client';
 import { applyAction, createLobbyState, joinLobby, publicRoomState, validateBattleDeck } from '../simulator/engine.mjs';
 import { runAiStep } from '../simulator/ai.mjs';
+import { projectLegacyPrintings } from '../printing-compatibility.mjs';
 
 const TTL = 36 * 60 * 60 * 1000;
 let cardsPromise: Promise<any[]>;
@@ -28,6 +29,7 @@ function publishViews(room: any) {
 const soloKey = (code: string) => `holo-solo-v1:${code}`;
 export const isSolo = (code: string) => code.startsWith('AI-');
 export async function createRoom(payload: any) {
+  payload = { ...payload, deck: projectLegacyPrintings(payload.deck), opponentDeck: projectLegacyPrintings(payload.opponentDeck) };
   const catalog = await cards(); playerCheck(payload.name, payload.deck, catalog);
   if (payload.singlePlayer) {
     playerCheck('AI', payload.opponentDeck || payload.deck, catalog);
@@ -57,6 +59,7 @@ export async function createRoom(payload: any) {
   throw new Error('未能建立房間，請稍後重試。');
 }
 export async function joinRoom(code: string, payload: any) {
+  payload = { ...payload, deck: projectLegacyPrintings(payload.deck) };
   codeCheck(code);
   const catalog = await cards(); playerCheck(payload.name, payload.deck, catalog);
   const user = await identity(), { database } = getFirebase();
@@ -144,7 +147,7 @@ export function watchRoom(code: string, onRoom: (room: any) => void, onStatus: (
           let changed = false;
           if (room.join && !room.metadata.guestUid) {
             try {
-              const deck = JSON.parse(room.join.deckJson); playerCheck(room.join.name, deck, catalog);
+              const deck = projectLegacyPrintings(JSON.parse(room.join.deckJson)); playerCheck(room.join.name, deck, catalog);
               room.stateJson = JSON.stringify(joinLobby(JSON.parse(room.stateJson), room.join.name, deck));
               room.metadata.guestUid = room.join.uid; room.join = null;
               room.metadata.version++; changed = true;

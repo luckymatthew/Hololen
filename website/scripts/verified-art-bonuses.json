@@ -1,0 +1,95 @@
+{
+  "verifiedOn": "2026-10-02",
+  "scope": "Four printed Arts color-bonus icons independently inspected on official PNGs. This is not a complete card/effect audit or a new full card-list capture.",
+  "internalColorLabels": {
+    "officialRed": "赤",
+    "engineRed": "紅",
+    "white": "白"
+  },
+  "corrections": [
+    {
+      "number": "hEB01-016",
+      "artIndex": 0,
+      "artName": "一生、マリンのトリコでしょ？",
+      "damage": 40,
+      "before": {
+        "specialTargets": [],
+        "specialValues": []
+      },
+      "after": {
+        "specialTargets": [
+          "白"
+        ],
+        "specialValues": [
+          50
+        ]
+      },
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2491",
+      "imageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hEB01-016_R.png",
+      "imageSha256": "023e21bd352f00299b7c7641c45ffe1bb7e47d1bce8a5d08a85264dca3df8856"
+    },
+    {
+      "number": "hEB01-017",
+      "artIndex": 0,
+      "artName": "ねぇ、口元のチョコ……とって？♡",
+      "damage": 100,
+      "before": {
+        "specialTargets": [],
+        "specialValues": []
+      },
+      "after": {
+        "specialTargets": [
+          "紅"
+        ],
+        "specialValues": [
+          50
+        ]
+      },
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2492",
+      "imageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hEB01-017_RR.png",
+      "imageSha256": "dca48b393ed469a20cd3be9527015fc5cb6da00d3ce43cd936bb668c0a74d86e"
+    },
+    {
+      "number": "hEB01-023",
+      "artIndex": 0,
+      "artName": "こよ以外見えなくしちゃった！♡",
+      "damage": 50,
+      "before": {
+        "specialTargets": [],
+        "specialValues": []
+      },
+      "after": {
+        "specialTargets": [
+          "白"
+        ],
+        "specialValues": [
+          50
+        ]
+      },
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2498",
+      "imageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hEB01-023_R.png",
+      "imageSha256": "bcf3372daae74b7b6eacf2b0e5e7575d00df6a2d63baf580161940e1ab6ed960"
+    },
+    {
+      "number": "hEB01-024",
+      "artIndex": 0,
+      "artName": "皆にはナイショの、特別な時間…♡",
+      "damage": 120,
+      "before": {
+        "specialTargets": [],
+        "specialValues": []
+      },
+      "after": {
+        "specialTargets": [
+          "白"
+        ],
+        "specialValues": [
+          50
+        ]
+      },
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2499",
+      "imageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hEB01-024_RR.png",
+      "imageSha256": "7483f22af27934bab3b5309aee5d85c69d88cce88b9b311f7a40b826bd15b2b8"
+    }
+  ]
+}

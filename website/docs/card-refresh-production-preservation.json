@@ -1,0 +1,420 @@
+{
+  "status": "ready-for-parent-review-four-official-bonuses-corrected-all-tests-passed",
+  "productionBaseline": {
+    "sourceCommit": "238915a9f71fe4158d45f8f18fad6d2af7d10aaf",
+    "catalogSha256": "badca2019627e6fc431779d31a24bb51b23c3ea4609589c00e27b82a463868d7",
+    "sourceMatchesPreviouslyServedCatalog": true
+  },
+  "refreshEvidence": {
+    "reviewedCommit": "6ed2f24b8769e82de942f413d983b4a26ad46c1b",
+    "historicalCaptureAt": "2026-10-01T19:34:16.779963+00:00",
+    "freshOfficialCapturePerformedInThisCheckout": false,
+    "note": "Existing reviewed change report and catalog were used as offline inputs. Neither tests nor reconstructed fixtures are a new official capture."
+  },
+  "catalog": {
+    "cards": 1394,
+    "printings": 2981,
+    "sha256": "c6db1d1cf260ae591291a35d05823f572158a1708e85e0986f60c9179944de0a",
+    "existingCardsPreserved": 1392,
+    "addedPrPrintings": 75,
+    "correctedSummerSPrintings": 6,
+    "removedInvalidSummerSPrintings": 6,
+    "newCardNumbers": [
+      "hY03-018",
+      "hY04-015"
+    ],
+    "existingVariantPrLabelsAdded": 363,
+    "existingVariantOfficialDetailUrlsAdded": 571,
+    "preservedFieldExceptions": "Only arts[0].specialTargets and arts[0].specialValues on the four independently verified hEB01 cards. All other existing fields, including hBP09-100 Extra, remain preserved."
+  },
+  "preCompatibilitySourceValidation": {
+    "protectedRuntimeFiles": 370,
+    "allByteIdenticalToProductionSource": true,
+    "allExistingCardRulesNamesEffectsIdsPreserved": true,
+    "reversingExactReviewedDeltaReconstructsCompleteProductionCatalog": true,
+    "preservationTestsPassed": 8,
+    "refreshAndNameTestsPassed": 21,
+    "updatedExactNewPrRarityAssertionsPassed": 10,
+    "scopeNote": "Historical card-printing-only stage before the subsequently verified four printed-bonus data corrections."
+  },
+  "pristineProductionRegression": {
+    "tests": 3973,
+    "passed": 3973,
+    "failed": 0,
+    "skipped": 0,
+    "documentedReleaseRegressionCount": 3973,
+    "syncReleaseTests": 11,
+    "syncReleasePassed": 11,
+    "aggregateExitCode": 0,
+    "typescriptPassed": true,
+    "productionBuildPassed": true,
+    "note": "Authentic website matrix generator and read-only sibling Android source fixture restored. Complete npm test now reproduces the documented production regression count exactly."
+  },
+  "preCompatibilityBuild": {
+    "typescriptPassed": true,
+    "productionBuildPassed": true,
+    "firebaseHostingGuardPassed": true,
+    "allOutputFilesByteIdenticalToCleanProductionBuildExcept": [
+      "cards.json",
+      "sw.js"
+    ],
+    "originalProductionReceiptComparison": "card-refresh-precompat-artifact-comparison.json",
+    "differencesFromOriginalServedReceipt": [
+      "Generated chunk-name references differ.",
+      "Copied public environment explicitly sets VITE_FIREBASE_EMULATORS=false; original build omitted that key. Both disable emulators.",
+      "One unused generated Tailwind utility .absolute{position:absolute} is absent. No app/lib/firebase class usage was found."
+    ],
+    "note": "Receipt artifact hashes are not falsely claimed identical. The same differences reproduce in the untouched production-source build on this cloud environment.",
+    "scopeNote": "Historical card-printing-only stage before compatibility work and the four independently verified printed-bonus corrections."
+  },
+  "publication": "This is the tested prepublication candidate snapshot. Subsequent publication is verified by the deployment receipt.",
+  "compatibilityRepair": {
+    "scope": "Exactly six old hEB01 S printing IDs are projected to their official regular Cheer card number and S printing ID.",
+    "runtimePaths": [
+      {
+        "path": "website/app/account/AccountClient.tsx",
+        "sha256": "0c74382c9f8650b7c0297f1c1cecade9e00d440d257fcb641b8fd1fd538910bc"
+      },
+      {
+        "path": "website/app/page.tsx",
+        "sha256": "7f9c37625cac8c68f0ecb30d6d8b1085a4f26caaf7caacf5df3896faa63cbad8"
+      },
+      {
+        "path": "website/app/simulator/SimulatorClient.tsx",
+        "sha256": "e379809423ccca0b119e8d0a7fbb219cfd3db63160967e4a134ebdba290baa62"
+      },
+      {
+        "path": "website/lib/firebase/pvp.ts",
+        "sha256": "400716ea25895d0fbf3da6e67baf5ea8b82386af3da64756539ae803d6261e31"
+      },
+      {
+        "path": "website/lib/printing-compatibility.mjs",
+        "sha256": "5c98951d180306d224fe6d65cccdd1798991b2f2fe5996edcb62f66d92091937"
+      }
+    ],
+    "unchangedProtectedProductionFiles": 366,
+    "engineStoreAndSyncMergeUnchanged": true,
+    "rawSavedDeckDraftCollectionAndBackupRecordsPreservedOnRead": true,
+    "explicitUserEditsOrSaveCommitProjectedDeck": true,
+    "savedRoomArtworkLabelsInspectorCorrectedWithoutStateMutation": true,
+    "ambiguousUnallocatedQuantities": "Kept on original card number; no S intent is inferred without exact old S printing ID.",
+    "unknownIds": "Unchanged; strict validation remains in place."
+  },
+  "latestValidation": {
+    "focusedTests": 77,
+    "passed": 77,
+    "failed": 0,
+    "skipped": 0,
+    "typescriptPassed": true,
+    "productionBuildPassed": true,
+    "firebaseHostingGuardPassed": true,
+    "gitDiffCheckPassed": true,
+    "unfilteredNpmTest": {
+      "exitCode": 0,
+      "syncRelease": {
+        "tests": 11,
+        "passed": 11,
+        "failed": 0,
+        "skipped": 0
+      },
+      "regression": {
+        "tests": 4024,
+        "passed": 4024,
+        "failed": 0,
+        "skipped": 0
+      },
+      "newTestsRelativeToCapturedProduction": 51,
+      "typescriptBuildStages": "Both ran successfully within the complete npm test aggregate.",
+      "noExclusionsOrFabricatedFixtures": true
+    },
+    "scopedLint": {
+      "baselineErrors": 18,
+      "baselineWarnings": 4,
+      "candidateErrors": 18,
+      "candidateWarnings": 4,
+      "note": "Same existing rule counts in four touched runtime files; the new pure helper adds none."
+    },
+    "finalRuntimeSha256": {
+      "website/app/account/AccountClient.tsx": "0c74382c9f8650b7c0297f1c1cecade9e00d440d257fcb641b8fd1fd538910bc",
+      "website/app/page.tsx": "7f9c37625cac8c68f0ecb30d6d8b1085a4f26caaf7caacf5df3896faa63cbad8",
+      "website/app/simulator/SimulatorClient.tsx": "e379809423ccca0b119e8d0a7fbb219cfd3db63160967e4a134ebdba290baa62",
+      "website/lib/firebase/pvp.ts": "400716ea25895d0fbf3da6e67baf5ea8b82386af3da64756539ae803d6261e31",
+      "website/lib/printing-compatibility.mjs": "5c98951d180306d224fe6d65cccdd1798991b2f2fe5996edcb62f66d92091937"
+    },
+    "printedBonusFocusedTests": {
+      "tests": 56,
+      "passed": 56,
+      "failed": 0,
+      "skipped": 0
+    },
+    "bonusMergerAndPreservationTests": {
+      "tests": 34,
+      "passed": 34,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "output": {
+    "directory": "website/dist-firebase",
+    "cardsSha256": "c6db1d1cf260ae591291a35d05823f572158a1708e85e0986f60c9179944de0a",
+    "serviceWorkerSha256": "b48f2876959e097dfbe4f83f0f1c53c0c9b44649d214255fa17c85e9d2d34a7a",
+    "cssSha256": "9b16807c57cbf65dab3875d11674638911b025c8d7b351e5e2feb60da27b79ff",
+    "finalCssExactlyMatchesPublishedProductionReceipt": true
+  },
+  "previousMissingDependencyRun": {
+    "exitCode": 1,
+    "syncRelease": {
+      "tests": 11,
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0
+    },
+    "regression": {
+      "tests": 3585,
+      "passed": 3583,
+      "failed": 2,
+      "skipped": 0
+    },
+    "failures": [
+      "effect-audit-matrix-clauses.test.mjs: authentic generate-card-effect-matrix.mjs absent",
+      "simulator-hbp04-096-106-attachments.test.mjs: authentic sibling android-current catalog/online module absent"
+    ],
+    "sameFailuresReproducedOnPristineProduction": true,
+    "newFailures": 0,
+    "newTestsRelativeToCapturedProduction": 42,
+    "typescriptBuildStages": "The aggregate stops at failed regression stage; TypeScript and build passed when run separately on the final source."
+  },
+  "restoredTestDependencyProvenance": {
+    "matrixGenerator": {
+      "path": "website/scripts/generate-card-effect-matrix.mjs",
+      "bytes": 8200,
+      "sha256": "092fa5d54b04b291de050241b4c51b4a358b49c1784964b8fd89ddb6bbc0613a",
+      "source": "Authentic existing untracked website source dated September 25, supplied by authorized desktop discovery.",
+      "safeToCommit": true,
+      "review": "Only repository-local catalog/audit reads and one derived matrix write; no secrets, credentials, network calls or private source inclusion.",
+      "pristineReproduction": "Generated matrix exactly matches committed production matrix apart from generation date."
+    },
+    "androidFixture": {
+      "arrangement": "Read-only sibling android-current symlink outside the Git worktree; private source is not committed or included in Hosting output.",
+      "archiveBytes": 546527585,
+      "archiveSha256": "73334f69a1a3381b5ee14aa5f7d1be03831681421e9c518f96a967fa86d51f1b",
+      "catalogSha256": "e9b793b5146c42c6762457c9fc56ded0b6f3a2fdfa3beba3c580328f5218bd92",
+      "onlineModuleSha256": "2e070cc71d594514dc9fcab6af82fc26620a55239638522e512737d6cc191d60",
+      "relevantBonusRegressionCatalog": "The two hEB01 011–030 dual-runtime suites now read the actual shipped app/offline-cards.json, whose printed bonuses were already correct, rather than the known-inconsistent historical primary source catalog. The immutable fixture was not edited.",
+      "offlineCatalogSha256": "ac3c15bd087c96c05e22970615de88f1bbac657472edb61a0cb5633db35e0ca9"
+    }
+  },
+  "derivedAuditMatrix": {
+    "existingAbilityRecords": 2468,
+    "existingClauseRecords": 3130,
+    "changes": "Reviewed printing metadata, two UNVERIFIED Cheer identities, counts/date, and only the exact four official printed color-bonus sourceSpec corrections. Rule prose, costs, base damage, evidence, statuses, all clauses and shared rules are otherwise unchanged.",
+    "newCardsRemainUnverified": true,
+    "semanticValidation": {
+      "rows": {
+        "existingRecords": 2468,
+        "newRecords": [],
+        "preservedFieldSignatureSha256": "dfabc2dde46612ea497df41386ae6f122b6ac128f6b65649ea585fb8f0f71881",
+        "beforeAndAfterSignaturesMatchAfterOnlyApprovedDeltas": true,
+        "changedMetadataRecords": {
+          "officialCardSources": 864,
+          "variantIds": 134
+        }
+      },
+      "cardChecks": {
+        "existingRecords": 1392,
+        "newRecords": [
+          "hY03-018",
+          "hY04-015"
+        ],
+        "preservedFieldSignatureSha256": "7e2d786b4f21f9b94931fdde29e2596d9f971b77f829e4cecff2bb63bb4511cb",
+        "beforeAndAfterSignaturesMatchAfterOnlyApprovedDeltas": true,
+        "changedMetadataRecords": {
+          "variantIds": 78
+        }
+      },
+      "verifiedRuleExceptions": [
+        {
+          "id": "hEB01-016:arts.0",
+          "before": {
+            "specialTargets": [],
+            "specialValues": []
+          },
+          "after": {
+            "specialTargets": [
+              "白"
+            ],
+            "specialValues": [
+              50
+            ]
+          }
+        },
+        {
+          "id": "hEB01-017:arts.0",
+          "before": {
+            "specialTargets": [],
+            "specialValues": []
+          },
+          "after": {
+            "specialTargets": [
+              "紅"
+            ],
+            "specialValues": [
+              50
+            ]
+          }
+        },
+        {
+          "id": "hEB01-023:arts.0",
+          "before": {
+            "specialTargets": [],
+            "specialValues": []
+          },
+          "after": {
+            "specialTargets": [
+              "白"
+            ],
+            "specialValues": [
+              50
+            ]
+          }
+        },
+        {
+          "id": "hEB01-024:arts.0",
+          "before": {
+            "specialTargets": [],
+            "specialValues": []
+          },
+          "after": {
+            "specialTargets": [
+              "白"
+            ],
+            "specialValues": [
+              50
+            ]
+          }
+        }
+      ],
+      "clauses": {
+        "records": 3130,
+        "sha256": "d6c795cd61af93c055144ff64528e67250637acf1e1fd68f04ca9a1d3c3b061d",
+        "unchanged": true
+      },
+      "sharedRules": {
+        "records": 8,
+        "sha256": "119512f66f80c7544067dfae56350cb2a7754bd160135e03a42824fcf5e47df0",
+        "unchanged": true
+      }
+    },
+    "allExistingEvidencePreservedExceptExactVerifiedSourceSpecBonusChanges": true
+  },
+  "logs": {
+    "pristineAggregate": "/tmp/ocg-pristine-authentic-full-test.log",
+    "candidateAggregate": "/tmp/ocg-four-bonus-full-test.log",
+    "matrixAndPreservation": "/tmp/ocg-candidate-matrix-restored-final.log",
+    "printedBonusFocused": "/tmp/ocg-four-bonus-focused.log",
+    "bonusMergerAndPreservation": "/tmp/ocg-four-bonus-merge-tests.log"
+  },
+  "officialPrintedBonusCorrections": {
+    "verifiedOn": "2026-10-02",
+    "scope": "Four printed Arts color-bonus icons independently inspected on official PNGs. This is not a complete card/effect audit or a new full card-list capture.",
+    "internalColorLabels": {
+      "officialRed": "赤",
+      "engineRed": "紅",
+      "white": "白"
+    },
+    "corrections": [
+      {
+        "number": "hEB01-016",
+        "artIndex": 0,
+        "artName": "一生、マリンのトリコでしょ？",
+        "damage": 40,
+        "before": {
+          "specialTargets": [],
+          "specialValues": []
+        },
+        "after": {
+          "specialTargets": [
+            "白"
+          ],
+          "specialValues": [
+            50
+          ]
+        },
+        "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2491",
+        "imageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hEB01-016_R.png",
+        "imageSha256": "023e21bd352f00299b7c7641c45ffe1bb7e47d1bce8a5d08a85264dca3df8856"
+      },
+      {
+        "number": "hEB01-017",
+        "artIndex": 0,
+        "artName": "ねぇ、口元のチョコ……とって？♡",
+        "damage": 100,
+        "before": {
+          "specialTargets": [],
+          "specialValues": []
+        },
+        "after": {
+          "specialTargets": [
+            "紅"
+          ],
+          "specialValues": [
+            50
+          ]
+        },
+        "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2492",
+        "imageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hEB01-017_RR.png",
+        "imageSha256": "dca48b393ed469a20cd3be9527015fc5cb6da00d3ce43cd936bb668c0a74d86e"
+      },
+      {
+        "number": "hEB01-023",
+        "artIndex": 0,
+        "artName": "こよ以外見えなくしちゃった！♡",
+        "damage": 50,
+        "before": {
+          "specialTargets": [],
+          "specialValues": []
+        },
+        "after": {
+          "specialTargets": [
+            "白"
+          ],
+          "specialValues": [
+            50
+          ]
+        },
+        "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2498",
+        "imageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hEB01-023_R.png",
+        "imageSha256": "bcf3372daae74b7b6eacf2b0e5e7575d00df6a2d63baf580161940e1ab6ed960"
+      },
+      {
+        "number": "hEB01-024",
+        "artIndex": 0,
+        "artName": "皆にはナイショの、特別な時間…♡",
+        "damage": 120,
+        "before": {
+          "specialTargets": [],
+          "specialValues": []
+        },
+        "after": {
+          "specialTargets": [
+            "白"
+          ],
+          "specialValues": [
+            50
+          ]
+        },
+        "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2499",
+        "imageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hEB01-024_RR.png",
+        "imageSha256": "7483f22af27934bab3b5309aee5d85c69d88cce88b9b311f7a40b826bd15b2b8"
+      }
+    ]
+  },
+  "verifiedBonusBuildPreservation": {
+    "changedFilesFromPriorValidatedCandidate": [
+      "/cards.json",
+      "/sw.js"
+    ],
+    "allOther286BuiltFilesByteIdentical": true,
+    "engineAndOtherRuntimeSourcesUnchangedByBonusCorrection": true
+  }
+}
