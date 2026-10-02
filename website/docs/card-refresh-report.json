@@ -722,7 +722,9 @@
   "result": {
     "cards": 1394,
     "printings": 2981,
-    "sourceUniqueCards": 1387
+    "sourceUniqueCards": 1387,
+    "traditionalChineseCards": 1372,
+    "japaneseNameFallbackCards": 22
   },
-  "translationNote": "New card names and effects remain in official Japanese where no verified Traditional Chinese translation exists."
+  "translationNote": "Card names reuse reviewed name mappings where available; unmapped names and new effects remain in official Japanese. New cards retain not-audited simulation status."
 }

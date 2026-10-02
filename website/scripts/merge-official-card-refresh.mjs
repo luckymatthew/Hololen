@@ -22,6 +22,9 @@ const catalog = JSON.parse(fs.readFileSync(outputPath, "utf8"));
 if (!Array.isArray(catalog.cards) || !catalog.meta) {
   throw new Error(`Unexpected card catalog schema: ${outputPath}`);
 }
+const reviewedNames = JSON.parse(
+  fs.readFileSync(new URL("./name-zh.json", import.meta.url), "utf8"),
+);
 
 const refreshDate = new Date(snapshot.capturedAt).toISOString().slice(0, 10);
 const catalogVersion = `${refreshDate}-official-cardlist`;
@@ -136,7 +139,7 @@ function createCard(row, product) {
   return {
     id,
     number: row.number,
-    name: row.jpName,
+    name: reviewedNames[row.jpName] || row.jpName,
     jpName: row.jpName,
     enName: "",
     group: "cheer",
@@ -171,7 +174,9 @@ function createCard(row, product) {
     sourceUrl: row.sourceUrl,
     effectLanguage: "ja",
     translationStatus: "official-japanese-fallback",
-    nameTranslationStatus: "official-japanese-fallback",
+    nameTranslationStatus: reviewedNames[row.jpName]
+      ? "reviewed-mapping"
+      : "official-japanese-fallback",
     simulationStatus: "not-audited",
   };
 }
@@ -183,6 +188,16 @@ function reconcileProduct(rows, product) {
       card = createCard(row, product);
       catalog.cards.push(card);
       cardsByNumber.set(row.number, card);
+    }
+
+    // A previous refresh may have missed an existing reviewed name. Repair only
+    // explicit name fallbacks; effect language and simulation audit stay separate.
+    if (
+      card.nameTranslationStatus === "official-japanese-fallback" &&
+      reviewedNames[card.jpName]
+    ) {
+      card.name = reviewedNames[card.jpName];
+      card.nameTranslationStatus = "reviewed-mapping";
     }
 
     const matching = card.variants.find((variant) => variant.image === row.imageUrl);
@@ -315,11 +330,11 @@ catalog.meta.sourceUniqueCards = officialNumbers.size;
 catalog.meta.printings = totalVariants;
 catalog.meta.officialSourceUrl = "https://hololive-official-cardgame.com/cardlist/";
 catalog.meta.officialSourcePrintings = snapshot.printings.length;
-catalog.meta.japaneseNameFallbackCards = catalog.cards.filter(
-  (card) =>
-    card.nameTranslationStatus === "official-japanese-fallback" ||
-    card.translationStatus === "official-japanese-fallback",
+catalog.meta.traditionalChineseCards = catalog.cards.filter(
+  (card) => reviewedNames[card.jpName],
 ).length;
+catalog.meta.japaneseNameFallbackCards =
+  catalog.cards.length - catalog.meta.traditionalChineseCards;
 
 fs.mkdirSync(path.dirname(path.resolve(outputPath)), { recursive: true });
 fs.writeFileSync(outputPath, JSON.stringify(catalog));
@@ -353,9 +368,11 @@ const report = {
     cards: catalog.meta.uniqueCards,
     printings: catalog.meta.printings,
     sourceUniqueCards: catalog.meta.sourceUniqueCards,
+    traditionalChineseCards: catalog.meta.traditionalChineseCards,
+    japaneseNameFallbackCards: catalog.meta.japaneseNameFallbackCards,
   },
   translationNote:
-    "New card names and effects remain in official Japanese where no verified Traditional Chinese translation exists.",
+    "Card names reuse reviewed name mappings where available; unmapped names and new effects remain in official Japanese. New cards retain not-audited simulation status.",
 };
 
 if (reportPath) {
