@@ -1,0 +1,730 @@
+{
+  "capturedAt": "2026-10-01T19:34:16.779963+00:00",
+  "catalogVersion": "2026-10-01-official-cardlist",
+  "officialSource": {
+    "url": "https://hololive-official-cardgame.com/cardlist/",
+    "pages": 199,
+    "successfulPages": 199,
+    "listingRows": 2982,
+    "numberedPrintings": 2981,
+    "uniqueCardNumbers": 1387
+  },
+  "products": {
+    "pr": {
+      "officialPrintings": 438,
+      "catalogPrintings": 438,
+      "added": [
+        {
+          "number": "hBP01-108",
+          "id": "official-hBP01-108-2692",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP01-108_P_01.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2692&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP03-038",
+          "id": "official-hBP03-038-2700",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP03-038_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2700&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP04-074",
+          "id": "official-hBP04-074-1120",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP04-074_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=1120&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP04-083",
+          "id": "official-hBP04-083-2458",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP04-083_P_02.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2458&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP06-020",
+          "id": "official-hBP06-020-2474",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP06-020_P_02.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2474&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP06-072",
+          "id": "official-hBP06-072-2460",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP06-072_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2460&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP07-010",
+          "id": "official-hBP07-010-2704",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP07-010_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2704&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP07-019",
+          "id": "official-hBP07-019-2705",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP07-019_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2705&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP07-023",
+          "id": "official-hBP07-023-2706",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP07-023_P_02.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2706&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP07-037",
+          "id": "official-hBP07-037-2707",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP07-037_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2707&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP07-067",
+          "id": "official-hBP07-067-2708",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP07-067_P_02.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2708&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP07-070",
+          "id": "official-hBP07-070-2709",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP07-070_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2709&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP07-081",
+          "id": "official-hBP07-081-2710",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP07-081_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2710&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hSD02-004",
+          "id": "official-hSD02-004-2986",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hSD02-004_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2986&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hSD10-011",
+          "id": "official-hSD10-011-2694",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hSD10-011_P_01.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2694&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hSD12-015",
+          "id": "official-hSD12-015-2695",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hSD12-015_P_01.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2695&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hSD14-004",
+          "id": "official-hSD14-004-2987",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hSD14-004_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2987&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hSD15-004",
+          "id": "official-hSD15-004-2988",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hSD15-004_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2988&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hSD16-004",
+          "id": "official-hSD16-004-2989",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hSD16-004_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2989&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hSD17-004",
+          "id": "official-hSD17-004-2471",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hSD17-004_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2471&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hSD17-010",
+          "id": "official-hSD17-010-2696",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hSD17-010_P_01.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2696&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hSD18-004",
+          "id": "official-hSD18-004-2472",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hSD18-004_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2472&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hSD19-004",
+          "id": "official-hSD19-004-2473",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hSD19-004_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2473&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP01-090",
+          "id": "official-hBP01-090-2698",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP01-090_P_02.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2698&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP01-104",
+          "id": "official-hBP01-104-2686",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP01-104_P_02.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2686&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP01-104",
+          "id": "official-hBP01-104-2687",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP01-104_P_03.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2687&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP01-104",
+          "id": "official-hBP01-104-2688",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP01-104_P_04.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2688&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP01-104",
+          "id": "official-hBP01-104-2689",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP01-104_P_05.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2689&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP01-104",
+          "id": "official-hBP01-104-2690",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP01-104_P_06.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2690&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP01-104",
+          "id": "official-hBP01-104-2691",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP01-104_P_07.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2691&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP01-107",
+          "id": "official-hBP01-107-2990",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP01-107_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2990&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP02-011",
+          "id": "official-hBP02-011-2699",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP02-011_P_03.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2699&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP03-050",
+          "id": "official-hBP03-050-2475",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP03-050_P_03.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2475&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP03-059",
+          "id": "official-hBP03-059-2701",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP03-059_P_02.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2701&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP04-012",
+          "id": "official-hBP04-012-2702",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP04-012_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2702&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP05-074",
+          "id": "official-hBP05-074-2693",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP05-074_P_02.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2693&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP08-008",
+          "id": "official-hBP08-008-2461",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP08-008_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2461&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP08-012",
+          "id": "official-hBP08-012-2711",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP08-012_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2711&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP08-021",
+          "id": "official-hBP08-021-2977",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP08-021_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2977&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP08-034",
+          "id": "official-hBP08-034-2462",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP08-034_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2462&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP08-041",
+          "id": "official-hBP08-041-2463",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP08-041_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2463&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP08-047",
+          "id": "official-hBP08-047-2978",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP08-047_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2978&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP08-049",
+          "id": "official-hBP08-049-2464",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP08-049_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2464&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP08-053",
+          "id": "official-hBP08-053-2682",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP08-053_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2682&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP08-057",
+          "id": "official-hBP08-057-2712",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP08-057_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2712&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP08-061",
+          "id": "official-hBP08-061-2465",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP08-061_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2465&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP08-063",
+          "id": "official-hBP08-063-2713",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP08-063_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2713&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP08-068",
+          "id": "official-hBP08-068-2466",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP08-068_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2466&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP08-070",
+          "id": "official-hBP08-070-2714",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP08-070_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2714&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP08-077",
+          "id": "official-hBP08-077-2467",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP08-077_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2467&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP08-079",
+          "id": "official-hBP08-079-2715",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP08-079_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2715&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP08-085",
+          "id": "official-hBP08-085-2716",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP08-085_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2716&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP08-092",
+          "id": "official-hBP08-092-2468",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP08-092_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2468&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP08-094",
+          "id": "official-hBP08-094-2469",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP08-094_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2469&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP09-001",
+          "id": "official-hBP09-001-2841",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-001_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2841&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP09-003",
+          "id": "official-hBP09-003-2842",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-003_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2842&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP09-007",
+          "id": "official-hBP09-007-2843",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-007_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2843&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP09-008",
+          "id": "official-hBP09-008-2979",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-008_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2979&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP09-010",
+          "id": "official-hBP09-010-2844",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-010_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2844&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP09-025",
+          "id": "official-hBP09-025-2980",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-025_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2980&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP09-039",
+          "id": "official-hBP09-039-2981",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-039_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2981&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP09-047",
+          "id": "official-hBP09-047-2982",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-047_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2982&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP09-065",
+          "id": "official-hBP09-065-2983",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-065_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2983&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP09-077",
+          "id": "official-hBP09-077-2984",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-077_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2984&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP09-078",
+          "id": "official-hBP09-078-2985",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-078_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2985&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP09-081",
+          "id": "official-hBP09-081-2845",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-081_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2845&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP09-094",
+          "id": "official-hBP09-094-2991",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-094_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2991&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP09-094",
+          "id": "official-hBP09-094-2992",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-094_P_02.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2992&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hBP09-105",
+          "id": "official-hBP09-105-2846",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-105_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2846&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hEB01-012",
+          "id": "official-hEB01-012-2569",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hEB01-012_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2569&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hEB01-013",
+          "id": "official-hEB01-013-2717",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hEB01-013_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2717&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hSD14-010",
+          "id": "official-hSD14-010-2470",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hSD14-010_P_02.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2470&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hSD14-010",
+          "id": "official-hSD14-010-2683",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hSD14-010_P_03.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2683&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hY03-018",
+          "id": "official-hY03-018-2684",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hY03-018_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2684&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        },
+        {
+          "number": "hY04-015",
+          "id": "official-hY04-015-2685",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hY04-015_P.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2685&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "PRカード"
+        }
+      ]
+    },
+    "heb01": {
+      "officialPrintings": 214,
+      "catalogPrintings": 214,
+      "added": [
+        {
+          "number": "hY01-001",
+          "id": "official-hY01-001-2670",
+          "rarity": "S",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hY01-001_S.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2670&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "エクストラブースター サマー・ホログラム"
+        },
+        {
+          "number": "hY02-001",
+          "id": "official-hY02-001-2671",
+          "rarity": "S",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hY02-001_S.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2671&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "エクストラブースター サマー・ホログラム"
+        },
+        {
+          "number": "hY03-001",
+          "id": "official-hY03-001-2672",
+          "rarity": "S",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hY03-001_S.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2672&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "エクストラブースター サマー・ホログラム"
+        },
+        {
+          "number": "hY04-001",
+          "id": "official-hY04-001-2673",
+          "rarity": "S",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hY04-001_S.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2673&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "エクストラブースター サマー・ホログラム"
+        },
+        {
+          "number": "hY05-001",
+          "id": "official-hY05-001-2674",
+          "rarity": "S",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hY05-001_S.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2674&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "エクストラブースター サマー・ホログラム"
+        },
+        {
+          "number": "hY06-001",
+          "id": "official-hY06-001-2675",
+          "rarity": "S",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hY06-001_S.png",
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2675&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "product": "エクストラブースター サマー・ホログラム"
+        }
+      ],
+      "removed": [
+        {
+          "number": "hY01-014",
+          "id": "heb01-hY01-014-S-1",
+          "rarity": "S",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hY01-014_S.png",
+          "product": "エクストラブースター サマー・ホログラム"
+        },
+        {
+          "number": "hY02-012",
+          "id": "heb01-hY02-012-S-1",
+          "rarity": "S",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hY02-012_S.png",
+          "product": "エクストラブースター サマー・ホログラム"
+        },
+        {
+          "number": "hY03-016",
+          "id": "heb01-hY03-016-S-1",
+          "rarity": "S",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hY03-016_S.png",
+          "product": "エクストラブースター サマー・ホログラム"
+        },
+        {
+          "number": "hY04-013",
+          "id": "heb01-hY04-013-S-1",
+          "rarity": "S",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hY04-013_S.png",
+          "product": "エクストラブースター サマー・ホログラム"
+        },
+        {
+          "number": "hY05-011",
+          "id": "heb01-hY05-011-S-1",
+          "rarity": "S",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hY05-011_S.png",
+          "product": "エクストラブースター サマー・ホログラム"
+        },
+        {
+          "number": "hY06-011",
+          "id": "heb01-hY06-011-S-1",
+          "rarity": "S",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hY06-011_S.png",
+          "product": "エクストラブースター サマー・ホログラム"
+        }
+      ]
+    }
+  },
+  "newCardNumbers": [
+    "hY03-018",
+    "hY04-015"
+  ],
+  "result": {
+    "cards": 1394,
+    "printings": 2981,
+    "sourceUniqueCards": 1387,
+    "traditionalChineseCards": 1372,
+    "japaneseNameFallbackCards": 22
+  },
+  "translationNote": "Card names reuse reviewed name mappings where available; unmapped names and new effects remain in official Japanese. New cards retain not-audited simulation status."
+}

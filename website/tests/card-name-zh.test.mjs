@@ -44,6 +44,8 @@ test("representative member and support cards use their reviewed Chinese names",
     ["hSD01-001", ["時乃空", "ときのそら"]],
     ["hBP01-104", ["普通電腦", "ふつうのパソコン"]],
     ["hBP08-004", ["水宮樞", "水宮枢"]],
+    ["hY03-018", ["紅色應援", "赤エール"]],
+    ["hY04-015", ["藍色應援", "青エール"]],
   ]);
 
   for (const [number, [chineseName, japaneseName]] of expectedCards) {
@@ -83,11 +85,25 @@ test("Summer Hologram contains all 214 official printings and keeps new Koyori m
   );
 
   const releaseSetCards = payload.cards.filter((card) => card.sets.includes(releaseName));
-  assert.equal(releaseSetCards.length, 108);
-  for (const number of ["hY01-014", "hY02-012", "hY03-016", "hY04-013", "hY05-011", "hY06-011"]) {
-    const cheer = releaseSetCards.find((card) => card.number === number);
-    assert.equal(cheer?.group, "cheer");
-    assert.deepEqual(cheer?.variants.map((variant) => variant.rarity), ["S", "SY"]);
+  assert.equal(releaseSetCards.length, 114);
+  const specialCheerNumbers = ["hY01-014", "hY02-012", "hY03-016", "hY04-013", "hY05-011", "hY06-011"];
+  for (const [index, specialNumber] of specialCheerNumbers.entries()) {
+    const regularNumber = `hY0${index + 1}-001`;
+    for (const [number, rarity] of [[regularNumber, "S"], [specialNumber, "SY"]]) {
+      const cheer = releaseSetCards.find((card) => card.number === number);
+      assert.equal(cheer?.group, "cheer");
+      const variants = cheer.variants.filter((variant) => variant.sets?.includes(releaseName));
+      assert.deepEqual(variants.map((variant) => variant.rarity), [rarity]);
+      assert.equal(
+        variants[0].image,
+        `https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/${number}_${rarity}.png`,
+      );
+      assert.equal(new URL(variants[0].sourceUrl).searchParams.get("id"), String(2670 + index + (rarity === "SY" ? 6 : 0)));
+    }
+    const specialCheer = releaseSetCards.find((card) => card.number === specialNumber);
+    assert.equal(specialCheer.image, specialCheer.variants[0].image);
+    assert.equal(specialCheer.rarity, "SY");
+    assert.ok(!payload.cards.some((card) => card.variants.some((variant) => variant.image.endsWith(`/hEB01/${specialNumber}_S.png`))));
   }
 
   const reprint = payload.cards.find((card) => card.number === "hBP01-021");
