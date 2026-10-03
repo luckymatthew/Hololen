@@ -1,45 +1,45 @@
 # Yuyutei card links
 
-Card details in the deck studio and the persistent simulator inspector now offer a compact external action. The selected stable printing ID, card number and rarity identify a curated retailer product. For example, switching hBP03-001 from OSR to OUR changes the destination from `hbp03/10001` to `hbp03/10002`.
+Card details in the deck studio and persistent simulator inspector offer **搜尋遊遊亭**, an external Google search restricted to Yuyutei Hololive sales pages. The exact card number and selected rarity are percent-encoded into the query. The text says the printing link is unverified and asks users to check number, rarity and artwork. Missing/invalid card numbers show unavailable; unknown printing IDs never borrow another printing's rarity or product link.
 
-The initial list has eight observed product URLs. All other valid card numbers show **搜尋遊遊亭**, a Google search limited to Yuyutei's Hololive sales pages with the exact card number and selected rarity. The text explicitly says the printing link is unverified and asks users to check number, rarity and artwork. Missing/invalid card numbers show an unavailable state. Unknown printing IDs never inherit a normal printing's product link.
+**No direct product mapping is currently enabled.** All eight previously inferred mappings were downgraded after the source audit. Their observed URLs remain only in `rejectedCandidates` as research evidence; the runtime uses the empty `products` list. A unique set/name/rarity match in the official catalog and an indexed search snippet do not prove the retailer's exact printing/artwork. No prices are fetched, stored, displayed or estimated.
 
-No prices are stored, displayed, fetched or estimated. Opening the retailer page lets the user check its current price and stock.
+## Evidence audit: 2026-10-03
 
-## Public source evidence
+The following are observed indexed titles, not verified live retailer pages. Candidate card numbers/IDs come from the unchanged official catalog. The “indexed number” column records only a number actually visible in the returned snippet; it does not certify the primary page or artwork. All rows are search-only.
 
-Research date: 2026-10-03. Yuyutei's public indexed product titles distinguish set, Japanese card name, rarity and parallel status. Each row below matches exactly one official catalog printing with that set/name/rarity. This card identity match is an inference from those observed titles and the official catalog; product IDs themselves were observed in the indexed URLs, never computed from a card number or Hololens ID. Direct Yuyutei HTML requests returned HTTP 403 in this cloud environment, so current page contents, price and stock could not be rechecked automatically.
-
-| Card number | Stable printing ID | Rarity | Observed Yuyutei sales page |
+| Inferred catalog candidate / stable ID | Indexed title evidence | Indexed number | Observed URL / primary access |
 | --- | --- | --- | --- |
-| hBP03-001 | 565 | OSR | [姫森ルーナ](https://yuyu-tei.jp/sell/hocg/card/hbp03/10001) |
-| hBP03-001 | 678 | OUR | [姫森ルーナ parallel](https://yuyu-tei.jp/sell/hocg/card/hbp03/10002) |
-| hBP03-002 | 679 | OUR | [獅白ぼたん parallel](https://yuyu-tei.jp/sell/hocg/card/hbp03/10004) |
-| hBP08-001 | 2204 | OSR | [IRyS](https://yuyu-tei.jp/sell/hocg/card/hbp08/10001) |
-| hBP07-002 | 1788 | OSR | [ベスティア・ゼータ](https://yuyu-tei.jp/sell/hocg/card/hbp07/10003) |
-| hBP09-003 | hbp09-hBP09-003_OUR | OUR | [白銀ノエル parallel](https://yuyu-tei.jp/sell/hocg/card/hbp09/10007) |
-| hBP08-018 | 2339 | UR | [ときのそら parallel](https://yuyu-tei.jp/sell/hocg/card/hbp08/10042) |
-| hBP07-043 | 1954 | SR | [さくらみこ parallel](https://yuyu-tei.jp/sell/hocg/card/hbp07/10090) |
+| hBP03-001 / 565 | OSR 姫森ルーナ; [hBP03]エリートスパーク | Not shown | [hbp03/10001](https://yuyu-tei.jp/sell/hocg/card/hbp03/10001), HTTP 403 |
+| hBP03-001 / 678 | OUR 姫森ルーナ(パラレル); [hBP03]エリートスパーク | hBP03-001 | [hbp03/10002](https://yuyu-tei.jp/sell/hocg/card/hbp03/10002), HTTP 403 |
+| hBP03-002 / 679 | OUR 獅白ぼたん(パラレル); [hBP03]エリートスパーク | hBP03-002 | [hbp03/10004](https://yuyu-tei.jp/sell/hocg/card/hbp03/10004), HTTP 403 |
+| hBP08-001 / 2204 | OSR IRyS; [hBP08]バウンサーバウンド | Not shown | [hbp08/10001](https://yuyu-tei.jp/sell/hocg/card/hbp08/10001), HTTP 403 |
+| hBP07-002 / 1788 | OSR ベスティア・ゼータ; [hBP07]ディーヴァフィーバー | Not shown | [hbp07/10003](https://yuyu-tei.jp/sell/hocg/card/hbp07/10003), HTTP 403 |
+| hBP09-003 / hbp09-hBP09-003_OUR | OUR 白銀ノエル(パラレル); [hBP09]ボリュームヴォルテックス | hBP09-003 in auxiliary search snippet | [hbp09/10007](https://yuyu-tei.jp/sell/hocg/card/hbp09/10007), inaccessible through web tool |
+| hBP08-018 / 2339 | UR ときのそら(パラレル); [hBP08]バウンサーバウンド | Not shown | [hbp08/10042](https://yuyu-tei.jp/sell/hocg/card/hbp08/10042), HTTP 403 |
+| hBP07-043 / 1954 | SR さくらみこ(パラレル); [hBP07]ディーヴァフィーバー | Not shown | [hbp07/10090](https://yuyu-tei.jp/sell/hocg/card/hbp07/10090), HTTP 403 |
 
-[Official Hololive card list](https://hololive-official-cardgame.com/cardlist/) supplies the card identities and artwork recorded in `lib/yuyutei-products.json`. Promo and same-rarity reprints have separate IDs and require separate verification; no promo product link is asserted from a Japanese name alone. For example, hPR-001/P uses the search fallback. An observed [Miko promo page](https://yuyu-tei.jp/sell/hocg/card/promo-100/10001) was deliberately left unmapped because the indexed range/name did not prove its exact numbered printing.
+The JSON retains each full observed title, snippet-number status, inferred catalog rarity/image and rejection decision. All eight lacked primary-page artwork verification. The [official Hololive card list](https://hololive-official-cardgame.com/cardlist/) is the provenance of catalog identities and image URLs, not evidence of a Yuyutei listing match.
 
-The fallback uses Google's documented [site and exact-match search operators](https://support.google.com/websearch/answer/2466433). The `/search?q=` query is percent-encoded; it is labeled as Google search, not a retailer product. Automated Google result-page requests were also blocked here; results and indexing coverage are not guaranteed. No unverified Yuyutei native search parameters are used.
+Ordinary cloud Chromium navigation to the Luna OUR product and the actual Google fallback URL failed with `ERR_TUNNEL_CONNECTION_FAILED`. No navigation interception, authentication, access-control bypass, alternate domain or proxy was used for these source checks. Source-access attempts stopped after these permitted methods remained blocked. Prices, stock, current page content and retailer artwork remain unverified.
 
-## Preservation and validation
+## Search semantics and limits
 
-The feature branch starts at safe `recovery/production-card-refresh`, commit `e5274c52068f0d63e59cc655f4d471179d96689c`, which descends from true production `238915a9f71fe4158d45f8f18fad6d2af7d10aaf`. It also incorporates deployed `release/download-1.2.7` commit `a789bcbac3f8ca5216f3188f30bb6177e97a40c9`, a narrow follow-on that changes only download metadata and its tests. The draft PR targets that latest release branch. Stale remote `main` and the reverted PR3 engine are not bases.
+Google's primary [search-operator documentation](https://support.google.com/websearch/answer/2466433) was accessible and confirms site restriction and quoted exact-match terms. For example, the OUR selection builds `site:yuyu-tei.jp/sell/hocg/card/ "hBP03-001" "OUR"` in the sole `q` parameter of `https://www.google.com/search`. OSR and P selections use their own rarity; malformed numbers have no URL.
 
-Catalog data remains at 1,394 card numbers and 2,981 printings. Engine files, compatibility aliases, saved deck/collection formats, workflow/security configuration and release tags are unchanged. The published 1.2.7 download metadata and release tests are byte-identical to the latest deployed baseline. The historical preservation test recognizes exactly four new retailer modules and retains the release branch's exact approved 1.2.7 metadata hash; all 366 protected files still require their reviewed production bytes.
+The public search tool returned the Luna OUR indexed candidate for that representative query. The PR query did not establish a corresponding product and also returned unrelated results. That tool is not the Google browser endpoint, so this is only partial search-semantic corroboration. The actual Google URL could not load in the browser; its live results, indexing coverage and exact endpoint behavior are not verified. UI/navigation tests use explicit local fixtures and cannot close this source-access gap.
 
-Validated in the saved cloud environment:
+## Baseline and preservation
 
-- `npm test`: 11 synchronization/release tests, 4,030 regression tests, TypeScript checking and Firebase production build passed.
-- After incorporating the deployed 1.2.7 baseline, synchronization/release, preservation and retailer resolver/React UI tests, TypeScript checking and Firebase production build were rechecked. Download metadata and its release tests were compared byte-for-byte with `a789bcb`.
-- Real React/DOM tests exercise normal-to-parallel selection, unmapped parallel and PR searches, safe external attributes, unchanged saved deck data, simulator selection, and compact hover previews.
-- Chromium checks against the Firebase production build cover printing changes, an actual new tab with `window.opener === null`, unchanged saved draft data, 44px mobile actions, PR/SEC search labels and no page errors. Catalog/image and external navigation responses used local fixtures; this does not verify live retailer content.
-- Resolver tests validate every manifest entry against the official catalog, distinguish repeated rarities/unknown IDs, check percent encoding and reject invalid numbers.
-- The existing cross-platform regression expected an `android-current` checkout; a local symlink to the authorized private checkout satisfied it. No private source or fixture was copied into this repository.
+The feature begins at safe recovery `e5274c52068f0d63e59cc655f4d471179d96689c`, based on true production `238915a9f71fe4158d45f8f18fad6d2af7d10aaf`, and includes deployed `release/download-1.2.7` commit `a789bcbac3f8ca5216f3188f30bb6177e97a40c9`. The draft PR targets that latest release branch. Stale main/reverted PR3 are not bases.
 
-No production deployment, release signing, paid CI, purchasing or price scraping was performed. Physical-device browser handling and live retailer content checks remain unrun.
+Catalog remains 1,394 card numbers / 2,981 printings. Engines, compatibility aliases, saved formats, workflow/security configuration and tags are unchanged. Published 1.2.7 metadata and release tests remain byte-identical to `a789bcb`. The preservation test pins all 366 reviewed production files, including the release branch's approved metadata hash, and recognizes exactly four added retailer runtime modules.
 
-To add a mapping, record an observed public product URL and evidence of the exact numbered artwork/rarity, use its existing stable printing ID, and run resolver/UI tests. Do not generate retailer IDs, reuse another printing's URL, or recapture the catalog to add links.
+## Validation
+
+- Full `npm test` on `4fedb102817de2f716109791b4f71912d2846578`: 11 synchronization/release tests and 4,030 regressions passed, plus TypeScript and Firebase production build.
+- After the search-only correction, the complete suite passed again: 11 synchronization/release tests, 4,030 regressions, TypeScript and Firebase production build. Resolver tests cover all 2,981 printings and explicitly prevent all eight rejected candidates from becoming direct links.
+- React UI and Chromium navigation checks cover rarity-specific searches, PR/SEC/unknown IDs, safe external links, unchanged saved draft data, mobile action size and compact hover previews. Chromium external responses are fixtures.
+- The authorized private Android app uses a byte-identical public manifest; no private source or fixture is copied here.
+
+Physical-device browser handling and actual retailer/Google result content remain unrun or blocked. No production merge, deployment, signing, paid CI, publishing, purchasing or scraping occurred. Enable a product only after primary public evidence verifies the exact card number, rarity and artwork; do not infer retailer IDs or reuse another printing's page.

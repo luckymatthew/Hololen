@@ -1,7 +1,8 @@
 {
-  "verifiedAt": "2026-10-03",
-  "verification": "Public Yuyutei indexed product titles (set, Japanese name, rarity/parallel) matched to exactly one official catalog printing in that set. Retailer product IDs were observed, never derived. Direct HTML requests returned 403 in this cloud environment.",
-  "products": [
+  "auditedAt": "2026-10-03",
+  "verification": "No direct product mapping is enabled. All eight observed public indexed URLs remain unverified research candidates because primary retailer pages are blocked/inaccessible; snippets cannot prove exact printing artwork. Valid cards use labeled Google search; invalid numbers are unavailable.",
+  "products": [],
+  "rejectedCandidates": [
     {
       "number": "hBP03-001",
       "printingId": "565",
@@ -10,7 +11,12 @@
       "retailerName": "姫森ルーナ",
       "retailerSet": "hBP03",
       "parallel": false,
-      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP03/hBP03-001_OSR.png"
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP03/hBP03-001_OSR.png",
+      "indexedTitle": "OSR 姫森ルーナ | 販売 | [hBP03]エリートスパーク | ホロライブOCG",
+      "cardNumberInIndexedSnippet": null,
+      "primaryPageAccess": "HTTP 403 through web tool",
+      "printingVerified": false,
+      "decision": "search-only; indexed title/snippet and unique catalog match do not verify exact retailer printing/artwork"
     },
     {
       "number": "hBP03-001",
@@ -20,7 +26,12 @@
       "retailerName": "姫森ルーナ",
       "retailerSet": "hBP03",
       "parallel": true,
-      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP03/hBP03-001_OUR.png"
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP03/hBP03-001_OUR.png",
+      "indexedTitle": "OUR 姫森ルーナ(パラレル) | 販売 | [hBP03]エリートスパーク",
+      "cardNumberInIndexedSnippet": "hBP03-001",
+      "primaryPageAccess": "HTTP 403 through web tool",
+      "printingVerified": false,
+      "decision": "search-only; indexed title/snippet and unique catalog match do not verify exact retailer printing/artwork"
     },
     {
       "number": "hBP03-002",
@@ -30,7 +41,12 @@
       "retailerName": "獅白ぼたん",
       "retailerSet": "hBP03",
       "parallel": true,
-      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP03/hBP03-002_OUR.png"
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP03/hBP03-002_OUR.png",
+      "indexedTitle": "OUR 獅白ぼたん(パラレル) | 販売 | [hBP03]エリートスパーク",
+      "cardNumberInIndexedSnippet": "hBP03-002",
+      "primaryPageAccess": "HTTP 403 through web tool",
+      "printingVerified": false,
+      "decision": "search-only; indexed title/snippet and unique catalog match do not verify exact retailer printing/artwork"
     },
     {
       "number": "hBP08-001",
@@ -40,7 +56,12 @@
       "retailerName": "IRyS",
       "retailerSet": "hBP08",
       "parallel": false,
-      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-001_OSR.png"
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-001_OSR.png",
+      "indexedTitle": "OSR IRyS | 販売 | [hBP08]バウンサーバウンド | ホロライブOCG",
+      "cardNumberInIndexedSnippet": null,
+      "primaryPageAccess": "HTTP 403 through web tool",
+      "printingVerified": false,
+      "decision": "search-only; indexed title/snippet and unique catalog match do not verify exact retailer printing/artwork"
     },
     {
       "number": "hBP07-002",
@@ -50,7 +71,12 @@
       "retailerName": "ベスティア・ゼータ",
       "retailerSet": "hBP07",
       "parallel": false,
-      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP07/hBP07-002_OSR.png"
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP07/hBP07-002_OSR.png",
+      "indexedTitle": "OSR ベスティア・ゼータ | 販売 | [hBP07]ディーヴァフィーバー",
+      "cardNumberInIndexedSnippet": null,
+      "primaryPageAccess": "HTTP 403 through web tool",
+      "printingVerified": false,
+      "decision": "search-only; indexed title/snippet and unique catalog match do not verify exact retailer printing/artwork"
     },
     {
       "number": "hBP09-003",
@@ -60,7 +86,12 @@
       "retailerName": "白銀ノエル",
       "retailerSet": "hBP09",
       "parallel": true,
-      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP09/hBP09-003_OUR.png"
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP09/hBP09-003_OUR.png",
+      "indexedTitle": "OUR 白銀ノエル(パラレル) | 販売 | [hBP09]ボリュームヴォルテックス",
+      "cardNumberInIndexedSnippet": "hBP09-003",
+      "primaryPageAccess": "inaccessible through web tool",
+      "printingVerified": false,
+      "decision": "search-only; indexed title/snippet and unique catalog match do not verify exact retailer printing/artwork"
     },
     {
       "number": "hBP08-018",
@@ -70,7 +101,12 @@
       "retailerName": "ときのそら",
       "retailerSet": "hBP08",
       "parallel": true,
-      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-018_UR.png"
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-018_UR.png",
+      "indexedTitle": "UR ときのそら(パラレル) | 販売 | [hBP08]バウンサーバウンド",
+      "cardNumberInIndexedSnippet": null,
+      "primaryPageAccess": "HTTP 403 through web tool",
+      "printingVerified": false,
+      "decision": "search-only; indexed title/snippet and unique catalog match do not verify exact retailer printing/artwork"
     },
     {
       "number": "hBP07-043",
@@ -80,7 +116,12 @@
       "retailerName": "さくらみこ",
       "retailerSet": "hBP07",
       "parallel": true,
-      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP07/hBP07-043_SR.png"
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP07/hBP07-043_SR.png",
+      "indexedTitle": "SR さくらみこ(パラレル) | 販売 | [hBP07]ディーヴァフィーバー",
+      "cardNumberInIndexedSnippet": null,
+      "primaryPageAccess": "HTTP 403 through web tool",
+      "printingVerified": false,
+      "decision": "search-only; indexed title/snippet and unique catalog match do not verify exact retailer printing/artwork"
     }
   ]
 }

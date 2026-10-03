@@ -38,12 +38,13 @@ test('real card details update external links with the selected printing without
   async function close(dialog) { await act(async () => dialog.querySelector('.modal-close').click()); }
   let dialog = await open(cards[0]);
   const anchor = () => dialog.querySelector('.retailer-link');
-  assert.equal(anchor().href, 'https://yuyu-tei.jp/sell/hocg/card/hbp03/10001');
+  assert.equal(new URL(anchor().href).searchParams.get('q'), 'site:yuyu-tei.jp/sell/hocg/card/ "hBP03-001" "OSR"');
+  assert.equal(dialog.querySelector('.retailer-action').dataset.linkKind, 'search');
   assert.equal(anchor().target, '_blank');
   assert.equal(anchor().rel, 'noopener noreferrer');
-  assert.match(anchor().getAttribute('aria-label'), /OSR.*外部網站/);
+  assert.match(anchor().getAttribute('aria-label'), /OSR.*尚未核對.*Google/);
   await act(async () => dialog.querySelector('.variant-strip button[title="OUR 卡圖"]').click());
-  assert.equal(anchor().href, 'https://yuyu-tei.jp/sell/hocg/card/hbp03/10002');
+  assert.equal(new URL(anchor().href).searchParams.get('q'), 'site:yuyu-tei.jp/sell/hocg/card/ "hBP03-001" "OUR"');
   assert.match(anchor().getAttribute('aria-label'), /OUR/);
   await close(dialog);
   dialog = await open(cards[1]);
@@ -64,9 +65,9 @@ test('persistent simulator inspector follows the visible printing and hover prev
   const luna = cards[0], cardMap = new Map([[luna.number, luna]]);
   const render = props => act(async () => root.render(createElement(CardInspector, { card: luna, cardMap, ...props })));
   await render({ variantId: '678' });
-  assert.equal(document.querySelector('.retailer-link').href, 'https://yuyu-tei.jp/sell/hocg/card/hbp03/10002');
+  assert.equal(new URL(document.querySelector('.retailer-link').href).searchParams.get('q'), 'site:yuyu-tei.jp/sell/hocg/card/ "hBP03-001" "OUR"');
   await render({ variantId: '565' });
-  assert.equal(document.querySelector('.retailer-link').href, 'https://yuyu-tei.jp/sell/hocg/card/hbp03/10001');
+  assert.equal(new URL(document.querySelector('.retailer-link').href).searchParams.get('q'), 'site:yuyu-tei.jp/sell/hocg/card/ "hBP03-001" "OSR"');
   await render({ variantId: 'unknown' });
   assert.equal(document.querySelector('.retailer-action').dataset.linkKind, 'search');
   await render({ variantId: '678', hover: true });
