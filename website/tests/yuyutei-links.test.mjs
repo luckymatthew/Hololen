@@ -21,7 +21,8 @@ test('all eight unverified research candidates remain search-only for their infe
     assert.equal(product.printingVerified, false);
     const link = yuyuteiLink(c, v);
     assert.equal(link.kind, 'search');
-    assert.equal(new URL(link.href).searchParams.get('q'), `site:yuyu-tei.jp/sell/hocg/card/ "${c.number}" "${v.rarity}"`);
+    assert.equal(new URL(link.href).searchParams.get('search_word'), c.number);
+    assert.ok(link.note.includes(v.rarity));
     assert.match(product.url, /^https:\/\/yuyu-tei\.jp\/sell\/hocg\/card\/[a-z0-9-]+\/\d{5}$/);
     const key = `${product.number}|${product.printingId}`;
     assert.ok(!keys.has(key) && !urls.has(product.url)); keys.add(key); urls.add(product.url);
@@ -32,15 +33,18 @@ test('all eight unverified research candidates remain search-only for their infe
   assert.equal(catalog.meta.printings, 2981);
 });
 
-test('normal and parallel printings have distinct rarity-specific search queries', () => {
+test('native search uses the card number and labels the selected normal or parallel rarity', () => {
   const luna = card('hBP03-001');
-  assert.match(new URL(yuyuteiLink(luna, luna.variants[0]).href).searchParams.get('q'), /"hBP03-001" "OSR"$/);
-  assert.match(new URL(yuyuteiLink(luna, luna.variants[1]).href).searchParams.get('q'), /"hBP03-001" "OUR"$/);
+  assert.equal(yuyuteiLink(luna, luna.variants[0]).href, 'https://yuyu-tei.jp/sell/hocg/s/search?search_word=hBP03-001');
+  assert.equal(yuyuteiLink(luna, luna.variants[1]).href, yuyuteiLink(luna, luna.variants[0]).href);
+  assert.match(yuyuteiLink(luna, luna.variants[0]).note, /OSR.*選擇對應版本/);
+  assert.match(yuyuteiLink(luna, luna.variants[1]).note, /OUR.*選擇對應版本/);
   const irys = card('hBP08-001');
   assert.equal(yuyuteiLink(irys, irys.variants[0]).kind, 'search');
   const link = yuyuteiLink(irys, irys.variants[1]);
   assert.equal(link.kind, 'search');
-  assert.match(new URL(link.href).searchParams.get('q'), /"hBP08-001" "OUR"$/);
+  assert.equal(new URL(link.href).searchParams.get('search_word'), 'hBP08-001');
+  assert.match(link.note, /OUR/);
 });
 
 test('PR, repeated rarity, unknown IDs, missing printing and changed rarity use a labeled search', () => {
@@ -60,10 +64,12 @@ test('search encoding cannot introduce URL parameters, and invalid card numbers 
   const fixture = { number: 'hPR-999', variants: [{ id: 'fixture', rarity: 'P & # + 遊遊亭' }] };
   const link = yuyuteiLink(fixture, fixture.variants[0]);
   const url = new URL(link.href);
-  assert.equal(url.origin, 'https://www.google.com');
-  assert.deepEqual([...url.searchParams.keys()], ['q']);
+  assert.equal(url.origin, 'https://yuyu-tei.jp');
+  assert.equal(url.pathname, '/sell/hocg/s/search');
+  assert.deepEqual([...url.searchParams.keys()], ['search_word']);
   assert.equal(url.hash, '');
-  assert.equal(url.searchParams.get('q'), 'site:yuyu-tei.jp/sell/hocg/card/ "hPR-999" "P & # + 遊遊亭"');
+  assert.equal(url.searchParams.get('search_word'), 'hPR-999');
+  assert.ok(link.note.includes('P & # + 遊遊亭'));
   for (const number of ['', 'javascript:alert(1)', 'hPR-001&redirect=evil']) {
     assert.equal(yuyuteiLink({ number }, undefined).href, null);
     assert.equal(yuyuteiLink({ number }, undefined).kind, 'unavailable');

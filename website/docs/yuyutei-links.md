@@ -1,10 +1,10 @@
 # Yuyutei card links
 
-Card details in the deck studio and persistent simulator inspector offer **搜尋遊遊亭**, an external Google search restricted to Yuyutei Hololive sales pages. The exact card number and selected rarity are percent-encoded into the query. The text says the printing link is unverified and asks users to check number, rarity and artwork. Missing/invalid card numbers show unavailable; unknown printing IDs never borrow another printing's rarity or product link.
+Card details in the deck studio and persistent simulator inspector offer **搜尋遊遊亭**, a native retailer search using the exact card number. The selected rarity remains visible in the label/note, which asks users to choose the matching printing and check rarity/artwork. Search returns multiple printings; no unobserved rarity filter is invented. Missing/invalid card numbers show unavailable; unknown printing IDs never borrow another printing's rarity or product link.
 
-**No direct product mapping is currently enabled.** All eight previously inferred mappings were downgraded after the source audit. Their observed URLs remain only in `rejectedCandidates` as research evidence; the runtime uses the empty `products` list. A unique set/name/rarity match in the official catalog and an indexed search snippet do not prove the retailer's exact printing/artwork. No prices are fetched, stored, displayed or estimated.
+**No direct product mapping is currently enabled.** All eight previously inferred mappings were downgraded after the local source audit. Fresh primary detail-page confirmations and a complete retailer evidence packet have since arrived from the parent's user-opened Dot browser. Exact artwork comparisons remain pending because retailer image requests are blocked in this executor; the coding environment does not share that browser. Historical observations remain in `rejectedCandidates`; `products` stays empty until fresh artwork-confirmed records pass the [evidence contract](yuyutei-evidence-contract.md). Both platform resolvers require consistent primary evidence, exact artwork, source URL and booster edition; errata labels also require a printed-text/version confirmation. No prices are fetched, stored, displayed or estimated.
 
-## Evidence audit: 2026-10-03
+## Historical local evidence audit: 2026-10-03
 
 The following are observed indexed titles, not verified live retailer pages. Candidate card numbers/IDs come from the unchanged official catalog. The “indexed number” column records only a number actually visible in the returned snippet; it does not certify the primary page or artwork. All rows are search-only.
 
@@ -23,11 +23,13 @@ The JSON retains each full observed title, snippet-number status, inferred catal
 
 Ordinary cloud Chromium navigation to the Luna OUR product and the actual Google fallback URL failed with `ERR_TUNNEL_CONNECTION_FAILED`. No navigation interception, authentication, access-control bypass, alternate domain or proxy was used for these source checks. Source-access attempts stopped after these permitted methods remained blocked. Prices, stock, current page content and retailer artwork remain unverified.
 
-## Search semantics and limits
+## Primary-browser handoff and native search
 
-Google's primary [search-operator documentation](https://support.google.com/websearch/answer/2466433) was accessible and confirms site restriction and quoted exact-match terms. For example, the OUR selection builds `site:yuyu-tei.jp/sell/hocg/card/ "hBP03-001" "OUR"` in the sole `q` parameter of `https://www.google.com/search`. OSR and P selections use their own rarity; malformed numbers have no URL.
+The parent independently opened actual retailer pages and confirmed all eight historical candidates' displayed card numbers, names and rarities, plus hBP08-003 FUWAMOCO OSR at `hbp08/10005`. Its researcher captured 965 deduplicated product tiles from hBP03/07/08/09 (234/239/245/247) between 2026-10-03 06:39–06:47 UTC. The evidence JSON was downloaded in this executor and verified at 443,623 bytes / SHA-256 `7bbeae4cd0d4c81e70c6e1012dfc7d43650a88a515ca73861509025df380f9eb`. The raw research packet stays outside the repositories and contains no prices/stock.
 
-The public search tool returned the Luna OUR indexed candidate for that representative query. The PR query did not establish a corresponding product and also returned unrelated results. That tool is not the Google browser endpoint, so this is only partial search-semantic corroboration. The actual Google URL could not load in the browser; its live results, indexing coverage and exact endpoint behavior are not verified. UI/navigation tests use explicit local fixtures and cannot close this source-access gap.
+The packet explicitly makes no artwork-equivalence assertion. A candidate join by number/rarity/booster finds one candidate for 963 rows and none for two rows. Four hBP03-027 C/S before/after-errata products collide on two catalog IDs, so these cannot be collapsed. Exact image and printed-text checks must resolve them. Direct JPEG retrieval returned tunnel HTTP 403, and the normal web tool also could not access the retailer image URL; source-image attempts stopped. No source URL or artwork match is invented.
+
+The parent's actual primary browser verified [native card-number search](https://yuyu-tei.jp/sell/hocg/s/search?search_word=hBP08-003), which visibly returned FUWAMOCO SEC/OUR/OSR printings. Both platforms now use that observed HTTPS `/sell/hocg/s/search` endpoint with only `search_word=<percent-encoded card number>`. They display the selected rarity and explicitly ask users to choose the matching version. This replaces the older Google fallback. It proves the representative native-search behavior in the parent's browser; it does not promise stock, prices or results for every PR/other number. Local UI/navigation tests still use fixtures and are not primary-source checks.
 
 ## Baseline and preservation
 
@@ -37,9 +39,9 @@ Catalog remains 1,394 card numbers / 2,981 printings. Engines, compatibility ali
 
 ## Validation
 
-- Full `npm test` on `4fedb102817de2f716109791b4f71912d2846578`: 11 synchronization/release tests and 4,030 regressions passed, plus TypeScript and Firebase production build.
-- After the search-only correction, the complete suite passed again: 11 synchronization/release tests, 4,030 regressions, TypeScript and Firebase production build. Resolver tests cover all 2,981 printings and explicitly prevent all eight rejected candidates from becoming direct links.
+- Full `npm test` after the native-search/evidence-gate changes: 11 synchronization/release tests and 4,035 regressions passed, plus TypeScript and Firebase production build. Resolver tests cover all 2,981 printings and explicitly prevent all eight rejected candidates from becoming direct links.
+- Synthetic evidence tests cover exact stable artwork, repeated-rarity reprints, primary provenance, errata text/version, unsafe URLs, duplicate mappings and timestamps with explicit timezone. Synthetic assertions are never imported into the product manifest.
 - React UI and Chromium navigation checks cover rarity-specific searches, PR/SEC/unknown IDs, safe external links, unchanged saved draft data, mobile action size and compact hover previews. Chromium external responses are fixtures.
-- The authorized private Android app uses a byte-identical public manifest; no private source or fixture is copied here.
+- The authorized private Android app uses a byte-identical public manifest: 152 unit/UI tests and both unsigned release APK builds passed; lint reported zero errors and 40 warnings. No private source or fixture is copied here.
 
-Physical-device browser handling and actual retailer/Google result content remain unrun or blocked. No production merge, deployment, signing, paid CI, publishing, purchasing or scraping occurred. Enable a product only after primary public evidence verifies the exact card number, rarity and artwork; do not infer retailer IDs or reuse another printing's page.
+Physical-device browser handling remains unrun. Local retailer artwork access remains blocked, while primary product-label/native-search checks succeeded separately in the parent's browser and their packet is hash-verified here. Actual image comparisons against the candidate catalog artworks are still required before direct links are enabled. No production merge, deployment, signing, paid CI, publishing, purchasing or scraping occurred. Do not infer retailer IDs or reuse another printing's page.
