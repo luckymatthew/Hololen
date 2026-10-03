@@ -1,47 +1,53 @@
 # Yuyutei card links
 
-Card details in the deck studio and persistent simulator inspector offer **搜尋遊遊亭**, a native retailer search using the exact card number. The selected rarity remains visible in the label/note, which asks users to choose the matching printing and check rarity/artwork. Search returns multiple printings; no unobserved rarity filter is invented. Missing/invalid card numbers show unavailable; unknown printing IDs never borrow another printing's rarity or product link.
+Card details in the deck studio and persistent simulator inspector offer **遊遊亭價格** for 15 verified printings, opening that exact retailer product page to check its current price. The other 2,966 printings offer **搜尋遊遊亭**, a verified native card-number search. Its note shows the selected rarity and asks users to choose the matching printing and check rarity/artwork. Search returns multiple printings; no rarity filter is invented. Missing/invalid numbers are unavailable. Unknown printing IDs never borrow another printing's rarity or product price. No prices or stock are fetched, stored, displayed or estimated in Hololens.
 
-**No direct product mapping is currently enabled.** All eight previously inferred mappings were downgraded after the local source audit. Fresh primary detail-page confirmations and a complete retailer evidence packet have since arrived from the parent's user-opened Dot browser. Exact artwork comparisons remain pending because retailer image requests are blocked in this executor; the coding environment does not share that browser. Historical observations remain in `rejectedCandidates`; `products` stays empty until fresh artwork-confirmed records pass the [evidence contract](yuyutei-evidence-contract.md). Both platform resolvers require consistent primary evidence, exact artwork, source URL and booster edition; errata labels also require a printed-text/version confirmation. No prices are fetched, stored, displayed or estimated.
+## Verified primary artwork evidence
 
-## Historical local evidence audit: 2026-10-03
+An independent primary-browser researcher inspected the actual retailer detail pages and downloaded and compared each retailer front image with the exact official printing image. The cumulative 15-record version 1 packet was downloaded in this executor, verified at 30,069 bytes / SHA-256 `8476287b1c8f43ce2f76832e81d44e1a735d713092f135d7f754577c364260c3`, and passed the [evidence contract](yuyutei-evidence-contract.md) and batch importer. Its filename retains `nine` for Library identity continuity, but version 1 contains all 15 confirmed records.
 
-The following are observed indexed titles, not verified live retailer pages. Candidate card numbers/IDs come from the unchanged official catalog. The “indexed number” column records only a number actually visible in the returned snippet; it does not certify the primary page or artwork. All rows are search-only.
+The public manifest retains the observed primary URL, title, number, rarity, exact catalog image/ID, timestamp, detailed visual comparison, both image SHA-256 hashes and scan-difference notes. Artwork, framing, printed labels and skill layouts match; retailer watermarks/foil reflections differ. The raw research packet and paired-image files stay outside both repositories. No private artwork, source, fixtures or credentials are published.
 
-| Inferred catalog candidate / stable ID | Indexed title evidence | Indexed number | Observed URL / primary access |
+| Card number | Rarity | Stable printing ID | Verified retailer product |
 | --- | --- | --- | --- |
-| hBP03-001 / 565 | OSR 姫森ルーナ; [hBP03]エリートスパーク | Not shown | [hbp03/10001](https://yuyu-tei.jp/sell/hocg/card/hbp03/10001), HTTP 403 |
-| hBP03-001 / 678 | OUR 姫森ルーナ(パラレル); [hBP03]エリートスパーク | hBP03-001 | [hbp03/10002](https://yuyu-tei.jp/sell/hocg/card/hbp03/10002), HTTP 403 |
-| hBP03-002 / 679 | OUR 獅白ぼたん(パラレル); [hBP03]エリートスパーク | hBP03-002 | [hbp03/10004](https://yuyu-tei.jp/sell/hocg/card/hbp03/10004), HTTP 403 |
-| hBP08-001 / 2204 | OSR IRyS; [hBP08]バウンサーバウンド | Not shown | [hbp08/10001](https://yuyu-tei.jp/sell/hocg/card/hbp08/10001), HTTP 403 |
-| hBP07-002 / 1788 | OSR ベスティア・ゼータ; [hBP07]ディーヴァフィーバー | Not shown | [hbp07/10003](https://yuyu-tei.jp/sell/hocg/card/hbp07/10003), HTTP 403 |
-| hBP09-003 / hbp09-hBP09-003_OUR | OUR 白銀ノエル(パラレル); [hBP09]ボリュームヴォルテックス | hBP09-003 in auxiliary search snippet | [hbp09/10007](https://yuyu-tei.jp/sell/hocg/card/hbp09/10007), inaccessible through web tool |
-| hBP08-018 / 2339 | UR ときのそら(パラレル); [hBP08]バウンサーバウンド | Not shown | [hbp08/10042](https://yuyu-tei.jp/sell/hocg/card/hbp08/10042), HTTP 403 |
-| hBP07-043 / 1954 | SR さくらみこ(パラレル); [hBP07]ディーヴァフィーバー | Not shown | [hbp07/10090](https://yuyu-tei.jp/sell/hocg/card/hbp07/10090), HTTP 403 |
+| hBP01-028 | C | `2314` | [hbp08/10229](https://yuyu-tei.jp/sell/hocg/card/hbp08/10229) |
+| hBP01-028 | HR | `2444` | [hbp08/10240](https://yuyu-tei.jp/sell/hocg/card/hbp08/10240) |
+| hBP03-001 | OSR | `565` | [hbp03/10001](https://yuyu-tei.jp/sell/hocg/card/hbp03/10001) |
+| hBP03-001 | OUR | `678` | [hbp03/10002](https://yuyu-tei.jp/sell/hocg/card/hbp03/10002) |
+| hBP03-002 | OUR | `679` | [hbp03/10004](https://yuyu-tei.jp/sell/hocg/card/hbp03/10004) |
+| hBP03-037 | C | `2319` | [hbp08/10234](https://yuyu-tei.jp/sell/hocg/card/hbp08/10234) |
+| hBP03-040 | C | `2320` | [hbp08/10235](https://yuyu-tei.jp/sell/hocg/card/hbp08/10235) |
+| hBP07-002 | OSR | `1788` | [hbp07/10003](https://yuyu-tei.jp/sell/hocg/card/hbp07/10003) |
+| hBP07-043 | SR | `1954` | [hbp07/10090](https://yuyu-tei.jp/sell/hocg/card/hbp07/10090) |
+| hBP08-001 | OSR | `2204` | [hbp08/10001](https://yuyu-tei.jp/sell/hocg/card/hbp08/10001) |
+| hBP08-003 | OSR | `2206` | [hbp08/10005](https://yuyu-tei.jp/sell/hocg/card/hbp08/10005) |
+| hBP08-003 | SEC | `2326` | [hbp08/10007](https://yuyu-tei.jp/sell/hocg/card/hbp08/10007) |
+| hBP08-003 | OUR | `2333` | [hbp08/10006](https://yuyu-tei.jp/sell/hocg/card/hbp08/10006) |
+| hBP08-018 | UR | `2339` | [hbp08/10042](https://yuyu-tei.jp/sell/hocg/card/hbp08/10042) |
+| hBP09-003 | OUR | `hbp09-hBP09-003_OUR` | [hbp09/10007](https://yuyu-tei.jp/sell/hocg/card/hbp09/10007) |
 
-The JSON retains each full observed title, snippet-number status, inferred catalog rarity/image and rejection decision. All eight lacked primary-page artwork verification. The [official Hololive card list](https://hololive-official-cardgame.com/cardlist/) is the provenance of catalog identities and image URLs, not evidence of a Yuyutei listing match.
+FUWAMOCO OSR, OUR and SEC have distinct product URLs; the SEC autograph overlay is separately confirmed. The hBP08 IRyS HR and IRyS/Mococo/Fuwawa C reprints match their hBP08 artwork, including the C_02 images; original same-number C printings keep fallback. No errata-labeled product is included. The competing before/after hBP03-027 C/S listings remain unmapped until their exact printed-text/version match is confirmed.
 
-Ordinary cloud Chromium navigation to the Luna OUR product and the actual Google fallback URL failed with `ERR_TUNNEL_CONNECTION_FAILED`. No navigation interception, authentication, access-control bypass, alternate domain or proxy was used for these source checks. Source-access attempts stopped after these permitted methods remained blocked. Prices, stock, current page content and retailer artwork remain unverified.
+## Historical source audit and native fallback
 
-## Primary-browser handoff and native search
+An earlier local/indexed-title audit inferred eight candidates without primary artwork access. All eight remain `printingVerified: false` in `rejectedCandidates` as history. Fresh, independent paired-image evidence subsequently verified those same eight exact printings plus seven others; only the new `products` records enable links. A unique number/name/rarity candidate never proves artwork by itself.
 
-The parent independently opened actual retailer pages and confirmed all eight historical candidates' displayed card numbers, names and rarities, plus hBP08-003 FUWAMOCO OSR at `hbp08/10005`. Its researcher captured 965 deduplicated product tiles from hBP03/07/08/09 (234/239/245/247) between 2026-10-03 06:39–06:47 UTC. The evidence JSON was downloaded in this executor and verified at 443,623 bytes / SHA-256 `7bbeae4cd0d4c81e70c6e1012dfc7d43650a88a515ca73861509025df380f9eb`. The raw research packet stays outside the repositories and contains no prices/stock.
+The earlier complete primary catalog packet contains 965 deduplicated product tiles from [hBP03](https://yuyu-tei.jp/sell/hocg/s/hbp03), [hBP07](https://yuyu-tei.jp/sell/hocg/s/hbp07), [hBP08](https://yuyu-tei.jp/sell/hocg/s/hbp08) and [hBP09](https://yuyu-tei.jp/sell/hocg/s/hbp09): 234/239/245/247 rows. It was captured on 2026-10-03 06:39–06:47 UTC and verified here at 443,623 bytes / SHA-256 `7bbeae4cd0d4c81e70c6e1012dfc7d43650a88a515ca73861509025df380f9eb`. It explicitly makes no artwork-equivalence assertion, so metadata-only matches from that packet remain disabled.
 
-The packet explicitly makes no artwork-equivalence assertion. A candidate join by number/rarity/booster finds one candidate for 963 rows and none for two rows. Four hBP03-027 C/S before/after-errata products collide on two catalog IDs, so these cannot be collapsed. Exact image and printed-text checks must resolve them. Direct JPEG retrieval returned tunnel HTTP 403, and the normal web tool also could not access the retailer image URL; source-image attempts stopped. No source URL or artwork match is invented.
+The primary browser verified [native card-number search](https://yuyu-tei.jp/sell/hocg/s/search?search_word=hBP08-003), visibly returning FUWAMOCO SEC/OUR/OSR. Both platforms use the observed HTTPS `/sell/hocg/s/search` endpoint with only `search_word=<percent-encoded card number>`. Other-number/PR results, availability and current prices are not guaranteed. The [official card list](https://hololive-official-cardgame.com/cardlist/) supplies catalog identities/artwork.
 
-The parent's actual primary browser verified [native card-number search](https://yuyu-tei.jp/sell/hocg/s/search?search_word=hBP08-003), which visibly returned FUWAMOCO SEC/OUR/OSR printings. Both platforms now use that observed HTTPS `/sell/hocg/s/search` endpoint with only `search_word=<percent-encoded card number>`. They display the selected rarity and explicitly ask users to choose the matching version. This replaces the older Google fallback. It proves the representative native-search behavior in the parent's browser; it does not promise stock, prices or results for every PR/other number. Local UI/navigation tests still use fixtures and are not primary-source checks.
+Retailer page/image requests remain blocked in this executor (HTTP 403/inaccessible; ordinary Chromium source navigation also failed). No access-control bypass or alternate proxy/domain was attempted. Accepted direct mappings rely on the explicitly handed-off primary paired-image research, not local navigation fixtures or snippets.
 
 ## Baseline and preservation
 
-The feature begins at safe recovery `e5274c52068f0d63e59cc655f4d471179d96689c`, based on true production `238915a9f71fe4158d45f8f18fad6d2af7d10aaf`, and includes deployed `release/download-1.2.7` commit `a789bcbac3f8ca5216f3188f30bb6177e97a40c9`. The draft PR targets that latest release branch. Stale main/reverted PR3 are not bases.
+The feature begins at safe recovery `e5274c52068f0d63e59cc655f4d471179d96689c`, based on true production `238915a9f71fe4158d45f8f18fad6d2af7d10aaf`, and includes deployed `release/download-1.2.7` commit `a789bcbac3f8ca5216f3188f30bb6177e97a40c9`. The draft PR targets that release branch. Stale main/reverted PR3 are not bases.
 
-Catalog remains 1,394 card numbers / 2,981 printings. Engines, compatibility aliases, saved formats, workflow/security configuration and tags are unchanged. Published 1.2.7 metadata and release tests remain byte-identical to `a789bcb`. The preservation test pins all 366 reviewed production files, including the release branch's approved metadata hash, and recognizes exactly four added retailer runtime modules.
+Catalog remains 1,394 card numbers / 2,981 printings. Engines, compatibility aliases, saved formats, workflow/security configuration and tags are unchanged. Published 1.2.7 metadata/release tests are byte-identical to `a789bcb`. The preservation check pins all 366 reviewed production files and recognizes exactly four added retailer runtime modules.
+
+The private app uses byte-identical manifest bytes. Its 253 hBP09 package-local images normalize through the existing public artwork manifest, without catalog edits. All 2,981 number/ID/rarity/canonical-artwork tuples match across platforms.
 
 ## Validation
 
-- Full `npm test` after the native-search/evidence-gate changes: 11 synchronization/release tests and 4,035 regressions passed, plus TypeScript and Firebase production build. Resolver tests cover all 2,981 printings and explicitly prevent all eight rejected candidates from becoming direct links.
-- Synthetic evidence tests cover exact stable artwork, repeated-rarity reprints, primary provenance, errata text/version, unsafe URLs, duplicate mappings and timestamps with explicit timezone. Synthetic assertions are never imported into the product manifest.
-- React UI and Chromium navigation checks cover rarity-specific searches, PR/SEC/unknown IDs, safe external links, unchanged saved draft data, mobile action size and compact hover previews. Chromium external responses are fixtures.
-- The authorized private Android app uses a byte-identical public manifest: 152 unit/UI tests and both unsigned release APK builds passed; lint reported zero errors and 40 warnings. No private source or fixture is copied here.
+The focused evidence/import/resolver/UI/preservation suite passed 22 checks after importing all 15 mappings. It verifies normal/parallel/autograph separation, exact reprint editions, rejected historical inferences, PR/SEC/unknown IDs, URL encoding, safe external links, unchanged saved data and all 2,981 product/fallback decisions. Full `npm test` passed 11 synchronization/release checks and 4,038 regressions, plus TypeScript and the Firebase production build. The private Android counterpart passed 153 unit/UI tests, both unsigned arm64-v8a/x86_64 release builds, and lint with zero errors / 40 warnings. Final browser navigation evidence is recorded in the draft PR.
 
-Physical-device browser handling remains unrun. Local retailer artwork access remains blocked, while primary product-label/native-search checks succeeded separately in the parent's browser and their packet is hash-verified here. Actual image comparisons against the candidate catalog artworks are still required before direct links are enabled. No production merge, deployment, signing, paid CI, publishing, purchasing or scraping occurred. Do not infer retailer IDs or reuse another printing's page.
+Physical-device browser handling remains unrun. Browser UI tests use external-navigation fixtures; they do not reverify source artwork or live prices. Unreviewed/ambiguous printings remain search-only. No production merge, deployment, signing, paid CI, publishing, purchasing or scraping occurred.

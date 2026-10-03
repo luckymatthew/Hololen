@@ -11,6 +11,17 @@ dom.window.HTMLDialogElement.prototype.showModal = function () { this.setAttribu
 dom.window.HTMLDialogElement.prototype.close = function () { this.removeAttribute('open'); };
 const payload = JSON.parse(readFileSync('public/cards.json', 'utf8'));
 const cards = ['hBP03-001', 'hBP08-001', 'hPR-001'].map(number => payload.cards.find(c => c.number === number));
+const manifest = JSON.parse(readFileSync('lib/yuyutei-products.json', 'utf8'));
+const expectedProduct = (card, id) => manifest.products.find(product => product.number === card.number && product.printingId === id);
+function assertAction(container, card, id) {
+  const product = expectedProduct(card, id), variant = card.variants.find(v => v.id === id);
+  const anchor = container.querySelector('.retailer-link'), action = container.querySelector('.retailer-action');
+  assert.equal(anchor.href, product?.url || `https://yuyu-tei.jp/sell/hocg/s/search?search_word=${encodeURIComponent(card.number)}`);
+  assert.equal(action.dataset.linkKind, product ? 'product' : 'search');
+  assert.ok(anchor.getAttribute('aria-label').includes(variant.rarity));
+  assert.match(anchor.textContent, product ? /遊遊亭價格/ : /搜尋遊遊亭/);
+  assert.match(action.querySelector('small').textContent, product ? /開啟外部網站查看現價/ : /尚未核對.*選擇對應版本.*卡圖/);
+}
 globalThis.fetch = async url => {
   if (url === '/cards.json') return Response.json({ ...payload, cards });
   if (url === '/holosim-card-index.json') return Response.json({});
@@ -38,20 +49,15 @@ test('real card details update external links with the selected printing without
   async function close(dialog) { await act(async () => dialog.querySelector('.modal-close').click()); }
   let dialog = await open(cards[0]);
   const anchor = () => dialog.querySelector('.retailer-link');
-  assert.equal(anchor().href, 'https://yuyu-tei.jp/sell/hocg/s/search?search_word=hBP03-001');
-  assert.equal(dialog.querySelector('.retailer-action').dataset.linkKind, 'search');
+  assertAction(dialog, cards[0], '565');
   assert.equal(anchor().target, '_blank');
   assert.equal(anchor().rel, 'noopener noreferrer');
-  assert.match(anchor().getAttribute('aria-label'), /OSR.*尚未核對.*遊遊亭.*選擇對應版本/);
   await act(async () => dialog.querySelector('.variant-strip button[title="OUR 卡圖"]').click());
-  assert.equal(new URL(anchor().href).searchParams.get('search_word'), 'hBP03-001');
-  assert.match(anchor().getAttribute('aria-label'), /OUR/);
+  assertAction(dialog, cards[0], '678');
   await close(dialog);
   dialog = await open(cards[1]);
   await act(async () => dialog.querySelector('.variant-strip button[title="OUR 卡圖"]').click());
-  assert.equal(dialog.querySelector('.retailer-action').dataset.linkKind, 'search');
-  assert.match(anchor().textContent, /搜尋遊遊亭/);
-  assert.match(dialog.querySelector('.retailer-action small').textContent, /尚未核對.*遊遊亭.*選擇對應版本.*卡圖/);
+  assertAction(dialog, cards[1], '2331');
   await close(dialog);
   dialog = await open(cards[2]);
   assert.equal(dialog.querySelector('.retailer-action').dataset.linkKind, 'search');
@@ -65,11 +71,9 @@ test('persistent simulator inspector follows the visible printing and hover prev
   const luna = cards[0], cardMap = new Map([[luna.number, luna]]);
   const render = props => act(async () => root.render(createElement(CardInspector, { card: luna, cardMap, ...props })));
   await render({ variantId: '678' });
-  assert.equal(new URL(document.querySelector('.retailer-link').href).searchParams.get('search_word'), 'hBP03-001');
-  assert.match(document.querySelector('.retailer-action small').textContent, /OUR/);
+  assertAction(document, luna, '678');
   await render({ variantId: '565' });
-  assert.equal(new URL(document.querySelector('.retailer-link').href).searchParams.get('search_word'), 'hBP03-001');
-  assert.match(document.querySelector('.retailer-action small').textContent, /OSR/);
+  assertAction(document, luna, '565');
   await render({ variantId: 'unknown' });
   assert.equal(document.querySelector('.retailer-action').dataset.linkKind, 'search');
   await render({ variantId: '678', hover: true });

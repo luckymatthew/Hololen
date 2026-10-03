@@ -23,6 +23,18 @@ export function verifiedYuyuteiProducts(records, catalog) {
     if (errataVersion && (record.errataConfirmed !== true || record.errataVersion !== errataVersion)) fail('errata product requires a separately confirmed printed-text/version match');
     if (typeof record.observedAt !== 'string' || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(record.observedAt) || !Number.isFinite(Date.parse(record.observedAt))) fail('observedAt must be an ISO timestamp with timezone');
     if (typeof record.reference !== 'string' || !record.reference.trim()) fail('public browser evidence reference is required');
+    let artworkComparison;
+    if (record.artworkComparison !== undefined) {
+      const comparison = record.artworkComparison;
+      if (!comparison || typeof comparison !== 'object' ||
+          !['basis', 'details'].every(key => typeof comparison[key] === 'string' && comparison[key].trim()) ||
+          !['retailerSha256', 'officialSha256'].every(key => typeof comparison[key] === 'string' && /^[a-f0-9]{64}$/.test(comparison[key]))) fail('artworkComparison requires a recorded visual basis/details and both SHA-256 hashes');
+      artworkComparison = {
+        basis: comparison.basis, details: comparison.details,
+        retailerSha256: comparison.retailerSha256, officialSha256: comparison.officialSha256,
+        ...(typeof comparison.scanDifferences === 'string' ? { scanDifferences: comparison.scanDifferences } : {}),
+      };
+    }
     let image;
     try { image = new URL(record.retailerImage); } catch { fail('observed retailer artwork URL is required'); }
     if (image.protocol !== 'https:' || image.username || image.password) fail('retailerImage must be HTTPS without credentials');
@@ -45,6 +57,7 @@ export function verifiedYuyuteiProducts(records, catalog) {
         artworkConfirmed: true, observedAt: record.observedAt, reference: record.reference,
         retailerSet: record.retailerSet || retailerGroup, editionLabel: record.editionLabel || '',
         ...(errataVersion ? { errataConfirmed: true, errataVersion } : {}),
+        ...(artworkComparison ? { artworkComparison } : {}),
       },
     };
   }).sort((a, b) => {

@@ -1,7 +1,473 @@
 {
   "auditedAt": "2026-10-03",
-  "verification": "No direct product mapping is enabled while exact retailer-to-catalog artwork comparisons are pending. The parent independently verified live primary detail labels in the user-opened Dot browser; historical local/indexed rejections remain below. Native retailer card-number search is confirmed in that primary browser and used as the labeled fallback.",
-  "products": [],
+  "verification": "15 direct product mappings have primary-browser exact-artwork evidence. Unmapped printings use the verified native card-number search; historical rejected inferences are retained without promotion. Prices and stock are not fetched or stored.",
+  "products": [
+    {
+      "number": "hBP01-028",
+      "printingId": "2314",
+      "rarity": "C",
+      "url": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10229",
+      "retailerName": "IRyS",
+      "retailerSet": "hbp08",
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP01-028_C_02.png",
+      "printingVerified": true,
+      "evidence": {
+        "method": "primary-browser",
+        "sourceUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10229",
+        "number": "hBP01-028",
+        "rarity": "C",
+        "title": "C IRyS(パラレル/hBP08)",
+        "retailerImage": "https://card.yuyu-tei.jp/hocg/front/hbp08/10229.jpg",
+        "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP01-028_C_02.png",
+        "artworkConfirmed": true,
+        "observedAt": "2026-10-03T07:47:41Z",
+        "reference": "Recorded primary-browser product-page and artwork observation: https://yuyu-tei.jp/sell/hocg/card/hbp08/10229 compared visually with https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP01-028_C_02.png. Both show the hBP08 reprint illustration of IRyS winking with one teal eye open, red flowing hair and arms spread against a pale heart-pattern background; same white/gold frame, Debut HP100, ハイRyS! 30 and extra text. This matches the hBP08 C_02 artwork rather than selecting an original-set C by card number.",
+        "retailerSet": "hbp08",
+        "editionLabel": "IRyS(パラレル/hBP08)",
+        "artworkComparison": {
+          "basis": "Visual side-by-side comparison of actual retailer front-image and exact official printing image downloaded through the accessible primary browser. Product number/rarity and URL were checked on the retailer detail page.",
+          "details": "Both show the hBP08 reprint illustration of IRyS winking with one teal eye open, red flowing hair and arms spread against a pale heart-pattern background; same white/gold frame, Debut HP100, ハイRyS! 30 and extra text. This matches the hBP08 C_02 artwork rather than selecting an original-set C by card number.",
+          "retailerSha256": "ed4789a3d38b12172c59587cdc37461c4b0a6dc0750061d96e6e91b81680d1aa",
+          "officialSha256": "caf14c6db506914c68d6624d964c9ba591ebfc5bf00e3857874df6e2f82901da",
+          "scanDifferences": "Retailer watermark, foil reflection and scan contrast differ; depicted artwork and printed layout agree."
+        }
+      }
+    },
+    {
+      "number": "hBP01-028",
+      "printingId": "2444",
+      "rarity": "HR",
+      "url": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10240",
+      "retailerName": "IRyS",
+      "retailerSet": "hbp08",
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP01-028_HR.png",
+      "printingVerified": true,
+      "evidence": {
+        "method": "primary-browser",
+        "sourceUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10240",
+        "number": "hBP01-028",
+        "rarity": "HR",
+        "title": "HR IRyS(パラレル/HR)",
+        "retailerImage": "https://card.yuyu-tei.jp/hocg/front/hbp08/10240.jpg",
+        "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP01-028_HR.png",
+        "artworkConfirmed": true,
+        "observedAt": "2026-10-03T07:47:41Z",
+        "reference": "Recorded primary-browser product-page and artwork observation: https://yuyu-tei.jp/sell/hocg/card/hbp08/10240 compared visually with https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP01-028_HR.png. Both show full-body IRyS in her black/white idol costume, one hand by her forehead, against the same pink/purple geometric patterned background with large IRyS lettering and gold outline/frame. Same Debut, HP100, ハイRyS! 30, unlimited-copy extra text, and HR hBP01-028 footer.",
+        "retailerSet": "hbp08",
+        "editionLabel": "IRyS(パラレル/HR)",
+        "artworkComparison": {
+          "basis": "Visual side-by-side comparison of actual retailer front-image and exact official printing image downloaded through the accessible primary browser. Product number/rarity and URL were checked on the retailer detail page.",
+          "details": "Both show full-body IRyS in her black/white idol costume, one hand by her forehead, against the same pink/purple geometric patterned background with large IRyS lettering and gold outline/frame. Same Debut, HP100, ハイRyS! 30, unlimited-copy extra text, and HR hBP01-028 footer.",
+          "retailerSha256": "731639793beb5b495ba88975a35401babb0bb333b6597b956eea1a2b4c7a1a6c",
+          "officialSha256": "015a11882c6f273f0c32d5a3dceb0dd5b77b3622ab8d2ec7244b3f7f9e0f626c",
+          "scanDifferences": "Retailer watermark, foil reflection and scan contrast differ; depicted artwork and printed layout agree."
+        }
+      }
+    },
+    {
+      "number": "hBP03-001",
+      "printingId": "565",
+      "rarity": "OSR",
+      "url": "https://yuyu-tei.jp/sell/hocg/card/hbp03/10001",
+      "retailerName": "姫森ルーナ",
+      "retailerSet": "hbp03",
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP03/hBP03-001_OSR.png",
+      "printingVerified": true,
+      "evidence": {
+        "method": "primary-browser",
+        "sourceUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp03/10001",
+        "number": "hBP03-001",
+        "rarity": "OSR",
+        "title": "OSR 姫森ルーナ",
+        "retailerImage": "https://card.yuyu-tei.jp/hocg/front/hbp03/10001.jpg",
+        "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP03/hBP03-001_OSR.png",
+        "artworkConfirmed": true,
+        "observedAt": "2026-10-03T07:43:16Z",
+        "reference": "Recorded primary-browser product-page and artwork observation: https://yuyu-tei.jp/sell/hocg/card/hbp03/10001 compared visually with https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP03/hBP03-001_OSR.png. Both show crowned pink-haired Luna at an afternoon-tea table beside plants/window, cake plate in left hand and fork near mouth; white dress with pink bow, Life 5 gray OSR footer, identical two skill headings and Japanese text layout.",
+        "retailerSet": "hbp03",
+        "editionLabel": "姫森ルーナ",
+        "artworkComparison": {
+          "basis": "Visual side-by-side comparison of actual retailer front-image and exact official printing image downloaded through the accessible primary browser. Product number/rarity and URL were checked on the retailer detail page.",
+          "details": "Both show crowned pink-haired Luna at an afternoon-tea table beside plants/window, cake plate in left hand and fork near mouth; white dress with pink bow, Life 5 gray OSR footer, identical two skill headings and Japanese text layout.",
+          "retailerSha256": "be40ae391800ba31aa3a13d7648574856f4294aaf224d5cbdeb10427a3987e4f",
+          "officialSha256": "a2497e319f0b1f0fcff54d62b7f6b0c801fd703e5a8a9316fcac8602738ba493",
+          "scanDifferences": "Retailer watermark, foil reflection and scan contrast differ from the official flat digital illustration; depicted artwork and printed layout agree."
+        }
+      }
+    },
+    {
+      "number": "hBP03-001",
+      "printingId": "678",
+      "rarity": "OUR",
+      "url": "https://yuyu-tei.jp/sell/hocg/card/hbp03/10002",
+      "retailerName": "姫森ルーナ",
+      "retailerSet": "hbp03",
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP03/hBP03-001_OUR.png",
+      "printingVerified": true,
+      "evidence": {
+        "method": "primary-browser",
+        "sourceUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp03/10002",
+        "number": "hBP03-001",
+        "rarity": "OUR",
+        "title": "OUR 姫森ルーナ(パラレル)",
+        "retailerImage": "https://card.yuyu-tei.jp/hocg/front/hbp03/10002.jpg",
+        "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP03/hBP03-001_OUR.png",
+        "artworkConfirmed": true,
+        "observedAt": "2026-10-03T07:43:16Z",
+        "reference": "Recorded primary-browser product-page and artwork observation: https://yuyu-tei.jp/sell/hocg/card/hbp03/10002 compared visually with https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP03/hBP03-001_OUR.png. Both show Luna seated sideways on a large crescent moon against a blue star field, left palm extended, purple star-patterned stockings; same full-art OUR composition, Life 5 and identical skill text blocks.",
+        "retailerSet": "hbp03",
+        "editionLabel": "姫森ルーナ(パラレル)",
+        "artworkComparison": {
+          "basis": "Visual side-by-side comparison of actual retailer front-image and exact official printing image downloaded through the accessible primary browser. Product number/rarity and URL were checked on the retailer detail page.",
+          "details": "Both show Luna seated sideways on a large crescent moon against a blue star field, left palm extended, purple star-patterned stockings; same full-art OUR composition, Life 5 and identical skill text blocks.",
+          "retailerSha256": "614cb1e0a47d82b4361e1d3061068a1477806207391bf63666c08ed05521a9ae",
+          "officialSha256": "36a1694ac2031bebbbda48b36f22112e3ec4ba024af41209021c76d725f9a564",
+          "scanDifferences": "Retailer watermark, foil reflection and scan contrast differ from the official flat digital illustration; depicted artwork and printed layout agree."
+        }
+      }
+    },
+    {
+      "number": "hBP03-002",
+      "printingId": "679",
+      "rarity": "OUR",
+      "url": "https://yuyu-tei.jp/sell/hocg/card/hbp03/10004",
+      "retailerName": "獅白ぼたん",
+      "retailerSet": "hbp03",
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP03/hBP03-002_OUR.png",
+      "printingVerified": true,
+      "evidence": {
+        "method": "primary-browser",
+        "sourceUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp03/10004",
+        "number": "hBP03-002",
+        "rarity": "OUR",
+        "title": "OUR 獅白ぼたん(パラレル)",
+        "retailerImage": "https://card.yuyu-tei.jp/hocg/front/hbp03/10004.jpg",
+        "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP03/hBP03-002_OUR.png",
+        "artworkConfirmed": true,
+        "observedAt": "2026-10-03T07:43:16Z",
+        "reference": "Recorded primary-browser product-page and artwork observation: https://yuyu-tei.jp/sell/hocg/card/hbp03/10004 compared visually with https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP03/hBP03-002_OUR.png. Both show silver-haired Botan seated on nighttime urban stairs in a black sleeveless outfit, holding an SSRB mascot in the foreground; same pose, railings and neon background, green Life 5 footer, poi / 狙撃 skills.",
+        "retailerSet": "hbp03",
+        "editionLabel": "獅白ぼたん(パラレル)",
+        "artworkComparison": {
+          "basis": "Visual side-by-side comparison of actual retailer front-image and exact official printing image downloaded through the accessible primary browser. Product number/rarity and URL were checked on the retailer detail page.",
+          "details": "Both show silver-haired Botan seated on nighttime urban stairs in a black sleeveless outfit, holding an SSRB mascot in the foreground; same pose, railings and neon background, green Life 5 footer, poi / 狙撃 skills.",
+          "retailerSha256": "c73caf292a92908361460498dfc0c4a3e8df678ffc84c8db8c89263ffe41cb02",
+          "officialSha256": "5a5426b1a66b5d62ca2b2da3708f32877e668bef5096f0a4fdef090235c91c15",
+          "scanDifferences": "Retailer watermark, foil reflection and scan contrast differ from the official flat digital illustration; depicted artwork and printed layout agree."
+        }
+      }
+    },
+    {
+      "number": "hBP03-037",
+      "printingId": "2319",
+      "rarity": "C",
+      "url": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10234",
+      "retailerName": "モココ・アビスガード",
+      "retailerSet": "hbp08",
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP03-037_C_02.png",
+      "printingVerified": true,
+      "evidence": {
+        "method": "primary-browser",
+        "sourceUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10234",
+        "number": "hBP03-037",
+        "rarity": "C",
+        "title": "C モココ・アビスガード(パラレル/hBP08)",
+        "retailerImage": "https://card.yuyu-tei.jp/hocg/front/hbp08/10234.jpg",
+        "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP03-037_C_02.png",
+        "artworkConfirmed": true,
+        "observedAt": "2026-10-03T07:47:41Z",
+        "reference": "Recorded primary-browser product-page and artwork observation: https://yuyu-tei.jp/sell/hocg/card/hbp08/10234 compared visually with https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP03-037_C_02.png. Both show the hBP08 reprint illustration of Mococo winking and reaching forward with both black oversized sleeves, cropped black/pink hoodie and shorts, pale pink hearts; same red Debut frame, HP80, attack 20 and extra text, C hBP03-037 footer.",
+        "retailerSet": "hbp08",
+        "editionLabel": "モココ・アビスガード(パラレル/hBP08)",
+        "artworkComparison": {
+          "basis": "Visual side-by-side comparison of actual retailer front-image and exact official printing image downloaded through the accessible primary browser. Product number/rarity and URL were checked on the retailer detail page.",
+          "details": "Both show the hBP08 reprint illustration of Mococo winking and reaching forward with both black oversized sleeves, cropped black/pink hoodie and shorts, pale pink hearts; same red Debut frame, HP80, attack 20 and extra text, C hBP03-037 footer.",
+          "retailerSha256": "05877c2db352471692b82caa67ceefac9254a6b8d3acb0f5416c80ee18f6e493",
+          "officialSha256": "83a7b072e06225ea19bb798b46724642c246e86f348744b4f4f7545e68b3d14a",
+          "scanDifferences": "Retailer watermark, foil reflection and scan contrast differ; depicted artwork and printed layout agree."
+        }
+      }
+    },
+    {
+      "number": "hBP03-040",
+      "printingId": "2320",
+      "rarity": "C",
+      "url": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10235",
+      "retailerName": "フワワ・アビスガード",
+      "retailerSet": "hbp08",
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP03-040_C_02.png",
+      "printingVerified": true,
+      "evidence": {
+        "method": "primary-browser",
+        "sourceUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10235",
+        "number": "hBP03-040",
+        "rarity": "C",
+        "title": "C フワワ・アビスガード(パラレル/hBP08)",
+        "retailerImage": "https://card.yuyu-tei.jp/hocg/front/hbp08/10235.jpg",
+        "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP03-040_C_02.png",
+        "artworkConfirmed": true,
+        "observedAt": "2026-10-03T07:47:41Z",
+        "reference": "Recorded primary-browser product-page and artwork observation: https://yuyu-tei.jp/sell/hocg/card/hbp08/10235 compared visually with https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP03-040_C_02.png. Both show the hBP08 reprint illustration of Fuwawa winking, both hands in a paw pose, white/blue ruffled outfit beneath black jacket with blue cuffs, pale heart background; same blue Debut frame, HP100, attack 30 and extra text, C hBP03-040 footer.",
+        "retailerSet": "hbp08",
+        "editionLabel": "フワワ・アビスガード(パラレル/hBP08)",
+        "artworkComparison": {
+          "basis": "Visual side-by-side comparison of actual retailer front-image and exact official printing image downloaded through the accessible primary browser. Product number/rarity and URL were checked on the retailer detail page.",
+          "details": "Both show the hBP08 reprint illustration of Fuwawa winking, both hands in a paw pose, white/blue ruffled outfit beneath black jacket with blue cuffs, pale heart background; same blue Debut frame, HP100, attack 30 and extra text, C hBP03-040 footer.",
+          "retailerSha256": "dcd07c69c2fbf4645422f8f043d932d828a30c72f4830b74d2df1ae1e296ad44",
+          "officialSha256": "2ec0fbd1194c7c1a7a97a560dd489f796d482e317d75861bb1a8e9056d5ca6ff",
+          "scanDifferences": "Retailer watermark, foil reflection and scan contrast differ; depicted artwork and printed layout agree."
+        }
+      }
+    },
+    {
+      "number": "hBP07-002",
+      "printingId": "1788",
+      "rarity": "OSR",
+      "url": "https://yuyu-tei.jp/sell/hocg/card/hbp07/10003",
+      "retailerName": "ベスティア・ゼータ",
+      "retailerSet": "hbp07",
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP07/hBP07-002_OSR.png",
+      "printingVerified": true,
+      "evidence": {
+        "method": "primary-browser",
+        "sourceUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp07/10003",
+        "number": "hBP07-002",
+        "rarity": "OSR",
+        "title": "OSR ベスティア・ゼータ",
+        "retailerImage": "https://card.yuyu-tei.jp/hocg/front/hbp07/10003.jpg",
+        "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP07/hBP07-002_OSR.png",
+        "artworkConfirmed": true,
+        "observedAt": "2026-10-03T07:43:16Z",
+        "reference": "Recorded primary-browser product-page and artwork observation: https://yuyu-tei.jp/sell/hocg/card/hbp07/10003 compared visually with https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP07/hBP07-002_OSR.png. Both show silver-haired Zeta leaning diagonally forward in her white/gray outfit with long ribbon/hair arcs and red laser diagonals; same gray OSR footer, Life 5, Good Luck, holoH3ro! and 不可能なんてないんだから! text/layout.",
+        "retailerSet": "hbp07",
+        "editionLabel": "ベスティア・ゼータ",
+        "artworkComparison": {
+          "basis": "Visual side-by-side comparison of actual retailer front-image and exact official printing image downloaded through the accessible primary browser. Product number/rarity and URL were checked on the retailer detail page.",
+          "details": "Both show silver-haired Zeta leaning diagonally forward in her white/gray outfit with long ribbon/hair arcs and red laser diagonals; same gray OSR footer, Life 5, Good Luck, holoH3ro! and 不可能なんてないんだから! text/layout.",
+          "retailerSha256": "dc4b45e1c82054ef277ee102740e6c9eb49a7976d3eb091d84e54bba5bee1a3e",
+          "officialSha256": "e7b20ec955993aa632425fb5745e72e500998480ae98b145c7e6a1cc16cd8022",
+          "scanDifferences": "Retailer watermark, foil reflection and scan contrast differ from the official flat digital illustration; depicted artwork and printed layout agree."
+        }
+      }
+    },
+    {
+      "number": "hBP07-043",
+      "printingId": "1954",
+      "rarity": "SR",
+      "url": "https://yuyu-tei.jp/sell/hocg/card/hbp07/10090",
+      "retailerName": "さくらみこ",
+      "retailerSet": "hbp07",
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP07/hBP07-043_SR.png",
+      "printingVerified": true,
+      "evidence": {
+        "method": "primary-browser",
+        "sourceUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp07/10090",
+        "number": "hBP07-043",
+        "rarity": "SR",
+        "title": "SR さくらみこ(パラレル)",
+        "retailerImage": "https://card.yuyu-tei.jp/hocg/front/hbp07/10090.jpg",
+        "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP07/hBP07-043_SR.png",
+        "artworkConfirmed": true,
+        "observedAt": "2026-10-03T07:43:16Z",
+        "reference": "Recorded primary-browser product-page and artwork observation: https://yuyu-tei.jp/sell/hocg/card/hbp07/10090 compared visually with https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP07/hBP07-043_SR.png. Both show long pink-haired Miko in a pale pink frilled dress looking back over her shoulder, butterflies and soft petal background; same 2nd, HP210, holoRêve -みこ- / 桜は花に顕る text blocks, and SR printing footer.",
+        "retailerSet": "hbp07",
+        "editionLabel": "さくらみこ(パラレル)",
+        "artworkComparison": {
+          "basis": "Visual side-by-side comparison of actual retailer front-image and exact official printing image downloaded through the accessible primary browser. Product number/rarity and URL were checked on the retailer detail page.",
+          "details": "Both show long pink-haired Miko in a pale pink frilled dress looking back over her shoulder, butterflies and soft petal background; same 2nd, HP210, holoRêve -みこ- / 桜は花に顕る text blocks, and SR printing footer.",
+          "retailerSha256": "8bb8055015eb3ad1fd3ad7aca3c98a9a0f573f54fbb1b7bebe90a1e78a4c8acc",
+          "officialSha256": "0d935a2d5a3d81e4a8fac5d6886f9e260102f0474b1e568fc30b239f8482cd55",
+          "scanDifferences": "Retailer watermark, foil reflection and scan contrast differ from the official flat digital illustration; depicted artwork and printed layout agree."
+        }
+      }
+    },
+    {
+      "number": "hBP08-001",
+      "printingId": "2204",
+      "rarity": "OSR",
+      "url": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10001",
+      "retailerName": "IRyS",
+      "retailerSet": "hbp08",
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-001_OSR.png",
+      "printingVerified": true,
+      "evidence": {
+        "method": "primary-browser",
+        "sourceUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10001",
+        "number": "hBP08-001",
+        "rarity": "OSR",
+        "title": "OSR IRyS",
+        "retailerImage": "https://card.yuyu-tei.jp/hocg/front/hbp08/10001.jpg",
+        "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-001_OSR.png",
+        "artworkConfirmed": true,
+        "observedAt": "2026-10-03T07:43:16Z",
+        "reference": "Recorded primary-browser product-page and artwork observation: https://yuyu-tei.jp/sell/hocg/card/hbp08/10001 compared visually with https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-001_OSR.png. Both show red-haired IRyS on stage with outstretched left hand and microphone in right hand, matching stage arches/lights and heterochromatic eyes; same Life5 gray OSR footer and ネフィリムの祝福 / HOPE and DESPAIR skills.",
+        "retailerSet": "hbp08",
+        "editionLabel": "IRyS",
+        "artworkComparison": {
+          "basis": "Visual side-by-side comparison of actual retailer front-image and exact official printing image downloaded through the accessible primary browser. Product number/rarity and URL were checked on the retailer detail page.",
+          "details": "Both show red-haired IRyS on stage with outstretched left hand and microphone in right hand, matching stage arches/lights and heterochromatic eyes; same Life5 gray OSR footer and ネフィリムの祝福 / HOPE and DESPAIR skills.",
+          "retailerSha256": "88ca769505463da0771cbfcbdf131619b63e3920897fe3a1dfe53eb0b16b4ec3",
+          "officialSha256": "f56d5b83e32479c45871e9a96235c9d22e847a377053d6d43946f3125693ba2a",
+          "scanDifferences": "Retailer watermark, foil reflection and scan contrast differ from the official flat digital illustration; depicted artwork and printed layout agree."
+        }
+      }
+    },
+    {
+      "number": "hBP08-003",
+      "printingId": "2206",
+      "rarity": "OSR",
+      "url": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10005",
+      "retailerName": "FUWAMOCO",
+      "retailerSet": "hbp08",
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-003_OSR.png",
+      "printingVerified": true,
+      "evidence": {
+        "method": "primary-browser",
+        "sourceUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10005",
+        "number": "hBP08-003",
+        "rarity": "OSR",
+        "title": "OSR FUWAMOCO",
+        "retailerImage": "https://card.yuyu-tei.jp/hocg/front/hbp08/10005.jpg",
+        "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-003_OSR.png",
+        "artworkConfirmed": true,
+        "observedAt": "2026-10-03T07:43:16Z",
+        "reference": "Recorded primary-browser product-page and artwork observation: https://yuyu-tei.jp/sell/hocg/card/hbp08/10005 compared visually with https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-003_OSR.png. Both show Fuwawa in blue at left/rear and Mococo in pink at right/front in the same neon-lit alley, crossed arms, matching signs and composition, red OSR name bar, Life 5, and matching Japanese skill headings and layout.",
+        "retailerSet": "hbp08",
+        "editionLabel": "FUWAMOCO",
+        "artworkComparison": {
+          "basis": "Visual side-by-side comparison of actual retailer front-image and exact official printing image downloaded through the accessible primary browser. Product number/rarity and URL were checked on the retailer detail page.",
+          "details": "Both show Fuwawa in blue at left/rear and Mococo in pink at right/front in the same neon-lit alley, crossed arms, matching signs and composition, red OSR name bar, Life 5, and matching Japanese skill headings and layout.",
+          "retailerSha256": "e2d906ecbd5ca30475ad99017c1cec7a5098a7a5cea2bd056b13f135777f72be",
+          "officialSha256": "bc22dabd66f24c3736fa8a216f62c25e4a3c3aca6b7cfb48a30b47cb20edeea6",
+          "scanDifferences": "Retailer watermark, foil reflection and scan contrast differ from the official flat digital illustration; depicted artwork and printed layout agree."
+        }
+      }
+    },
+    {
+      "number": "hBP08-003",
+      "printingId": "2326",
+      "rarity": "SEC",
+      "url": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10007",
+      "retailerName": "FUWAMOCO",
+      "retailerSet": "hbp08",
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-003_SEC.png",
+      "printingVerified": true,
+      "evidence": {
+        "method": "primary-browser",
+        "sourceUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10007",
+        "number": "hBP08-003",
+        "rarity": "SEC",
+        "title": "SEC FUWAMOCO(パラレル/サイン)",
+        "retailerImage": "https://card.yuyu-tei.jp/hocg/front/hbp08/10007.jpg",
+        "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-003_SEC.png",
+        "artworkConfirmed": true,
+        "observedAt": "2026-10-03T07:47:41Z",
+        "reference": "Recorded primary-browser product-page and artwork observation: https://yuyu-tei.jp/sell/hocg/card/hbp08/10007 compared visually with https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-003_SEC.png. Both show Fuwawa in blue at left and Mococo in pink at right eating doughnuts at a café. The SEC printing has the same large two-part Fuwawa/Mococo autograph overlay, close crop, red Life5 badge, two skill blocks and SEC footer. Gold autograph reflectivity differs in the retailer scan, while autograph strokes and positions agree.",
+        "retailerSet": "hbp08",
+        "editionLabel": "FUWAMOCO(パラレル/サイン)",
+        "artworkComparison": {
+          "basis": "Visual side-by-side comparison of actual retailer front-image and exact official printing image downloaded through the accessible primary browser. Product number/rarity and URL were checked on the retailer detail page.",
+          "details": "Both show Fuwawa in blue at left and Mococo in pink at right eating doughnuts at a café. The SEC printing has the same large two-part Fuwawa/Mococo autograph overlay, close crop, red Life5 badge, two skill blocks and SEC footer. Gold autograph reflectivity differs in the retailer scan, while autograph strokes and positions agree.",
+          "retailerSha256": "2be4542315c600a75902dd0ac9df26a57f02d8ad7df08352fc8c9b1793baa172",
+          "officialSha256": "79271f54c0495269a78389f4cf2190ada4e0865e3feba67c86ab93623b8efa08",
+          "scanDifferences": "Retailer watermark, foil reflection and scan contrast differ; depicted artwork and printed layout agree."
+        }
+      }
+    },
+    {
+      "number": "hBP08-003",
+      "printingId": "2333",
+      "rarity": "OUR",
+      "url": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10006",
+      "retailerName": "FUWAMOCO",
+      "retailerSet": "hbp08",
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-003_OUR.png",
+      "printingVerified": true,
+      "evidence": {
+        "method": "primary-browser",
+        "sourceUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10006",
+        "number": "hBP08-003",
+        "rarity": "OUR",
+        "title": "OUR FUWAMOCO(パラレル)",
+        "retailerImage": "https://card.yuyu-tei.jp/hocg/front/hbp08/10006.jpg",
+        "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-003_OUR.png",
+        "artworkConfirmed": true,
+        "observedAt": "2026-10-03T07:47:41Z",
+        "reference": "Recorded primary-browser product-page and artwork observation: https://yuyu-tei.jp/sell/hocg/card/hbp08/10006 compared visually with https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-003_OUR.png. Both show the same doughnut-café full-art scene with Fuwawa at left and Mococo at right, trays in the foreground and signage behind; this OUR version has no autograph overlay, matching crop, Life5 footer and skill layout.",
+        "retailerSet": "hbp08",
+        "editionLabel": "FUWAMOCO(パラレル)",
+        "artworkComparison": {
+          "basis": "Visual side-by-side comparison of actual retailer front-image and exact official printing image downloaded through the accessible primary browser. Product number/rarity and URL were checked on the retailer detail page.",
+          "details": "Both show the same doughnut-café full-art scene with Fuwawa at left and Mococo at right, trays in the foreground and signage behind; this OUR version has no autograph overlay, matching crop, Life5 footer and skill layout.",
+          "retailerSha256": "302b9b3f9a8938c842f6b25be0069cdca381e45b952f05288d8ea7b7cf0ff1bc",
+          "officialSha256": "cf460ad2960ed2092c54cd09b8fd1169615906ba2dd3f0f715c1e0255668afec",
+          "scanDifferences": "Retailer watermark, foil reflection and scan contrast differ; depicted artwork and printed layout agree."
+        }
+      }
+    },
+    {
+      "number": "hBP08-018",
+      "printingId": "2339",
+      "rarity": "UR",
+      "url": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10042",
+      "retailerName": "ときのそら",
+      "retailerSet": "hbp08",
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-018_UR.png",
+      "printingVerified": true,
+      "evidence": {
+        "method": "primary-browser",
+        "sourceUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10042",
+        "number": "hBP08-018",
+        "rarity": "UR",
+        "title": "UR ときのそら(パラレル)",
+        "retailerImage": "https://card.yuyu-tei.jp/hocg/front/hbp08/10042.jpg",
+        "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-018_UR.png",
+        "artworkConfirmed": true,
+        "observedAt": "2026-10-03T07:43:16Z",
+        "reference": "Recorded primary-browser product-page and artwork observation: https://yuyu-tei.jp/sell/hocg/card/hbp08/10042 compared visually with https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-018_UR.png. Both show brown-haired Sora in the same pink-and-white idol costume reaching toward the viewer, large white waist bow, stars/hearts backdrop; same 2nd HP210, blue bloom-effect text block, attack line and UR footer. Foil/scan contrast differs only.",
+        "retailerSet": "hbp08",
+        "editionLabel": "ときのそら(パラレル)",
+        "artworkComparison": {
+          "basis": "Visual side-by-side comparison of actual retailer front-image and exact official printing image downloaded through the accessible primary browser. Product number/rarity and URL were checked on the retailer detail page.",
+          "details": "Both show brown-haired Sora in the same pink-and-white idol costume reaching toward the viewer, large white waist bow, stars/hearts backdrop; same 2nd HP210, blue bloom-effect text block, attack line and UR footer. Foil/scan contrast differs only.",
+          "retailerSha256": "478026667180256f1556f8f5e1db8b2e2bae4bf13b375900f72275ac396b09d9",
+          "officialSha256": "1466d0b315ca5b6b6461eef8edb2c24cd75c0d5400c89b768f0063665e9ee913",
+          "scanDifferences": "Retailer watermark, foil reflection and scan contrast differ from the official flat digital illustration; depicted artwork and printed layout agree."
+        }
+      }
+    },
+    {
+      "number": "hBP09-003",
+      "printingId": "hbp09-hBP09-003_OUR",
+      "rarity": "OUR",
+      "url": "https://yuyu-tei.jp/sell/hocg/card/hbp09/10007",
+      "retailerName": "白銀ノエル",
+      "retailerSet": "hbp09",
+      "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP09/hBP09-003_OUR.png",
+      "printingVerified": true,
+      "evidence": {
+        "method": "primary-browser",
+        "sourceUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp09/10007",
+        "number": "hBP09-003",
+        "rarity": "OUR",
+        "title": "OUR 白銀ノエル(パラレル)",
+        "retailerImage": "https://card.yuyu-tei.jp/hocg/front/hbp09/10007.jpg",
+        "officialImage": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP09/hBP09-003_OUR.png",
+        "artworkConfirmed": true,
+        "observedAt": "2026-10-03T07:43:16Z",
+        "reference": "Recorded primary-browser product-page and artwork observation: https://yuyu-tei.jp/sell/hocg/card/hbp09/10007 compared visually with https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP09/hBP09-003_OUR.png. Both show silver-haired Noel leaning on a dark hot-spring rock, braided hair band, identical green-eyed face/arm pose, bathhouse lamps/rocks and flask foreground; same full-art OUR layout, green Life5 footer and two matching skill text blocks.",
+        "retailerSet": "hbp09",
+        "editionLabel": "白銀ノエル(パラレル)",
+        "artworkComparison": {
+          "basis": "Visual side-by-side comparison of actual retailer front-image and exact official printing image downloaded through the accessible primary browser. Product number/rarity and URL were checked on the retailer detail page.",
+          "details": "Both show silver-haired Noel leaning on a dark hot-spring rock, braided hair band, identical green-eyed face/arm pose, bathhouse lamps/rocks and flask foreground; same full-art OUR layout, green Life5 footer and two matching skill text blocks.",
+          "retailerSha256": "8df8485fb34b048fbbbbe779db6c190cfd0c4a6c44313f29a848d42536447fb7",
+          "officialSha256": "16dbf24caad6c4bc7611347e43dcc51aff917abada26ef5d7187f7fe5af8766c",
+          "scanDifferences": "Retailer watermark, foil reflection and scan contrast differ from the official flat digital illustration; depicted artwork and printed layout agree."
+        }
+      }
+    }
+  ],
   "rejectedCandidates": [
     {
       "number": "hBP03-001",
@@ -410,5 +876,20 @@
     "catalogProducts": 965,
     "detailPages": 9,
     "artworkEquivalence": "Not asserted in source artifact; exact comparisons pending"
+  },
+  "mappingEvidence": {
+    "method": "primary-browser",
+    "verifiedProductCount": 15,
+    "latestObservedAt": "2026-10-03T07:47:41Z",
+    "sourcePackets": [
+      {
+        "fileName": "yuyutei-artwork-verified-nine-2026-10-03.json",
+        "version": 1,
+        "recordCount": 15,
+        "sizeBytes": 30069,
+        "sha256": "8476287b1c8f43ce2f76832e81d44e1a735d713092f135d7f754577c364260c3",
+        "method": "primary-browser actual paired-image comparison"
+      }
+    ]
   }
 }

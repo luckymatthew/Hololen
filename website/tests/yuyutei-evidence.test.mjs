@@ -23,6 +23,9 @@ test('primary evidence derives the existing printing ID and enables only that ex
   assert.equal(yuyuteiLink(luna, luna.variants[0], new Map([[`${luna.number}|678`, p]])).kind, 'search');
   assert.deepEqual(verifiedYuyuteiProducts([{ ...fixture, officialImage: undefined, printingId: '678' }], catalog), [p]);
   assert.deepEqual(verifiedYuyuteiProducts([], catalog), []);
+  const artworkComparison = { basis: 'Synthetic visual comparison', details: 'Synthetic matching artwork/layout', retailerSha256: 'a'.repeat(64), officialSha256: 'b'.repeat(64), scanDifferences: 'Synthetic scan differences' };
+  assert.deepEqual(product({ ...fixture, artworkComparison }).evidence.artworkComparison, artworkComparison);
+  assert.throws(() => product({ ...fixture, artworkComparison: { ...artworkComparison, retailerSha256: 'not-a-hash' } }), /SHA-256/);
 });
 
 test('batch validation rejects snippets, wrong artwork/rarity/ID, unsafe URLs and duplicate prices', () => {

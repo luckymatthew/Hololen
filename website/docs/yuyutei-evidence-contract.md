@@ -1,6 +1,6 @@
 # Primary-browser evidence handoff
 
-The coding environment does not share the parent's Dot browser or its open tabs. Primary records must be handed off explicitly. Existing eight rejected candidates remain disabled until fresh records prove their exact printing.
+The coding environment does not share the primary Dot browser or its open tabs. Primary records must be handed off explicitly. The current 15 mappings were enabled only after fresh actual paired-image comparisons, including exact reprint editions and autograph distinctions. The eight historical indexed-title rejections remain archival records and cannot enable links themselves.
 
 Supply a JSON array (or an object with `records`) with these fields for each standard product:
 
@@ -18,6 +18,7 @@ Supply a JSON array (or an object with `records`) with these fields for each sta
 | `reference` | Public primary-browser evidence reference: saved DOM excerpt, screenshot or recorded observation; no cookies, tokens, private source or browser credentials |
 | `retailerSet`, `editionLabel` | Preserve the observed set and full reprint label when present, especially `(パラレル/hBP08)` |
 | `errataConfirmed`, `errataVersion` | For an errata-labeled product, separately compare the printed text and provide `true` plus `before` or `after`; matching the illustration alone is insufficient |
+| `artworkComparison` | Optional retained proof: nonempty `basis`/`details`, `retailerSha256`/`officialSha256` (64 lowercase hex characters), and optional `scanDifferences`; only these public evidence fields are imported |
 
 Prices and stock are unnecessary and are not persisted. Product titles/images must describe the standard product; damaged-stock listings are excluded.
 
@@ -44,5 +45,13 @@ node scripts/validate-yuyutei-evidence.mjs /tmp/public-browser-records.json /tmp
 This command reads the existing catalog, derives existing stable IDs and produces a deterministic `products` preview. It performs no fetch, catalog recapture or production write. Incomplete, contradictory or ambiguous records fail with the record number and reason.
 
 After evidence review, merge only validated products into the public manifest, preserve the rejection history, and copy the exact manifest bytes into the private app asset. Compare both catalogs' number/ID/rarity/image tuples before import. Unconfirmed records stay search-only. Both runtime resolvers require matching primary evidence, artwork, rarity, URL and provenance, so a bare record placed in `products` cannot enable a link.
+
+To prepare the complete shared manifest from a confirmed subset, run:
+
+```sh
+node scripts/import-yuyutei-evidence.mjs /tmp/public-browser-records.json /tmp/yuyutei-manifest-preview.json
+```
+
+The importer revalidates existing mappings and the complete merge, preserves rejection/search/source history and artwork aliases, and leaves all unconfirmed printings on native search. Reimporting the same confirmed URL is idempotent. Conflicting URLs for one printing, duplicate printing keys or a reused retailer URL stop the import for review. It writes only the requested preview file; copying reviewed bytes to both platform manifests is a separate source edit. Neither command fetches pages, changes catalogs or publishes anything.
 
 Native fallback has now been confirmed by the parent: `https://yuyu-tei.jp/sell/hocg/s/search?search_word=hBP08-003` displayed FUWAMOCO SEC/OUR/OSR. Both platforms use this actual card-number query and ask users to select the matching printing. It is not rarity-specific, and no extra filter parameter is inferred. Further normal/PR query results and the saved primary artifact can extend the evidence register without changing the observed endpoint.
