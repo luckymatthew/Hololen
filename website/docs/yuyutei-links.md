@@ -27,13 +27,14 @@ The fallback uses Google's documented [site and exact-match search operators](ht
 
 ## Preservation and validation
 
-The feature branch starts at safe `recovery/production-card-refresh`, commit `e5274c52068f0d63e59cc655f4d471179d96689c`, which descends from true production `238915a9f71fe4158d45f8f18fad6d2af7d10aaf`. Stale remote `main` and the reverted PR3 engine are not bases.
+The feature branch starts at safe `recovery/production-card-refresh`, commit `e5274c52068f0d63e59cc655f4d471179d96689c`, which descends from true production `238915a9f71fe4158d45f8f18fad6d2af7d10aaf`. It also incorporates deployed `release/download-1.2.7` commit `a789bcbac3f8ca5216f3188f30bb6177e97a40c9`, a narrow follow-on that changes only download metadata and its tests. The draft PR targets that latest release branch. Stale remote `main` and the reverted PR3 engine are not bases.
 
-Catalog data remains at 1,394 card numbers and 2,981 printings. Engine files, compatibility aliases, saved deck/collection formats, release/download metadata, workflow/security configuration and release tags are unchanged. The historical preservation test now recognizes exactly four new retailer modules; its 366 protected production file hashes remain enforced.
+Catalog data remains at 1,394 card numbers and 2,981 printings. Engine files, compatibility aliases, saved deck/collection formats, workflow/security configuration and release tags are unchanged. The published 1.2.7 download metadata and release tests are byte-identical to the latest deployed baseline. The historical preservation test recognizes exactly four new retailer modules and retains the release branch's exact approved 1.2.7 metadata hash; all 366 protected files still require their reviewed production bytes.
 
 Validated in the saved cloud environment:
 
 - `npm test`: 11 synchronization/release tests, 4,030 regression tests, TypeScript checking and Firebase production build passed.
+- After incorporating the deployed 1.2.7 baseline, synchronization/release, preservation and retailer resolver/React UI tests, TypeScript checking and Firebase production build were rechecked. Download metadata and its release tests were compared byte-for-byte with `a789bcb`.
 - Real React/DOM tests exercise normal-to-parallel selection, unmapped parallel and PR searches, safe external attributes, unchanged saved deck data, simulator selection, and compact hover previews.
 - Chromium checks against the Firebase production build cover printing changes, an actual new tab with `window.opener === null`, unchanged saved draft data, 44px mobile actions, PR/SEC search labels and no page errors. Catalog/image and external navigation responses used local fixtures; this does not verify live retailer content.
 - Resolver tests validate every manifest entry against the official catalog, distinguish repeated rarities/unknown IDs, check percent encoding and reject invalid numbers.
