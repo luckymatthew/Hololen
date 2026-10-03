@@ -144,6 +144,8 @@ test('all unrelated production runtime, UI, engine, configuration and public fil
   const roots = ['app', 'lib', 'public', 'build', 'db', 'drizzle', 'firebase', 'worker'];
   const walk = (directory) => fs.readdirSync(path.join(root, directory), { withFileTypes: true }).flatMap((entry) => entry.isDirectory() ? walk(`${directory}/${entry.name}`) : [`${directory}/${entry.name}`]);
   const actual = roots.flatMap((directory) => walk(`website/${directory}`)).filter((name) => name !== 'website/public/cards.json').sort();
-  const expected = [...fixture.protectedRuntime.paths.filter((name) => roots.some((directory) => name.startsWith(`website/${directory}/`))), ...fixture.approvedCompatibility.addedPaths].sort();
-  assert.deepEqual(actual, expected, 'Only the reviewed compatibility helper may be introduced');
+  // This follow-up feature adds isolated retailer modules; all 366 protected files stay pinned.
+  const retailerAdditions = ['website/app/YuyuteiLink.tsx', 'website/app/yuyutei.css', 'website/lib/yuyutei-links.mjs', 'website/lib/yuyutei-products.json'];
+  const expected = [...fixture.protectedRuntime.paths.filter((name) => roots.some((directory) => name.startsWith(`website/${directory}/`))), ...fixture.approvedCompatibility.addedPaths, ...retailerAdditions].sort();
+  assert.deepEqual(actual, expected, 'Only the reviewed compatibility and retailer modules may be introduced');
 });

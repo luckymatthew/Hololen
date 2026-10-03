@@ -18,6 +18,7 @@ import { groupMemberOptions } from "@/lib/member-sort.mjs";
 import ThemeToggle from "@/app/ThemeToggle";
 import FoilCardImage from "@/app/FoilCardImage";
 import ConfirmDialog from "@/app/ConfirmDialog";
+import YuyuteiLink from "@/app/YuyuteiLink";
 
 type CardGroup = "oshi" | "holomem" | "support" | "cheer";
 
@@ -283,6 +284,7 @@ function CardModal({
               {card.jpName !== effectText(card, card.name) ? card.jpName : card.enName}
             </p>
           )}
+          <YuyuteiLink card={card} printing={selectedVariant} />
           <div className="stat-grid">
             {card.colors.length > 0 && (
               <span><small>顏色</small>{card.colors.join("＋")}</span>

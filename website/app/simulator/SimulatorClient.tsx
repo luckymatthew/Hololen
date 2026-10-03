@@ -18,6 +18,7 @@ import { displayedBatonCost, suuBatonIncrease } from "@/lib/simulator/display.mj
 import { buildCardReferenceIndex, cardReferenceTokens } from "@/lib/simulator/log-cards.mjs";
 import { isActivatableOshiSkill, oshiSkillPowerCost, oshiSkillMinimumPower, oshiSkillSpecificConditionMet } from "@/lib/simulator/oshi-skill-catalog.mjs";
 import FoilCardImage from "@/app/FoilCardImage";
+import YuyuteiLink from "@/app/YuyuteiLink";
 
 type DeckState = { oshi: Record<string, number>; main: Record<string, number>; cheer: Record<string, number>; printings?: Record<string, Record<string, number>> };
 type Skill = { name?: string; effect?: string; timing?: string; type?: string };
@@ -953,6 +954,7 @@ function CardInspector({ card, cardMap, variantId, liveState, onClose, hover = f
         <FoilCardImage className="sim-inspector-art" src={image} fallbackSrc={fallbackImages} alt={`${effectText(card, card.name)} ${card.number}`} rarity={rarity} loading="eager" />
         <div><p className="eyebrow">{inspectorMode}</p><h2>{effectText(card, card.name)}</h2><code>{card.number}{selectedVariant ? ` · ${selectedVariant.rarity}` : ""}</code><span className={!card.number.startsWith("hBP09-") && (isPlayableByCore(card) || card.group === "cheer") ? "automated" : "pending"}>{automationLabel(card)}</span></div>
       </div>
+      {!hover && <YuyuteiLink card={card} printing={selectedVariant || (variantId ? undefined : card.variants?.find(variant => variant.image === card.image && variant.rarity === card.rarity))} />}
       {liveState && <section className="sim-inspector-live">
         <div><b>{inspectingLiveHolomem ? "目前狀態" : "所在 Holomen"}</b><span>{[liveState.ownerName, liveState.location].filter(Boolean).join(" · ")}</span></div>
         {liveState.hostName && liveState.hostName !== card.name && <p>附屬／疊放於：<strong>{liveState.hostName}</strong></p>}

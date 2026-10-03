@@ -1,0 +1,5 @@
+.retailer-action { margin: 12px 0 18px; }
+.retailer-action .retailer-link { display: inline-flex; align-items: center; min-height: 44px; padding: 6px 12px; border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: .875rem; font-weight: 600; text-decoration: none; }
+.retailer-action .retailer-link:hover { text-decoration: underline; }
+.retailer-action .retailer-link:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.retailer-action small { display: block; margin-top: 6px; font-size: .75rem; line-height: 1.5; color: var(--text-muted); }
