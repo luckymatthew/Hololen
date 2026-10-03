@@ -140,7 +140,11 @@ test('all unrelated production runtime, UI, engine, configuration and public fil
   const exceptions = new Set(fixture.approvedCompatibility.changedPaths);
   const unchanged = fixture.protectedRuntime.paths.filter((name) => !exceptions.has(name));
   assert.equal(unchanged.length, 366);
-  for (const name of unchanged) assert.equal(hash(read(name)), fixture.protectedRuntime.fileSha256[name], `${name} must stay byte-identical to production`);
+  // The published 1.2.7 download metadata is the only approved release-file change.
+  const releaseMetadataPath = 'website/lib/releases.mjs';
+  const releaseMetadataSha256 = '6d944155fcbeac950d9716af579832163998b917786f5a1acce787d676e040cc';
+  assert.equal(fixture.protectedRuntime.fileSha256[releaseMetadataPath], 'a9985fe523605957075629c9b8d75836af3eab1df0c32366f6ebed70a10f1d65', 'Keep the historical 1.2.6 metadata baseline unchanged');
+  for (const name of unchanged) assert.equal(hash(read(name)), name === releaseMetadataPath ? releaseMetadataSha256 : fixture.protectedRuntime.fileSha256[name], `${name} must match its exact reviewed production bytes`);
   const roots = ['app', 'lib', 'public', 'build', 'db', 'drizzle', 'firebase', 'worker'];
   const walk = (directory) => fs.readdirSync(path.join(root, directory), { withFileTypes: true }).flatMap((entry) => entry.isDirectory() ? walk(`${directory}/${entry.name}`) : [`${directory}/${entry.name}`]);
   const actual = roots.flatMap((directory) => walk(`website/${directory}`)).filter((name) => name !== 'website/public/cards.json').sort();
