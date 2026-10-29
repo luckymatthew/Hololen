@@ -3,8 +3,9 @@ import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
 import { restoreUiBaseline, uiProvenance } from './ui-preservation-helpers.mjs';
+import { restoreApkReleaseBaseline } from './apk-release-preservation-helpers.mjs';
 const hash = value => createHash('sha256').update(value).digest('hex');
-const read = path => readFileSync(new URL(`../../${path}`, import.meta.url));
+const read = path => restoreApkReleaseBaseline(path, readFileSync(new URL(`../../${path}`, import.meta.url)));
 
 test('redesign is exactly scoped over the verified card/footer checkpoint, without weakening historical runtime hashes', () => {
   assert.equal(uiProvenance.baselineSourceCommit, '211da7e605978c815dda47f4bf75b3e7c02f3408');

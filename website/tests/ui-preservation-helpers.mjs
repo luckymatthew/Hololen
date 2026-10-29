@@ -2,12 +2,14 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { createHash } from 'node:crypto';
+import { restoreApkReleaseBaseline } from './apk-release-preservation-helpers.mjs';
 const fixture = JSON.parse(fs.readFileSync(new URL('./fixtures/ui-redesign-2026-10-29-runtime-changes.json', import.meta.url), 'utf8'));
 export const uiAddedPaths = fixture.addedPaths;
 export const uiChangedPaths = fixture.changes.map(change => change.path);
 export const uiProvenance = fixture;
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 export function restoreUiBaseline(name, input) {
+  input = restoreApkReleaseBaseline(name, input);
   const normalized = name.replace(/^.*?(?=website\/)/, '');
   const relative = normalized.startsWith('website/') ? normalized : `website/${name.replace(/^\.\//, '')}`;
   const change = fixture.changes.find(item => item.path === relative);
