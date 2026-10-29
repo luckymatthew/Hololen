@@ -5,9 +5,10 @@ import { build } from 'esbuild';
 import { JSDOM } from 'jsdom';
 
 // Component/DOM tests only: no browser or production Firebase connection.
-const dom = new JSDOM('<div id="root"></div>', { url: 'http://localhost/' });
-for (const key of ['window', 'document', 'localStorage', 'location', 'HTMLElement', 'HTMLInputElement', 'CustomEvent', 'Event']) globalThis[key] = dom.window[key];
+const dom = new JSDOM('<div id="root"></div>', { url: 'http://localhost/', pretendToBeVisual: true });
+for (const key of ['window', 'document', 'localStorage', 'location', 'HTMLElement', 'HTMLInputElement', 'CustomEvent', 'Event', 'requestAnimationFrame', 'cancelAnimationFrame']) globalThis[key] = dom.window[key];
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+dom.window.matchMedia = query => ({ matches: query.includes('reduced-motion'), media: query, addEventListener() {}, removeEventListener() {} });
 dom.window.HTMLDialogElement.prototype.showModal = function () { this.setAttribute('open', ''); };
 dom.window.HTMLDialogElement.prototype.close = function () { this.removeAttribute('open'); };
 const payload = JSON.parse(readFileSync('public/cards.json', 'utf8'));
@@ -32,7 +33,7 @@ function button(name, scope = document) {
   assert.ok(found.length, `Missing button: ${name}`);
   return found[0];
 }
-async function click(name, scope) { await act(async () => button(name, scope).click()); }
+async function click(name, scope) { await act(async () => { button(name, scope).click(); await new Promise(resolve => setTimeout(resolve, 20)); }); }
 async function mount(Component, url = '/') {
   if (root) await act(async () => root.unmount());
   window.history.replaceState({}, '', url);
@@ -45,7 +46,7 @@ test('catalog, modal, saving and removable deck lifecycle', async t => {
   await t.test('catalog can add and remove an oshi down to zero and survive remount', async () => {
     await mount(Home);
     assert.equal(document.querySelector('[aria-label="卡牌操作模式"]'), null);
-    assert.equal(document.querySelector('.studio-masthead-actions'), null);
+    assert.match(document.querySelector('.studio-masthead-actions').textContent, /編輯牌組/);
     assert.doesNotMatch(document.body.textContent, /掃卡翻譯|查看牌組 ·|點卡牌查看詳情|個卡號 ·/);
     await click(`將 ${oshi.name} 加入牌組`);
     assert.equal(quantity(oshi), 1);

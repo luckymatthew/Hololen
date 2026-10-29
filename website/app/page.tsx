@@ -15,7 +15,8 @@ import TerminologyNote from "@/app/TerminologyNote";
 import StudioIcon from "@/app/StudioIcon";
 import { fromHoloSimDeck, isHoloSimDeck, toHoloSimDeck, toHoloSimFilename } from "@/lib/holosim-deck.mjs";
 import { groupMemberOptions } from "@/lib/member-sort.mjs";
-import ThemeToggle from "@/app/ThemeToggle";
+import StudioHeader from "@/app/StudioHeader";
+import { SlidingTabs, StatusToast, useModalMotion } from "@/app/ui-motion";
 import FoilCardImage from "@/app/FoilCardImage";
 import ConfirmDialog from "@/app/ConfirmDialog";
 
@@ -34,6 +35,7 @@ type Art = {
   cost: string[];
   specialTargets: string[];
   specialValues: number[];
+  damageModifier?: string;
 };
 
 type Card = {
@@ -57,7 +59,7 @@ type Card = {
   illustrator: string;
   baton: number | null;
   image: string;
-  variants: { id: string; rarity: string; image: string; sets?: string[] }[];
+  variants: { id: string; rarity: string; image: string; sets?: string[]; officialImportSchema?: number; releaseDate?: string; preview?: boolean }[];
   abilityText: string;
   extra: string;
   keyword: (Skill & { type?: string }) | null;
@@ -72,6 +74,10 @@ type Card = {
   preview: boolean;
   simOnly: boolean;
   releaseDate?: string;
+  officialImportSchema?: number;
+  effectLanguage?: string;
+  translationStatus?: string;
+  simulationStatus?: string;
 };
 
 type CardMeta = {
@@ -224,28 +230,24 @@ function CardModal({
   quantityForVariant: (variantId: string) => number;
   initialVariantId?: string;
 }) {
+  const officialFallback = card.officialImportSchema === 2 && card.effectLanguage === "ja" && card.translationStatus === "official-japanese-fallback";
+  const displayEffect = (value?: string) => officialFallback ? String(value ?? "") : effectText(card, value);
   const sortedVariants = useMemo(() => sortVariantsByRarity(card.variants), [card.variants]);
   const initialVariant = sortedVariants[0];
   const [selectedVariantId, setSelectedVariantId] = useState(initialVariantId || initialVariant?.id || "");
   const selectedVariant = sortedVariants.find((variant) => variant.id === selectedVariantId) ?? initialVariant;
+  const officialPreview = Boolean((selectedVariant?.officialImportSchema === 2 && selectedVariant.preview) || (card.officialImportSchema === 2 && card.preview));
+  const previewReleaseDate = selectedVariant?.officialImportSchema === 2 && selectedVariant.preview ? selectedVariant.releaseDate : card.releaseDate;
   const selectedImage = selectedVariant?.image ?? card.image;
   const selectedQuantity = selectedVariant ? quantityForVariant(selectedVariant.id) : quantity;
-  const dialog = useRef<HTMLDialogElement>(null);
-
-  useEffect(() => {
-    const node = dialog.current;
-    node?.showModal();
-    const overflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => { node?.close(); document.body.style.overflow = overflow; };
-  }, []);
+  const { dialog, requestClose } = useModalMotion(onClose);
 
   return (
-    <dialog ref={dialog} className="studio-card-dialog" onCancel={event => { event.preventDefault(); onClose(); }} onClick={event => { if (event.target === event.currentTarget) onClose(); }} aria-label={`${effectText(card, card.name)} 卡片詳情`}>
+    <dialog ref={dialog} className="studio-card-dialog t-modal" onCancel={event => { event.preventDefault(); requestClose(); }} onClick={event => { if (event.target === event.currentTarget) requestClose(); }} aria-label={`${displayEffect(card.name)} 卡片詳情`}>
       <section
         className="card-modal"
       >
-        <button className="modal-close" type="button" onClick={onClose} aria-label="關閉卡片詳情">
+        <button className="modal-close" type="button" onClick={requestClose} aria-label="關閉卡片詳情">
           ×
         </button>
         <div className="modal-art-column">
@@ -258,12 +260,13 @@ function CardModal({
                   <button
                     key={variant.id}
                     className={selectedVariant?.id === variant.id ? "active" : ""}
+                    aria-pressed={selectedVariant?.id === variant.id}
                     type="button"
                     onClick={() => setSelectedVariantId(variant.id)}
                     title={`${variantLabel(variant, sortedVariants)} 卡圖`}
                   >
-                    <FoilCardImage className="variant-card-art" src={variant.image} alt={`${effectText(card, card.name)} ${variantLabel(variant, sortedVariants)} 卡圖`} rarity={variant.rarity} loading="lazy" />
-                    <span>{variantLabel(variant, sortedVariants)}</span>
+                    <FoilCardImage className="variant-card-art" src={variant.image} alt={`${displayEffect(card.name)} ${variantLabel(variant, sortedVariants)} 卡圖`} rarity={variant.rarity} loading="lazy" />
+                    <span>{variantLabel(variant, sortedVariants)}{variant.officialImportSchema === 2 && variant.preview ? "・官方先行公開" : ""}</span>
                     {quantityForVariant(variant.id) > 0 && <b>×{quantityForVariant(variant.id)}</b>}
                   </button>
                 ))}
@@ -275,12 +278,12 @@ function CardModal({
           <div className="modal-kicker">
             <code>{card.number}</code>
             <span>{cardText(card.type)}</span>
-            {card.preview && <span className="preview-badge">HoloSim 先行卡</span>}
+            {(card.preview || officialPreview) && <span className="preview-badge">{officialPreview ? "官方先行公開" : "HoloSim 先行卡"}</span>}
           </div>
-          <h2>{effectText(card, card.name)}</h2>
-          {(card.jpName !== effectText(card, card.name) || card.enName) && (
+          <h2>{displayEffect(card.name)}</h2>
+          {(card.jpName !== displayEffect(card.name) || card.enName) && (
             <p className="foreign-name">
-              {card.jpName !== effectText(card, card.name) ? card.jpName : card.enName}
+              {card.jpName !== displayEffect(card.name) ? card.jpName : card.enName}
             </p>
           )}
           <div className="stat-grid">
@@ -299,58 +302,60 @@ function CardModal({
             </div>
           )}
           <div className="effect-stack">
-            <h3 className="effect-heading">繁體中文效果 <span>用語已統一</span></h3>
+            <h3 className="effect-heading">{officialFallback ? "官方日文效果" : "繁體中文效果"} <span>{officialFallback ? "未提供已覆核繁中翻譯" : "用語已統一"}</span></h3>
+            {card.officialImportSchema === 2 && card.simulationStatus === "not-audited" && <p role="note" data-card-import-warning>新卡僅供查閱／組牌；文字效果未支援，不適用自動對戰。需依官方規則另行人工處理，收錄不代表已完成模擬器驗證。</p>}
+            {officialPreview && previewReleaseDate && <p role="note">官方先行公開・{previewReleaseDate} 發售</p>}
             {card.number.startsWith("hBP09-") && <p role="note">hBP09 譯文依官方日文卡面整理，屬 AI 翻譯，未經人工覆核。翻譯不代表對戰效果已實作。</p>}
-            <TerminologyNote />
+            {!officialFallback && <TerminologyNote />}
             {(effectAuditPending as Record<string, string>)[card.number] && <p role="note">校對狀態：{(effectAuditPending as Record<string, string>)[card.number]}</p>}
             {card.stageSkill && (card.stageSkill.name || card.stageSkill.effect) && (
               <article className="stage-skill-effect">
                 <span>主推舞台技能</span>
-                <h3>{effectText(card, card.stageSkill.name) || "主推舞台技能"}</h3>
-                <p>{effectText(card, card.stageSkill.effect)}</p>
+                <h3>{displayEffect(card.stageSkill.name) || "主推舞台技能"}</h3>
+                <p>{displayEffect(card.stageSkill.effect)}</p>
               </article>
             )}
             {card.oshiSkill && (card.oshiSkill.name || card.oshiSkill.effect) && (
               <article>
-                <span>主推技能 {card.oshiSkill.timing && `· ${effectText(card, card.oshiSkill.timing)}`}</span>
-                <h3>{effectText(card, card.oshiSkill.name) || "主推技能"}</h3>
-                <p>{effectText(card, card.oshiSkill.effect)}</p>
+                <span>主推技能 {card.oshiSkill.timing && `· ${displayEffect(card.oshiSkill.timing)}`}</span>
+                <h3>{displayEffect(card.oshiSkill.name) || "主推技能"}</h3>
+                <p>{displayEffect(card.oshiSkill.effect)}</p>
               </article>
             )}
             {card.spOshiSkill && (card.spOshiSkill.name || card.spOshiSkill.effect) && (
               <article className="sp-effect">
-                <span>SP 主推技能 {card.spOshiSkill.timing && `· ${effectText(card, card.spOshiSkill.timing)}`}</span>
-                <h3>{effectText(card, card.spOshiSkill.name) || "SP 主推技能"}</h3>
-                <p>{effectText(card, card.spOshiSkill.effect)}</p>
+                <span>SP 主推技能 {card.spOshiSkill.timing && `· ${displayEffect(card.spOshiSkill.timing)}`}</span>
+                <h3>{displayEffect(card.spOshiSkill.name) || "SP 主推技能"}</h3>
+                <p>{displayEffect(card.spOshiSkill.effect)}</p>
               </article>
             )}
             {card.keyword && (card.keyword.name || card.keyword.effect) && (
               <article>
                 <span>{keywordLabel(card.keyword.type)}</span>
-                <h3>{effectText(card, card.keyword.name) || "技能效果"}</h3>
-                <p>{effectText(card, card.keyword.effect)}</p>
+                <h3>{displayEffect(card.keyword.name) || "技能效果"}</h3>
+                <p>{displayEffect(card.keyword.effect)}</p>
               </article>
             )}
             {card.abilityText && (
               <article>
                 <span>卡片效果</span>
-                <p>{effectText(card, card.abilityText)}</p>
+                <p>{displayEffect(card.abilityText)}</p>
               </article>
             )}
             {card.arts.map((art, index) => (
               <article className="art-effect" key={`${art.name}-${index}`}>
                 <span>藝能（Arts） {art.cost.length > 0 && `· ${art.cost.join(" / ")}`}</span>
                 <h3>
-                  {effectText(card, art.name) || `藝能 ${index + 1}`}
-                  {art.damage !== null && <b>{art.damage}{art.specialValues[0] ? `＋特攻 ${art.specialValues[0]}` : ""}</b>}
+                  {displayEffect(art.name) || `藝能 ${index + 1}`}
+                  {art.damage !== null && <b>{art.damage}{card.officialImportSchema === 2 ? art.damageModifier : ""}{art.specialValues[0] ? `＋特攻 ${art.specialValues[0]}` : ""}</b>}
                 </h3>
-                {art.effect && <p>{effectText(card, art.effect)}</p>}
+                {art.effect && <p>{displayEffect(art.effect)}</p>}
               </article>
             ))}
             {card.extra && (
               <article className="extra-effect">
                 <span>Extra</span>
-                <p>{effectText(card, card.extra)}</p>
+                <p>{displayEffect(card.extra)}</p>
               </article>
             )}
           </div>
@@ -360,7 +365,7 @@ function CardModal({
             {card.qaCount > 0 && <span>官方 Q&amp;A · {card.qaCount} 條</span>}
           </div>
           <div className="modal-quantity-controls">
-          <button className="remove-large" type="button" disabled={selectedQuantity === 0} onClick={() => onRemove(card, selectedVariant?.id)} aria-label={`減少 ${effectText(card, card.name)} 所選版本`}>− 減少一張</button>
+          <button className="remove-large" type="button" disabled={selectedQuantity === 0} onClick={() => onRemove(card, selectedVariant?.id)} aria-label={`減少 ${displayEffect(card.name)} 所選版本`}>− 減少一張</button>
           <output aria-live="polite">此版本 {selectedQuantity} 張 · 合計 {quantity} 張</output>
           <button className="add-large" type="button" onClick={() => onAdd(card, selectedVariant?.id)}>
             {selectedVariant ? `＋ 加入 ${variantLabel(selectedVariant, sortedVariants)} 版本${selectedQuantity ? ` · 此版本 ${selectedQuantity}` : ""}` : quantity > 0 ? `加入牌組 · 現有 ${quantity}` : "＋ 加入牌組"}
@@ -386,6 +391,10 @@ export default function Home() {
   const [view, setView] = useState<"gallery" | "list">("gallery");
   const [sort, setSort] = useState("number");
   const [filtersOpen, setFiltersOpen] = useState(false);
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setFiltersOpen(window.matchMedia('(min-width: 901px)').matches));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
   const [typeFilter, setTypeFilter] = useState<"all" | CardGroup>("all");
   const [colorFilter, setColorFilter] = useState("all");
   const [stageFilter, setStageFilter] = useState("all");
@@ -755,32 +764,17 @@ export default function Home() {
   return (
     <main className="studio-page" id="top">
       <a className="skip-link" href={workspace === "library" ? "#library" : "#deck-workbench"}>跳至主要內容</a>
-      <header className="topbar library-topbar">
-        <a className="brand" href="/" aria-label="Hololive OCG 卡庫首頁">
-          <span className="brand-mark">H</span>
-          <span><strong>HOLOLIVE <em>OCG</em></strong><small>繁中卡庫・牌組工房</small></span>
-        </a>
-        <nav className="studio-navigation" aria-label="主要功能">
-          <button type="button" aria-current={workspace === "library" ? "page" : undefined} onClick={() => setWorkspace("library")}>卡片圖鑑</button>
-          <button type="button" aria-current={workspace === "deck" ? "page" : undefined} onClick={() => setWorkspace("deck")}>牌組工房 <span>{oshiCount + mainCount + cheerCount}</span></button>
-          <a href="/simulator">對戰模擬器</a>
-          {firebaseBuild && <a href="/download">Android 下載</a>}
-        </nav>
-        <div className="topbar-actions">
-          <ThemeToggle />
-          <a className="account-button" href="/account">我的牌組</a>
-        </div>
-      </header>
+      <StudioHeader current={workspace} draftCount={oshiCount + mainCount + cheerCount} onWorkspace={setWorkspace} />
 
       <div className="studio-masthead">
         <div>
-          <p className="eyebrow">HOLOLIVE OFFICIAL CARD GAME</p>
           <h1>{workspace === "library" ? "每張卡，一目了然。" : "組出你的下一場勝利。"}</h1>
           <p>{workspace === "library" ? "查卡圖、讀繁中效果，找到適合你牌組的一張。" : "選擇卡圖版本、調整配比，保存後直接開始試牌。"}</p>
         </div>
-        {workspace === "deck" && <div className="studio-masthead-actions">
-          <button type="button" className="studio-primary" onClick={() => setWorkspace("library")}><StudioIcon name="search" />去卡庫加卡</button>
-        </div>}
+        <div className="studio-masthead-actions">
+          {workspace === "library" && <div className="catalog-snapshot"><strong>{meta ? `${meta.uniqueCards.toLocaleString()} 卡號 / ${meta.printings.toLocaleString()} 卡圖` : '正在整理卡庫'}</strong><span>資料快照 {meta?.snapshotDate || '載入中…'}</span></div>}
+          <button type="button" className="studio-primary" onClick={() => setWorkspace(workspace === "library" ? "deck" : "library")}><StudioIcon name={workspace === "library" ? "cards" : "search"} />{workspace === "library" ? `編輯牌組 · ${oshiCount + mainCount + cheerCount} 張` : "去卡庫加卡"}</button>
+        </div>
       </div>
 
       <section className="deck-workbench" id="deck-workbench" aria-label="牌組構築器" hidden={workspace !== "deck"} tabIndex={-1}>
@@ -862,7 +856,7 @@ export default function Home() {
       </section>
 
       <section className="catalog-panel" id="library" hidden={workspace !== "library"} tabIndex={-1} aria-label="完整卡庫">
-          <label className="deck-only-filter"><input type="checkbox" checked={onlyDeck} onChange={event => { setOnlyDeck(event.target.checked); setVisibleCount(72); }} />只顯示已加入牌組的卡片</label>
+
           <div className="search-panel" role="search" aria-label="搜尋及篩選卡片">
             <div className="studio-search-row">
             <label className="searchbox">
@@ -880,16 +874,27 @@ export default function Home() {
             </label>
             <button className="studio-filter-toggle" type="button" aria-expanded={filtersOpen} aria-controls="advanced-filters" onClick={() => setFiltersOpen(value => !value)}><StudioIcon name="filter" />篩選{activeFilters.length > 0 && <b>{activeFilters.length}</b>}</button>
             </div>
-            <div className="studio-type-tabs" aria-label="卡片種類">
-              {typeOptions.map(option => <button key={option.value} type="button" aria-pressed={typeFilter === option.value} onClick={() => setTypeFilter(option.value as typeof typeFilter)}>{option.value === "all" ? "全部" : option.value === "oshi" ? "推し" : option.label}</button>)}
-            </div>
-            <div className="filter-grid" id="advanced-filters" hidden={!filtersOpen}>
+            <SlidingTabs className="studio-type-tabs" label="卡片種類" selected={typeFilter}>
+              {typeOptions.map(option => <button key={option.value} className="t-tab" type="button" aria-pressed={typeFilter === option.value} onClick={() => setTypeFilter(option.value as typeof typeFilter)}>{option.value === "all" ? "全部" : option.value === "oshi" ? "推し" : option.label}</button>)}
+            </SlidingTabs>
+
+          </div>
+
+          <div className="catalog-layout" data-filters-open={filtersOpen}>
+            <aside className="catalog-filter-rail t-acc" data-open={filtersOpen} aria-label="卡片篩選">
+              <div className="t-acc-panel" id="advanced-filters" inert={!filtersOpen}><div className="t-acc-panel-inner"><div className="filter-rail-content">
+                <div className="filter-rail-heading"><h2>篩選卡片</h2><button type="button" onClick={resetFilters}>重設</button></div>
+            <div className="filter-grid">
               <label><span>成員（依分部・世代）</span><select value={memberFilter} onChange={(event) => setMemberFilter(event.target.value)}><option value="all">全部成員</option>{memberGroups.map((group) => <optgroup label={group.label} key={group.key}>{group.options.map((member) => <option value={member.value} key={member.value}>{member.label}</option>)}</optgroup>)}</select></label>
               <label><span>顏色</span><select value={colorFilter} onChange={(event) => setColorFilter(event.target.value)}>{colorOptions.map(([value, label]) => <option value={value} key={value}>{label}</option>)}</select></label>
               <label><span>階級</span><select value={stageFilter} onChange={(event) => setStageFilter(event.target.value)}>{stageOptions.map(([value, label]) => <option value={value} key={value}>{label}</option>)}</select></label>
               <label><span>系列</span><select value={setFilter} onChange={(event) => setSetFilter(event.target.value)}><option value="all">全部系列</option>{setOptions.map((set) => <option value={set} key={set}>{set}</option>)}</select></label>
             </div>
-          </div>
+                <label className="deck-only-filter"><input type="checkbox" checked={onlyDeck} onChange={event => { setOnlyDeck(event.target.checked); setVisibleCount(72); }} />只顯示已加入牌組的卡片</label>
+                <p className="filter-rail-note">挑選成員、系列或卡片階級。可同時套用條件，亦可用上方關鍵字搜尋效果。</p>
+              </div></div></div>
+            </aside>
+            <div className="catalog-content">
 
           <div className="result-bar">
             <span role="status" aria-live="polite">{loading ? "載入中…" : <><b>{catalogCards.length.toLocaleString()}</b> 張卡片{query !== deferredQuery && " · 搜尋中…"}</>}</span>
@@ -927,7 +932,7 @@ export default function Home() {
                         {card.colors.map((color) => <span key={color}>{color}</span>)}
                       </div>
                       <p>{shortEffect(card)}</p>
-                      <small>查看中文效果 →</small>
+                      <small>{card.officialImportSchema === 2 ? "查看官方日文效果" : "查看中文效果"} →</small>
                     </div>
                   </button>
                   <div className="catalog-quantity-controls">
@@ -947,7 +952,6 @@ export default function Home() {
                   >
                     ＋
                   </button>
-                  <button className="catalog-card-details" type="button" onClick={() => { setActiveVariantId(""); setActiveCard(card); }} aria-label={`查看 ${effectText(card, card.name)} 詳情`}>詳情</button>
                   </div>
                 </article>
               );
@@ -960,6 +964,8 @@ export default function Home() {
               顯示更多卡片 <span>{visibleCount} / {catalogCards.length}</span>
             </button>
           )}
+            </div>
+          </div>
       </section>
 
       <footer>
@@ -985,7 +991,7 @@ export default function Home() {
           quantityForVariant={(variantId) => quantityForVariant(activeCard, variantId)}
         />
       )}
-      {notice && <div className="toast" role="status">{notice}</div>}
+      <StatusToast message={notice} />
       {clearRequested && <ConfirmDialog title="清空目前草稿？" description="草稿內所有卡片將會移除。已保存的牌組仍可在「我的牌組」載入；如要刪除已保存牌組，請到該頁操作。" confirmLabel="清空草稿" onConfirm={clearDeck} onCancel={() => setClearRequested(false)} />}
     </main>
   );

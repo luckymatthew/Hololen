@@ -66,7 +66,13 @@ test('hBP09-031 official RR/SR/UR identity, Gift text, Arts text, costs and targ
   assert.equal(card.jpName, '白銀ノエル');
   assert.equal(card.stage, '2nd');
   assert.equal(card.hp, 220);
-  assert.deepEqual(new Set(card.variants.map(variant => variant.rarity)), new Set(['RR', 'SR', 'UR']));
+  assert.deepEqual(new Set(card.variants.map(variant => variant.rarity)), new Set(['RR', 'SR', 'UR', 'P']));
+  assert.deepEqual(card.variants.filter(variant => variant.rarity === 'P'), [{
+    id: 'official-hBP09-031-3015', rarity: 'P', officialImportSchema: 2,
+    image: 'https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-031_P.png',
+    sets: ['PRカード', '【使用可能カード】セレクションカップ'],
+    sourceUrl: 'https://hololive-official-cardgame.com/cardlist/?id=3015&%2Fcardlist%2Fcardsearch_ex=&view=text',
+  }]);
   assert.equal(card.keyword.type, 'gift');
   assert.equal(card.keyword.effect, '[ターンに1回]このホロメンが〈牛丼〉の能力で回復するHP+100。');
   assert.equal(card.arts[0].damage, 10);

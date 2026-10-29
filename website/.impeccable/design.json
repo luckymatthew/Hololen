@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "name": "HoloLens collectible workbench",
+  "mode": "operate",
+  "figma": "https://www.figma.com/design/CkkImhoIVG5oxaZNuSj43E",
+  "tokensSource": "app/design-system.css",
+  "type": { "family": ["Noto Sans TC", "Noto Sans CJK TC", "platform UI sans"], "bodyPx": 16, "scalePx": [12, 13, 14, 16, 18, 20, 24, 28, 32, 40, 48] },
+  "light": { "page": "#F6F5F0", "surface": "#FFFFFF", "secondary": "#EFEFEA", "text": "#122737", "muted": "#586974", "border": "#D9E0E1", "accent": "#0EADC5", "functionalAccent": "#08788A", "selected": "#E2F6F8" },
+  "dark": { "page": "#101C25", "surface": "#172A36", "secondary": "#1E3340", "text": "#EAF2F3", "muted": "#A8BAC3", "border": "#35505F", "accent": "#43C9DA", "functionalAccent": "#70D7E4", "selected": "#183E4B" },
+  "layout": { "contentMaxPx": 1440, "filterRailPx": 256, "deckActionRailPx": 320, "mobileColumns": 2, "standardTargetPx": 44, "compactAdjacentCardTargetPx": 44 },
+  "motion": { "source": "Transitions.dev free recipes", "modalOpenMs": 250, "modalCloseMs": 150, "tabsMs": 250, "accordionMs": 250, "toastOpenMs": 350, "toastCloseMs": 250, "reducedMotion": "No spatial movement or nonessential loops; readable final state retained" },
+  "constraints": ["No card-data or ID changes", "No engine/auth/storage/Firebase rules changes", "No Android changes", "Actual artwork only", "Unsupported and literal Japanese fallback states preserved", "Active-match board geometry preserved"]
+}

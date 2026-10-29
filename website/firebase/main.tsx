@@ -1,17 +1,30 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { Component, lazy, Suspense, useEffect, useState, type ReactNode } from 'react';
+import Link from 'next/link';
 import { createRoot } from 'react-dom/client';
 import { startSync, currentOwner } from '../lib/firebase/store';
 import { firebaseConfigured, getFirebase } from '../lib/firebase/client';
 import { onAuthStateChanged } from 'firebase/auth';
+import WebsiteUpdateLog from '../app/WebsiteUpdateLog';
 import '../app/globals.css';
 import '../app/studio.css';
 import '../app/firebase.css';
+import '../app/design-system.css';
 const Home = lazy(() => import('../app/page'));
 const Simulator = lazy(() => import('../app/simulator/SimulatorClient'));
 const Account = lazy(() => import('../app/account/FirebaseAccount'));
 const Download = lazy(() => import('../app/download/DownloadClient'));
 try { const theme = localStorage.getItem('hololive-ocg-theme'); if (theme) document.documentElement.dataset.theme = theme; } catch {}
 startSync();
+function PageLoading({ local = false }: { local?: boolean }) {
+  return <main className="page-loading" role="status" aria-label={local ? '正在載入本機牌組' : '正在載入頁面'}><div className="page-loading-title" /><div className="page-loading-grid" aria-hidden="true">{[0, 1, 2, 3].map(index => <span key={index} />)}</div><p>{local ? '正在載入本機牌組…' : '正在載入…'}</p></main>;
+}
+class PageBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  render() {
+    return this.state.failed ? <main className="page-error" role="alert"><h1>頁面暫時未能載入</h1><p>本機牌組不會因此刪除。請確認網絡連線後重試。</p><button type="button" className="studio-primary" onClick={() => location.reload()}>重新載入</button><Link href="/">返回卡庫</Link></main> : this.props.children;
+  }
+}
 function Shell() {
   const [updated, setUpdated] = useState(false);
   const [owner, setOwner] = useState(currentOwner());
@@ -34,7 +47,7 @@ function Shell() {
     }).catch(() => {});
   }, []);
   const path = location.pathname.replace(/\/$/, '') || '/';
-  const page = ['/simulator', '/pvp', '/play'].includes(path) ? <Simulator /> : ['/account', '/profile', '/settings'].includes(path) ? <Account /> : path === '/download' ? <Download /> : ['/', '/cards', '/deck'].includes(path) ? authReady ? <Home key={owner || 'guest'} /> : <main className="account-loading">正在載入本機牌組…</main> : <main className="account-page"><h1>找不到這個頁面</h1><a href="/">返回卡庫</a></main>;
-  return <>{updated && <div className="sync-banner" role="status">新版本已準備好；完成對局及保存牌組後，關閉本站所有分頁再重新開啟。</div>}<Suspense fallback={<main className="account-loading">正在載入…</main>}>{page}</Suspense></>;
+  const page = ['/simulator', '/pvp', '/play'].includes(path) ? <Simulator /> : ['/account', '/profile', '/settings'].includes(path) ? <Account /> : path === '/download' ? <Download /> : ['/', '/cards', '/deck'].includes(path) ? authReady ? <Home key={owner || 'guest'} /> : <PageLoading local /> : <main className="account-page"><h1>找不到這個頁面</h1><Link href="/">返回卡庫</Link></main>;
+  return <>{updated && <div className="sync-banner" role="status">新版本已準備好；完成對局及保存牌組後，關閉本站所有分頁再重新開啟。</div>}<PageBoundary><Suspense fallback={<PageLoading />}>{page}</Suspense></PageBoundary><WebsiteUpdateLog /></>;
 }
 createRoot(document.getElementById('root')!).render(<Shell />);

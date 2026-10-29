@@ -33,15 +33,24 @@ test('effect matrix carries independently verified identity and printing evidenc
   assert.equal(kaela.identityStatus, 'PARTIAL');
   assert.equal(kaela.basicActionStatus, 'UNVERIFIED');
   assert.equal(kaela.printingEquivalenceStatus, 'PARTIAL');
-  assert.deepEqual(matrix.cardsByStatus, { PARTIAL: 12, UNVERIFIED: 1382 });
-  assert.deepEqual(matrix.basicActionByStatus, { PARTIAL: 7, UNVERIFIED: 1387 });
-  assert.deepEqual(matrix.printingEquivalenceByStatus, { PARTIAL: 9, UNVERIFIED: 1385 });
-  // Only two text-free Cheer cards were added; no new rules have been audited.
-  assert.equal(matrix.currentCardCount, 1394);
-  assert.equal(matrix.printingCount, 2981);
-  assert.equal(matrix.abilityCount, 2468);
-  assert.equal(matrix.clauseCount, 3130);
+  assert.deepEqual(matrix.cardsByStatus, { PARTIAL: 12, UNVERIFIED: 1404 });
+  assert.deepEqual(matrix.basicActionByStatus, { PARTIAL: 7, UNVERIFIED: 1409 });
+  assert.deepEqual(matrix.printingEquivalenceByStatus, { PARTIAL: 9, UNVERIFIED: 1407 });
+  // Existing audit evidence is unchanged; all22 new cards are added to the unverified denominator.
+  assert.equal(matrix.currentCardCount, 1416);
+  assert.equal(matrix.printingCount, 3038);
+  assert.equal(matrix.abilityCount, 2510);
+  assert.equal(matrix.clauseCount, 3194);
   assert.equal(matrix.complete, false);
+  const newNumbers = JSON.parse(readFileSync(path.join(websiteRoot, 'docs/card-refresh-2026-10-29/report.json'), 'utf8')).newCardNumbers;
+  assert.equal(newNumbers.length, 22);
+  for (const number of newNumbers) {
+    const card = matrix.cardChecks.find(row => row.cardNumber === number);
+    assert.ok(card, `${number}: included in audit denominator`);
+    assert.equal(card.identityStatus, 'UNVERIFIED');
+    assert.equal(card.basicActionStatus, 'UNVERIFIED');
+    assert.equal(card.printingEquivalenceStatus, 'UNVERIFIED');
+  }
   for (const number of ['hY03-018', 'hY04-015']) {
     const card = matrix.cardChecks.find(row => row.cardNumber === number);
     assert.ok(card, `${number} must be included in the audit denominator`);

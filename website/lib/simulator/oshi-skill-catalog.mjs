@@ -4,7 +4,7 @@ const DEFAULT_SP_COST = 2;
 // These cards are available to browse and build decks with, but their engine
 // resolvers are not implemented by the database import. Never assume 2/2 costs
 // or offer an activation that would spend power without resolving an effect.
-export const CATALOG_ONLY_OSHI = Object.freeze([]); // hBP09 resolvers installed
+export const CATALOG_ONLY_OSHI = Object.freeze(["hSD20-001", "hSD21-001"]); // Official data only; no engine resolvers.
 
 // Official Holo Power costs that differ from the common 2 / 2 template.
 // Cards without an SP skill simply never ask for the SP value.

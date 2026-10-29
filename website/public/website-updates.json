@@ -1,0 +1,868 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "official-cards-2026-10-29-75814dea892a",
+      "date": "2026-10-29",
+      "title": "官方卡表更新",
+      "summary": [
+        "新增 22 個卡號及 57 個印刷版本／卡圖，其中 35 個為既有卡號的新版本。",
+        "保留既有卡號、卡圖識別及牌組相容性；新卡效果採官方日文原文，尚未支援自動對戰。",
+        "部分新卡／卡圖為官方先行公開，發售日期：2026-10-30（日本時間）。",
+        "網站底部新增更新記錄按鈕，可查看新增卡號及卡圖表格。"
+      ],
+      "counts": {
+        "newCards": 22,
+        "newPrintings": 57,
+        "newPrintingsForExistingCards": 35
+      },
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "catalogSha256": "75814dea892ac79fdf2ad9dd09987c117c870163b9e903b63533df22be2119ac",
+      "cards": [
+        {
+          "kind": "new-card",
+          "number": "hSD20-001",
+          "name": "百灯キョーコ",
+          "jpName": "百灯キョーコ",
+          "rarity": "OSR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-001_OSR.png",
+          "printingId": "official-hSD20-001-3028",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3028&view=text"
+        },
+        {
+          "kind": "new-card",
+          "number": "hSD20-002",
+          "name": "百灯キョーコ",
+          "jpName": "百灯キョーコ",
+          "rarity": "C",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-002_C.png",
+          "printingId": "official-hSD20-002-3029",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3029&view=text"
+        },
+        {
+          "kind": "new-card",
+          "number": "hSD20-003",
+          "name": "百灯キョーコ",
+          "jpName": "百灯キョーコ",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-003_U.png",
+          "printingId": "official-hSD20-003-3030",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3030&view=text"
+        },
+        {
+          "kind": "new-card",
+          "number": "hSD20-004",
+          "name": "百灯キョーコ",
+          "jpName": "百灯キョーコ",
+          "rarity": "C",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-004_C.png",
+          "printingId": "official-hSD20-004-3031",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3031&view=text"
+        },
+        {
+          "kind": "new-card",
+          "number": "hSD20-005",
+          "name": "百灯キョーコ",
+          "jpName": "百灯キョーコ",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-005_U.png",
+          "printingId": "official-hSD20-005-3032",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3032&view=text"
+        },
+        {
+          "kind": "new-card",
+          "number": "hSD20-006",
+          "name": "百灯キョーコ",
+          "jpName": "百灯キョーコ",
+          "rarity": "R",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-006_R.png",
+          "printingId": "official-hSD20-006-3033",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3033&view=text"
+        },
+        {
+          "kind": "new-card",
+          "number": "hSD20-007",
+          "name": "百灯キョーコ",
+          "jpName": "百灯キョーコ",
+          "rarity": "RR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-007_RR.png",
+          "printingId": "official-hSD20-007-3034",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3034&view=text"
+        },
+        {
+          "kind": "new-card",
+          "number": "hSD20-008",
+          "name": "宙科そぴあ",
+          "jpName": "宙科そぴあ",
+          "rarity": "C",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-008_C.png",
+          "printingId": "official-hSD20-008-3035",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3035&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-card",
+          "number": "hSD20-009",
+          "name": "宙科そぴあ",
+          "jpName": "宙科そぴあ",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-009_U.png",
+          "printingId": "official-hSD20-009-3036",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3036&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-card",
+          "number": "hSD20-010",
+          "name": "宙科そぴあ",
+          "jpName": "宙科そぴあ",
+          "rarity": "R",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-010_R.png",
+          "printingId": "official-hSD20-010-3037",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3037&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-card",
+          "number": "hSD20-011",
+          "name": "宙科そぴあ",
+          "jpName": "宙科そぴあ",
+          "rarity": "RR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-011_RR.png",
+          "printingId": "official-hSD20-011-3038",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3038&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-card",
+          "number": "hSD20-012",
+          "name": "アソビ★まわり隊！",
+          "jpName": "アソビ★まわり隊！",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-012_U.png",
+          "printingId": "official-hSD20-012-3039",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3039&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-card",
+          "number": "hSD20-013",
+          "name": "ぐるぐるTIME！",
+          "jpName": "ぐるぐるTIME！",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-013_U.png",
+          "printingId": "official-hSD20-013-3040",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3040&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-card",
+          "number": "hSD20-014",
+          "name": "百灯キョーコの拡声器",
+          "jpName": "百灯キョーコの拡声器",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-014_U.png",
+          "printingId": "official-hSD20-014-3041",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3041&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-card",
+          "number": "hSD21-001",
+          "name": "熱千めら",
+          "jpName": "熱千めら",
+          "rarity": "OSR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-001_OSR.png",
+          "printingId": "official-hSD21-001-3043",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3043&view=text"
+        },
+        {
+          "kind": "new-card",
+          "number": "hSD21-002",
+          "name": "熱千めら",
+          "jpName": "熱千めら",
+          "rarity": "C",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-002_C.png",
+          "printingId": "official-hSD21-002-3044",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3044&view=text"
+        },
+        {
+          "kind": "new-card",
+          "number": "hSD21-003",
+          "name": "熱千めら",
+          "jpName": "熱千めら",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-003_U.png",
+          "printingId": "official-hSD21-003-3045",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3045&view=text"
+        },
+        {
+          "kind": "new-card",
+          "number": "hSD21-004",
+          "name": "熱千めら",
+          "jpName": "熱千めら",
+          "rarity": "C",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-004_C.png",
+          "printingId": "official-hSD21-004-3046",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3046&view=text"
+        },
+        {
+          "kind": "new-card",
+          "number": "hSD21-005",
+          "name": "熱千めら",
+          "jpName": "熱千めら",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-005_U.png",
+          "printingId": "official-hSD21-005-3047",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3047&view=text"
+        },
+        {
+          "kind": "new-card",
+          "number": "hSD21-006",
+          "name": "熱千めら",
+          "jpName": "熱千めら",
+          "rarity": "R",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-006_R.png",
+          "printingId": "official-hSD21-006-3048",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3048&view=text"
+        },
+        {
+          "kind": "new-card",
+          "number": "hSD21-007",
+          "name": "熱千めら",
+          "jpName": "熱千めら",
+          "rarity": "RR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-007_RR.png",
+          "printingId": "official-hSD21-007-3049",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3049&view=text"
+        },
+        {
+          "kind": "new-card",
+          "number": "hSD21-008",
+          "name": "熱千めらの拍子木",
+          "jpName": "熱千めらの拍子木",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-008_U.png",
+          "printingId": "official-hSD21-008-3050",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3050&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP01-071",
+          "name": "尾丸波爾卡",
+          "jpName": "尾丸ポルカ",
+          "rarity": "SR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hCO03/hBP01-071_SR.png",
+          "printingId": "official-hBP01-071-3004",
+          "products": [
+            "エクストリーマーカップ25-26 Final オフィシャルホロカコレクションB"
+          ],
+          "releaseDate": "2026-10-11",
+          "preview": false,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3004&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP02-011",
+          "name": "白上吹雪",
+          "jpName": "白上フブキ",
+          "rarity": "SR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hCO02/hBP02-011_SR_03.png",
+          "printingId": "official-hBP02-011-2998",
+          "products": [
+            "エクストリーマーカップ25-26 Final オフィシャルホロカコレクションA",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "releaseDate": "2026-10-11",
+          "preview": false,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2998&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP03-016",
+          "name": "獅白牡丹",
+          "jpName": "獅白ぼたん",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP03-016_P_02.png",
+          "printingId": "official-hBP03-016-2994",
+          "products": [
+            "PRカード"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2994&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP03-020",
+          "name": "獅白牡丹",
+          "jpName": "獅白ぼたん",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP03-020_P_02.png",
+          "printingId": "official-hBP03-020-2995",
+          "products": [
+            "PRカード"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2995&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP04-012",
+          "name": "博衣小夜璃",
+          "jpName": "博衣こより",
+          "rarity": "SR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hCO03/hBP04-012_SR_03.png",
+          "printingId": "official-hBP04-012-3005",
+          "products": [
+            "エクストリーマーカップ25-26 Final オフィシャルホロカコレクションB",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "releaseDate": "2026-10-11",
+          "preview": false,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3005&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP04-035",
+          "name": "一條莉莉華",
+          "jpName": "一条莉々華",
+          "rarity": "SR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hCO03/hBP04-035_SR.png",
+          "printingId": "official-hBP04-035-3006",
+          "products": [
+            "エクストリーマーカップ25-26 Final オフィシャルホロカコレクションB"
+          ],
+          "releaseDate": "2026-10-11",
+          "preview": false,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3006&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP04-054",
+          "name": "拉普拉斯·暗黑",
+          "jpName": "ラプラス・ダークネス",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP04-054_P_02.png",
+          "printingId": "official-hBP04-054-2996",
+          "products": [
+            "PRカード"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2996&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP05-074",
+          "name": "友善電腦",
+          "jpName": "フレンドリーパソコン",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP05-074_P_03.png",
+          "printingId": "official-hBP05-074-3014",
+          "products": [
+            "PRカード",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3014&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP05-074",
+          "name": "友善電腦",
+          "jpName": "フレンドリーパソコン",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP05-074_P_04.png",
+          "printingId": "official-hBP05-074-3017",
+          "products": [
+            "PRカード",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3017&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP06-019",
+          "name": "響咲莉歐娜",
+          "jpName": "響咲リオナ",
+          "rarity": "SR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hCO02/hBP06-019_SR.png",
+          "printingId": "official-hBP06-019-2999",
+          "products": [
+            "エクストリーマーカップ25-26 Final オフィシャルホロカコレクションA"
+          ],
+          "releaseDate": "2026-10-11",
+          "preview": false,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2999&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP06-059",
+          "name": "Mori Calliope",
+          "jpName": "森カリオペ",
+          "rarity": "SR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hCO03/hBP06-059_SR.png",
+          "printingId": "official-hBP06-059-3007",
+          "products": [
+            "エクストリーマーカップ25-26 Final オフィシャルホロカコレクションB"
+          ],
+          "releaseDate": "2026-10-11",
+          "preview": false,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3007&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP07-072",
+          "name": "拉普拉斯·暗黑",
+          "jpName": "ラプラス・ダークネス",
+          "rarity": "SR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hCO03/hBP07-072_SR.png",
+          "printingId": "official-hBP07-072-3008",
+          "products": [
+            "エクストリーマーカップ25-26 Final オフィシャルホロカコレクションB"
+          ],
+          "releaseDate": "2026-10-11",
+          "preview": false,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3008&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP07-073",
+          "name": "拉普拉斯·暗黑",
+          "jpName": "ラプラス・ダークネス",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP07-073_P.png",
+          "printingId": "official-hBP07-073-2997",
+          "products": [
+            "PRカード"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2997&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP08-071",
+          "name": "Ninomae Ina'nis",
+          "jpName": "一伊那尓栖",
+          "rarity": "SR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hCO03/hBP08-071_SR.png",
+          "printingId": "official-hBP08-071-3009",
+          "products": [
+            "エクストリーマーカップ25-26 Final オフィシャルホロカコレクションB",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "releaseDate": "2026-10-11",
+          "preview": false,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3009&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP09-001",
+          "name": "大空昴",
+          "jpName": "大空スバル",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-001_P_02.png",
+          "printingId": "official-hBP09-001-3010",
+          "products": [
+            "PRカード",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3010&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP09-001",
+          "name": "大空昴",
+          "jpName": "大空スバル",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-001_P_03.png",
+          "printingId": "official-hBP09-001-3011",
+          "products": [
+            "PRカード",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3011&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP09-001",
+          "name": "大空昴",
+          "jpName": "大空スバル",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-001_P_04.png",
+          "printingId": "official-hBP09-001-3012",
+          "products": [
+            "PRカード",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3012&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP09-001",
+          "name": "大空昴",
+          "jpName": "大空スバル",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-001_P_05.png",
+          "printingId": "official-hBP09-001-3013",
+          "products": [
+            "PRカード",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3013&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP09-012",
+          "name": "大空昴",
+          "jpName": "大空スバル",
+          "rarity": "SR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hCO02/hBP09-012_SR.png",
+          "printingId": "official-hBP09-012-3000",
+          "products": [
+            "エクストリーマーカップ25-26 Final オフィシャルホロカコレクションA",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "releaseDate": "2026-10-11",
+          "preview": false,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3000&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP09-031",
+          "name": "白銀諾艾爾",
+          "jpName": "白銀ノエル",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-031_P.png",
+          "printingId": "official-hBP09-031-3015",
+          "products": [
+            "PRカード",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3015&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP09-075",
+          "name": "Nerissa Ravencroft",
+          "jpName": "ネリッサ・レイヴンクロフト",
+          "rarity": "SR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hCO02/hBP09-075_SR.png",
+          "printingId": "official-hBP09-075-3001",
+          "products": [
+            "エクストリーマーカップ25-26 Final オフィシャルホロカコレクションA",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "releaseDate": "2026-10-11",
+          "preview": false,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3001&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP09-085",
+          "name": "夏色祭",
+          "jpName": "夏色まつり",
+          "rarity": "SR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hCO02/hBP09-085_SR.png",
+          "printingId": "official-hBP09-085-3002",
+          "products": [
+            "エクストリーマーカップ25-26 Final オフィシャルホロカコレクションA",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "releaseDate": "2026-10-11",
+          "preview": false,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3002&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hBP09-086",
+          "name": "夏色祭",
+          "jpName": "夏色まつり",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-086_P.png",
+          "printingId": "official-hBP09-086-3016",
+          "products": [
+            "PRカード",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3016&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hEB01-025",
+          "name": "夏日電腦",
+          "jpName": "サマーパソコン",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hEB01-025_P.png",
+          "printingId": "official-hEB01-025-3018",
+          "products": [
+            "PRカード",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3018&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hEB01-026",
+          "name": "熊琳",
+          "jpName": "クマリン",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hEB01-026_P.png",
+          "printingId": "official-hEB01-026-3019",
+          "products": [
+            "PRカード",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3019&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hEB01-027",
+          "name": "夏日演唱會",
+          "jpName": "サマーライブ",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hEB01-027_P.png",
+          "printingId": "official-hEB01-027-3020",
+          "products": [
+            "PRカード",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3020&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hEB01-028",
+          "name": "打西瓜",
+          "jpName": "スイカ割り",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hEB01-028_P.png",
+          "printingId": "official-hEB01-028-3021",
+          "products": [
+            "PRカード",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3021&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hEB01-029",
+          "name": "水花射擊",
+          "jpName": "スプラッシュシュート",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hEB01-029_P.png",
+          "printingId": "official-hEB01-029-3022",
+          "products": [
+            "PRカード",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3022&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hEB01-030",
+          "name": "Hololive Summer",
+          "jpName": "ホロライブ・サマー",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hEB01-030_P.png",
+          "printingId": "official-hEB01-030-3023",
+          "products": [
+            "PRカード",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3023&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hEB01-031",
+          "name": "戲水",
+          "jpName": "水遊び",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hEB01-031_P.png",
+          "printingId": "official-hEB01-031-3024",
+          "products": [
+            "PRカード",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3024&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hEB01-032",
+          "name": "STAR STAR☆T",
+          "jpName": "STAR STAR☆T",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hEB01-032_P.png",
+          "printingId": "official-hEB01-032-3025",
+          "products": [
+            "PRカード",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3025&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hEB01-033",
+          "name": "沙灘球",
+          "jpName": "ビーチボール",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hEB01-033_P.png",
+          "printingId": "official-hEB01-033-3026",
+          "products": [
+            "PRカード",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3026&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hEB01-034",
+          "name": "萬事爆解！",
+          "jpName": "なんでも爆解！",
+          "rarity": "P",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hEB01-034_P.png",
+          "printingId": "official-hEB01-034-3027",
+          "products": [
+            "PRカード",
+            "【使用可能カード】セレクションカップ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3027&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hSD12-009",
+          "name": "Koseki Bijou",
+          "jpName": "古石ビジュー",
+          "rarity": "SR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hCO02/hSD12-009_SR.png",
+          "printingId": "official-hSD12-009-3003",
+          "products": [
+            "エクストリーマーカップ25-26 Final オフィシャルホロカコレクションA"
+          ],
+          "releaseDate": "2026-10-11",
+          "preview": false,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3003&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        },
+        {
+          "kind": "new-printing",
+          "number": "hSD14-010",
+          "name": "holoAN（官方新聞）",
+          "jpName": "holoAN",
+          "rarity": "C",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD14-010_C_03.png",
+          "printingId": "official-hSD14-010-3042",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "releaseDate": "2026-10-30",
+          "preview": true,
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3042&%2Fcardlist%2Fcardsearch_ex=&view=text"
+        }
+      ]
+    }
+  ]
+}

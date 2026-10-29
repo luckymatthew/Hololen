@@ -1,0 +1,351 @@
+{
+  "schemaVersion": 2,
+  "fixtureNote": "Offline sampled official HTML captured 2026-10-29, reduced to five rows and selected product membership for importer regression. Not a complete live official capture. Completeness metadata is synthetic for this test fixture only.",
+  "capturedAt": "2026-10-29T00:00:00+00:00",
+  "pages": 1,
+  "successfulPages": 1,
+  "errors": [],
+  "printings": [
+    {
+      "number": "hSD21-001",
+      "jpName": "熱千めら",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3043&expansion=hSD21&view=text",
+      "listUrl": "https://hololive-official-cardgame.com/cardlist/cardsearch/?expansion=hSD21&view=text",
+      "imageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-001_OSR.png",
+      "info": {
+        "カードタイプ": "推しホロメン",
+        "レアリティ": "OSR",
+        "収録商品": "スタートデッキ アソビ★まわり隊！推し 熱千めら",
+        "色": "紫",
+        "LIFE": "5"
+      },
+      "infoDetails": {
+        "カードタイプ": {
+          "text": "推しホロメン",
+          "images": []
+        },
+        "レアリティ": {
+          "text": "OSR",
+          "images": []
+        },
+        "収録商品": {
+          "text": "スタートデッキ アソビ★まわり隊！推し 熱千めら",
+          "images": []
+        },
+        "色": {
+          "text": "紫",
+          "images": [
+            {
+              "class": "",
+              "src": "/wp-content/images/texticon/type_purple.png",
+              "alt": "紫"
+            }
+          ]
+        },
+        "LIFE": {
+          "text": "5",
+          "images": []
+        }
+      },
+      "fields": [
+        {
+          "class": "stage skill",
+          "html": "<div class=\"stage skill\"><p>推しステージスキル</p><p><span>サラマンダーの恩返し</span>自分のホロメンがコラボした時、自分のセンターが〈熱千めら〉なら、自分のデッキを1枚引き、手札1枚をアーカイブする。</p></div>",
+          "label": "推しステージスキル",
+          "text": "推しステージスキルサラマンダーの恩返し自分のホロメンがコラボした時、自分のセンターが〈熱千めら〉なら、自分のデッキを1枚引き、手札1枚をアーカイブする。",
+          "effect": "自分のホロメンがコラボした時、自分のセンターが〈熱千めら〉なら、自分のデッキを1枚引き、手札1枚をアーカイブする。",
+          "heading": "サラマンダーの恩返し",
+          "icons": []
+        },
+        {
+          "class": "oshi skill",
+          "html": "<div class=\"oshi skill\"><p>推しスキル</p><p>[ホロパワー:-2]<span>ご利益じゃ！</span>[ターンに1回]自分のステージのホロメン1人を選ぶ。自分のアーカイブのギフトを持つホロメン1枚につき、このターンの間、選んだホロメンのアーツ+10。さらに、選んだホロメンが〈熱千めら〉なら、そのホロメンのアーツに必要な無色-1。</p></div>\n",
+          "label": "推しスキル",
+          "text": "推しスキル[ホロパワー:-2]ご利益じゃ！[ターンに1回]自分のステージのホロメン1人を選ぶ。自分のアーカイブのギフトを持つホロメン1枚につき、このターンの間、選んだホロメンのアーツ+10。さらに、選んだホロメンが〈熱千めら〉なら、そのホロメンのアーツに必要な無色-1。",
+          "effect": "[ホロパワー:-2][ターンに1回]自分のステージのホロメン1人を選ぶ。自分のアーカイブのギフトを持つホロメン1枚につき、このターンの間、選んだホロメンのアーツ+10。さらに、選んだホロメンが〈熱千めら〉なら、そのホロメンのアーツに必要な無色-1。",
+          "heading": "ご利益じゃ！",
+          "icons": []
+        }
+      ]
+    },
+    {
+      "number": "hSD21-002",
+      "jpName": "熱千めら",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3044&expansion=hSD21&view=text",
+      "listUrl": "https://hololive-official-cardgame.com/cardlist/cardsearch/?expansion=hSD21&view=text",
+      "imageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-002_C.png",
+      "info": {
+        "カードタイプ": "ホロメン",
+        "タグ": "#アソビ★まわり隊！",
+        "レアリティ": "C",
+        "収録商品": "スタートデッキ アソビ★まわり隊！推し 熱千めら",
+        "色": "紫",
+        "HP": "120",
+        "Bloomレベル": "Debut",
+        "バトンタッチ": "◇"
+      },
+      "infoDetails": {
+        "カードタイプ": {
+          "text": "ホロメン",
+          "images": []
+        },
+        "タグ": {
+          "text": "#アソビ★まわり隊！",
+          "images": []
+        },
+        "レアリティ": {
+          "text": "C",
+          "images": []
+        },
+        "収録商品": {
+          "text": "スタートデッキ アソビ★まわり隊！推し 熱千めら",
+          "images": []
+        },
+        "色": {
+          "text": "紫",
+          "images": [
+            {
+              "class": "",
+              "src": "/wp-content/images/texticon/type_purple.png",
+              "alt": "紫"
+            }
+          ]
+        },
+        "HP": {
+          "text": "120",
+          "images": []
+        },
+        "Bloomレベル": {
+          "text": "Debut",
+          "images": []
+        },
+        "バトンタッチ": {
+          "text": "◇",
+          "images": [
+            {
+              "class": "",
+              "src": "/wp-content/images/texticon/arts_null.png",
+              "alt": "◇"
+            }
+          ]
+        }
+      },
+      "fields": [
+        {
+          "class": "keyword",
+          "html": "<div class=\"keyword\"><p>キーワード</p><p><span><img class=\"\" src=\"/wp-content/images/texticon/gift.png\" alt=\"ギフト\">防火対策 基礎！　</span>\nこのホロメンが受けるアーツダメージ-10。</p></div>\n",
+          "label": "キーワード",
+          "text": "キーワードギフト防火対策 基礎！　\nこのホロメンが受けるアーツダメージ-10。",
+          "effect": "このホロメンが受けるアーツダメージ-10。",
+          "heading": "ギフト防火対策 基礎！",
+          "icons": [
+            "/wp-content/images/texticon/gift.png"
+          ]
+        },
+        {
+          "class": "sp arts",
+          "html": "<div class=\"sp arts\"><p>アーツ</p><p><span><img class=\"\" src=\"/wp-content/images/texticon/arts_null.png\" alt=\"◇\">火の用心じゃ～！　20<span class=\"tokkou\"></span></span>\n</p></div>\n\n",
+          "label": "アーツ",
+          "text": "アーツ◇火の用心じゃ～！　20",
+          "effect": "",
+          "heading": "◇火の用心じゃ～！　20",
+          "icons": [
+            "/wp-content/images/texticon/arts_null.png"
+          ]
+        },
+        {
+          "class": "extra",
+          "html": "<div class=\"extra\"><p>エクストラ</p><p>このホロメンはデッキに何枚でも入れられる</p></div>\n\n",
+          "label": "エクストラ",
+          "text": "エクストラこのホロメンはデッキに何枚でも入れられる",
+          "effect": "このホロメンはデッキに何枚でも入れられる",
+          "heading": "",
+          "icons": []
+        }
+      ]
+    },
+    {
+      "number": "hSD21-007",
+      "jpName": "熱千めら",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3049&expansion=hSD21&view=text",
+      "listUrl": "https://hololive-official-cardgame.com/cardlist/cardsearch/?expansion=hSD21&view=text",
+      "imageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-007_RR.png",
+      "info": {
+        "カードタイプ": "ホロメン",
+        "タグ": "#アソビ★まわり隊！",
+        "レアリティ": "RR",
+        "収録商品": "スタートデッキ アソビ★まわり隊！推し 熱千めら",
+        "色": "紫",
+        "HP": "210",
+        "Bloomレベル": "2nd",
+        "バトンタッチ": "◇◇"
+      },
+      "infoDetails": {
+        "カードタイプ": {
+          "text": "ホロメン",
+          "images": []
+        },
+        "タグ": {
+          "text": "#アソビ★まわり隊！",
+          "images": []
+        },
+        "レアリティ": {
+          "text": "RR",
+          "images": []
+        },
+        "収録商品": {
+          "text": "スタートデッキ アソビ★まわり隊！推し 熱千めら",
+          "images": []
+        },
+        "色": {
+          "text": "紫",
+          "images": [
+            {
+              "class": "",
+              "src": "/wp-content/images/texticon/type_purple.png",
+              "alt": "紫"
+            }
+          ]
+        },
+        "HP": {
+          "text": "210",
+          "images": []
+        },
+        "Bloomレベル": {
+          "text": "2nd",
+          "images": []
+        },
+        "バトンタッチ": {
+          "text": "◇◇",
+          "images": [
+            {
+              "class": "",
+              "src": "/wp-content/images/texticon/arts_null.png",
+              "alt": "◇"
+            },
+            {
+              "class": "",
+              "src": "/wp-content/images/texticon/arts_null.png",
+              "alt": "◇"
+            }
+          ]
+        }
+      },
+      "fields": [
+        {
+          "class": "keyword",
+          "html": "<div class=\"keyword\"><p>キーワード</p><p><span><img class=\"\" src=\"/wp-content/images/texticon/gift.png\" alt=\"ギフト\">火消しのサラマンダー　</span>\nこのホロメンがダウンした時、自分のデッキを2枚引く。</p></div>\n",
+          "label": "キーワード",
+          "text": "キーワードギフト火消しのサラマンダー　\nこのホロメンがダウンした時、自分のデッキを2枚引く。",
+          "effect": "このホロメンがダウンした時、自分のデッキを2枚引く。",
+          "heading": "ギフト火消しのサラマンダー",
+          "icons": [
+            "/wp-content/images/texticon/gift.png"
+          ]
+        },
+        {
+          "class": "sp arts",
+          "html": "<div class=\"sp arts\"><p>アーツ</p><p><span><img class=\"\" src=\"/wp-content/images/texticon/arts_purple.png\" alt=\"紫\"><img class=\"\" src=\"/wp-content/images/texticon/arts_null.png\" alt=\"◇\">「ご利益」担当　100+<span class=\"tokkou\"><img class=\"\" src=\"/wp-content/images/texticon/tokkou_50_yellow.png\" alt=\"黄+50\"></span></span>\n自分のアーカイブにギフトを持つホロメンが3枚以上あるなら、このアーツ+50。</p></div>\n\n\n",
+          "label": "アーツ",
+          "text": "アーツ紫◇「ご利益」担当　100+黄+50\n自分のアーカイブにギフトを持つホロメンが3枚以上あるなら、このアーツ+50。",
+          "effect": "自分のアーカイブにギフトを持つホロメンが3枚以上あるなら、このアーツ+50。",
+          "heading": "紫◇「ご利益」担当　100+黄+50",
+          "icons": [
+            "/wp-content/images/texticon/arts_purple.png",
+            "/wp-content/images/texticon/arts_null.png",
+            "/wp-content/images/texticon/tokkou_50_yellow.png"
+          ]
+        }
+      ]
+    },
+    {
+      "number": "hSD21-008",
+      "jpName": "熱千めらの拍子木",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3050&expansion=hSD21&view=text",
+      "listUrl": "https://hololive-official-cardgame.com/cardlist/cardsearch/?expansion=hSD21&view=text",
+      "imageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-008_U.png",
+      "info": {
+        "カードタイプ": "サポート・ツール",
+        "レアリティ": "U",
+        "収録商品": "スタートデッキ アソビ★まわり隊！推し 熱千めら",
+        "能力テキスト": "このツールが付いている〈熱千めら〉のアーツ+20。\n\n\n\n◆1st以上の〈熱千めら〉に付いていたら能力追加\n\nこのホロメンが相手のホロメンをダウンさせた時、自分のデッキを1枚引き、手札1枚をアーカイブする。\n\n\n\nツールは、自分のホロメン1人につき1枚だけ付けられる。"
+      },
+      "infoDetails": {
+        "カードタイプ": {
+          "text": "サポート・ツール",
+          "images": []
+        },
+        "レアリティ": {
+          "text": "U",
+          "images": []
+        },
+        "収録商品": {
+          "text": "スタートデッキ アソビ★まわり隊！推し 熱千めら",
+          "images": []
+        },
+        "能力テキスト": {
+          "text": "このツールが付いている〈熱千めら〉のアーツ+20。\n\n\n\n◆1st以上の〈熱千めら〉に付いていたら能力追加\n\nこのホロメンが相手のホロメンをダウンさせた時、自分のデッキを1枚引き、手札1枚をアーカイブする。\n\n\n\nツールは、自分のホロメン1人につき1枚だけ付けられる。",
+          "images": []
+        }
+      },
+      "fields": []
+    },
+    {
+      "number": "hY05-001",
+      "jpName": "紫エール",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=267&%2Fcardlist%2Fcardsearch_ex=&expansion=hSD21&view=text",
+      "listUrl": "https://hololive-official-cardgame.com/cardlist/cardsearch/?expansion=hSD21&view=text",
+      "imageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/COMMON/hY05-001_C.png",
+      "info": {
+        "カードタイプ": "エール",
+        "レアリティ": "C",
+        "収録商品": "スタートデッキ アソビ★まわり隊！推し 熱千めら",
+        "能力テキスト": "■ホロメンがステージから離れる時、そのホロメンのエールすべてをアーカイブする。\n\n■ホロメンがバトンタッチする時、そのホロメンのエールを指定された枚数アーカイブする。",
+        "色": "紫"
+      },
+      "infoDetails": {
+        "カードタイプ": {
+          "text": "エール",
+          "images": []
+        },
+        "レアリティ": {
+          "text": "C",
+          "images": []
+        },
+        "収録商品": {
+          "text": "スタートデッキ アソビ★まわり隊！推し 熱千めら",
+          "images": []
+        },
+        "能力テキスト": {
+          "text": "■ホロメンがステージから離れる時、そのホロメンのエールすべてをアーカイブする。\n\n■ホロメンがバトンタッチする時、そのホロメンのエールを指定された枚数アーカイブする。",
+          "images": []
+        },
+        "色": {
+          "text": "紫",
+          "images": [
+            {
+              "class": "",
+              "src": "/wp-content/images/texticon/type_purple.png",
+              "alt": "紫"
+            }
+          ]
+        }
+      },
+      "fields": []
+    }
+  ],
+  "products": {
+    "スタートデッキ アソビ★まわり隊！推し 熱千めら": {
+      "releaseDate": "2026-10-30",
+      "sourceUrl": "https://hololive-official-cardgame.com/products_detail/sd_kyoko-mela/"
+    }
+  },
+  "pageEvidence": [
+    {
+      "page": 1,
+      "url": "https://hololive-official-cardgame.com/cardlist/cardsearch/?expansion=hSD21&view=text",
+      "sha256": "6dbcc1186f22f09afd6eb044e22ae18636bf8c68b31fd91c9a7dfa1ae8abb218"
+    }
+  ],
+  "totalResults": 5
+}

@@ -1,0 +1,101 @@
+{
+  "verifiedAt": "2026-10-29T01:36:20.606178+00:00",
+  "baseCommit": "a789bcbac3f8ca5216f3188f30bb6177e97a40c9",
+  "catalogSha256": "75814dea892ac79fdf2ad9dd09987c117c870163b9e903b63533df22be2119ac",
+  "catalogBytes": 2662835,
+  "snapshotSha256": "cc2637434a3d29f38874b6152f2b18a9fce04a1b025a6959a0dc3483bb312817",
+  "result": {
+    "cards": 1416,
+    "printings": 3038,
+    "sourceUniqueCards": 1409,
+    "traditionalChineseCards": 1372,
+    "japaneseNameFallbackCards": 44
+  },
+  "addedCards": 22,
+  "addedPrintings": 57,
+  "removedPrintings": 0,
+  "futureCards": 22,
+  "futurePrintings": 23,
+  "preserved": {
+    "cards": 1394,
+    "printings": 2981,
+    "simulationAliases": 7,
+    "engineSha256": "94f7a0bd4b0411659c6ddaf1d84e45824e1d873f81a11dd01c3d25c5ea5d1159"
+  },
+  "approvedRuntimePaths": [
+    "website/app/page.tsx",
+    "website/app/simulator/SimulatorClient.tsx",
+    "website/lib/simulator/oshi-skill-catalog.mjs",
+    "website/firebase/main.tsx",
+    "website/app/globals.css"
+  ],
+  "checks": {
+    "npmTest": {
+      "command": "npm test",
+      "syncPassed": 11,
+      "regressionPassed": 3656,
+      "regressionSkipped": 1,
+      "regressionFailed": 0,
+      "skipReason": "Separate external android-current parity checkout is absent; five unchanged website cases pass."
+    },
+    "focusedImportPreservationDisplay": {
+      "passed": 92,
+      "failed": 0,
+      "skipped": 0
+    },
+    "pythonFetcher": {
+      "command": "python3 -m unittest discover -s tests -p test_official_fetch.py -v",
+      "passed": 13,
+      "failed": 0
+    },
+    "typecheck": "passed as part of npm test",
+    "hostingBuild": "passed",
+    "hostingBuildGuard": "passed",
+    "byteIdempotence": "passed; zero additions/removals on second merge",
+    "whitespace": "git diff --check passed",
+    "repositoryLint": {
+      "status": "pre-existing failure",
+      "baselineErrors": 41,
+      "baselineWarnings": 81,
+      "currentErrors": 41,
+      "currentWarnings": 80,
+      "command": "npx eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern dist-firebase --ignore-pattern work",
+      "note": "No unrelated runtime lint cleanup. Generated work/ and dist-firebase/ outputs are excluded in both baseline and changed-source comparison. New importer and harness focused lint has zero errors/warnings."
+    },
+    "cleanSourceBuild": "Passed with raw audit HTML/full snapshot outside checkout. Footer styles are explicitly authorized; earlier clean card-only CSS matched baseline exactly.",
+    "cleanSourceNpmTest": "Card + footer checkpoint complete run passed: 11 sync passes, 3656 regression passes, 1 explicit Android-fixture skip, 0 failures; TypeScript and production build passed.",
+    "footerInteraction": {
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "focusedLint": "passed without warnings"
+    },
+    "appendOnlyUpdateLogData": {
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "publicationScope": "New scoped branch only; no main/release mutation, PR merge, Android or backend deployment. Hosting publication and post-deploy identity remain a separate verification step.",
+  "approvedAddedRuntimePaths": [
+    "website/app/WebsiteUpdateLog.tsx",
+    "website/public/website-updates.json"
+  ],
+  "websiteUpdateLog": {
+    "entries": 1,
+    "newCards": 22,
+    "newPrintings": 57,
+    "newPrintingsForExistingCards": 35,
+    "appendOnlyGenerator": "scripts/build-website-update-log.mjs"
+  },
+  "newArtworkVerification": {
+    "requested": 57,
+    "verified": 57,
+    "width": 400,
+    "height": 559,
+    "failures": 0,
+    "visualChecks": 4
+  },
+  "productionStatus": "No deployment attempted. Paused for the separately authorized Sol 6.1 Ultra integrated redesign.",
+  "sourcePublicationStatus": "17 unreferenced GitHub blobs created with exact hash verification; no remote tree, commit, branch or ref created. Consolidated source publication is deferred until after redesign."
+}

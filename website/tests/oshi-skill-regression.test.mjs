@@ -82,7 +82,7 @@ function powerCards(prefix, count) {
 test("all 155 pre-hBP09 Oshi retain their exact cost and activation coverage", () => {
   // Retain every prior count and behavior assertion. New catalog-only Oshi are
   // verified independently below rather than silently claiming implementation.
-  const oshiCards = cards.filter((card) => card.group === "oshi" && !card.number.startsWith("hBP09-"));
+  const oshiCards = cards.filter((card) => card.group === "oshi" && !card.number.startsWith("hBP09-") && !CATALOG_ONLY_OSHI.includes(card.number));
   assert.equal(oshiCards.length, 155);
   assert.equal(oshiCards.filter((card) => card.oshiSkill).length, 155);
   assert.equal(oshiCards.filter((card) => card.spOshiSkill).length, 145);
@@ -116,8 +116,8 @@ test("all 155 pre-hBP09 Oshi retain their exact cost and activation coverage", (
 test("all seven hBP09 Oshi preserve official costs and expose implemented activation windows", () => {
   const incoming = cards.filter((card) => card.group === "oshi" && card.number.startsWith("hBP09-"));
   assert.equal(incoming.length, 7);
-  assert.equal(cards.filter((card) => card.group === "oshi").length, 162);
-  assert.deepEqual(CATALOG_ONLY_OSHI, []);
+  assert.equal(cards.filter((card) => card.group === "oshi" && !CATALOG_ONLY_OSHI.includes(card.number)).length, 162);
+  assert.deepEqual(CATALOG_ONLY_OSHI, ["hSD20-001", "hSD21-001"]);
   assert.deepEqual(incoming.map(c => c.number).sort(), Array.from({length: 7}, (_,i) => `hBP09-${String(i+1).padStart(3,'0')}`));
   for (const card of incoming) {
     const enriched = enrichOshiCardMetadata(card);
@@ -141,7 +141,7 @@ test("every active non-Birthday Oshi skill has an engine resolver branch", () =>
   const activationStart = engineSource.indexOf("function hbp09Legacy_activateOshiSkill");
   const normalResolver = engineSource.slice(normalStart, spStart);
   const spResolver = engineSource.slice(spStart, activationStart);
-  const oshiCards = cards.filter((card) => card.group === "oshi" && !card.number.startsWith("hBP09-"));
+  const oshiCards = cards.filter((card) => card.group === "oshi" && !card.number.startsWith("hBP09-") && !CATALOG_ONLY_OSHI.includes(card.number));
   const newPrograms = readFileSync(new URL("../lib/simulator/hbp09/programs.mjs", import.meta.url), "utf8");
   for (const key of ["001:oshi", "002:oshi", "003:oshi", "004:oshi", "006:oshi", "006:sp", "007:oshi"]) assert.ok(newPrograms.includes(key), `${key} executable program missing`);
 

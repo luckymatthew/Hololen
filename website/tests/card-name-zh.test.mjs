@@ -26,10 +26,15 @@ test("existing localized names remain reviewed and new untranslated names are ex
     } else {
       // No previous localized name may disappear. A new name without a reviewed
       // mapping must remain the official original, not a fabricated translation.
-      assert.match(card.number, /^hBP09-\d{3}$/);
+      if (card.officialImportSchema === 2) {
+        assert.match(card.number, /^hSD(?:20|21)-\d{3}$/);
+        assert.equal(card.catalogVersion, "2026-10-29-official-cardlist");
+      } else {
+        assert.match(card.number, /^hBP09-\d{3}$/);
+        assert.equal(card.catalogVersion, "2026-09-17-hBP09");
+      }
       assert.equal(card.nameTranslationStatus, "official-japanese-fallback");
       assert.equal(card.name, card.jpName);
-      assert.equal(card.catalogVersion, "2026-09-17-hBP09");
       fallbacks += 1;
     }
   }

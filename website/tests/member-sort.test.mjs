@@ -40,7 +40,12 @@ test("member filter groups branches and generations in the requested order", () 
   assert.equal(groups.find((group) => group.key === "id-1").label, "ID・1期生");
 
   const options = groups.flatMap((group) => group.options);
-  assert.equal(options.length, 80);
+  assert.equal(options.length, 83);
+  const newMembers = ["百灯キョーコ", "熱千めら", "宙科そぴあ"];
+  assert.deepEqual(options.filter(option => newMembers.includes(option.value)).map(option => option.value).sort(), [...newMembers].sort());
+  const original = groupMemberOptions(payload.cards.filter(card => card.officialImportSchema !== 2)).flatMap(group => group.options);
+  assert.equal(original.length, 80);
+  assert.deepEqual(options.filter(option => !newMembers.includes(option.value)), original, "all prior member options keep their identity, grouping and order");
   assert.equal(new Set(options.map((option) => option.value)).size, options.length);
 });
 

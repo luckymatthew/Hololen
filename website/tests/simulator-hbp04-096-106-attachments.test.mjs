@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -8,8 +8,14 @@ const engineTarget = process.env.HOLO_ENGINE_TEST_TARGET || 'lib/simulator/engin
 const catalogTarget = process.env.HOLO_CARD_CATALOG_TEST_TARGET || 'public/cards.json';
 const { applyAction, isActionCandidateLegal } = await import(pathToFileURL(resolve(process.cwd(), engineTarget)).href);
 const cards = JSON.parse(readFileSync(resolve(process.cwd(), catalogTarget), 'utf8')).cards;
-const androidCards = JSON.parse(readFileSync(resolve(process.cwd(), '../../android-current/app/src/main/assets/cards.json'), 'utf8')).cards;
-const { onlineActions } = await import(pathToFileURL(resolve(process.cwd(), '../../android-current/web/battle/online.mjs')).href);
+// The Android parity fixture is an optional, separately supplied checkout.
+// Missing it must not prevent the five website-engine regressions from running.
+const androidRoot = resolve(process.cwd(), process.env.HOLO_ANDROID_TEST_ROOT || '../../android-current');
+const androidCatalogPath = resolve(androidRoot, 'app/src/main/assets/cards.json');
+const androidOnlinePath = resolve(androidRoot, 'web/battle/online.mjs');
+const hasAndroidFixture = existsSync(androidCatalogPath) && existsSync(androidOnlinePath);
+const androidCards = hasAndroidFixture ? JSON.parse(readFileSync(androidCatalogPath, 'utf8')).cards : [];
+const { onlineActions } = hasAndroidFixture ? await import(pathToFileURL(androidOnlinePath).href) : { onlineActions: null };
 const dummy = { number: 'AUDIT-DUMMY', name: 'Audit dummy', jpName: 'Audit dummy', group: 'holomem', stage: 'Debut', hp: 10000, colors: [], tags: [], arts: [{ name: 'Audit damage', damage: 100, cost: [], effect: '' }] };
 const oshi = { number: 'AUDIT-OSHI', name: 'Audit oshi', group: 'oshi', colors: [], life: 5, arts: [] };
 const pool = [...cards, dummy, oshi];
@@ -85,7 +91,7 @@ test('hBP08-102 applies its printed Arts值+10 on the selected engine source', (
   assert.equal(result.players[1].zones.center.damage, buzz.arts[0].damage + 10);
 });
 
-test('Android online action list exposes the legal Karas skill and hides it after use', () => {
+test('Android online action list exposes the legal Karas skill and hides it after use', { skip: !hasAndroidFixture && 'External android-current parity checkout unavailable; website cases still run' }, () => {
   const s = stateWithKaras();
   for (const player of s.players) {
     player.oshi = inst('hBD24-001');

@@ -2374,3 +2374,44 @@ footer p, .footer-links { color: var(--text-muted); font-size: 12px; }
 .terminology-note dt { flex: 1 1 12rem; }
 .terminology-note dd { margin: 0; flex: 1 1 6rem; font-weight: 600; }
 .terminology-note a { text-decoration: underline; }
+
+/* Verified update history: unobtrusive footer, never an overlay on match controls. */
+.website-update-footer { display: flex; justify-content: center; gap: 0; padding: 8px 16px max(8px, env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--border); background: var(--surface); }
+.website-update-trigger { min-height: 32px; padding: 5px 12px; color: var(--text-muted); border: 1px solid transparent; border-radius: 8px; background: transparent; font-size: .75rem; cursor: pointer; }
+.website-update-trigger:hover { color: var(--cyan-dark); border-color: var(--border); background: var(--surface-soft); }
+.website-update-dialog { width: min(1050px, calc(100% - 24px)); max-height: calc(100dvh - 24px); margin: auto; padding: 0; overflow-y: auto; overscroll-behavior: contain; color: var(--text); border: 1px solid var(--border); border-radius: 18px; background: var(--surface); box-shadow: 0 24px 90px #0006; }
+.website-update-dialog::backdrop { background: #041018bf; }
+.website-update-header { position: sticky; top: 0; z-index: 1; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 16px 22px; border-bottom: 1px solid var(--border); background: var(--surface); }
+.website-update-header .eyebrow { color: var(--cyan-dark); font-size: .65rem; letter-spacing: .14em; }
+.website-update-header h2 { margin: 4px 0 0; font-size: 1.3rem; }
+.website-update-dialog button { min-height: 40px; padding: 8px 14px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface-soft); cursor: pointer; }
+.website-update-dialog .website-update-close { width: 40px; padding: 0; flex-shrink: 0; font-size: 1.5rem; line-height: 1; }
+.website-update-content { padding: 4px 22px 20px; font-size: .875rem; line-height: 1.65; }
+.website-update-description { color: var(--text-muted); }
+.website-update-entry { margin-top: 24px; }
+.website-update-entry time { color: var(--cyan-dark); font-size: .75rem; font-weight: 700; }
+.website-update-entry h3 { margin: 4px 0 10px; font-size: 1.1rem; }
+.website-update-entry ul { margin: 8px 0; padding-left: 22px; }
+.website-update-counts { padding: 10px 12px; border-radius: 9px; background: var(--surface-soft); }
+.website-update-table-scroll { width: 100%; overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+.website-update-table { width: 100%; min-width: 610px; border-collapse: collapse; text-align: left; }
+.website-update-table caption { padding: 10px 12px; color: var(--text-muted); font-size: .75rem; text-align: left; }
+.website-update-table th, .website-update-table td { padding: 10px 12px; border-top: 1px solid var(--border); vertical-align: middle; }
+.website-update-table th { color: var(--text-muted); background: var(--surface-soft); font-size: .75rem; white-space: nowrap; }
+.website-update-table td { font-size: .75rem; }
+.website-update-table td:first-child { width: 112px; }
+.website-update-table td:nth-child(2) { width: 80px; }
+.website-update-table img { display: block; width: 56px; height: 78px; object-fit: contain; border-radius: 4px; }
+.website-update-table code, .website-update-table strong, .website-update-table small { display: block; }
+.website-update-table strong { margin-top: 3px; font-size: .8125rem; }
+.website-update-table small { color: var(--text-muted); }
+.website-update-table td:last-child { min-width: 180px; max-width: 320px; overflow-wrap: anywhere; }
+.website-update-kind { display: inline-block; padding: 3px 6px; border-radius: 5px; background: var(--surface-soft); }
+.website-update-kind.new-card { color: var(--cyan-dark); background: var(--accent-soft); }
+.website-update-actions { display: flex; justify-content: flex-end; padding: 12px 22px; border-top: 1px solid var(--border); background: var(--surface); }
+@media (max-width: 640px) {
+  .website-update-dialog { width: calc(100% - 12px); max-height: calc(100dvh - 12px); border-radius: 12px; }
+  .website-update-header { padding: 12px 14px; }
+  .website-update-content { padding: 4px 14px 14px; }
+  .website-update-actions { padding: 10px 14px; }
+}

@@ -30,7 +30,7 @@ test('hBP09-025 official identity, Gift text, and C/S and reviewed PR printings 
   assert.deepEqual(noel.variants.filter(variant => variant.rarity === 'P'), [{
     id: 'official-hBP09-025-2980', rarity: 'P',
     image: 'https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-025_P.png',
-    sets: ['PRカード'],
+    sets: ['PRカード', '【使用可能カード】セレクションカップ'],
     sourceUrl: 'https://hololive-official-cardgame.com/cardlist/?id=2980&%2Fcardlist%2Fcardsearch_ex=&view=text',
   }]);
   assert.equal(noel.keyword?.type, 'gift');

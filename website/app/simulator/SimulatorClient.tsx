@@ -12,6 +12,8 @@ import TerminologyNote from "@/app/TerminologyNote";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import ThemeToggle from "@/app/ThemeToggle";
+import StudioHeader from "@/app/StudioHeader";
+import { StatusToast } from "@/app/ui-motion";
 import { fromHoloSimDeck, isHoloSimDeck } from "@/lib/holosim-deck.mjs";
 import { AUTOMATED_SUPPORT_CARDS } from "@/lib/simulator/effect-catalog.mjs";
 import { displayedBatonCost, suuBatonIncrease } from "@/lib/simulator/display.mjs";
@@ -27,12 +29,18 @@ type CardInfo = {
   jpName?: string;
   enName?: string;
   group: "oshi" | "holomem" | "support" | "cheer";
+  officialImportSchema?: number;
+  effectLanguage?: string;
+  translationStatus?: string;
+  simulationStatus?: string;
   stage: string;
   type: string;
   typeCode?: string;
   image: string;
   rarity?: string;
-  variants?: { id: string; rarity: string; image: string }[];
+  variants?: { id: string; rarity: string; image: string; officialImportSchema?: number; releaseDate?: string; preview?: boolean }[];
+  releaseDate?: string;
+  preview?: boolean;
   hp: number | null;
   life: number | null;
   baton: number | null;
@@ -45,7 +53,7 @@ type CardInfo = {
   spOshiSkill?: Skill | null;
   colors: string[];
   colorCodes?: string[];
-  arts: { name: string; damage: number | null; cost: string[]; effect: string }[];
+  arts: { name: string; damage: number | null; damageModifier?: string; cost: string[]; effect: string }[];
 };
 // Display-only localization; canonical names and card numbers stay in game state.
 function translatedCardName(card: CardInfo | null | undefined, fallback = "") {
@@ -236,6 +244,7 @@ function isPlayableByCore(card?: CardInfo) {
 
 function automationLabel(card?: CardInfo) {
   if (!card) return "資料未載入";
+  if (card.officialImportSchema === 2 && card.simulationStatus === "not-audited") return "文字效果未支援・需人工處理";
   if (card.number.startsWith("hBP09-")) return "hBP09 自動效果 · 整合測試中";
   if (card.group === "oshi") return "主動推し技能自動結算";
   if (automatedSupportCards.has(card.number) || automatedKoyoriCards.has(card.number)) return "文字效果自動結算";
@@ -924,6 +933,9 @@ function CardInspector({ card, cardMap, variantId, liveState, onClose, hover = f
   const reference = projectLegacyCardReference({ number: card.number, variantId });
   card = cardMap.get(reference.number) || card;
   variantId = reference.variantId;
+  const officialFallback = card.officialImportSchema === 2 && card.effectLanguage === "ja" && card.translationStatus === "official-japanese-fallback";
+  const catalogOnly = card.officialImportSchema === 2 && card.simulationStatus === "not-audited";
+  const displayEffect = (value?: string) => officialFallback ? String(value ?? "") : effectText(card, value);
   const skills = [
     card.stageSkill && { label: "舞台技能", ...card.stageSkill },
     card.oshiSkill && { label: "主推技能", ...card.oshiSkill },
@@ -931,6 +943,8 @@ function CardInspector({ card, cardMap, variantId, liveState, onClose, hover = f
     card.keyword && { label: keywordLabel(card.keyword.type), ...card.keyword },
   ].filter(Boolean) as ({ label: string } & Skill)[];
   const selectedVariant = (card.variants || []).find((variant) => variant.id === variantId);
+  const officialPreview = Boolean((selectedVariant?.officialImportSchema === 2 && selectedVariant.preview) || (card.officialImportSchema === 2 && card.preview));
+  const previewReleaseDate = selectedVariant?.officialImportSchema === 2 && selectedVariant.preview ? selectedVariant.releaseDate : card.releaseDate;
   const backImage = card.group === "cheer" ? "/card-backs/cheer-oshi.png" : "/card-backs/main.png";
   const image = selectedVariant?.image || card.image || backImage;
   const fallbackImages = [...new Set([
@@ -950,8 +964,8 @@ function CardInspector({ card, cardMap, variantId, liveState, onClose, hover = f
     <aside className={`sim-card-inspector ${hover ? "hover-preview" : ""}`} aria-live="polite">
       {!hover && <button className="sim-inspector-close" type="button" onClick={onClose} aria-label="關閉卡片效果">×</button>}
       <div className="sim-inspector-head">
-        <FoilCardImage className="sim-inspector-art" src={image} fallbackSrc={fallbackImages} alt={`${effectText(card, card.name)} ${card.number}`} rarity={rarity} loading="eager" />
-        <div><p className="eyebrow">{inspectorMode}</p><h2>{effectText(card, card.name)}</h2><code>{card.number}{selectedVariant ? ` · ${selectedVariant.rarity}` : ""}</code><span className={!card.number.startsWith("hBP09-") && (isPlayableByCore(card) || card.group === "cheer") ? "automated" : "pending"}>{automationLabel(card)}</span></div>
+        <FoilCardImage className="sim-inspector-art" src={image} fallbackSrc={fallbackImages} alt={`${displayEffect(card.name)} ${card.number}`} rarity={rarity} loading="eager" />
+        <div><p className="eyebrow">{inspectorMode}</p><h2>{displayEffect(card.name)}</h2><code>{card.number}{selectedVariant ? ` · ${selectedVariant.rarity}` : ""}</code><span className={!catalogOnly && !card.number.startsWith("hBP09-") && (isPlayableByCore(card) || card.group === "cheer") ? "automated" : "pending"}>{automationLabel(card)}</span></div>
       </div>
       {liveState && <section className="sim-inspector-live">
         <div><b>{inspectingLiveHolomem ? "目前狀態" : "所在 Holomen"}</b><span>{[liveState.ownerName, liveState.location].filter(Boolean).join(" · ")}</span></div>
@@ -968,17 +982,20 @@ function CardInspector({ card, cardMap, variantId, liveState, onClose, hover = f
         </div>
       </section>}
       <div className="sim-inspector-copy">
-        <TerminologyNote />
-        {skills.map((skill, index) => <section key={`${skill.label}-${index}`}><b>{skill.label}{skill.timing ? ` · ${effectText(card, skill.timing)}` : ""}</b>{skill.name && <strong>{effectText(card, skill.name)}</strong>}<p>{effectText(card, skill.effect)}</p></section>)}
-        {card.abilityText && <section><b>卡片效果</b><p>{effectText(card, card.abilityText)}</p></section>}
+        {!officialFallback && <TerminologyNote />}
+        {officialFallback && <p role="note">官方日文效果・未提供已覆核繁中翻譯。</p>}
+        {officialPreview && previewReleaseDate && <p role="note">官方先行公開・{previewReleaseDate} 發售</p>}
+        {catalogOnly && <p role="note" data-card-import-warning>新卡文字效果未支援，不適用自動對戰；需依官方規則另行人工處理，對戰自動結算未經驗證。</p>}
+        {skills.map((skill, index) => <section key={`${skill.label}-${index}`}><b>{skill.label}{skill.timing ? ` · ${displayEffect(skill.timing)}` : ""}</b>{skill.name && <strong>{displayEffect(skill.name)}</strong>}<p>{displayEffect(skill.effect)}</p></section>)}
+        {card.abilityText && <section><b>卡片效果</b><p>{displayEffect(card.abilityText)}</p></section>}
         {card.number.startsWith("hBP09-") && <p role="note">繁中譯文屬 AI 翻譯，未經人工覆核；跨系列規則互動仍在驗證中。</p>}
         {card.arts.map((art, index) => {
           const required = art.cost.length;
           const attached = liveState?.cheerCount;
           const shortfall = attached == null ? null : Math.max(0, required - attached);
-          return <section key={`${art.name}-${index}`}><b>藝能（Arts）· 所需聲援 {art.cost.join(" / ") || "0"}</b><strong>{effectText(card, art.name)} · {art.damage ?? 0}</strong>{attached != null && <small className={shortfall === 0 ? "ready" : "short"}>目前 {attached} 張／需要 {required} 張 · {shortfall === 0 ? "數量足夠（仍須符合顏色）" : `尚欠 ${shortfall} 張`}</small>}{art.effect && <p>{effectText(card, art.effect)}</p>}</section>;
+          return <section key={`${art.name}-${index}`}><b>藝能（Arts）· 所需聲援 {art.cost.join(" / ") || "0"}</b><strong>{displayEffect(art.name)} · {art.damage ?? 0}{card.officialImportSchema === 2 ? art.damageModifier : ""}</strong>{attached != null && <small className={shortfall === 0 ? "ready" : "short"}>目前 {attached} 張／需要 {required} 張 · {shortfall === 0 ? "數量足夠（仍須符合顏色）" : `尚欠 ${shortfall} 張`}</small>}{art.effect && <p>{displayEffect(art.effect)}</p>}</section>;
         })}
-        {card.extra && <section><b>補充</b><p>{effectText(card, card.extra)}</p></section>}
+        {card.extra && <section><b>補充</b><p>{displayEffect(card.extra)}</p></section>}
         {!skills.length && !card.abilityText && !card.arts.length && !card.extra && <p>這張卡沒有額外文字效果。</p>}
       </div>
     </aside>
@@ -1389,13 +1406,9 @@ export default function SimulatorClient() {
   if (!room) {
     return (
       <main className="simulator-page">
-        <header className="topbar">
-          <Link className="brand" href="/"><span className="brand-mark">H</span><span><strong>私人 PvP 模擬器</strong><small>HOLOLIVE OCG · AUTO CORE</small></span></Link>
-          <div className="topbar-actions"><ThemeToggle /><Link className="account-button" href="/">返回卡庫</Link></div>
-        </header>
+        <StudioHeader current="simulator" />
         <section className="sim-landing">
           <div className="sim-hero-copy">
-            <p className="eyebrow">PRIVATE ROOM / DECK TEST</p>
             <h1>同朋友對戰，<br />或者挑戰智能 AI。</h1>
             <p>單人模式會按 AI 實際牌組、卡牌效果、Bloom 路線、應援費用、擊倒機會及場面資源逐步評分。私人房間亦繼續支援朋友用房間碼加入。</p>
             <div className="sim-coverage">
@@ -1431,12 +1444,12 @@ export default function SimulatorClient() {
             <button className="sim-primary sim-ai-start" type="button" disabled={busy || !deckReady || !aiDeckReady} onClick={() => void enterRoom("solo")}>{busy ? "AI 正在準備…" : "開始單人對戰 · 智能 AI"}</button>
             <button className="sim-secondary" type="button" disabled={busy || !deckReady} onClick={() => void enterRoom("create")}>建立私人房間</button>
             <div className="sim-or"><span>或用房間碼加入</span></div>
-            <div className="sim-join-row"><input value={joinCode} maxLength={6} onChange={(event) => setJoinCode(event.target.value.toUpperCase())} placeholder="ABC234" /><button type="button" disabled={busy || joinCode.trim().length !== 6 || !deckReady} onClick={() => void enterRoom("join")}>加入</button></div>
+            <div className="sim-join-row"><input aria-label="私人房間代碼（6 個字元）" autoComplete="off" spellCheck={false} value={joinCode} maxLength={6} onChange={(event) => setJoinCode(event.target.value.toUpperCase())} placeholder="ABC234" /><button type="button" disabled={busy || joinCode.trim().length !== 6 || !deckReady} onClick={() => void enterRoom("join")}>加入</button></div>
             <small>房間約 36 小時後自動失效；房間憑證只保存在這部裝置。</small>
           </section>
         </section>
-        <section className="sim-reference-note"><b>效果自動化狀態</b><p>已按官方流程接入開局、回合、Bloom、合作、接力，以及共用支援牌、Holomen 關鍵字／Gift、Arts 與推し效果。牌庫頂查看、條件搜尋、抽牌、回收、特殊傷害、位置互換、應援改附與舞台成本均會自動處理；涉及舞台位置、Holomen、應援或附加卡的目標，會直接高亮實際牌桌卡片。</p></section>
-        {notice && <div className="toast" role="status">{notice}</div>}
+        <section className="sim-reference-note"><b>效果自動化狀態</b><p>卡庫收錄不代表每張卡已支援自動對戰；請留意卡片詳情中的接入狀態與待覆核提示。</p><p>已按官方流程接入開局、回合、Bloom、合作、接力，以及共用支援牌、Holomen 關鍵字／Gift、Arts 與推し效果。牌庫頂查看、條件搜尋、抽牌、回收、特殊傷害、位置互換、應援改附與舞台成本均會自動處理；涉及舞台位置、Holomen、應援或附加卡的目標，會直接高亮實際牌桌卡片。</p></section>
+        <StatusToast message={notice} />
       </main>
     );
   }
@@ -1591,7 +1604,7 @@ export default function SimulatorClient() {
       {activeMotion && <CardMotionLayer batch={activeMotion} cardMap={cardMap} onDone={() => setActiveMotion(null)} />}
       {revealQueue[0] && <RevealConfirmation batch={revealQueue[0]} cardMap={cardMap} onConfirm={() => setRevealQueue((current) => current.slice(1))} />}
       {hoveredCard ? <CardInspector card={hoveredCard} cardMap={cardMap} variantId={hoveredCardRef?.variantId} liveState={hoveredLiveState} hover /> : inspectedCard && <CardInspector card={inspectedCard} cardMap={cardMap} variantId={inspectedCardRef?.variantId} liveState={inspectedLiveState} onClose={closeInspector} />}
-      {notice && <div className="toast" role="status">{notice}</div>}
+      <StatusToast message={notice} />
     </main>
   );
 }

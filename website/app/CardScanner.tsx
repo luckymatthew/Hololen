@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useModalMotion } from "@/app/ui-motion";
 import { cameraCrop, createScanIndex, matchScanText } from "@/lib/card-scanner.mjs";
 import { makeOcrWorker, type OcrWorker } from "@/lib/scanner-ocr";
 
@@ -9,7 +10,7 @@ type Match = { number: string; score: number; reasons: string[] };
 type JapaneseIndex = Record<string, { titles?: string[]; effects?: string[] }>;
 
 export default function CardScanner({ cards, onPick, onClose }: { cards: ScanCard[]; onPick: (number: string) => void; onClose: () => void }) {
-  const dialog = useRef<HTMLDialogElement>(null);
+  const { dialog, requestClose } = useModalMotion(onClose);
   const video = useRef<HTMLVideoElement>(null);
   const guide = useRef<HTMLDivElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
@@ -125,10 +126,6 @@ export default function CardScanner({ cards, onPick, onClose }: { cards: ScanCar
 
   useEffect(() => {
     mounted.current = true;
-    const previousFocus = document.activeElement as HTMLElement | null;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    dialog.current?.showModal();
     const controller = new AbortController();
     fetch("/scanner-ja.json", { signal: controller.signal }).then(response => {
       if (!response.ok) throw new Error();
@@ -145,8 +142,6 @@ export default function CardScanner({ cards, onPick, onClose }: { cards: ScanCar
       stream.current?.getTracks().forEach(track => track.stop());
       void worker.current?.terminate().catch(() => {});
       document.removeEventListener("visibilitychange", visibility);
-      document.body.style.overflow = previousOverflow;
-      previousFocus?.focus();
     };
   }, []);
 
@@ -253,8 +248,8 @@ export default function CardScanner({ cards, onPick, onClose }: { cards: ScanCar
     photoCanvas.current = rotated; setPhoto(rotated.toDataURL("image/jpeg", 0.9));
   }
 
-  return <dialog ref={dialog} className="scanner-dialog" aria-labelledby="scanner-title" onCancel={event => { event.preventDefault(); onClose(); }}>
-    <header className="scanner-header"><div><span className="eyebrow">CARD SCANNER</span><h2 id="scanner-title">掃卡・睇繁中效果</h2></div><button type="button" onClick={onClose} aria-label="關閉掃卡">✕</button></header>
+  return <dialog ref={dialog} className="scanner-dialog t-modal" aria-labelledby="scanner-title" onCancel={event => { event.preventDefault(); requestClose(); }}>
+    <header className="scanner-header"><div><span className="eyebrow">CARD SCANNER</span><h2 id="scanner-title">掃卡・睇繁中效果</h2></div><button type="button" onClick={requestClose} aria-label="關閉掃卡">✕</button></header>
     <p className="scanner-help">對準一張日文卡，將角色名、技能名同效果文字放入框內。卡號睇得清會一併核對。</p>
     <section className="scanner-download" aria-label="下載辨識資料" aria-busy={preparing}>
       <strong>1 · 先準備辨識資料</strong>

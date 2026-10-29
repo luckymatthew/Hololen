@@ -1,0 +1,1293 @@
+{
+  "capturedAt": "2026-10-29T00:58:23.295874+00:00",
+  "officialSearch": {
+    "url": "https://hololive-official-cardgame.com/cardlist/cardsearch/?view=text",
+    "reportedRows": 3039
+  },
+  "rules": {
+    "errata": {
+      "url": "https://hololive-official-cardgame.com/rules/errata/",
+      "latestUpdate": "2026-09-17",
+      "sha256": "4a1c2b7603327ee02ad066be043c5f119f8e515fc092b30bd1d5d1ac54d6f3e2"
+    },
+    "deckBuilding": {
+      "url": "https://hololive-official-cardgame.com/rules/deck-building-rule/",
+      "effectiveDate": "2026-06-19",
+      "oneCopyRestrictedNumbers": [
+        "hBP01-030",
+        "hBP07-101"
+      ],
+      "sha256": "61e413e897d074c07344c3ec562f35e8965106df0d94ed56acc130649c34f933"
+    }
+  },
+  "newProductDates": {
+    "スタートデッキ アソビ★まわり隊！推し 熱千めら": {
+      "releaseDate": "2026-10-30",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/",
+      "cardListUrl": "https://hololive-official-cardgame.com/cardlist/cardsearch/?expansion=hSD21",
+      "expansion": "hSD21"
+    },
+    "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ": {
+      "releaseDate": "2026-10-30",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/",
+      "cardListUrl": "https://hololive-official-cardgame.com/cardlist/cardsearch/?expansion=hSD20",
+      "expansion": "hSD20"
+    },
+    "エクストリーマーカップ25-26 Final オフィシャルホロカコレクションB": {
+      "releaseDate": "2026-10-11",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/",
+      "cardListUrl": "https://hololive-official-cardgame.com/cardlist/cardsearch/?expansion=hCO03",
+      "expansion": "hCO03"
+    },
+    "エクストリーマーカップ25-26 Final オフィシャルホロカコレクションA": {
+      "releaseDate": "2026-10-11",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/",
+      "cardListUrl": "https://hololive-official-cardgame.com/cardlist/cardsearch/?expansion=hCO02",
+      "expansion": "hCO02"
+    }
+  },
+  "previewPolicy": "Cards/printings in hSD20 and hSD21 retain preview=true before their official 2026-10-30 Japan release date. Card release status and individual printing status must be kept separate for reprints.",
+  "snapshot": {
+    "path": "official-snapshot.json",
+    "sha256": "cc2637434a3d29f38874b6152f2b18a9fce04a1b025a6959a0dc3483bb312817",
+    "bytes": 26250192,
+    "schemaVersion": 2,
+    "pages": 203,
+    "successfulPages": 203,
+    "rows": 3039,
+    "pageEvidence": [
+      {
+        "page": 1,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch/?view=text",
+        "sha256": "2594ccff3997db0ad36110038c220af259083b9d71ef1b4b11ad7c24c6d12e8f"
+      },
+      {
+        "page": 2,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=2",
+        "sha256": "68eee54cf1b2830f546ca34296677c73a48427002f2692becb222d47c90149c3"
+      },
+      {
+        "page": 3,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=3",
+        "sha256": "904aa0bac6c4a76d9a359ade8c1c4a851ad5dad6261efcac24a16777ac367f21"
+      },
+      {
+        "page": 4,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=4",
+        "sha256": "91eb7a43047e272db7f737416dff3bc4a57066ee0444302220db26d7a29e18f8"
+      },
+      {
+        "page": 5,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=5",
+        "sha256": "d456606cca2a0491ae78cade954b082e8bb71b71bc554af0921af63feb36454b"
+      },
+      {
+        "page": 6,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=6",
+        "sha256": "56982495f4967bf882522747fcc29b52ea09bff506ad2f1ad753b03a346b4e34"
+      },
+      {
+        "page": 7,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=7",
+        "sha256": "e78d85c960aec51fea4249c90dc21e9e197dff75ddef3fa82e93a68cb6c893d0"
+      },
+      {
+        "page": 8,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=8",
+        "sha256": "a04d1e006ce362c68c2e6175a346ebebd5715ad683f30f90a5ee947e078685b5"
+      },
+      {
+        "page": 9,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=9",
+        "sha256": "b33efbb68c4cf12f06b2b231c43962faa251f9eb9d490761407f0ffdd09d3bc2"
+      },
+      {
+        "page": 10,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=10",
+        "sha256": "e72799c2e575dcb152dc7cde78e4b68d12d67835ad4f79597acbbad43344173e"
+      },
+      {
+        "page": 11,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=11",
+        "sha256": "7adbd600ae2758709d31ad0aa0ce3fde97e60de5d8c071c3546d06a87f23d757"
+      },
+      {
+        "page": 12,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=12",
+        "sha256": "52c464facc16f772aa564b6f1942890d7e171f6273a74ca98fbd99839c7eb892"
+      },
+      {
+        "page": 13,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=13",
+        "sha256": "7236cff75d0a817d5fc7d44e4dd8e933885bd8465ef260bf1a436b113eb27685"
+      },
+      {
+        "page": 14,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=14",
+        "sha256": "a38d257171eec996e89cf5921308b7e89f992987157b508f3de3f5c28d7a6085"
+      },
+      {
+        "page": 15,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=15",
+        "sha256": "47293203b0b2da123bf7f39e9c3eaffdd5be72b15df0813d0efe60538977fa01"
+      },
+      {
+        "page": 16,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=16",
+        "sha256": "4a81e7830bbe771b8351c58dcf5824cec658f9924eeb59dc086498e8dab842a0"
+      },
+      {
+        "page": 17,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=17",
+        "sha256": "a14f5ebba796f5c02ee89fa6abe1748c89125daec26e41279c1c9375aa4f9a5b"
+      },
+      {
+        "page": 18,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=18",
+        "sha256": "fb04026072bcc11e550c1aec7e5d05682aba8b4d1d55ce6cfd0e0adc5c2568b9"
+      },
+      {
+        "page": 19,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=19",
+        "sha256": "fae8f7053417d2269f4f3bff2f96258529b679ebd2510d86124c2533b19aa002"
+      },
+      {
+        "page": 20,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=20",
+        "sha256": "04dc9b33e0f1af1e288f4ba255250fde1457e238656b4b7e90b77d97418ee2d2"
+      },
+      {
+        "page": 21,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=21",
+        "sha256": "7f10e23637abf4912f377f5d8a1e11b95b3b4cc321c6565d9ad73a899a34ad94"
+      },
+      {
+        "page": 22,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=22",
+        "sha256": "c055a268f9417ead5fac94452008257d1c1a60823b416a8833e4590b0b109d4a"
+      },
+      {
+        "page": 23,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=23",
+        "sha256": "9016decab6d6639639a898f8bb32c08c2988e18c9051827f31fb5c651a8f7079"
+      },
+      {
+        "page": 24,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=24",
+        "sha256": "7b85371c307945a45d6c3538eed520fbc9c0e5502e6d693e8c9a9fa0db6f00bb"
+      },
+      {
+        "page": 25,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=25",
+        "sha256": "7b67ed1a56b9511fc17a6137f5a28e175f30ce09b64858c6af98854a91e9e912"
+      },
+      {
+        "page": 26,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=26",
+        "sha256": "462554169f1df5f6c8465557bde2d3c37daa813ee26e417923bd536352bfe1db"
+      },
+      {
+        "page": 27,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=27",
+        "sha256": "0a7d410ea2fcbaa3fa82ce6f9745e65b037c553308690744873758bb86a63823"
+      },
+      {
+        "page": 28,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=28",
+        "sha256": "2cda06f980ec0ae5156eb9271be2f53459ee7060ed30b58ec04e90994d90fea5"
+      },
+      {
+        "page": 29,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=29",
+        "sha256": "232dc0bc33d41b41046171499d64a2893e579b0379acd6d7f3489aad1e08562b"
+      },
+      {
+        "page": 30,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=30",
+        "sha256": "30a2d74ef00f10e5ff465ad94cdd7bf2d3d50a1d5419757ad7d87053c6ecf7d0"
+      },
+      {
+        "page": 31,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=31",
+        "sha256": "04736047ec10ec83accd27f53cc9aa735c719fccceaf9134cc8623d6162d7da1"
+      },
+      {
+        "page": 32,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=32",
+        "sha256": "e43fc95b382fe3c60df4b0dd941e46da66631a6ff394877dc1fabad0d0939328"
+      },
+      {
+        "page": 33,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=33",
+        "sha256": "4b5c4b26c4f086f205b21f2f600cb0bd65a5baf94c20b412657c0ac476975f2f"
+      },
+      {
+        "page": 34,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=34",
+        "sha256": "f1d50d7fc74b0bdefe9d0617a0af7b6df728260c72d0e472834648e990e25728"
+      },
+      {
+        "page": 35,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=35",
+        "sha256": "372b03dd702694e5dc3afff8e130e89fa935f1dbad0a5328b121ee551f8a292b"
+      },
+      {
+        "page": 36,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=36",
+        "sha256": "9bbaeeb4beaf3cb9617d85b4d0cc25db95a0fc30e3258bcf5b4016089818f65c"
+      },
+      {
+        "page": 37,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=37",
+        "sha256": "b3bccc759a9981835bfa66af5b823bfe82e413a39775a3a04fcb9c1e77c36447"
+      },
+      {
+        "page": 38,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=38",
+        "sha256": "6753bda6aae39d856a37088af2dd00cd7e128fc359172e7703f2dc56665d00a0"
+      },
+      {
+        "page": 39,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=39",
+        "sha256": "b9a70e17f32153059d3e332a22a54acdde04923745b4d5408e50763039a62388"
+      },
+      {
+        "page": 40,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=40",
+        "sha256": "ca1f975b48721a8f278072a7a103b2b21f742a81b5e0f11ce5f2f1c067ee2a94"
+      },
+      {
+        "page": 41,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=41",
+        "sha256": "01e8efb9d3303f630467a690b2a60d6e547fef13a4c141804277801822039635"
+      },
+      {
+        "page": 42,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=42",
+        "sha256": "0e33d11c66c33bb22c4ed938073d78a95410c6088d00abf459853a614fbe6075"
+      },
+      {
+        "page": 43,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=43",
+        "sha256": "89b5518776b31a4d809029621ea97ceceb75c94008db96401b9ffb5fc7fa4647"
+      },
+      {
+        "page": 44,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=44",
+        "sha256": "ba3d1e0c67ba57b70f5b0f29d5fa534dee9a141424f914ae22bdba19972bb1b9"
+      },
+      {
+        "page": 45,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=45",
+        "sha256": "f1d124205ede21ad10a57fbf2f2ccce3ade9b4342dfa911958a3be054d66e44d"
+      },
+      {
+        "page": 46,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=46",
+        "sha256": "12a62d49cb4e7a7e1dd5b770b63d3b5fc4ebaf73d1f89ac06cc8d9df0bf0125c"
+      },
+      {
+        "page": 47,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=47",
+        "sha256": "8735c785370fcf51d1eb88291531cc311e92f75ffdb00e683705764060be945c"
+      },
+      {
+        "page": 48,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=48",
+        "sha256": "877814cf0e94f683d1b691afe60fe6c067914ee5fe606103cb622ff7ed936432"
+      },
+      {
+        "page": 49,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=49",
+        "sha256": "c833d620be08ad93a4bb7943b4b2fc3f503bcb784617c01477a8250c7b62edd4"
+      },
+      {
+        "page": 50,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=50",
+        "sha256": "026ac61298c871c61e1166334ff13db0b6c461bca81f12d69df31a48764e1299"
+      },
+      {
+        "page": 51,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=51",
+        "sha256": "2d6c1a4616e3de7da90567030d134342b2823ec6eb80b753b7c158c900a71088"
+      },
+      {
+        "page": 52,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=52",
+        "sha256": "2789f280ac51174208b9b67dad4c25e2e0be26addf5c6da346676f3c21b35542"
+      },
+      {
+        "page": 53,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=53",
+        "sha256": "8c37bcea197db857f7935ea7098e67ef3c9ad7c72d3b810bda1e73b6c603b45a"
+      },
+      {
+        "page": 54,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=54",
+        "sha256": "9dc7c79400880ea7574b1296819378d7cfdc416a92625944153f9aadadf38f2a"
+      },
+      {
+        "page": 55,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=55",
+        "sha256": "f16de535d41486a8b84a4f958991912f1e4e3447a14a88e0408db80a17e8f9ee"
+      },
+      {
+        "page": 56,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=56",
+        "sha256": "e704758b7b152661d41c513ffa3781bc52b117a09a576510d0ace140809b389b"
+      },
+      {
+        "page": 57,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=57",
+        "sha256": "29a4233f3caa7ba18315b9d4fad09a535560ea420ce831a2fa857ca805006c08"
+      },
+      {
+        "page": 58,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=58",
+        "sha256": "0281090ad59d63dc528f24696da0e40fe1ab1d06421b54379fe39f804942101a"
+      },
+      {
+        "page": 59,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=59",
+        "sha256": "8f810b36c40d14b1b6e5f98a1e95bef996686d4728a538b7e471c6aae244a887"
+      },
+      {
+        "page": 60,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=60",
+        "sha256": "2f0fa5f7c9d812ea1893856a4e99d151eadafbc8ce461f487ceecff3c3fd8d26"
+      },
+      {
+        "page": 61,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=61",
+        "sha256": "31d255311ccfdeb6021c2e3108c821e7138f74968bc3c1d6f4f55806206ce584"
+      },
+      {
+        "page": 62,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=62",
+        "sha256": "ba90752e1312235cd838381219091562604a1078926d68908780f13c1135d757"
+      },
+      {
+        "page": 63,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=63",
+        "sha256": "dcc2673d1b092df4ab0c9470a475cb773a18388cfedf4f37e66c87f2948411a8"
+      },
+      {
+        "page": 64,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=64",
+        "sha256": "992e802c9f0eb9327bde5951008e1f8f98cb0c6cccd52ac7dde85f52d1fec879"
+      },
+      {
+        "page": 65,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=65",
+        "sha256": "95c4f46c83d355f22adf0c22696f827a45e7bb18489a2da9ac77b78cba41c083"
+      },
+      {
+        "page": 66,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=66",
+        "sha256": "880b2f56c33c7996eb59bd194f47071c3fe7f333f647ec2c601705ae4dc7b202"
+      },
+      {
+        "page": 67,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=67",
+        "sha256": "b79a1cb8be7d098fef78500f125d05cdd083f0831a7b059915ef8a47ae504bc7"
+      },
+      {
+        "page": 68,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=68",
+        "sha256": "3a89b825f7792e9320122230454f0a236bb9ca55a01074720f6b9e23ae5a2818"
+      },
+      {
+        "page": 69,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=69",
+        "sha256": "d0754839d9bd7bad9fe974fee6deb044e319866f6090569974dfd89dc6fbe9f6"
+      },
+      {
+        "page": 70,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=70",
+        "sha256": "feda9e6774d723096fe5127d150653ec73cdfaca536467a67c6e6bf9d46fbb6e"
+      },
+      {
+        "page": 71,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=71",
+        "sha256": "962de9db426fc7c80d7c8fc59ea5b59d8416f3b3ba1915f4e792eb1c0872cb85"
+      },
+      {
+        "page": 72,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=72",
+        "sha256": "6dc419d1ddc7a5485eaf3a94d925c0608c181c155370bc782f6717202b05fcdb"
+      },
+      {
+        "page": 73,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=73",
+        "sha256": "e5dfdab6f2ca7a43d3c21d9a0ac8e9d9004855f8f2ac4c5a267ce2a9d24e58eb"
+      },
+      {
+        "page": 74,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=74",
+        "sha256": "7b4246c9c9b02c59aeafc5835d2b98fe61b132ab2b6fec17e38b096d745efcd3"
+      },
+      {
+        "page": 75,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=75",
+        "sha256": "b605e23c7be300958cfc6384b96a6f6cb808f4b532b3faa0b12436009130264b"
+      },
+      {
+        "page": 76,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=76",
+        "sha256": "aac803ae537f65519f51e44944ca75c1f0d690335150eb14287673097f9fce8c"
+      },
+      {
+        "page": 77,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=77",
+        "sha256": "d4e304c9e8003e754d967d67e94f36d481039fe7e44c848564b859bbce5b5012"
+      },
+      {
+        "page": 78,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=78",
+        "sha256": "01352521eb9ee528db80e6ea65440e2aa7e55902d4dec1a6d720717406468b7e"
+      },
+      {
+        "page": 79,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=79",
+        "sha256": "e4d9146d440787fa7596d69337a5ac5a4dbf65058bc32a2c8535de61555a8c3f"
+      },
+      {
+        "page": 80,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=80",
+        "sha256": "dc4e4e2d74d9d992ecf57c16720675b267f218dd892946a041b4c5e7d9868ff8"
+      },
+      {
+        "page": 81,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=81",
+        "sha256": "71f85e3650c9bfd9fa6441303926f093a7705909b6057437902784349a118b56"
+      },
+      {
+        "page": 82,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=82",
+        "sha256": "b36bc45b2810d71f01fb007ceb0a15a9089aa0cba02a3a0060d9a93f31bd4bc4"
+      },
+      {
+        "page": 83,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=83",
+        "sha256": "4f8281530b450bb3d7870742d7ba3632f3d2e12f9c960174d58b529ce91b1445"
+      },
+      {
+        "page": 84,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=84",
+        "sha256": "46533cb35cfa7500bd8389b19c10e46a4c15cd72a3ea641c4a095491222c2096"
+      },
+      {
+        "page": 85,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=85",
+        "sha256": "4ad0e5c261cd8ffb120d8b5d3dd7ebd6b2b1ae5fed305209d0c065bd55636ab4"
+      },
+      {
+        "page": 86,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=86",
+        "sha256": "bf260abce18872215e8afdc67c883dbb92e189601a65fea4ba8d50eb8b2a250e"
+      },
+      {
+        "page": 87,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=87",
+        "sha256": "fa0a3acba489f6eb4423f5c3764a45832aeb4f17311949a43472e223308d56c5"
+      },
+      {
+        "page": 88,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=88",
+        "sha256": "dd3b3a65cab87c402616abb160dc4c60ca222a4acae3e75b1282883637b94c38"
+      },
+      {
+        "page": 89,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=89",
+        "sha256": "1d1b71383480e61f7eb8b440c244f71429d911a13188e76def123adcf9d0aab5"
+      },
+      {
+        "page": 90,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=90",
+        "sha256": "a8f33bb5db89d76d7f21f1917b254bf48876b4e0315528003b3de22d42cb5e5f"
+      },
+      {
+        "page": 91,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=91",
+        "sha256": "e7571b07a0d8e12c9a97c57ee46e2890770e616d525a7e521a4445e0942f8279"
+      },
+      {
+        "page": 92,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=92",
+        "sha256": "f245b0ccd06c100fbcb63253794121360b99fa83908a75f84120cf26ea3ab63c"
+      },
+      {
+        "page": 93,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=93",
+        "sha256": "f222946637ffb96b71606e4dbcc7ce39bad7c006c4bb57ed3a4c5852293119da"
+      },
+      {
+        "page": 94,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=94",
+        "sha256": "00ebd817189cbd2962b53f966d08a00540e511eda223e809b3465ee7af5cd0de"
+      },
+      {
+        "page": 95,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=95",
+        "sha256": "b22ce06f3336b5b3cb2b167e37058ce3b6eca3ef4324ec997180974fc26d98e8"
+      },
+      {
+        "page": 96,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=96",
+        "sha256": "76f91cea43115164c6c810b012b49d67810cec5baa664fa9866269a6fa437992"
+      },
+      {
+        "page": 97,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=97",
+        "sha256": "27fac5df64999dd2f1114822922a7a14def349dde6eed11c107b7faeda6a2f9d"
+      },
+      {
+        "page": 98,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=98",
+        "sha256": "289528f7c2649935ec8c188ebbd3bbdd285c926ea2eea7a5ca98009445c64c85"
+      },
+      {
+        "page": 99,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=99",
+        "sha256": "bcbc96d7b812a82b9069e8eab042bb83c35aefc19e29d735f0a539b2927050d2"
+      },
+      {
+        "page": 100,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=100",
+        "sha256": "285060b856ac97ca953733c2f50ae11219f7be051ec7494f12d2b270337c8f78"
+      },
+      {
+        "page": 101,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=101",
+        "sha256": "79d88404e90be163dd4f838dbc23bcba3f97c6e64b6d17195b6a427a4d1569da"
+      },
+      {
+        "page": 102,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=102",
+        "sha256": "b6b462483ac851a8da6782bc9686d18e1909670a2840a3c4a6707ad992b5803c"
+      },
+      {
+        "page": 103,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=103",
+        "sha256": "5a23f81b8c257248cc628536f3b2b713f107cdfa1f4e986b40639a86229d9ad2"
+      },
+      {
+        "page": 104,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=104",
+        "sha256": "f78162876721e896baacdd9e5e0370228639348b9234c15d958e90f9d64fda3f"
+      },
+      {
+        "page": 105,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=105",
+        "sha256": "85aca4b6efdae7f8ccaa2134736293d81297905800c28bed52ea1b3fedffc56d"
+      },
+      {
+        "page": 106,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=106",
+        "sha256": "268b33ffd9f721bd6f232732de40413c2c574871bfe4734ed5729f07a0236131"
+      },
+      {
+        "page": 107,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=107",
+        "sha256": "c80bcf7d7d97fc3ce036cd91570ffc623c1dffa2d2f057e43570fe25379affe8"
+      },
+      {
+        "page": 108,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=108",
+        "sha256": "d0b5c8609565270b10bfd54126bef51b356c4a28db0399e5d950a6b430b2e9da"
+      },
+      {
+        "page": 109,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=109",
+        "sha256": "3a9a183bf43b4e0adcce960e56d20c7510ba5ebbe8b56518e62e39893111529b"
+      },
+      {
+        "page": 110,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=110",
+        "sha256": "fdbb06b94a8dc386d51d17c39cc52a60411de620df69f816afab16936863dd1b"
+      },
+      {
+        "page": 111,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=111",
+        "sha256": "2165208de85941a94a317ce1bd1c2fee0482dae0467995a2b60635b632992137"
+      },
+      {
+        "page": 112,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=112",
+        "sha256": "4c1db2fe306a1d044913e4dcea75bc32ebec8133912409ca795ee3152aa345df"
+      },
+      {
+        "page": 113,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=113",
+        "sha256": "e76713c97f1134ff9a8cb09107b357dd6b29295cf2ae36becb15b8d3435e814a"
+      },
+      {
+        "page": 114,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=114",
+        "sha256": "ebf7ab2ea0217a8688d060da597d315de296c1b143cd5738b29248b6d6133746"
+      },
+      {
+        "page": 115,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=115",
+        "sha256": "cfa037847884ad8e0ee58153dfc74ef60f1fe9561672199d5346b5a61afc5509"
+      },
+      {
+        "page": 116,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=116",
+        "sha256": "40b958255a10f8cfded4c8451154b3c60e7c94ad19b20c5bd709d9bea0eea568"
+      },
+      {
+        "page": 117,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=117",
+        "sha256": "35b5e91f35c997e64444d405d698c8dbabc8a1e405df6d1e9fcc0a8c2d8c3aa7"
+      },
+      {
+        "page": 118,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=118",
+        "sha256": "23ed06d9b2b63b35da75bfd3d88ec7970229171219d98ea9539007a023b760a3"
+      },
+      {
+        "page": 119,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=119",
+        "sha256": "0462b47019ac6d0c93fac6ffcd51bada9e29b074e76b2d2203509cfff8325086"
+      },
+      {
+        "page": 120,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=120",
+        "sha256": "6ff3f5f68c1e4c2387ee95b9fd4674013771596cc922fb8a4ffe8f5f50757b3b"
+      },
+      {
+        "page": 121,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=121",
+        "sha256": "a97179bf276261f968cdb216f1ac266b169613c3fccb0e12a4a002139f25e1c7"
+      },
+      {
+        "page": 122,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=122",
+        "sha256": "e574fcff1092c6b1b571c94591904471f9730ffe873392dc54f2109f35b7f538"
+      },
+      {
+        "page": 123,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=123",
+        "sha256": "d586371ee6d1d27c7bcde2fff51d61e371502dc9140d14136bf2273807eef999"
+      },
+      {
+        "page": 124,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=124",
+        "sha256": "c1b73d8b06ff94ccc6c49850d1ff9fecc2cf578d3e9df1bcc801498a40263b8b"
+      },
+      {
+        "page": 125,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=125",
+        "sha256": "a1a880befbefbcbcf6b3e8bcfc0d8b3f47ce9a30096bcb18c17bb09cc5d8e837"
+      },
+      {
+        "page": 126,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=126",
+        "sha256": "d69be81f5be133e2c05e37c665a63f13a8a3fb826eed9009155d336366bcba20"
+      },
+      {
+        "page": 127,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=127",
+        "sha256": "03f5d4bf4d1593177d533eb5079760b82aa7f5fc37d74efcf2679a48cb654907"
+      },
+      {
+        "page": 128,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=128",
+        "sha256": "6272241867b7168af3b2b19b9915f235cf855f03b151f9cfd98b8ee37421e1a8"
+      },
+      {
+        "page": 129,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=129",
+        "sha256": "1341e35ef1733076722935c4b7da1e1cc5ad93eb45a692f0025345b8ef057fe2"
+      },
+      {
+        "page": 130,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=130",
+        "sha256": "34d5c3eafc16edb672c0f1fda8c75b791cc0a45aeb13ff5616fcff329e0cb598"
+      },
+      {
+        "page": 131,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=131",
+        "sha256": "53d4f7a01afb3328c8837438f55df97eda9435f9c33bdc36f05c6b9ee6eaeb92"
+      },
+      {
+        "page": 132,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=132",
+        "sha256": "7b9821b0e1f53745bd3ba3bbac1d6713cb91a38eb5d450f602c20476ec7143a9"
+      },
+      {
+        "page": 133,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=133",
+        "sha256": "c6ee862c51ba72d43cccd774650792f4d19e6ae05f4e92f3f5c42407c60141cd"
+      },
+      {
+        "page": 134,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=134",
+        "sha256": "0557e135f6dc00354eb814d9654636b28136f2aa829e931da827e12a67d9e4a8"
+      },
+      {
+        "page": 135,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=135",
+        "sha256": "eb989523b46167df368b177f6872db9b03e8dd80581431d949325687e796ceeb"
+      },
+      {
+        "page": 136,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=136",
+        "sha256": "b3310aeeeed5d5119fb5df7c5e3aa6cacdec9b07b86ef026b1a0a62917486c9b"
+      },
+      {
+        "page": 137,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=137",
+        "sha256": "b25d2bcadaecfc6b1dde59aba7f4b2636186740dec3ea276d37711c10123f5dc"
+      },
+      {
+        "page": 138,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=138",
+        "sha256": "ff5b3950a68607bcd287d25b885c761dd04c0e594cdadc6385d14590ee5ee9a1"
+      },
+      {
+        "page": 139,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=139",
+        "sha256": "2fe7682225f765be6e127168cd1b1d93892b145572d14578a227b4c11834093c"
+      },
+      {
+        "page": 140,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=140",
+        "sha256": "21ccd77751310a5856818ff89581346e1c919d50f707fe07ee48b2d823d09601"
+      },
+      {
+        "page": 141,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=141",
+        "sha256": "bd31ecdc957d0be9c17e860a16f2df60ac782dc207fa100adf3173abb1b2bd34"
+      },
+      {
+        "page": 142,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=142",
+        "sha256": "978664fe9dce57299ab6741659d5a9a4b590a876eef8c286654d98555968760f"
+      },
+      {
+        "page": 143,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=143",
+        "sha256": "584db123d3771af0744061a28b5af99db8d7ffcdedf735884e7c9c1302ab44c2"
+      },
+      {
+        "page": 144,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=144",
+        "sha256": "88c14d87079fcbeddf87ecd74c9ac04ebebcbbdbdedabc3f09ee0680f208025d"
+      },
+      {
+        "page": 145,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=145",
+        "sha256": "991d54034bc73d6181ba6f89ad83339b555f25c0f10934587e270a23c4b7a5b4"
+      },
+      {
+        "page": 146,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=146",
+        "sha256": "d382a6824bd9f6f55597515038ffb767f92e9abea5fe6b2fbb26f3741d802782"
+      },
+      {
+        "page": 147,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=147",
+        "sha256": "df245394d29755abf81b4cf86d29999360ecb072ad20fb5d8f6f7e43296b25f1"
+      },
+      {
+        "page": 148,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=148",
+        "sha256": "af80daa539f177090c1d6fe3b9d50344b2aebec920510c6bbf16e0ed89ec20bd"
+      },
+      {
+        "page": 149,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=149",
+        "sha256": "05866d98a1b0a8e5e6088eccc6c90c5563e00dfec65f6ab0fb20ca97400e5322"
+      },
+      {
+        "page": 150,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=150",
+        "sha256": "9fbf4f7147dd71a364ddf0964a67f45eede855c5f2341873ddc392ec6cc12d79"
+      },
+      {
+        "page": 151,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=151",
+        "sha256": "248a393ec8d98a71089b139c66464068733bfbe66b18f7d3e4c664d2c6005c29"
+      },
+      {
+        "page": 152,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=152",
+        "sha256": "ade119b1c6a81acdb5b55d69c0a418ba3354c22138553c78a244c2a1a4f8f052"
+      },
+      {
+        "page": 153,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=153",
+        "sha256": "bc906f4726f0d65b2e3a47c2815d0adaa576fa7ea1666d0533c95325660cc31b"
+      },
+      {
+        "page": 154,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=154",
+        "sha256": "cf0deb8b445b047f64cf951d4aa42899891543f9359ee85d852d28621f3e3506"
+      },
+      {
+        "page": 155,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=155",
+        "sha256": "4e5972b73571df92dec9202edf2816425f626651a6554d5f573b04055ac64ca5"
+      },
+      {
+        "page": 156,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=156",
+        "sha256": "6871a2bec069e8173943621fedfa7e70b23f70c82289eb318492fda1927ad374"
+      },
+      {
+        "page": 157,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=157",
+        "sha256": "42822123d4988ae5db9f8f2e3fb5693f000f1e1391ee2a128ec8625fb612f4ae"
+      },
+      {
+        "page": 158,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=158",
+        "sha256": "96dddf89dbfb77051f40819fd3b8d7d9bed66806145bebcf4c52086925a27531"
+      },
+      {
+        "page": 159,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=159",
+        "sha256": "1eaac413d535bcac0b72e846e83da5700160d1dfd8d23040b570481e21a6f303"
+      },
+      {
+        "page": 160,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=160",
+        "sha256": "0ec120660b458d32499fe936da5666456150a1cc96a7008880bf1e6c8d5dbc5b"
+      },
+      {
+        "page": 161,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=161",
+        "sha256": "e8e442fc550b891a350cec41940095922274b64557313aeb3859441f9fad33a3"
+      },
+      {
+        "page": 162,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=162",
+        "sha256": "53575eb8d501fb867690598a413415622182a3061d73bd496a93b324ed603faa"
+      },
+      {
+        "page": 163,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=163",
+        "sha256": "a7e3fd671900f17b0ee06553808e540c1c7cc0d96f767630b47531a4d21b8043"
+      },
+      {
+        "page": 164,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=164",
+        "sha256": "b6665bf747badca95164d6d23f989220596464d8173cb9a56adbdb8bc81bb25b"
+      },
+      {
+        "page": 165,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=165",
+        "sha256": "988a67521abcc755b103cbb38d8b9f567f33fe585fc2ab938edac057a939d3ab"
+      },
+      {
+        "page": 166,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=166",
+        "sha256": "a42c9ff6fef2fb3f410180972e29f3ec22e2be255b195fc046738fd951d9092a"
+      },
+      {
+        "page": 167,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=167",
+        "sha256": "4a962381b9c46853b37344ea092910223b66b06469729863c325898d56b7de2b"
+      },
+      {
+        "page": 168,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=168",
+        "sha256": "ad592aaf25f863348f7a7539f83d0ce444ff06692332c89db9838986da08f337"
+      },
+      {
+        "page": 169,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=169",
+        "sha256": "749cc80e0943372c43bd21e0326cbd9bd2308fe3f492deae0be886b69eaa424b"
+      },
+      {
+        "page": 170,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=170",
+        "sha256": "83a9e20eb8be227b3fee4997b48b96a79b103b4fac818b4ea690981634f1b2b9"
+      },
+      {
+        "page": 171,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=171",
+        "sha256": "84e775fe5924e37834f0fd1576f3fd4e374234df0e4d5b8b0be6a57cb4e64eae"
+      },
+      {
+        "page": 172,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=172",
+        "sha256": "9c07de94b7817460c804c1e94386cc68f1585df68922aacc54f62e02c430a6bf"
+      },
+      {
+        "page": 173,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=173",
+        "sha256": "5c772e7f8d5ac8075b370e8096a9ee5803f7ca3851b2b35e2a277aac012f60ef"
+      },
+      {
+        "page": 174,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=174",
+        "sha256": "5f60528724ba0661e84750f8a6d602f6d06af2908963a8b5f7b82c119834bbfc"
+      },
+      {
+        "page": 175,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=175",
+        "sha256": "8134bdd3dff38d2a67ba562b0705641cd8427f811d4c05ae847f8cf861086da7"
+      },
+      {
+        "page": 176,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=176",
+        "sha256": "4660a46c111183c05f90dd8222c1e2834da4827ea9612f923f2c63f69862f020"
+      },
+      {
+        "page": 177,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=177",
+        "sha256": "5915c9a837aafe2c03b53ef33530bce49e2179dd6956008bbc6485e8a7c9d59b"
+      },
+      {
+        "page": 178,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=178",
+        "sha256": "929884b739d60f0e4aa7495e8aacbb66894c60e4b53354a8d513474a3e8151b6"
+      },
+      {
+        "page": 179,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=179",
+        "sha256": "79303e957022a9f51153c2b917eaea45db1ee21dae0b420e34f4668f416d9d9c"
+      },
+      {
+        "page": 180,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=180",
+        "sha256": "0c0d746534ff497b88d2c136bcad78cbb9e82f2f9ef77a03cd661ea49ab35293"
+      },
+      {
+        "page": 181,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=181",
+        "sha256": "5ce5f052d4db22f61aeaabce9f56e462b243e7f0b402ee995ad6a1f6ce6ef2f4"
+      },
+      {
+        "page": 182,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=182",
+        "sha256": "74d5fcc199c1df13d4fa93a16f660487701e6272f0d1f253064239b5d55985a1"
+      },
+      {
+        "page": 183,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=183",
+        "sha256": "984c43328493fa9e62a8cd61e0ee89ba640959c452c52e52f91dc233cb7c80dd"
+      },
+      {
+        "page": 184,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=184",
+        "sha256": "8fc7a75f9fe39b652264db3893907ae4d33f46a211b2657532f0ed8f4c433908"
+      },
+      {
+        "page": 185,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=185",
+        "sha256": "d203c5c2aea1ec7bfd96cc405d4387199da2e497a6ae0cdbc1a85f57ab25745c"
+      },
+      {
+        "page": 186,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=186",
+        "sha256": "9cdc4da867d3e6c4d8b46bd60909651c9bc29fee62c1019dbabcb62032ac76c4"
+      },
+      {
+        "page": 187,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=187",
+        "sha256": "8ead5827a299714bd145d8b003365f8912e9f7df2affafede74d15032df118ea"
+      },
+      {
+        "page": 188,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=188",
+        "sha256": "9a58a58dbc9769d4417f03adc2538408f4ccae8217db6226f496d85b9779e0dc"
+      },
+      {
+        "page": 189,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=189",
+        "sha256": "d876d9fe345a83291918361d0e4039f7670f7f3ab7aa84df3e7aae4a3aa164bb"
+      },
+      {
+        "page": 190,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=190",
+        "sha256": "3c7570af84f2e1c9cf83e1b6bc5f04d2d84a2616c9389b3f41bba7a03f3f7488"
+      },
+      {
+        "page": 191,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=191",
+        "sha256": "00f95bcd93e06ce76356300aca6d796eedeb729210158840bdd18c7831f14491"
+      },
+      {
+        "page": 192,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=192",
+        "sha256": "82b92e804631af96ed4dd6e6495b79965456420720ac1d28f9bc00b8b4671f47"
+      },
+      {
+        "page": 193,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=193",
+        "sha256": "f3b37ccee921f347447e9e7b4b80364220ad0d888c05d688e1c1ac52e546f403"
+      },
+      {
+        "page": 194,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=194",
+        "sha256": "32d86c631f6ea526e259b42881aaad5eb33c0a2c787ceacd67b5a60139933a87"
+      },
+      {
+        "page": 195,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=195",
+        "sha256": "6e221323118a74dca5bc914db318540d709519a09d5a14d134b0b75de7be9d8f"
+      },
+      {
+        "page": 196,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=196",
+        "sha256": "2cd75e1856414054256e8a586bd081767bae22b740d13d0b169e31bf40a89cb2"
+      },
+      {
+        "page": 197,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=197",
+        "sha256": "afc5a2ee46ecada4684179265fa84fd53993e46b697993576c227e711491b327"
+      },
+      {
+        "page": 198,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=198",
+        "sha256": "101c8ff6e255fcc9a5fd425a808a2270c7ac235f09aa3b5570f37940f6834c30"
+      },
+      {
+        "page": 199,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=199",
+        "sha256": "4cf398b53ad8b693f0f9fbc67b50553d09dc5dc07ac13c8293b98ea597214403"
+      },
+      {
+        "page": 200,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=200",
+        "sha256": "a5916a6927452a4c60e170c7269e3d01e7c77a5e7696a90ceaa4552d385adcfc"
+      },
+      {
+        "page": 201,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=201",
+        "sha256": "c22b26ed732b0b4fe5d9bd29e25d38b3c5e3cc4e9b10f6bbda455d0c2f233716"
+      },
+      {
+        "page": 202,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=202",
+        "sha256": "ab39dac61f80732332db50b6cdf39306244829e6650fb8e178ca1fa2029f1e34"
+      },
+      {
+        "page": 203,
+        "url": "https://hololive-official-cardgame.com/cardlist/cardsearch_ex?view=text&page=203",
+        "sha256": "cc94970ad5412565226917d3f75acfb3f70dce6417b75d5421824dee7da1a45d"
+      }
+    ],
+    "deltaDetails": 57,
+    "initialCaptureProvenance": {
+      "listingFiles": {
+        "files": 203,
+        "earliestLocalWrite": "2026-10-29T00:50:55.966426+00:00",
+        "latestLocalWrite": "2026-10-29T00:56:20.921378+00:00",
+        "timeBasis": "Local file write time after retrieval; the initial capture did not retain HTTP Date headers. This is not an independent server timestamp."
+      },
+      "deltaDetailFiles": {
+        "files": 57,
+        "earliestLocalWrite": "2026-10-29T00:52:08.021065+00:00",
+        "latestLocalWrite": "2026-10-29T00:57:40.357865+00:00",
+        "timeBasis": "Local file write time after retrieval; the initial capture did not retain HTTP Date headers. This is not an independent server timestamp."
+      },
+      "assembledAt": "2026-10-29T00:57:40.362633+00:00",
+      "note": "Fresh listing files were first captured in this newly-created directory, then cached locally for schema2 enrichment during the same audit. Snapshot bytes remain frozen; future fetches default to network and explicit --resume records cache reuse/source timestamps."
+    }
+  },
+  "baselineCatalog": {
+    "sha256": "c6db1d1cf260ae591291a35d05823f572158a1708e85e0986f60c9179944de0a",
+    "sourceCommit": "a789bcbac3f8ca5216f3188f30bb6177e97a40c9"
+  },
+  "delta": {
+    "officialListingRows": 3039,
+    "officialNumberedPrintings": 3038,
+    "officialUniqueCardNumbers": 1409,
+    "baselineCards": 1394,
+    "baselineNumberedPrintings": 2981,
+    "newCardNumbers": [
+      "hSD20-001",
+      "hSD20-002",
+      "hSD20-003",
+      "hSD20-004",
+      "hSD20-005",
+      "hSD20-006",
+      "hSD20-007",
+      "hSD20-008",
+      "hSD20-009",
+      "hSD20-010",
+      "hSD20-011",
+      "hSD20-012",
+      "hSD20-013",
+      "hSD20-014",
+      "hSD21-001",
+      "hSD21-002",
+      "hSD21-003",
+      "hSD21-004",
+      "hSD21-005",
+      "hSD21-006",
+      "hSD21-007",
+      "hSD21-008"
+    ],
+    "newCards": 22,
+    "missingPrintings": 57,
+    "absentExistingPrintings": 0,
+    "existingMetadataMismatchRows": 479,
+    "existingMetadataMismatchCards": 185,
+    "sameNumberMetadataInconsistencies": 3,
+    "parseErrorRows": 0
+  },
+  "structuredAudit": {
+    "method": "Read-only comparison of HP/LIFE/stage/color/baton/Arts base damage, printed modifier, cost, special targets and values. Color aliases/composites and blank/zero baton normalized. No translated effect-prose rewrite.",
+    "parseErrorRows": 0,
+    "printedModifierOmissionOnlyRows": 473,
+    "printedModifierOmissionOnlyCards": 183,
+    "otherMetadataDifferenceRows": 6,
+    "knownOfficialHtmlErrors": [
+      {
+        "number": "hBP01-050",
+        "sourceIds": [
+          "2515",
+          "2616"
+        ],
+        "field": "Arts cost",
+        "html": "colorless1",
+        "printedPngAndPreservedCatalog": "green1+colorless1"
+      },
+      {
+        "number": "hBP03-029",
+        "sourceIds": [
+          "2541",
+          "2641"
+        ],
+        "field": "baton",
+        "html": 1,
+        "printedPngAndPreservedCatalog": 0
+      },
+      {
+        "number": "hBP03-050",
+        "sourceIds": [
+          "2545",
+          "2645"
+        ],
+        "field": "colors",
+        "html": [
+          "blue"
+        ],
+        "printedPngAndPreservedCatalog": [
+          "blue",
+          "red"
+        ]
+      }
+    ],
+    "printedEvidence": [
+      {
+        "number": "hBP01-050",
+        "officialId": "2515",
+        "sourceUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hBP01-050_U_02.png",
+        "sha256": "655547f5561468a87f2418c32bf5e802f0e134345bc02baf1eb876aa56311913"
+      },
+      {
+        "number": "hBP03-029",
+        "officialId": "2541",
+        "sourceUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hBP03-029_R_02.png",
+        "sha256": "ac6917dca7d8e5a4c56708e7705aa1a1c20db28e22393399cb0a289d175497d3"
+      },
+      {
+        "number": "hBP03-050",
+        "officialId": "2545",
+        "sourceUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hEB01/hBP03-050_R_02.png",
+        "sha256": "bb3eb1ff5006ad4a7ad296b088e72ecbf8dffe83afe508aec201111688168639"
+      },
+      {
+        "number": "hBP01-050",
+        "officialId": "86",
+        "sourceUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP01/hBP01-050_U_02.png",
+        "sha256": "470d9443d5c04ab0c1c51f3a2b841cffc763eb776c0688813eab5072d8da8cec"
+      },
+      {
+        "number": "hBP03-029",
+        "officialId": "593",
+        "sourceUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP03/hBP03-029_R.png",
+        "sha256": "cd77ea86aa65478cf8b6b2585357ee3cbc9f65896cc266dd1e4036211a7b8148"
+      },
+      {
+        "number": "hBP03-050",
+        "officialId": "614",
+        "sourceUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP03/hBP03-050_R.png",
+        "sha256": "c3080a7e1b0a215d4b5a955fa59b84fc6407ada00a5c6b08bd86cb3694816a0e"
+      }
+    ],
+    "detailEvidence": [
+      {
+        "number": "hBP01-050",
+        "officialId": "2515",
+        "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2515&%2Fcardlist%2Fcardsearch_ex=&view=text",
+        "sha256": "5882149fe47aba9c93c3029ec9ea6c7309ea838653f1e6b741c69d6f25dba73f",
+        "listingEqualsDetail": true
+      },
+      {
+        "number": "hBP01-050",
+        "officialId": "2616",
+        "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2616&%2Fcardlist%2Fcardsearch_ex=&view=text",
+        "sha256": "b7e7ad709b8f5428e4b5e178148ad95410fdb5a43dfa0683cb58761b86d80827",
+        "listingEqualsDetail": true
+      },
+      {
+        "number": "hBP03-029",
+        "officialId": "2541",
+        "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2541&%2Fcardlist%2Fcardsearch_ex=&view=text",
+        "sha256": "abe25325a0cef7e0a399145bd6dc556271d3262f5101f238ed576298e6c71906",
+        "listingEqualsDetail": true
+      },
+      {
+        "number": "hBP03-029",
+        "officialId": "2641",
+        "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2641&%2Fcardlist%2Fcardsearch_ex=&view=text",
+        "sha256": "ee5d6977cbac9cf54b841423923879ad6d89f732720d1587650959a3d52594aa",
+        "listingEqualsDetail": true
+      },
+      {
+        "number": "hBP03-050",
+        "officialId": "2545",
+        "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2545&%2Fcardlist%2Fcardsearch_ex=&view=text",
+        "sha256": "b7d01c27cad91a4094d8dfa294d1762379f00fad72315be32ac60cda5171c6f1",
+        "listingEqualsDetail": true
+      },
+      {
+        "number": "hBP03-050",
+        "officialId": "2645",
+        "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=2645&%2Fcardlist%2Fcardsearch_ex=&view=text",
+        "sha256": "244b5c1a9510a026307688f46b60e6cf3ed05a50b31ca064a25b1098fbeeaccd",
+        "listingEqualsDetail": true
+      },
+      {
+        "number": "hBP01-050",
+        "officialId": "86",
+        "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=86&%2Fcardlist%2Fcardsearch_ex=&view=text",
+        "sha256": "e75510fe4d8f52972020caa2ae31e1f2d41b8fadf22393346be75bbed3df35ca",
+        "listingEqualsDetail": true
+      },
+      {
+        "number": "hBP03-029",
+        "officialId": "593",
+        "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=593&%2Fcardlist%2Fcardsearch_ex=&view=text",
+        "sha256": "797746ae23d6a274ae3e1d3e1ddfe94aec9b7b2b994e8d3e1d024ed49376601f",
+        "listingEqualsDetail": true
+      },
+      {
+        "number": "hBP03-050",
+        "officialId": "614",
+        "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=614&%2Fcardlist%2Fcardsearch_ex=&view=text",
+        "sha256": "34213665c57d3951884908c9c48670ae558fe21e96dc176f47ce6df3da4b8051",
+        "listingEqualsDetail": true
+      }
+    ],
+    "legacyMissingPrintedPlus": {
+      "printingRows": 475,
+      "cards": 183,
+      "artsAcrossPrintingRows": 480,
+      "classification": "Legacy display metadata omission, not a newly observed erratum; existing translated effects and gameplay data preserved."
+    }
+  },
+  "sourceFixture": {
+    "path": "new-printings-source-fixture.json",
+    "sha256": "d730174f8723fa5bfcecd8a7837e62291438b218c1f6c677cf8049739a3e1612",
+    "bytes": 497480
+  }
+}

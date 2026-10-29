@@ -4,9 +4,15 @@ import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
+import { restoreV2Baseline } from './card-refresh-test-helpers.mjs';
+import { restoreUiBaseline, uiAddedPaths } from './ui-preservation-helpers.mjs';
 const root = fileURLToPath(new URL('../..', import.meta.url));
-const read = (name) => fs.readFileSync(path.join(root, name));
-const catalog = JSON.parse(read('website/public/cards.json'));
+const read = (name) => restoreUiBaseline(name, fs.readFileSync(path.join(root, name)));
+const currentCatalog = JSON.parse(read('website/public/cards.json'));
+// Keep the historical 1.2.6→1.2.7 proof intact by reversing only the explicit
+// 2026-10-29 additive refresh before applying its original assertions.
+const currentReportPath = path.join(root, 'website/docs/card-refresh-2026-10-29/report.json');
+const catalog = fs.existsSync(currentReportPath) ? restoreV2Baseline(currentCatalog, JSON.parse(fs.readFileSync(currentReportPath, 'utf8'))) : currentCatalog;
 const fixture = JSON.parse(read('website/tests/fixtures/card-refresh-production-baseline.json'));
 const reportBytes = read('website/docs/card-refresh-report.json');
 const report = JSON.parse(reportBytes);
@@ -144,10 +150,20 @@ test('all unrelated production runtime, UI, engine, configuration and public fil
   const releaseMetadataPath = 'website/lib/releases.mjs';
   const releaseMetadataSha256 = '6d944155fcbeac950d9716af579832163998b917786f5a1acce787d676e040cc';
   assert.equal(fixture.protectedRuntime.fileSha256[releaseMetadataPath], 'a9985fe523605957075629c9b8d75836af3eab1df0c32366f6ebed70a10f1d65', 'Keep the historical 1.2.6 metadata baseline unchanged');
-  for (const name of unchanged) assert.equal(hash(read(name)), name === releaseMetadataPath ? releaseMetadataSha256 : fixture.protectedRuntime.fileSha256[name], `${name} must match its exact reviewed production bytes`);
+  const approvedRefresh = JSON.parse(read('website/tests/fixtures/card-refresh-2026-10-29-runtime-changes.json'));
+  assert.deepEqual([...approvedRefresh.approvedPaths].sort(), ['website/app/globals.css', 'website/app/page.tsx', 'website/app/simulator/SimulatorClient.tsx', 'website/firebase/main.tsx', 'website/lib/simulator/oshi-skill-catalog.mjs']);
+  assert.deepEqual(approvedRefresh.approvedAddedPaths, ['website/app/WebsiteUpdateLog.tsx', 'website/public/website-updates.json']);
+  for (const file of approvedRefresh.addedFiles) assert.equal(hash(read(file.path)), file.sha256, `${file.path}: exact reviewed update-log addition`);
+  const refreshChanges = new Map(approvedRefresh.changes.map(change => [change.path, change]));
+  for (const name of unchanged) {
+    const expected = name === releaseMetadataPath ? releaseMetadataSha256 : fixture.protectedRuntime.fileSha256[name];
+    const change = refreshChanges.get(name);
+    if (change) assert.equal(change.beforeSha256, expected, `${name}: preserve the original production baseline hash`);
+    assert.equal(hash(read(name)), change?.afterSha256 || expected, `${name} must match exact reviewed production bytes or the explicit catalog-only warning patch`);
+  }
   const roots = ['app', 'lib', 'public', 'build', 'db', 'drizzle', 'firebase', 'worker'];
   const walk = (directory) => fs.readdirSync(path.join(root, directory), { withFileTypes: true }).flatMap((entry) => entry.isDirectory() ? walk(`${directory}/${entry.name}`) : [`${directory}/${entry.name}`]);
   const actual = roots.flatMap((directory) => walk(`website/${directory}`)).filter((name) => name !== 'website/public/cards.json').sort();
-  const expected = [...fixture.protectedRuntime.paths.filter((name) => roots.some((directory) => name.startsWith(`website/${directory}/`))), ...fixture.approvedCompatibility.addedPaths].sort();
-  assert.deepEqual(actual, expected, 'Only the reviewed compatibility helper may be introduced');
+  const expected = [...fixture.protectedRuntime.paths.filter((name) => roots.some((directory) => name.startsWith(`website/${directory}/`))), ...fixture.approvedCompatibility.addedPaths, ...approvedRefresh.approvedAddedPaths, ...uiAddedPaths].sort();
+  assert.deepEqual(actual, expected, 'Only the reviewed compatibility, update-log and explicitly scoped redesign files may be introduced');
 });

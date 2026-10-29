@@ -4,7 +4,7 @@ import { onAuthStateChanged, type User } from 'firebase/auth';
 import { firebaseConfigured, getFirebase, googleLogin, emailLogin, logout, friendlyError } from '../../lib/firebase/client';
 import { listLocalDecks, archiveDeck, importGuestDecks, importDecks, syncNow, syncStatus, backupLocalData, getUserData, saveUserData } from '../../lib/firebase/store';
 import { DeckPreview } from './AccountClient';
-import ThemeToggle from '../ThemeToggle';
+import StudioHeader from '../StudioHeader';
 import ConfirmDialog from '../ConfirmDialog';
 export default function FirebaseAccount() {
   const [user, setUser] = useState<User | null>(null), [email, setEmail] = useState(''), [password, setPassword] = useState('');
@@ -32,8 +32,8 @@ export default function FirebaseAccount() {
     const a = document.createElement('a'); a.href = url; a.download = `HoloOCG-backup-${new Date().toISOString().slice(0, 10)}.json`; a.click(); URL.revokeObjectURL(url);
   }
   return <main className="account-page">
-    <header className="account-topbar"><a className="brand" href="/"><span className="brand-mark">H</span><span><strong>繁中卡庫・牌組工房</strong><small>HOLOLIVE OCG · ACCOUNT</small></span></a><div className="account-top-actions"><ThemeToggle /><a className="back-builder" href="/">返回組牌器 →</a></div></header>
-    <section className="account-hero"><div><p className="eyebrow">YOUR DECKS / ANY DEVICE</p><h1>{user ? `${user.displayName || user.email} 的牌組` : '你的每副牌，都留在身邊。'}</h1><p>離線也能組牌。登入後，在不同裝置繼續編輯。</p></div>{user?.photoURL && <img className="account-avatar" src={user.photoURL} alt="帳號頭像" referrerPolicy="no-referrer" />}</section>
+    <StudioHeader current="account" />
+    <section className="account-hero"><div><h1>{user ? `${user.displayName || user.email} 的牌組` : '你的每副牌，都留在身邊。'}</h1><p>離線也能組牌。登入後，在不同裝置繼續編輯。</p></div>{user?.photoURL && <img className="account-avatar" src={user.photoURL} alt="帳號頭像" referrerPolicy="no-referrer" />}</section>
     <p className="sync-banner" role="status">{status}</p>
     {message && <p className="auth-error" role="alert">{message}</p>}
     {lastDeleted && <button type="button" className="undo-deck-delete" onClick={() => changeArchived(lastDeleted, false)}>復原剛才刪除的牌組</button>}

@@ -39,7 +39,7 @@ test('hBP09-047 C/S/PR official Japanese identity, Collab text, and Arts text ar
   assert.deepEqual(card047.variants.filter(variant => variant.rarity === 'P'), [{
     id: 'official-hBP09-047-2982', rarity: 'P',
     image: 'https://hololive-official-cardgame.com/wp-content/images/cardlist/hPR/hBP09-047_P.png',
-    sets: ['PRカード'],
+    sets: ['PRカード', '【使用可能カード】セレクションカップ'],
     sourceUrl: 'https://hololive-official-cardgame.com/cardlist/?id=2982&%2Fcardlist%2Fcardsearch_ex=&view=text',
   }]);
   assert.equal(card047.keyword.effect, '自分のセンターが〈大空スバル〉なら、自分のデッキを1枚引く。');

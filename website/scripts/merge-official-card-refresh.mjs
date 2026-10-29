@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { runFullOfficialRefresh } from "./reconcile-official-catalog.mjs";
 
 const [snapshotPath, outputPath = "public/cards.json", reportPath] = process.argv.slice(2);
 if (!snapshotPath) {
@@ -9,6 +10,10 @@ if (!snapshotPath) {
 }
 
 const snapshot = JSON.parse(fs.readFileSync(snapshotPath, "utf8"));
+if (snapshot.schemaVersion === 2) {
+  runFullOfficialRefresh(snapshot, outputPath, reportPath);
+  process.exit(0);
+}
 if (
   !snapshot.pages ||
   snapshot.successfulPages !== snapshot.pages ||
@@ -82,7 +87,6 @@ const prRows = officialRows.filter((row) => isProductRow(row, productLabels.pr))
 const heb01Rows = officialRows.filter((row) =>
   isProductRow(row, productLabels.heb01),
 );
-const prKeys = new Set(prRows.map((row) => `${row.number}|${row.imageUrl}`));
 const heb01Keys = new Set(heb01Rows.map((row) => `${row.number}|${row.imageUrl}`));
 
 if (officialKeys.size !== officialRows.length) {
