@@ -12,6 +12,8 @@ import { cardSearchText, matchesSearch } from "@/lib/catalog-search.mjs";
 import { effectAuditPending } from '@/lib/effect-corrections.mjs';
 import { cardText, cardTagText, effectText, keywordLabel } from "@/lib/card-terminology.mjs";
 import TerminologyNote from "@/app/TerminologyNote";
+import OfficialJapaneseText from "@/app/OfficialJapaneseText";
+import { officialCardTranslationReady } from "@/lib/official-card-translations.mjs";
 import StudioIcon from "@/app/StudioIcon";
 import { fromHoloSimDeck, isHoloSimDeck, toHoloSimDeck, toHoloSimFilename } from "@/lib/holosim-deck.mjs";
 import { groupMemberOptions } from "@/lib/member-sort.mjs";
@@ -19,6 +21,7 @@ import StudioHeader from "@/app/StudioHeader";
 import { SlidingTabs, StatusToast, useModalMotion } from "@/app/ui-motion";
 import FoilCardImage from "@/app/FoilCardImage";
 import ConfirmDialog from "@/app/ConfirmDialog";
+import YuyuteiCardLink from "@/app/YuyuteiCardLink";
 
 type CardGroup = "oshi" | "holomem" | "support" | "cheer";
 
@@ -230,7 +233,8 @@ function CardModal({
   quantityForVariant: (variantId: string) => number;
   initialVariantId?: string;
 }) {
-  const officialFallback = card.officialImportSchema === 2 && card.effectLanguage === "ja" && card.translationStatus === "official-japanese-fallback";
+  const translatedOfficial = officialCardTranslationReady(card);
+  const officialFallback = card.officialImportSchema === 2 && card.effectLanguage === "ja" && card.translationStatus === "official-japanese-fallback" && !translatedOfficial;
   const displayEffect = (value?: string) => officialFallback ? String(value ?? "") : effectText(card, value);
   const sortedVariants = useMemo(() => sortVariantsByRarity(card.variants), [card.variants]);
   const initialVariant = sortedVariants[0];
@@ -286,6 +290,7 @@ function CardModal({
               {card.jpName !== displayEffect(card.name) ? card.jpName : card.enName}
             </p>
           )}
+          <YuyuteiCardLink cardNumber={card.number} imageUrl={selectedImage} />
           <div className="stat-grid">
             {card.colors.length > 0 && (
               <span><small>顏色</small>{card.colors.join("＋")}</span>
@@ -302,11 +307,12 @@ function CardModal({
             </div>
           )}
           <div className="effect-stack">
-            <h3 className="effect-heading">{officialFallback ? "官方日文效果" : "繁體中文效果"} <span>{officialFallback ? "未提供已覆核繁中翻譯" : "用語已統一"}</span></h3>
+            <h3 className="effect-heading">{officialFallback ? "官方日文效果" : translatedOfficial ? "繁體中文翻譯" : "繁體中文效果"} <span>{officialFallback ? "未提供已覆核繁中翻譯" : translatedOfficial ? "AI 翻譯・未經人工覆核" : "用語已統一"}</span></h3>
             {card.officialImportSchema === 2 && card.simulationStatus === "not-audited" && <p role="note" data-card-import-warning>新卡僅供查閱／組牌；文字效果未支援，不適用自動對戰。需依官方規則另行人工處理，收錄不代表已完成模擬器驗證。</p>}
             {officialPreview && previewReleaseDate && <p role="note">官方先行公開・{previewReleaseDate} 發售</p>}
             {card.number.startsWith("hBP09-") && <p role="note">hBP09 譯文依官方日文卡面整理，屬 AI 翻譯，未經人工覆核。翻譯不代表對戰效果已實作。</p>}
-            {!officialFallback && <TerminologyNote />}
+            {!officialFallback && !translatedOfficial && <TerminologyNote />}
+            {translatedOfficial && <><p role="note" data-card-translation-note>繁中為 AI 翻譯，並非官方譯文，未經人工覆核；卡名使用非官方音譯，正式效果仍以日文原文及裁定為準。翻譯不代表已支援自動對戰。</p><OfficialJapaneseText card={card} /></>}
             {(effectAuditPending as Record<string, string>)[card.number] && <p role="note">校對狀態：{(effectAuditPending as Record<string, string>)[card.number]}</p>}
             {card.stageSkill && (card.stageSkill.name || card.stageSkill.effect) && (
               <article className="stage-skill-effect">

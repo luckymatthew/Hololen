@@ -2,6 +2,303 @@
   "schemaVersion": 1,
   "entries": [
     {
+      "id": "translations-2026-10-30-official-new22-zhHant-1-dafedc277d5d",
+      "kind": "translation",
+      "date": "2026-10-30",
+      "title": "繁中翻譯更新",
+      "summary": [
+        "本次翻譯資料涵蓋 22 個既有卡號、91 個文字欄位；沒有新增卡號或卡圖。",
+        "下表每個卡號列出一款既有卡圖作識別，並非新增印刷版本。",
+        "譯文依官方日文整理，屬 AI 翻譯，並非官方譯文，亦未經人工覆核或核准；僅供顯示，保留官方日文與原有資料識別。",
+        "翻譯更新不代表效果已實作；未支援效果仍須依官方規則另行人工處理。",
+        "另補充1個共用特徵標籤的顯示譯名；原始日文標籤及牌組／規則識別保持不變。"
+      ],
+      "counts": {
+        "newCards": 0,
+        "newPrintings": 0,
+        "newPrintingsForExistingCards": 0,
+        "translatedCards": 22,
+        "translatedFields": 91
+      },
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceCatalogSha256": "b879faeda2824affcb378e965010a13b1b50da4b473fb23819f6c6834385d3fa",
+      "translationRevision": "2026-10-30-official-new22-zhHant-1",
+      "translationSha256": "dafedc277d5d2b5e48adf0979cfd6c6b86486a83f48dc6c2d999da29e4255732",
+      "cards": [
+        {
+          "kind": "translation",
+          "number": "hSD20-001",
+          "name": "百燈 Kyoko",
+          "jpName": "百灯キョーコ",
+          "rarity": "OSR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-001_OSR.png",
+          "printingId": "official-hSD20-001-3028",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ]
+        },
+        {
+          "kind": "translation",
+          "number": "hSD20-002",
+          "name": "百燈 Kyoko",
+          "jpName": "百灯キョーコ",
+          "rarity": "C",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-002_C.png",
+          "printingId": "official-hSD20-002-3029",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ]
+        },
+        {
+          "kind": "translation",
+          "number": "hSD20-003",
+          "name": "百燈 Kyoko",
+          "jpName": "百灯キョーコ",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-003_U.png",
+          "printingId": "official-hSD20-003-3030",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ]
+        },
+        {
+          "kind": "translation",
+          "number": "hSD20-004",
+          "name": "百燈 Kyoko",
+          "jpName": "百灯キョーコ",
+          "rarity": "C",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-004_C.png",
+          "printingId": "official-hSD20-004-3031",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ]
+        },
+        {
+          "kind": "translation",
+          "number": "hSD20-005",
+          "name": "百燈 Kyoko",
+          "jpName": "百灯キョーコ",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-005_U.png",
+          "printingId": "official-hSD20-005-3032",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ]
+        },
+        {
+          "kind": "translation",
+          "number": "hSD20-006",
+          "name": "百燈 Kyoko",
+          "jpName": "百灯キョーコ",
+          "rarity": "R",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-006_R.png",
+          "printingId": "official-hSD20-006-3033",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ]
+        },
+        {
+          "kind": "translation",
+          "number": "hSD20-007",
+          "name": "百燈 Kyoko",
+          "jpName": "百灯キョーコ",
+          "rarity": "RR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-007_RR.png",
+          "printingId": "official-hSD20-007-3034",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ]
+        },
+        {
+          "kind": "translation",
+          "number": "hSD20-008",
+          "name": "宙科 Sopia",
+          "jpName": "宙科そぴあ",
+          "rarity": "C",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-008_C.png",
+          "printingId": "official-hSD20-008-3035",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ]
+        },
+        {
+          "kind": "translation",
+          "number": "hSD20-009",
+          "name": "宙科 Sopia",
+          "jpName": "宙科そぴあ",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-009_U.png",
+          "printingId": "official-hSD20-009-3036",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ]
+        },
+        {
+          "kind": "translation",
+          "number": "hSD20-010",
+          "name": "宙科 Sopia",
+          "jpName": "宙科そぴあ",
+          "rarity": "R",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-010_R.png",
+          "printingId": "official-hSD20-010-3037",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ]
+        },
+        {
+          "kind": "translation",
+          "number": "hSD20-011",
+          "name": "宙科 Sopia",
+          "jpName": "宙科そぴあ",
+          "rarity": "RR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-011_RR.png",
+          "printingId": "official-hSD20-011-3038",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ]
+        },
+        {
+          "kind": "translation",
+          "number": "hSD20-012",
+          "name": "玩樂★巡遊隊！",
+          "jpName": "アソビ★まわり隊！",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-012_U.png",
+          "printingId": "official-hSD20-012-3039",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ]
+        },
+        {
+          "kind": "translation",
+          "number": "hSD20-013",
+          "name": "轉轉時間！",
+          "jpName": "ぐるぐるTIME！",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-013_U.png",
+          "printingId": "official-hSD20-013-3040",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ]
+        },
+        {
+          "kind": "translation",
+          "number": "hSD20-014",
+          "name": "百燈 Kyoko的擴音器",
+          "jpName": "百灯キョーコの拡声器",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-014_U.png",
+          "printingId": "official-hSD20-014-3041",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ]
+        },
+        {
+          "kind": "translation",
+          "number": "hSD21-001",
+          "name": "熱千 Mera",
+          "jpName": "熱千めら",
+          "rarity": "OSR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-001_OSR.png",
+          "printingId": "official-hSD21-001-3043",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ]
+        },
+        {
+          "kind": "translation",
+          "number": "hSD21-002",
+          "name": "熱千 Mera",
+          "jpName": "熱千めら",
+          "rarity": "C",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-002_C.png",
+          "printingId": "official-hSD21-002-3044",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ]
+        },
+        {
+          "kind": "translation",
+          "number": "hSD21-003",
+          "name": "熱千 Mera",
+          "jpName": "熱千めら",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-003_U.png",
+          "printingId": "official-hSD21-003-3045",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ]
+        },
+        {
+          "kind": "translation",
+          "number": "hSD21-004",
+          "name": "熱千 Mera",
+          "jpName": "熱千めら",
+          "rarity": "C",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-004_C.png",
+          "printingId": "official-hSD21-004-3046",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ]
+        },
+        {
+          "kind": "translation",
+          "number": "hSD21-005",
+          "name": "熱千 Mera",
+          "jpName": "熱千めら",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-005_U.png",
+          "printingId": "official-hSD21-005-3047",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ]
+        },
+        {
+          "kind": "translation",
+          "number": "hSD21-006",
+          "name": "熱千 Mera",
+          "jpName": "熱千めら",
+          "rarity": "R",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-006_R.png",
+          "printingId": "official-hSD21-006-3048",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ]
+        },
+        {
+          "kind": "translation",
+          "number": "hSD21-007",
+          "name": "熱千 Mera",
+          "jpName": "熱千めら",
+          "rarity": "RR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-007_RR.png",
+          "printingId": "official-hSD21-007-3049",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ]
+        },
+        {
+          "kind": "translation",
+          "number": "hSD21-008",
+          "name": "熱千 Mera的梆子",
+          "jpName": "熱千めらの拍子木",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-008_U.png",
+          "printingId": "official-hSD21-008-3050",
+          "products": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ]
+        }
+      ]
+    },
+    {
       "id": "official-cards-2026-10-29-75814dea892a",
       "date": "2026-10-29",
       "title": "官方卡表更新",

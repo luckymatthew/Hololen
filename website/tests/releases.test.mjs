@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { releaseMetadata, APK_URL, STABLE_METADATA, apkUrl, installZipUrl } from '../lib/releases.mjs';
+import { releaseMetadata, APK_URL, STABLE_APK_URL, STABLE_METADATA, apkUrl, installZipUrl } from '../lib/releases.mjs';
 const digest = 'e608ddf50c6eb746e2023a87843e52ef1f01e9a1c6bf6390255f1cc8e16b0a08';
 const apk = { name: 'HoloLens.apk', size: 615463775, state: 'uploaded', digest: `sha256:${digest}` };
 const zip = { name: 'Hololens-1.2.8-Install.zip', size: 615465884, state: 'uploaded', digest: 'sha256:894c4acd0fa06956611dec841f34b3e2286570a1e98593c177070f21b87d8950' };
@@ -12,7 +12,8 @@ test('offline default is the verified public versioned stable APK and real insta
  assert.equal(STABLE_METADATA.date, '2026-10-29T18:39:19Z');
  assert.equal(STABLE_METADATA.sha256, digest);
  assert.equal(STABLE_METADATA.installZipAvailable, true);
- assert.equal(APK_URL, 'https://github.com/luckymatthew/Hololen/releases/download/v1.2.8/HoloLens.apk');
+ assert.equal(STABLE_APK_URL, 'https://github.com/luckymatthew/Hololen/releases/download/v1.2.8/HoloLens.apk');
+ assert.equal(APK_URL, 'https://github.com/luckymatthew/Hololen/releases/download/v1.3.2/HoloLens.apk');
  assert.equal(installZipUrl(STABLE_METADATA.version), 'https://github.com/luckymatthew/Hololen/releases/download/v1.2.8/Hololens-1.2.8-Install.zip');
 });
 test('pinned public metadata retains independently verified integrity even when the API omits a digest', () => {

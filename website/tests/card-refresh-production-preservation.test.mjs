@@ -1,3 +1,4 @@
+import { translationAddedPaths } from './translation-preservation-helpers.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -6,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { restoreV2Baseline } from './card-refresh-test-helpers.mjs';
 import { restoreUiBaseline, uiAddedPaths } from './ui-preservation-helpers.mjs';
+import { yuyuteiAddedPaths } from './yuyutei-preservation-helpers.mjs';
 const root = fileURLToPath(new URL('../..', import.meta.url));
 const read = (name) => restoreUiBaseline(name, fs.readFileSync(path.join(root, name)));
 const currentCatalog = JSON.parse(read('website/public/cards.json'));
@@ -164,6 +166,6 @@ test('all unrelated production runtime, UI, engine, configuration and public fil
   const roots = ['app', 'lib', 'public', 'build', 'db', 'drizzle', 'firebase', 'worker'];
   const walk = (directory) => fs.readdirSync(path.join(root, directory), { withFileTypes: true }).flatMap((entry) => entry.isDirectory() ? walk(`${directory}/${entry.name}`) : [`${directory}/${entry.name}`]);
   const actual = roots.flatMap((directory) => walk(`website/${directory}`)).filter((name) => name !== 'website/public/cards.json').sort();
-  const expected = [...fixture.protectedRuntime.paths.filter((name) => roots.some((directory) => name.startsWith(`website/${directory}/`))), ...fixture.approvedCompatibility.addedPaths, ...approvedRefresh.approvedAddedPaths, ...uiAddedPaths].sort();
-  assert.deepEqual(actual, expected, 'Only the reviewed compatibility, update-log and explicitly scoped redesign files may be introduced');
+  const expected = [...fixture.protectedRuntime.paths.filter((name) => roots.some((directory) => name.startsWith(`website/${directory}/`))), ...fixture.approvedCompatibility.addedPaths, ...approvedRefresh.approvedAddedPaths, ...uiAddedPaths, ...yuyuteiAddedPaths, ...translationAddedPaths].sort();
+  assert.deepEqual(actual, expected, 'Only the reviewed compatibility, update-log, redesign and three scoped retailer files may be introduced');
 });

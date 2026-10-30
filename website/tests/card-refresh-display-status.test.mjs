@@ -1,3 +1,4 @@
+import { restoreTranslationBaseline } from './translation-preservation-helpers.mjs';
 import assert from 'node:assert/strict';
 import { readFileSync, mkdirSync, unlinkSync } from 'node:fs';
 import path from 'node:path';
@@ -9,6 +10,7 @@ import test from 'node:test';
 import { CATALOG_ONLY_OSHI, isActivatableOshiSkill, enrichOshiCardMetadata, oshiSkillPowerCost } from '../lib/simulator/oshi-skill-catalog.mjs';
 import { hash } from './card-refresh-test-helpers.mjs';
 import { restoreUiBaseline } from './ui-preservation-helpers.mjs';
+import { restoreYuyuteiBaseline } from './yuyutei-preservation-helpers.mjs';
 
 const catalog = JSON.parse(readFileSync(new URL('../public/cards.json', import.meta.url), 'utf8'));
 const baseline = JSON.parse(readFileSync(new URL('./fixtures/card-refresh-2026-10-29-baseline.json', import.meta.url), 'utf8'));
@@ -58,9 +60,10 @@ test('rendered card modal/inspector warnings and existing1394 presentation remai
       define: { 'import.meta.env': JSON.stringify({ VITE_APP_BACKEND: 'firebase' }) },
       plugins: [{ name: 'inspect-private-card-refresh-display', setup(builder) {
         builder.onLoad({ filter: /(?:page|SimulatorClient)\.tsx$/ }, args => {
-          const relative = path.relative(process.cwd(), args.path), change = approvedByPath.get(relative);
+          const relative = path.relative(process.cwd(), args.path).split(path.sep).join('/'), change = approvedByPath.get(relative);
           if (!change) return;
-          const source = prior ? originalSource(args.path, change) : readFileSync(args.path, 'utf8');
+          // Exclude only the separately hash-pinned retailer addition from this historical display proof.
+          const source = prior ? originalSource(args.path, change) : restoreYuyuteiBaseline(change.path, restoreTranslationBaseline(change.path, readFileSync(args.path, 'utf8')));
           const exports = relative === 'app/page.tsx' ? '\nexport { CardModal };' : '\nexport { CardInspector, OshiPosition, automationLabel };';
           return { contents: source + exports, loader: 'tsx' };
         });

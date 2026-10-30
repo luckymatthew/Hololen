@@ -8,6 +8,8 @@ import { firebaseBuild } from "@/lib/firebase/client";
 
 import { cardText, effectText, keywordLabel } from "@/lib/card-terminology.mjs";
 import TerminologyNote from "@/app/TerminologyNote";
+import OfficialJapaneseText from "@/app/OfficialJapaneseText";
+import { officialCardTranslationReady } from "@/lib/official-card-translations.mjs";
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
@@ -933,7 +935,8 @@ function CardInspector({ card, cardMap, variantId, liveState, onClose, hover = f
   const reference = projectLegacyCardReference({ number: card.number, variantId });
   card = cardMap.get(reference.number) || card;
   variantId = reference.variantId;
-  const officialFallback = card.officialImportSchema === 2 && card.effectLanguage === "ja" && card.translationStatus === "official-japanese-fallback";
+  const translatedOfficial = officialCardTranslationReady(card);
+  const officialFallback = card.officialImportSchema === 2 && card.effectLanguage === "ja" && card.translationStatus === "official-japanese-fallback" && !translatedOfficial;
   const catalogOnly = card.officialImportSchema === 2 && card.simulationStatus === "not-audited";
   const displayEffect = (value?: string) => officialFallback ? String(value ?? "") : effectText(card, value);
   const skills = [
@@ -982,7 +985,8 @@ function CardInspector({ card, cardMap, variantId, liveState, onClose, hover = f
         </div>
       </section>}
       <div className="sim-inspector-copy">
-        {!officialFallback && <TerminologyNote />}
+        {!officialFallback && !translatedOfficial && <TerminologyNote />}
+            {translatedOfficial && <><p role="note" data-card-translation-note>繁中為 AI 翻譯，並非官方譯文，未經人工覆核；卡名使用非官方音譯，正式效果仍以日文原文及裁定為準。翻譯不代表已支援自動對戰。</p><OfficialJapaneseText card={card} /></>}
         {officialFallback && <p role="note">官方日文效果・未提供已覆核繁中翻譯。</p>}
         {officialPreview && previewReleaseDate && <p role="note">官方先行公開・{previewReleaseDate} 發售</p>}
         {catalogOnly && <p role="note" data-card-import-warning>新卡文字效果未支援，不適用自動對戰；需依官方規則另行人工處理，對戰自動結算未經驗證。</p>}

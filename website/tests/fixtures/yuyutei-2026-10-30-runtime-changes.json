@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "status": "verified-source-update",
+  "scope": "Only the explicitly requested selected-printing Yuyutei link presentation, resolver and artwork-confirmed product mapping. This test-only outer layer restores exact deployed website bytes before historical card/UI/APK checks.",
+  "baselineSourceCommit": "61941e7e6d319a60cc304cfc8b6b45fa17169b51",
+  "baselineTree": "98ad57cc1e6bbcac2f1061304a9430100e4164f9",
+  "approvedPaths": [
+    "website/app/page.tsx"
+  ],
+  "approvedAddedPaths": [
+    "website/app/YuyuteiCardLink.tsx",
+    "website/lib/yuyutei-links.mjs",
+    "website/lib/yuyutei-card-products.json"
+  ],
+  "changes": [
+    {
+      "path": "website/app/page.tsx",
+      "beforeSha256": "fa58cc43f15ee7d45ff840e9fdf8a8305a4015ae4781cab9d032e8149b76b77c",
+      "afterSha256": "b348609cfda6c7702a345c39dbd1d75bb511900b8c28f22b83704e79b03b4bf9",
+      "patches": [
+        {
+          "before": "import { SlidingTabs, StatusToast, useModalMotion } from \"@/app/ui-motion\";\nimport FoilCardImage from \"@/app/FoilCardImage\";\nimport ConfirmDialog from \"@/app/ConfirmDialog\";\n\ntype CardGroup = \"oshi\" | \"holomem\" | \"support\" | \"cheer\";\n\n",
+          "after": "import { SlidingTabs, StatusToast, useModalMotion } from \"@/app/ui-motion\";\nimport FoilCardImage from \"@/app/FoilCardImage\";\nimport ConfirmDialog from \"@/app/ConfirmDialog\";\nimport YuyuteiCardLink from \"@/app/YuyuteiCardLink\";\n\ntype CardGroup = \"oshi\" | \"holomem\" | \"support\" | \"cheer\";\n\n"
+        },
+        {
+          "before": "              {card.jpName !== displayEffect(card.name) ? card.jpName : card.enName}\n            </p>\n          )}\n          <div className=\"stat-grid\">\n            {card.colors.length > 0 && (\n              <span><small>顏色</small>{card.colors.join(\"＋\")}</span>\n",
+          "after": "              {card.jpName !== displayEffect(card.name) ? card.jpName : card.enName}\n            </p>\n          )}\n          <YuyuteiCardLink cardNumber={card.number} imageUrl={selectedImage} />\n          <div className=\"stat-grid\">\n            {card.colors.length > 0 && (\n              <span><small>顏色</small>{card.colors.join(\"＋\")}</span>\n"
+        }
+      ]
+    }
+  ],
+  "addedFiles": [
+    {
+      "path": "website/app/YuyuteiCardLink.tsx",
+      "sha256": "1f721e9a428d3022eaa7ffea948cedebb87a45b815e9da18d322a1a34fa70d84"
+    },
+    {
+      "path": "website/lib/yuyutei-links.mjs",
+      "sha256": "8d464629c410b24706fec26fe931d31357d6266b8d60b660aa0712b68e840382"
+    },
+    {
+      "path": "website/lib/yuyutei-card-products.json",
+      "sha256": "5bceef2866188076c971c3f066b1018d93e9110d71f4e4d9cef4eb868c15f75f"
+    }
+  ],
+  "unchangedFileSha256": {
+    "website/public/cards.json": "75814dea892ac79fdf2ad9dd09987c117c870163b9e903b63533df22be2119ac",
+    "website/public/website-updates.json": "e1fda4a1ff6e5053972ae5e16ed1b9af3ebaf4f989e4c2ec0bca3e115b6ca0b9",
+    "website/lib/releases.mjs": "c5a0ae303ea1687e8c6b2d182d8849a94736719611db08ad665429a9e80ded8a",
+    "website/app/download/DownloadClient.tsx": "9eec5217ad5841e5852290f440dbbc0a124a7830a796f9a0d0c59a14c574236f",
+    "website/tests/fixtures/card-refresh-production-baseline.json": "8d769262c6db3db1977025f6812286b770fdca0dc1b1be5e96c4a13f3f7c2b0a",
+    "website/tests/fixtures/card-refresh-2026-10-29-baseline.json": "58a2745ee13824ed4b80c49c20eeb85dbee4d19fdadfd8512b1032edb8e466f9",
+    "website/tests/fixtures/card-refresh-2026-10-29-runtime-changes.json": "9ef71c8783fc397dd9d246812677e1d2458e62dfeaebafd70be91d35af2c0ffe",
+    "website/tests/fixtures/ui-redesign-2026-10-29-runtime-changes.json": "b461cba583920323f79cf5177dcecc8aeee7927217f7e360ad923c927a3f3b47",
+    "website/tests/fixtures/apk-release-1.2.8-runtime-changes.json": "0d72062348123185fc3125f67d1aaf97e4edc8334021d0112c609952d12f96df"
+  }
+}

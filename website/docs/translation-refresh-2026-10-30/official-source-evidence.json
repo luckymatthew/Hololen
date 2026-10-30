@@ -1,0 +1,203 @@
+{
+  "verifiedDate": "2026-10-30",
+  "freshOfficialCards": 22,
+  "matchedJapaneseSources": 22,
+  "sourceCatalogSha256": "75814dea892ac79fdf2ad9dd09987c117c870163b9e903b63533df22be2119ac",
+  "sourceSnapshotSha256": "15f1b188a7ad30573ad59747a46737d729d4ca5ab9d70e328ed0a0f6ea85780a",
+  "cards": [
+    {
+      "number": "hSD20-001",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3028&view=text",
+      "htmlSha256": "73b3b73c14924f968c2b6042d43a791ef28faf19ff58edf08e2090712dfa3819",
+      "httpDate": "Fri, 30 Oct 2026 11:25:25 GMT",
+      "allJapaneseFieldsPresent": true,
+      "structuredJapaneseFieldsMatch": true
+    },
+    {
+      "number": "hSD20-002",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3029&view=text",
+      "htmlSha256": "92c19e380100502cb05dc1054633f30ce9b00be19a4f7ff3162518732d3cce67",
+      "httpDate": "Fri, 30 Oct 2026 11:25:25 GMT",
+      "allJapaneseFieldsPresent": true,
+      "structuredJapaneseFieldsMatch": true
+    },
+    {
+      "number": "hSD20-003",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3030&view=text",
+      "htmlSha256": "1bca61ffad880ec5a6bf376576a896b17351282a43b1b97025444515d6d227b3",
+      "httpDate": "Fri, 30 Oct 2026 11:25:25 GMT",
+      "allJapaneseFieldsPresent": true,
+      "structuredJapaneseFieldsMatch": true
+    },
+    {
+      "number": "hSD20-004",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3031&view=text",
+      "htmlSha256": "89fe67c975cd83aca599ddb850c4ee98298cce99e2f4f109dfa74bb110e0cbe2",
+      "httpDate": "Fri, 30 Oct 2026 11:25:30 GMT",
+      "allJapaneseFieldsPresent": true,
+      "structuredJapaneseFieldsMatch": true
+    },
+    {
+      "number": "hSD20-005",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3032&view=text",
+      "htmlSha256": "f664fb10e24fe923b39bd0805f422172bb930aad06d227a964835eeb3813d48b",
+      "httpDate": "Fri, 30 Oct 2026 11:25:30 GMT",
+      "allJapaneseFieldsPresent": true,
+      "structuredJapaneseFieldsMatch": true
+    },
+    {
+      "number": "hSD20-006",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3033&view=text",
+      "htmlSha256": "92c651f71e083a20b02c0cc1380d3e3b69b7c2d81910ddfd879ea22bbffce789",
+      "httpDate": "Fri, 30 Oct 2026 11:25:30 GMT",
+      "allJapaneseFieldsPresent": true,
+      "structuredJapaneseFieldsMatch": true
+    },
+    {
+      "number": "hSD20-007",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3034&view=text",
+      "htmlSha256": "1deb5ff1b8f60b940799c7540a9b400f6010dde64a0f59512dbd57c6a3f3d751",
+      "httpDate": "Fri, 30 Oct 2026 11:25:40 GMT",
+      "allJapaneseFieldsPresent": true,
+      "structuredJapaneseFieldsMatch": true
+    },
+    {
+      "number": "hSD20-008",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3035&%2Fcardlist%2Fcardsearch_ex=&view=text",
+      "htmlSha256": "5957c77d1a45cf42fb879d59afd84211db2a070dcc7e3e0696c68fd730d22d8d",
+      "httpDate": "Fri, 30 Oct 2026 11:25:40 GMT",
+      "allJapaneseFieldsPresent": true,
+      "structuredJapaneseFieldsMatch": true
+    },
+    {
+      "number": "hSD20-009",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3036&%2Fcardlist%2Fcardsearch_ex=&view=text",
+      "htmlSha256": "108c49b48b7e26556cfa1388756a4b13a608d11a42e52668dd43a58a15875a11",
+      "httpDate": "Fri, 30 Oct 2026 11:25:40 GMT",
+      "allJapaneseFieldsPresent": true,
+      "structuredJapaneseFieldsMatch": true
+    },
+    {
+      "number": "hSD20-010",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3037&%2Fcardlist%2Fcardsearch_ex=&view=text",
+      "htmlSha256": "400950e049c4d372503d2df6c739f1fc8cc3cb4f8ada965a985bfd756f4450d1",
+      "httpDate": "Fri, 30 Oct 2026 11:25:43 GMT",
+      "allJapaneseFieldsPresent": true,
+      "structuredJapaneseFieldsMatch": true
+    },
+    {
+      "number": "hSD20-011",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3038&%2Fcardlist%2Fcardsearch_ex=&view=text",
+      "htmlSha256": "d8cbba990d86ab2e5bfdd205b785d5e001699bc83ddcb56a832932ff9dd5570b",
+      "httpDate": "Fri, 30 Oct 2026 11:25:43 GMT",
+      "allJapaneseFieldsPresent": true,
+      "structuredJapaneseFieldsMatch": true
+    },
+    {
+      "number": "hSD20-012",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3039&%2Fcardlist%2Fcardsearch_ex=&view=text",
+      "htmlSha256": "5b828c32dc385bb1831207dfaf86a739dc879b39a9781d5fdf4dfbb82c05cb96",
+      "httpDate": "Fri, 30 Oct 2026 11:25:43 GMT",
+      "allJapaneseFieldsPresent": true,
+      "structuredJapaneseFieldsMatch": true
+    },
+    {
+      "number": "hSD20-013",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3040&%2Fcardlist%2Fcardsearch_ex=&view=text",
+      "htmlSha256": "7850048e8d5db2b049723ea73652d84aa5d08e42369c2b0aa51b9062f92c54bd",
+      "httpDate": "Fri, 30 Oct 2026 11:25:46 GMT",
+      "allJapaneseFieldsPresent": true,
+      "structuredJapaneseFieldsMatch": true
+    },
+    {
+      "number": "hSD20-014",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3041&%2Fcardlist%2Fcardsearch_ex=&view=text",
+      "htmlSha256": "46d05ac6d2f902029084705241c1500a4af11dea7c5dc2acc7711cd4b1760537",
+      "httpDate": "Fri, 30 Oct 2026 11:25:46 GMT",
+      "allJapaneseFieldsPresent": true,
+      "structuredJapaneseFieldsMatch": true
+    },
+    {
+      "number": "hSD21-001",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3043&view=text",
+      "htmlSha256": "15c719a299ac71182074bbc159a65c1d29c59833faaeb5bc7fb8397351f7abac",
+      "httpDate": "Fri, 30 Oct 2026 11:25:46 GMT",
+      "allJapaneseFieldsPresent": true,
+      "structuredJapaneseFieldsMatch": true
+    },
+    {
+      "number": "hSD21-002",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3044&view=text",
+      "htmlSha256": "bfb955a3b81007b542f129dd3dc8f1482ca0d16aa04f42fefa9713cfac6f1036",
+      "httpDate": "Fri, 30 Oct 2026 11:25:49 GMT",
+      "allJapaneseFieldsPresent": true,
+      "structuredJapaneseFieldsMatch": true
+    },
+    {
+      "number": "hSD21-003",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3045&view=text",
+      "htmlSha256": "c81df94b662e4f2b57aa23c70bed3d6d269dd2b93de9c1b2ace85fe33833560d",
+      "httpDate": "Fri, 30 Oct 2026 11:25:49 GMT",
+      "allJapaneseFieldsPresent": true,
+      "structuredJapaneseFieldsMatch": true
+    },
+    {
+      "number": "hSD21-004",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3046&view=text",
+      "htmlSha256": "ebc85984e7b934a8afe2d86f24156b1c71bffa5dab30a1047baad8c3ba32e804",
+      "httpDate": "Fri, 30 Oct 2026 11:25:49 GMT",
+      "allJapaneseFieldsPresent": true,
+      "structuredJapaneseFieldsMatch": true
+    },
+    {
+      "number": "hSD21-005",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3047&view=text",
+      "htmlSha256": "3cca1177b99aeb2a9c9b53deafc69f75e14194b9770ed42ee4b9bf7bdb247af5",
+      "httpDate": "Fri, 30 Oct 2026 11:25:52 GMT",
+      "allJapaneseFieldsPresent": true,
+      "structuredJapaneseFieldsMatch": true
+    },
+    {
+      "number": "hSD21-006",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3048&view=text",
+      "htmlSha256": "5422462fd7cbb84970defadf2f239d0b2c285783dc14fbee16756a08262503fb",
+      "httpDate": "Fri, 30 Oct 2026 11:25:52 GMT",
+      "allJapaneseFieldsPresent": true,
+      "structuredJapaneseFieldsMatch": true
+    },
+    {
+      "number": "hSD21-007",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3049&view=text",
+      "htmlSha256": "a7a71dab939d25b317699fb07e3a3b2806cbe65ee04f83c1b9ea225989a65c84",
+      "httpDate": "Fri, 30 Oct 2026 11:25:52 GMT",
+      "allJapaneseFieldsPresent": true,
+      "structuredJapaneseFieldsMatch": true
+    },
+    {
+      "number": "hSD21-008",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3050&view=text",
+      "htmlSha256": "b7094a4a6c0a7eae2215d560c55812849a0d3b781ffe0370c7eee9ac0381e8bb",
+      "httpDate": "Fri, 30 Oct 2026 11:25:56 GMT",
+      "allJapaneseFieldsPresent": true,
+      "structuredJapaneseFieldsMatch": true
+    }
+  ],
+  "structuredComparison": {
+    "verifiedAt": "2026-10-30T11:56:00Z",
+    "verifiedCards": 22,
+    "mismatches": 0,
+    "parser": "scripts/reconcile-official-catalog.mjs#parseOfficialFields",
+    "exactFields": [
+      "jpName",
+      "stageSkill",
+      "oshiSkill",
+      "spOshiSkill",
+      "keyword",
+      "arts",
+      "extra"
+    ],
+    "supportAbilityText": "exact equality after whitespace normalization",
+    "includesNumericAndCostFields": true,
+    "structuredExtractSha256": "96f91f9a78caa946ac82a92b825b9ca79414f7c4675376e9ae308407844ed083"
+  }
+}

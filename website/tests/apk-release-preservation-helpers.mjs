@@ -1,3 +1,4 @@
+import { restorePreviewReleaseBaseline } from './preview-release-preservation-helpers.mjs';
 // Test-only outer provenance layer for the explicitly authorized APK-link update.
 // Historical card/UI hashes remain unchanged and are checked after this reversal.
 import assert from 'node:assert/strict';
@@ -21,6 +22,8 @@ export function restoreApkReleaseBaseline(name, input) {
   // Composition can receive bytes already reversed by the outer reader.
   // The dedicated preservation test separately pins current bytes to afterSha256.
   if (hash(contents) === change.beforeSha256) return input;
+  input = restorePreviewReleaseBaseline(name, input);
+  contents = String(input);
   assert.equal(hash(contents), change.afterSha256, `${relative}: exact approved APK-update bytes`);
   for (const patch of [...change.patches].reverse()) {
     assert.ok(patch.after.length > 0, `${relative}: reversal cannot match an empty string`);

@@ -1,0 +1,51 @@
+{
+  "id": 429104805,
+  "tag_name": "v1.3.2",
+  "name": "Hololens 1.3.2 preview - translation and UI update; device login unverified",
+  "draft": false,
+  "prerelease": true,
+  "published_at": "2026-10-30T14:24:28Z",
+  "body": "Preview: translated card-data updates and immediate browsing/scanner refresh, website-aligned card filters, primary Scan action with camera icon, 83 official characters/602 art options, and separate app-release notifications. Original AI remains available; optional ChatGPT requires official authorization on an eligible Android account and is not verified live. New hSD20/hSD21 battle effects are NOT enabled in this APK; manual warnings remain. Physical camera and dual-device PvP are unverified. No account authorization or inference usage was performed during development.",
+  "assets": [
+    {
+      "id": 692339385,
+      "name": "Hololens-1.3.2-Install.zip",
+      "state": "uploaded",
+      "size": 627918388,
+      "digest": "sha256:11907311b5dc7e997cb7478e6d0f4541abca0111d8e1bdf11e531efe6da28327",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.2/Hololens-1.3.2-Install.zip"
+    },
+    {
+      "id": 692352951,
+      "name": "Hololens-release.json",
+      "state": "uploaded",
+      "size": 1059,
+      "digest": "sha256:09e48ecd0914388075e624e63606624e5552dc9d54fb7d08114894f1f4ef926e",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.2/Hololens-release.json"
+    },
+    {
+      "id": 692312351,
+      "name": "HoloLens.apk",
+      "state": "uploaded",
+      "size": 627915056,
+      "digest": "sha256:c7c982f886fc219e587453cdcda347b4c651381340b414176dcdeb6a80b0f4b5",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.2/HoloLens.apk"
+    },
+    {
+      "id": 692352804,
+      "name": "README.txt",
+      "state": "uploaded",
+      "size": 1937,
+      "digest": "sha256:364f78bc37544d5c91b7f27866595d82681f659cfd0075af76102355afd70815",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.2/README.txt"
+    },
+    {
+      "id": 692353059,
+      "name": "SHA256SUMS.txt",
+      "state": "uploaded",
+      "size": 341,
+      "digest": "sha256:d8ce185a0bdfb6b810a90f9aff663c64ed229f3831dabeaf6c37fba4a9dad8b2",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.2/SHA256SUMS.txt"
+    }
+  ]
+}

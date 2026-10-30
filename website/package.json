@@ -8,7 +8,7 @@
   "scripts": {
     "install:ci": "bash scripts/install-ci.sh",
     "dev": "vite --config vite.firebase.config.ts",
-    "build": "vite build --config vite.firebase.config.ts",
+    "build": "npm run validate:translations && npm run validate:display-translations && vite build --config vite.firebase.config.ts",
     "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
     "test": "npm run test:sync && npm run test:regression && tsc --noEmit && npm run build",
     "validate:artifact": "bash scripts/validate-artifact.sh",
@@ -25,7 +25,10 @@
     "deploy:firebase": "firebase deploy",
     "deploy:preview": "firebase hosting:channel:deploy migration --expires 7d",
     "test:integration": "firebase emulators:exec --project demo-holo-ocg --only auth,firestore,database \"node scripts/test-integration.mjs\"",
-    "test:sites": "npm run build:sites && node --experimental-loader=./tests/cloudflare-loader.mjs --test tests/rendered-html.test.mjs"
+    "test:sites": "npm run build:sites && node --experimental-loader=./tests/cloudflare-loader.mjs --test tests/rendered-html.test.mjs",
+    "validate:translations": "node scripts/validate-card-translations.mjs",
+    "data:translations": "node scripts/embed-display-translations.mjs",
+    "validate:display-translations": "node scripts/embed-display-translations.mjs --check"
   },
   "dependencies": {
     "drizzle-orm": "0.45.2",

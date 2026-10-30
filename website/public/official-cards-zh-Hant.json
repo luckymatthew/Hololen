@@ -1,0 +1,744 @@
+{
+  "meta": {
+    "version": "2026-10-30-official-new22-zhHant-1",
+    "sourceCatalogVersion": "2026-10-29-official-cardlist",
+    "sourceCatalogSha256": "75814dea892ac79fdf2ad9dd09987c117c870163b9e903b63533df22be2119ac",
+    "sourceSnapshotSha256": "15f1b188a7ad30573ad59747a46737d729d4ca5ab9d70e328ed0a0f6ea85780a",
+    "scope": "hSD20-001..014 and hSD21-001..008; existing 22-card Japanese-source snapshot only",
+    "cardCount": 22,
+    "fieldCount": 91,
+    "effectFieldCount": 32,
+    "tagDisplayCount": 1,
+    "translationStatus": "ai-translated-from-official-japanese",
+    "humanReviewStatus": "not-reviewed",
+    "displayOnly": true,
+    "changesGameplay": false,
+    "properNamePolicy": "Non-official display labels use traditional Chinese existing kanji plus transparent kana romanization: 百燈 Kyoko, 宙科 Sopia, 熱千 Mera. Sopia follows そぴあ literally; official English spelling was not verified. No invented kanji given names. Exact Japanese originals remain source-guarded.",
+    "tagPolicy": "#玩樂★巡遊隊！ is a non-official display alias for #アソビ★まわり隊！; canonical catalog/rules tag is unchanged.",
+    "disclaimer": "AI translation from official Japanese; not official or human-approved. Display/search only, not executable rules."
+  },
+  "tagDisplay": {
+    "#アソビ★まわり隊！": "#玩樂★巡遊隊！"
+  },
+  "cards": {
+    "hSD20-001": {
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3028&view=text",
+      "sourceLanguage": "ja",
+      "displayLanguage": "zh-Hant",
+      "translationStatus": "ai-translated-from-official-japanese",
+      "humanReviewStatus": "not-reviewed",
+      "engineSupportStatus": "not-changed-by-translation",
+      "nameTranslationPolicy": "unofficial-display-transliteration; original Japanese identity retained",
+      "fields": [
+        {
+          "path": "name",
+          "original": "百灯キョーコ",
+          "translation": "百燈 Kyoko"
+        },
+        {
+          "path": "stageSkill.name",
+          "original": "広がる情熱",
+          "translation": "不斷擴散的熱情"
+        },
+        {
+          "path": "stageSkill.effect",
+          "original": "自分のホロメンがコラボした時、自分のセンターが〈百灯キョーコ〉なら、自分のエールデッキの上から1枚を自分のコラボホロメンに送る。",
+          "translation": "自己的成員聯動時，若自己的中央成員是〈百燈 Kyoko〉，將自己聲援牌庫頂的1張卡附加給自己的聯動成員。"
+        },
+        {
+          "path": "oshiSkill.name",
+          "original": "ヒーローポリス疾走！",
+          "translation": "英雄警察疾馳！"
+        },
+        {
+          "path": "oshiSkill.effect",
+          "original": "[ターンに1回]相手のDebut以外の[センターホロメンとコラボホロメン]に、自分のステージのエール1枚につき、特殊ダメージ10を与える。",
+          "translation": "[每回合1次]自己舞台上每有1張聲援，便分別對對手中央成員及聯動成員中並非Debut的成員造成10點特殊傷害。"
+        },
+        {
+          "path": "oshiSkill.timing",
+          "original": "Holo Power -3",
+          "translation": "HOLO之力 -3"
+        }
+      ],
+      "sourceSha256": "aea8b2ddeb2409507d3db797382a40e5afebe8aaf2aa47b6a5dbb9bd5e41d32d"
+    },
+    "hSD20-002": {
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3029&view=text",
+      "sourceLanguage": "ja",
+      "displayLanguage": "zh-Hant",
+      "translationStatus": "ai-translated-from-official-japanese",
+      "humanReviewStatus": "not-reviewed",
+      "engineSupportStatus": "not-changed-by-translation",
+      "nameTranslationPolicy": "unofficial-display-transliteration; original Japanese identity retained",
+      "fields": [
+        {
+          "path": "name",
+          "original": "百灯キョーコ",
+          "translation": "百燈 Kyoko"
+        },
+        {
+          "path": "extra",
+          "original": "このホロメンはデッキに何枚でも入れられる",
+          "translation": "這張成員卡在牌組中可以放入任意張數。"
+        },
+        {
+          "path": "arts.0.name",
+          "original": "笑顔にさせちゃっていいですか！？？",
+          "translation": "可以讓你展露笑容嗎！？？"
+        },
+        {
+          "path": "arts.0.effect",
+          "original": "[センターポジション限定]自分のステージにエールが2枚以上あるなら、このアーツ+20。",
+          "translation": "[僅限中央位置]若自己舞台上有2張或以上聲援，這個藝能的傷害增加20。"
+        }
+      ],
+      "sourceSha256": "9c4b1ac89bb5c6ea275157e2908ad1e99464b92a7cb02f64badf4881f81e6ccb"
+    },
+    "hSD20-003": {
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3030&view=text",
+      "sourceLanguage": "ja",
+      "displayLanguage": "zh-Hant",
+      "translationStatus": "ai-translated-from-official-japanese",
+      "humanReviewStatus": "not-reviewed",
+      "engineSupportStatus": "not-changed-by-translation",
+      "nameTranslationPolicy": "unofficial-display-transliteration; original Japanese identity retained",
+      "fields": [
+        {
+          "path": "name",
+          "original": "百灯キョーコ",
+          "translation": "百燈 Kyoko"
+        },
+        {
+          "path": "keyword.name",
+          "original": "即集合！",
+          "translation": "立即集合！"
+        },
+        {
+          "path": "keyword.effect",
+          "original": "自分が後攻で最初のターンなら、自分のデッキから、[#アソビ★まわり隊！を持つDebutホロメンと1st〈百灯キョーコ〉]1枚ずつを公開し、手札に加える。そしてデッキをシャッフルする。",
+          "translation": "若這是自己後攻的第一個回合，從自己的牌庫中，將[具有 #玩樂★巡遊隊！ 的Debut成員卡與1st〈百燈 Kyoko〉]各1張公開並加入手牌。然後將牌庫洗牌。"
+        },
+        {
+          "path": "arts.0.name",
+          "original": "ドンチャン大騒ぎの始まり",
+          "translation": "熱鬧喧騰的開場"
+        }
+      ],
+      "sourceSha256": "a173b980b90b382e4a7d1ea631883dfb9d7e6c49a6dde75f891cfcaf9c824124"
+    },
+    "hSD20-004": {
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3031&view=text",
+      "sourceLanguage": "ja",
+      "displayLanguage": "zh-Hant",
+      "translationStatus": "ai-translated-from-official-japanese",
+      "humanReviewStatus": "not-reviewed",
+      "engineSupportStatus": "not-changed-by-translation",
+      "nameTranslationPolicy": "unofficial-display-transliteration; original Japanese identity retained",
+      "fields": [
+        {
+          "path": "name",
+          "original": "百灯キョーコ",
+          "translation": "百燈 Kyoko"
+        },
+        {
+          "path": "arts.0.name",
+          "original": "出勤準備完了！",
+          "translation": "出勤準備完成！"
+        },
+        {
+          "path": "arts.1.name",
+          "original": "拡声器いらずのビッグボイス",
+          "translation": "不用擴音器的大嗓門"
+        }
+      ],
+      "sourceSha256": "eeb60449bb9c6768236205b015e1409492f7b5850462db37dd02001f01e3da86"
+    },
+    "hSD20-005": {
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3032&view=text",
+      "sourceLanguage": "ja",
+      "displayLanguage": "zh-Hant",
+      "translationStatus": "ai-translated-from-official-japanese",
+      "humanReviewStatus": "not-reviewed",
+      "engineSupportStatus": "not-changed-by-translation",
+      "nameTranslationPolicy": "unofficial-display-transliteration; original Japanese identity retained",
+      "fields": [
+        {
+          "path": "name",
+          "original": "百灯キョーコ",
+          "translation": "百燈 Kyoko"
+        },
+        {
+          "path": "keyword.name",
+          "original": "差し伸べる手",
+          "translation": "伸出的援手"
+        },
+        {
+          "path": "keyword.effect",
+          "original": "自分のステージの#アソビ★まわり隊！を持つホロメン1人を選ぶ。このターンの間、選んだホロメンのアーツ+20。",
+          "translation": "選擇自己舞台上1位具有 #玩樂★巡遊隊！ 的成員。本回合中，所選成員的藝能傷害增加20。"
+        },
+        {
+          "path": "arts.0.name",
+          "original": "考えるより先に動く",
+          "translation": "先行動再思考"
+        }
+      ],
+      "sourceSha256": "e1f4a9ee9dabeb50adedb03bece0189fe8cb9c23802e2f903fcd80b47fa3abbc"
+    },
+    "hSD20-006": {
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3033&view=text",
+      "sourceLanguage": "ja",
+      "displayLanguage": "zh-Hant",
+      "translationStatus": "ai-translated-from-official-japanese",
+      "humanReviewStatus": "not-reviewed",
+      "engineSupportStatus": "not-changed-by-translation",
+      "nameTranslationPolicy": "unofficial-display-transliteration; original Japanese identity retained",
+      "fields": [
+        {
+          "path": "name",
+          "original": "百灯キョーコ",
+          "translation": "百燈 Kyoko"
+        },
+        {
+          "path": "keyword.name",
+          "original": "誰にだって手を伸ばす！",
+          "translation": "向任何人伸出援手！"
+        },
+        {
+          "path": "keyword.effect",
+          "original": "自分のステージのエール1枚をアーカイブできる:自分のアーカイブの#アソビ★まわり隊！を持つホロメン1枚を手札に戻す。",
+          "translation": "可以將自己舞台上的1張聲援存檔：將自己存檔區中1張具有 #玩樂★巡遊隊！ 的成員卡放回手牌。"
+        },
+        {
+          "path": "arts.0.name",
+          "original": "渦巻くハイテンション",
+          "translation": "高漲情緒的漩渦"
+        },
+        {
+          "path": "arts.0.effect",
+          "original": "自分のステージにエールが6枚以上あるなら、このアーツ+20。",
+          "translation": "若自己舞台上有6張或以上聲援，這個藝能的傷害增加20。"
+        }
+      ],
+      "sourceSha256": "8ba46c1018d23940895d636aabac0da568ba9eac4e7bfd63af5ba4b938ff4a68"
+    },
+    "hSD20-007": {
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3034&view=text",
+      "sourceLanguage": "ja",
+      "displayLanguage": "zh-Hant",
+      "translationStatus": "ai-translated-from-official-japanese",
+      "humanReviewStatus": "not-reviewed",
+      "engineSupportStatus": "not-changed-by-translation",
+      "nameTranslationPolicy": "unofficial-display-transliteration; original Japanese identity retained",
+      "fields": [
+        {
+          "path": "name",
+          "original": "百灯キョーコ",
+          "translation": "百燈 Kyoko"
+        },
+        {
+          "path": "keyword.name",
+          "original": "情熱系ヒーローポリス",
+          "translation": "熱情系英雄警察"
+        },
+        {
+          "path": "keyword.effect",
+          "original": "[センターポジション限定]自分のコラボホロメンのアーツ+20。",
+          "translation": "[僅限中央位置]自己的聯動成員的藝能傷害增加20。"
+        },
+        {
+          "path": "arts.0.name",
+          "original": "「最強」担当",
+          "translation": "「最強」擔當"
+        },
+        {
+          "path": "arts.0.effect",
+          "original": "自分のステージにエールが6枚以上あるなら、このアーツ+50。",
+          "translation": "若自己舞台上有6張或以上聲援，這個藝能的傷害增加50。"
+        }
+      ],
+      "sourceSha256": "98a23990a81749777b85e16e9ea3c78d7093fee090d5790e8a1aac44bf1ed53b"
+    },
+    "hSD20-008": {
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3035&%2Fcardlist%2Fcardsearch_ex=&view=text",
+      "sourceLanguage": "ja",
+      "displayLanguage": "zh-Hant",
+      "translationStatus": "ai-translated-from-official-japanese",
+      "humanReviewStatus": "not-reviewed",
+      "engineSupportStatus": "not-changed-by-translation",
+      "nameTranslationPolicy": "unofficial-display-transliteration; original Japanese identity retained",
+      "fields": [
+        {
+          "path": "name",
+          "original": "宙科そぴあ",
+          "translation": "宙科 Sopia"
+        },
+        {
+          "path": "extra",
+          "original": "このホロメンはデッキに何枚でも入れられる",
+          "translation": "這張成員卡在牌組中可以放入任意張數。"
+        },
+        {
+          "path": "keyword.name",
+          "original": "夢は弾けるビッグバン！",
+          "translation": "夢想迸發的大爆炸！"
+        },
+        {
+          "path": "keyword.effect",
+          "original": "相手のターンで、このホロメンがダウンした時、自分のデッキを1枚引く。",
+          "translation": "在對手回合中，這位成員倒下時，從自己的牌庫抽1張卡。"
+        },
+        {
+          "path": "arts.0.name",
+          "original": "全部この目で確かめにいくよ！",
+          "translation": "全都要親眼去確認！"
+        }
+      ],
+      "sourceSha256": "1051764885ffc30e77a6c8988c12b83864c20126df59bc0038e245c5b6117431"
+    },
+    "hSD20-009": {
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3036&%2Fcardlist%2Fcardsearch_ex=&view=text",
+      "sourceLanguage": "ja",
+      "displayLanguage": "zh-Hant",
+      "translationStatus": "ai-translated-from-official-japanese",
+      "humanReviewStatus": "not-reviewed",
+      "engineSupportStatus": "not-changed-by-translation",
+      "nameTranslationPolicy": "unofficial-display-transliteration; original Japanese identity retained",
+      "fields": [
+        {
+          "path": "name",
+          "original": "宙科そぴあ",
+          "translation": "宙科 Sopia"
+        },
+        {
+          "path": "keyword.name",
+          "original": "面白さの探求",
+          "translation": "探索有趣之事"
+        },
+        {
+          "path": "keyword.effect",
+          "original": "自分のステージに#アソビ★まわり隊！を持つホロメンが3人以上いるなら、このホロメンのエール1枚をアーカイブできる：自分のデッキを2枚引く。",
+          "translation": "若自己舞台上有3位或以上具有 #玩樂★巡遊隊！ 的成員，可以將這位成員附加的1張聲援存檔：從自己的牌庫抽2張卡。"
+        },
+        {
+          "path": "arts.0.name",
+          "original": "抑えきれない知的好奇心",
+          "translation": "抑制不住的求知慾"
+        }
+      ],
+      "sourceSha256": "369913d059cc491d2f3c3af2da7476ee013b101b3c7c58df2fbf01128ad2005c"
+    },
+    "hSD20-010": {
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3037&%2Fcardlist%2Fcardsearch_ex=&view=text",
+      "sourceLanguage": "ja",
+      "displayLanguage": "zh-Hant",
+      "translationStatus": "ai-translated-from-official-japanese",
+      "humanReviewStatus": "not-reviewed",
+      "engineSupportStatus": "not-changed-by-translation",
+      "nameTranslationPolicy": "unofficial-display-transliteration; original Japanese identity retained",
+      "fields": [
+        {
+          "path": "name",
+          "original": "宙科そぴあ",
+          "translation": "宙科 Sopia"
+        },
+        {
+          "path": "keyword.name",
+          "original": "仲間を探すぞ～！",
+          "translation": "來找夥伴吧～！"
+        },
+        {
+          "path": "keyword.effect",
+          "original": "自分のデッキの上から3枚を見る。その中から、#アソビ★まわり隊！を持つホロメン1枚を公開し、手札に加える。そして残ったカードを好きな順でデッキの下に戻す。",
+          "translation": "查看自己牌庫頂的3張卡。從中公開1張具有 #玩樂★巡遊隊！ 的成員卡，加入手牌。然後將剩餘的卡以自己喜歡的順序放回牌庫底。"
+        },
+        {
+          "path": "arts.0.name",
+          "original": "面白いもの見つけたよ！",
+          "translation": "找到有趣的東西了！"
+        },
+        {
+          "path": "arts.0.effect",
+          "original": "このホロメンのエール1枚を自分の他の#アソビ★まわり隊！を持つホロメンに付け替えられる。",
+          "translation": "可以將這位成員附加的1張聲援，轉移給自己其他具有 #玩樂★巡遊隊！ 的成員。"
+        }
+      ],
+      "sourceSha256": "3dade9c42db0a6049e071870d6e1f0a58eb93cac78d32afe1d4d38f067986a01"
+    },
+    "hSD20-011": {
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3038&%2Fcardlist%2Fcardsearch_ex=&view=text",
+      "sourceLanguage": "ja",
+      "displayLanguage": "zh-Hant",
+      "translationStatus": "ai-translated-from-official-japanese",
+      "humanReviewStatus": "not-reviewed",
+      "engineSupportStatus": "not-changed-by-translation",
+      "nameTranslationPolicy": "unofficial-display-transliteration; original Japanese identity retained",
+      "fields": [
+        {
+          "path": "name",
+          "original": "宙科そぴあ",
+          "translation": "宙科 Sopia"
+        },
+        {
+          "path": "keyword.name",
+          "original": "（自称）天才宇宙飛行士",
+          "translation": "（自稱）天才太空人"
+        },
+        {
+          "path": "keyword.effect",
+          "original": "自分のアーカイブのエール2枚を自分の#アソビ★まわり隊！を持つホロメン1人に送れる。",
+          "translation": "可以將自己存檔區的2張聲援附加給自己的1位具有 #玩樂★巡遊隊！ 的成員。"
+        },
+        {
+          "path": "arts.0.name",
+          "original": "「ひらめき」担当",
+          "translation": "「靈感」擔當"
+        },
+        {
+          "path": "arts.0.effect",
+          "original": "このホロメンのエール1～3枚をアーカイブできる:アーカイブしたエール1枚につき、このアーツ+20。",
+          "translation": "可以將這位成員附加的1～3張聲援存檔：每存檔1張聲援，這個藝能的傷害便增加20。"
+        }
+      ],
+      "sourceSha256": "42527ac188f4b9b9a3fb9a9e3673bb21ba3d8738e737a732e063a9057d940009"
+    },
+    "hSD20-012": {
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3039&%2Fcardlist%2Fcardsearch_ex=&view=text",
+      "sourceLanguage": "ja",
+      "displayLanguage": "zh-Hant",
+      "translationStatus": "ai-translated-from-official-japanese",
+      "humanReviewStatus": "not-reviewed",
+      "engineSupportStatus": "not-changed-by-translation",
+      "nameTranslationPolicy": "unofficial-display-transliteration; original Japanese identity retained",
+      "fields": [
+        {
+          "path": "name",
+          "original": "アソビ★まわり隊！",
+          "translation": "玩樂★巡遊隊！"
+        },
+        {
+          "path": "abilityText",
+          "original": "このカードは、自分の手札がこのカードを含まずに6枚以下でなければ使えない。\n\n\n\n自分のデッキの上から4枚を見る。その中から、#アソビ★まわり隊！を持つホロメンを好きな枚数公開し、公開したホロメンを手札に加える。そして残ったカードを好きな順でデッキの下に戻す。\n\n\n\nLIMITED:ターンに1枚しか使えない。",
+          "translation": "不計此卡在內，自己的手牌必須為6張或以下，才能使用此卡。\n\n查看自己牌庫頂的4張卡。從中公開任意張數具有 #玩樂★巡遊隊！ 的成員卡，將公開的成員卡加入手牌。然後將剩餘的卡以自己喜歡的順序放回牌庫底。\n\nLIMITED：每回合只能使用1張。"
+        }
+      ],
+      "sourceSha256": "950587c1beb282b2756e6db2cc505ff72eee6920923ed508ae76c33f55370998"
+    },
+    "hSD20-013": {
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3040&%2Fcardlist%2Fcardsearch_ex=&view=text",
+      "sourceLanguage": "ja",
+      "displayLanguage": "zh-Hant",
+      "translationStatus": "ai-translated-from-official-japanese",
+      "humanReviewStatus": "not-reviewed",
+      "engineSupportStatus": "not-changed-by-translation",
+      "nameTranslationPolicy": "unofficial-display-transliteration; original Japanese identity retained",
+      "fields": [
+        {
+          "path": "name",
+          "original": "ぐるぐるTIME！",
+          "translation": "轉轉時間！"
+        },
+        {
+          "path": "abilityText",
+          "original": "このカードは、自分のステージのホロメン全員が#アソビ★まわり隊！を持つホロメンでなければ使えない。\n\n\n\n相手のバックホロメン1人を選ぶ。選んだホロメンと相手のセンターホロメンを交代させる。その後、相手と勝敗が決まるまでじゃんけんする。自分が勝ったなら、自分のデッキを3枚引く。\n\n\n\nLIMITED:ターンに1枚しか使えない。",
+          "translation": "只有在自己舞台上的所有成員均具有 #玩樂★巡遊隊！ 時，才能使用此卡。\n\n選擇對手的1位後備成員，將所選成員與對手的中央成員交換位置。其後與對手猜拳，直到分出勝負。若自己獲勝，從自己的牌庫抽3張卡。\n\nLIMITED：每回合只能使用1張。"
+        }
+      ],
+      "sourceSha256": "5cb8bcaad9a3d8ddd5eee60d0457cd7b21bea39867859877aaecfdc802fb9956"
+    },
+    "hSD20-014": {
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3041&%2Fcardlist%2Fcardsearch_ex=&view=text",
+      "sourceLanguage": "ja",
+      "displayLanguage": "zh-Hant",
+      "translationStatus": "ai-translated-from-official-japanese",
+      "humanReviewStatus": "not-reviewed",
+      "engineSupportStatus": "not-changed-by-translation",
+      "nameTranslationPolicy": "unofficial-display-transliteration; original Japanese identity retained",
+      "fields": [
+        {
+          "path": "name",
+          "original": "百灯キョーコの拡声器",
+          "translation": "百燈 Kyoko的擴音器"
+        },
+        {
+          "path": "abilityText",
+          "original": "このツールが付いている〈百灯キョーコ〉のアーツ+20。\n\n\n\n◆1st以上の〈百灯キョーコ〉に付いていたら能力追加\n\nこのホロメンが相手のホロメンをダウンさせた時、自分のアーカイブのエール1枚を自分の#アソビ★まわり隊！を持つバックホロメンに送れる。\n\n\n\nツールは、自分のホロメン1人につき1枚だけ付けられる。",
+          "translation": "附加此工具的〈百燈 Kyoko〉的藝能傷害增加20。\n\n◆若附加於1st或以上的〈百燈 Kyoko〉，追加以下能力\n\n這位成員使對手的成員倒下時，可以將自己存檔區的1張聲援附加給自己的1位具有 #玩樂★巡遊隊！ 的後備成員。\n\n每位自己的成員只能附加1張工具。"
+        }
+      ],
+      "sourceSha256": "93673c5436066c670e949e373a642257894b20b27b32a0d7d113ab98a4885d2f"
+    },
+    "hSD21-001": {
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3043&view=text",
+      "sourceLanguage": "ja",
+      "displayLanguage": "zh-Hant",
+      "translationStatus": "ai-translated-from-official-japanese",
+      "humanReviewStatus": "not-reviewed",
+      "engineSupportStatus": "not-changed-by-translation",
+      "nameTranslationPolicy": "unofficial-display-transliteration; original Japanese identity retained",
+      "fields": [
+        {
+          "path": "name",
+          "original": "熱千めら",
+          "translation": "熱千 Mera"
+        },
+        {
+          "path": "stageSkill.name",
+          "original": "サラマンダーの恩返し",
+          "translation": "火蜥蜴的報恩"
+        },
+        {
+          "path": "stageSkill.effect",
+          "original": "自分のホロメンがコラボした時、自分のセンターが〈熱千めら〉なら、自分のデッキを1枚引き、手札1枚をアーカイブする。",
+          "translation": "自己的成員聯動時，若自己的中央成員是〈熱千 Mera〉，從自己的牌庫抽1張卡，並將1張手牌存檔。"
+        },
+        {
+          "path": "oshiSkill.name",
+          "original": "ご利益じゃ！",
+          "translation": "福佑到來！"
+        },
+        {
+          "path": "oshiSkill.effect",
+          "original": "[ターンに1回]自分のステージのホロメン1人を選ぶ。自分のアーカイブのギフトを持つホロメン1枚につき、このターンの間、選んだホロメンのアーツ+10。さらに、選んだホロメンが〈熱千めら〉なら、そのホロメンのアーツに必要な無色-1。",
+          "translation": "[每回合1次]選擇自己舞台上的1位成員。自己存檔區每有1張具有Gift技能的成員卡，本回合中，所選成員的藝能傷害便增加10。此外，若所選成員是〈熱千 Mera〉，該成員使用藝能所需的無色聲援減少1個。"
+        },
+        {
+          "path": "oshiSkill.timing",
+          "original": "Holo Power -2",
+          "translation": "HOLO之力 -2"
+        }
+      ],
+      "sourceSha256": "ed70c915135b453a3bcca290b2bfefc9a9c8906cb3c84435b6b25628b218b3b6"
+    },
+    "hSD21-002": {
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3044&view=text",
+      "sourceLanguage": "ja",
+      "displayLanguage": "zh-Hant",
+      "translationStatus": "ai-translated-from-official-japanese",
+      "humanReviewStatus": "not-reviewed",
+      "engineSupportStatus": "not-changed-by-translation",
+      "nameTranslationPolicy": "unofficial-display-transliteration; original Japanese identity retained",
+      "fields": [
+        {
+          "path": "name",
+          "original": "熱千めら",
+          "translation": "熱千 Mera"
+        },
+        {
+          "path": "extra",
+          "original": "このホロメンはデッキに何枚でも入れられる",
+          "translation": "這張成員卡在牌組中可以放入任意張數。"
+        },
+        {
+          "path": "keyword.name",
+          "original": "防火対策 基礎！",
+          "translation": "防火對策 基礎篇！"
+        },
+        {
+          "path": "keyword.effect",
+          "original": "このホロメンが受けるアーツダメージ-10。",
+          "translation": "這位成員受到的藝能傷害減少10。"
+        },
+        {
+          "path": "arts.0.name",
+          "original": "火の用心じゃ～！",
+          "translation": "小心火燭呀～！"
+        }
+      ],
+      "sourceSha256": "01a47bacfdffdf94538077846bf78b5c9ea8099fbf880225e711cc9830c15a83"
+    },
+    "hSD21-003": {
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3045&view=text",
+      "sourceLanguage": "ja",
+      "displayLanguage": "zh-Hant",
+      "translationStatus": "ai-translated-from-official-japanese",
+      "humanReviewStatus": "not-reviewed",
+      "engineSupportStatus": "not-changed-by-translation",
+      "nameTranslationPolicy": "unofficial-display-transliteration; original Japanese identity retained",
+      "fields": [
+        {
+          "path": "name",
+          "original": "熱千めら",
+          "translation": "熱千 Mera"
+        },
+        {
+          "path": "keyword.name",
+          "original": "炎を鎮める不思議な力",
+          "translation": "平息火焰的神奇力量"
+        },
+        {
+          "path": "keyword.effect",
+          "original": "自分が後攻で最初のターンなら、自分のデッキから、ギフトを持つ〈熱千めら〉2枚を公開する。その中から1枚を手札に加え、残ったカードをアーカイブする。そしてデッキをシャッフルする。",
+          "translation": "若這是自己後攻的第一個回合，從自己的牌庫中公開2張具有Gift技能的〈熱千 Mera〉。從中將1張加入手牌，將剩餘的卡存檔。然後將牌庫洗牌。"
+        },
+        {
+          "path": "arts.0.name",
+          "original": "響く拍子木",
+          "translation": "梆子聲響起"
+        }
+      ],
+      "sourceSha256": "024053c4548ff605ac65395223f3e7990bd2f6e31558cc2f8f598c0a8504fe22"
+    },
+    "hSD21-004": {
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3046&view=text",
+      "sourceLanguage": "ja",
+      "displayLanguage": "zh-Hant",
+      "translationStatus": "ai-translated-from-official-japanese",
+      "humanReviewStatus": "not-reviewed",
+      "engineSupportStatus": "not-changed-by-translation",
+      "nameTranslationPolicy": "unofficial-display-transliteration; original Japanese identity retained",
+      "fields": [
+        {
+          "path": "name",
+          "original": "熱千めら",
+          "translation": "熱千 Mera"
+        },
+        {
+          "path": "keyword.name",
+          "original": "防火対策 応用！",
+          "translation": "防火對策 應用篇！"
+        },
+        {
+          "path": "keyword.effect",
+          "original": "このホロメンが受けるアーツダメージ-20。",
+          "translation": "這位成員受到的藝能傷害減少20。"
+        },
+        {
+          "path": "arts.0.name",
+          "original": "元気な頑張り屋",
+          "translation": "活力充沛的努力家"
+        },
+        {
+          "path": "arts.0.effect",
+          "original": "自分のデッキを1枚引き、手札1枚をアーカイブする。",
+          "translation": "從自己的牌庫抽1張卡，並將1張手牌存檔。"
+        }
+      ],
+      "sourceSha256": "a6a2ac7a8a3da2bbcaea3506023cdfa0c516f40a7bba2eb5531ee19a05508dad"
+    },
+    "hSD21-005": {
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3047&view=text",
+      "sourceLanguage": "ja",
+      "displayLanguage": "zh-Hant",
+      "translationStatus": "ai-translated-from-official-japanese",
+      "humanReviewStatus": "not-reviewed",
+      "engineSupportStatus": "not-changed-by-translation",
+      "nameTranslationPolicy": "unofficial-display-transliteration; original Japanese identity retained",
+      "fields": [
+        {
+          "path": "name",
+          "original": "熱千めら",
+          "translation": "熱千 Mera"
+        },
+        {
+          "path": "keyword.name",
+          "original": "ハジけるアソビの渦",
+          "translation": "迸發玩樂的漩渦"
+        },
+        {
+          "path": "keyword.effect",
+          "original": "自分のアーカイブにギフトを持つホロメンが3枚以上あるなら、相手のセンターホロメンかコラボホロメンに特殊ダメージ20を与える。",
+          "translation": "若自己存檔區有3張或以上具有Gift技能的成員卡，對對手的中央成員或聯動成員造成20點特殊傷害。"
+        },
+        {
+          "path": "arts.0.name",
+          "original": "最高の非日常へ",
+          "translation": "邁向最棒的非日常"
+        }
+      ],
+      "sourceSha256": "b45e6ac156b5dcd05b28ce603b3ed294158d801ec71b266a7f500ea46fbbdd2a"
+    },
+    "hSD21-006": {
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3048&view=text",
+      "sourceLanguage": "ja",
+      "displayLanguage": "zh-Hant",
+      "translationStatus": "ai-translated-from-official-japanese",
+      "humanReviewStatus": "not-reviewed",
+      "engineSupportStatus": "not-changed-by-translation",
+      "nameTranslationPolicy": "unofficial-display-transliteration; original Japanese identity retained",
+      "fields": [
+        {
+          "path": "name",
+          "original": "熱千めら",
+          "translation": "熱千 Mera"
+        },
+        {
+          "path": "keyword.name",
+          "original": "ご利益パワー",
+          "translation": "福佑之力"
+        },
+        {
+          "path": "keyword.effect",
+          "original": "このホロメンがダウンした時、このホロメンのエール1～2枚を選び、自分の他のホロメンに割り振って付け替えられる。",
+          "translation": "這位成員倒下時，可以選擇這位成員附加的1～2張聲援，分配並轉移給自己的其他成員。"
+        },
+        {
+          "path": "arts.0.name",
+          "original": "火消しの本領発揮じゃ！",
+          "translation": "發揮滅火的真本領！"
+        }
+      ],
+      "sourceSha256": "ebcec8079fc71c7741032b8168721a3658429604c3b222fbabfbdc66f9a49ab1"
+    },
+    "hSD21-007": {
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3049&view=text",
+      "sourceLanguage": "ja",
+      "displayLanguage": "zh-Hant",
+      "translationStatus": "ai-translated-from-official-japanese",
+      "humanReviewStatus": "not-reviewed",
+      "engineSupportStatus": "not-changed-by-translation",
+      "nameTranslationPolicy": "unofficial-display-transliteration; original Japanese identity retained",
+      "fields": [
+        {
+          "path": "name",
+          "original": "熱千めら",
+          "translation": "熱千 Mera"
+        },
+        {
+          "path": "keyword.name",
+          "original": "火消しのサラマンダー",
+          "translation": "滅火的火蜥蜴"
+        },
+        {
+          "path": "keyword.effect",
+          "original": "このホロメンがダウンした時、自分のデッキを2枚引く。",
+          "translation": "這位成員倒下時，從自己的牌庫抽2張卡。"
+        },
+        {
+          "path": "arts.0.name",
+          "original": "「ご利益」担当",
+          "translation": "「福佑」擔當"
+        },
+        {
+          "path": "arts.0.effect",
+          "original": "自分のアーカイブにギフトを持つホロメンが3枚以上あるなら、このアーツ+50。",
+          "translation": "若自己存檔區有3張或以上具有Gift技能的成員卡，這個藝能的傷害增加50。"
+        }
+      ],
+      "sourceSha256": "b7b8125d1cba3d5dc276f0cd0b0e7ec9ba1c0aa0822c9892d5c93137358324cc"
+    },
+    "hSD21-008": {
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3050&view=text",
+      "sourceLanguage": "ja",
+      "displayLanguage": "zh-Hant",
+      "translationStatus": "ai-translated-from-official-japanese",
+      "humanReviewStatus": "not-reviewed",
+      "engineSupportStatus": "not-changed-by-translation",
+      "nameTranslationPolicy": "unofficial-display-transliteration; original Japanese identity retained",
+      "fields": [
+        {
+          "path": "name",
+          "original": "熱千めらの拍子木",
+          "translation": "熱千 Mera的梆子"
+        },
+        {
+          "path": "abilityText",
+          "original": "このツールが付いている〈熱千めら〉のアーツ+20。\n\n\n\n◆1st以上の〈熱千めら〉に付いていたら能力追加\n\nこのホロメンが相手のホロメンをダウンさせた時、自分のデッキを1枚引き、手札1枚をアーカイブする。\n\n\n\nツールは、自分のホロメン1人につき1枚だけ付けられる。",
+          "translation": "附加此工具的〈熱千 Mera〉的藝能傷害增加20。\n\n◆若附加於1st或以上的〈熱千 Mera〉，追加以下能力\n\n這位成員使對手的成員倒下時，從自己的牌庫抽1張卡，並將1張手牌存檔。\n\n每1位自己的成員只能附加1張工具。"
+        }
+      ],
+      "sourceSha256": "3cd0929d0f21ee4a08345c2b384d0c7f326723dd131b81eae66ef1c55e557af1"
+    }
+  }
+}

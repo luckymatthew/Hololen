@@ -2,14 +2,16 @@ import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent } f
 import { useModalMotion } from './ui-motion';
 
 type UpdateCard = {
-  kind: 'new-card' | 'new-printing';
+  kind: 'new-card' | 'new-printing' | 'translation';
   number: string; name: string; jpName: string; rarity: string;
   image: string; printingId: string; products: string[];
   preview?: boolean; releaseDate?: string;
 };
 type UpdateEntry = {
+  kind?: 'cards' | 'translation';
   id: string; date: string; title: string; summary: string[];
-  counts: { newCards: number; newPrintings: number; newPrintingsForExistingCards: number };
+  counts: { newCards: number; newPrintings: number; newPrintingsForExistingCards: number; translatedCards?: number; translatedFields?: number };
+  translationRevision?: string; translationSha256?: string; sourceCatalogSha256?: string;
   cards: UpdateCard[];
 };
 type UpdatePayload = { schemaVersion: 1; entries: UpdateEntry[] };
@@ -22,10 +24,13 @@ function isUpdatePayload(value: unknown): value is UpdatePayload {
   return payload.entries.every(entry => {
     if (!entry || typeof entry.id !== 'string' || !entry.id || ids.has(entry.id) || !/^\d{4}-\d{2}-\d{2}$/.test(entry.date) || typeof entry.title !== 'string' || !Array.isArray(entry.summary) || !entry.summary.every(line => typeof line === 'string') || !entry.counts || !Array.isArray(entry.cards)) return false;
     ids.add(entry.id);
+    if (entry.kind != null && !['cards', 'translation'].includes(entry.kind)) return false;
+    const translation = entry.kind === 'translation';
     if (![entry.counts.newCards, entry.counts.newPrintings, entry.counts.newPrintingsForExistingCards].every(count => Number.isInteger(count) && count >= 0)) return false;
+    if (translation && (![entry.counts.translatedCards, entry.counts.translatedFields].every(count => Number.isInteger(count) && (count as number) > 0) || typeof entry.translationRevision !== 'string' || !/^[A-Za-z0-9._-]{1,100}$/.test(entry.translationRevision) || typeof entry.translationSha256 !== 'string' || !/^[a-f0-9]{64}$/.test(entry.translationSha256) || typeof entry.sourceCatalogSha256 !== 'string' || !/^[a-f0-9]{64}$/.test(entry.sourceCatalogSha256))) return false;
     const printingIds = new Set<string>();
     if (!entry.cards.every(card => {
-      if (!card || !['new-card', 'new-printing'].includes(card.kind) || typeof card.number !== 'string' || typeof card.name !== 'string' || typeof card.jpName !== 'string' || typeof card.rarity !== 'string' || typeof card.printingId !== 'string' || !card.printingId || printingIds.has(card.printingId) || !Array.isArray(card.products) || !card.products.every(product => typeof product === 'string')) return false;
+      if (!card || !(translation ? card.kind === 'translation' : ['new-card', 'new-printing'].includes(card.kind)) || typeof card.number !== 'string' || typeof card.name !== 'string' || typeof card.jpName !== 'string' || typeof card.rarity !== 'string' || typeof card.printingId !== 'string' || !card.printingId || printingIds.has(card.printingId) || !Array.isArray(card.products) || !card.products.every(product => typeof product === 'string')) return false;
       if (card.preview != null && typeof card.preview !== 'boolean') return false;
       if (card.releaseDate != null && (typeof card.releaseDate !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(card.releaseDate))) return false;
       printingIds.add(card.printingId);
@@ -34,6 +39,7 @@ function isUpdatePayload(value: unknown): value is UpdatePayload {
         return image.origin === 'https://hololive-official-cardgame.com' && image.pathname.startsWith('/wp-content/images/cardlist/') && !image.username && !image.password;
       } catch { return false; }
     })) return false;
+    if (translation) return entry.counts.newCards === 0 && entry.counts.newPrintings === 0 && entry.counts.newPrintingsForExistingCards === 0 && entry.counts.translatedCards === entry.cards.length && entry.counts.translatedCards === new Set(entry.cards.map(card => card.number)).size && (entry.counts.translatedFields as number) >= entry.cards.length;
     return entry.counts.newPrintings === entry.cards.length && entry.counts.newCards === new Set(entry.cards.filter(card => card.kind === 'new-card').map(card => card.number)).size && entry.counts.newPrintingsForExistingCards === entry.cards.filter(card => card.kind === 'new-printing').length;
   });
 }
@@ -101,13 +107,13 @@ export default function WebsiteUpdateLog() {
           <time dateTime={entry.date}>{entry.date}</time>
           <h3>{entry.title}</h3>
           <ul>{entry.summary.map((line, index) => <li key={`${entry.id}-${index}`}>{line}</li>)}</ul>
-          <p className="website-update-counts">新增卡號 <b>{entry.counts.newCards}</b> 張 · 新增卡圖／版本 <b>{entry.counts.newPrintings}</b> 款（其中 <b>{entry.counts.newPrintingsForExistingCards}</b> 款屬既有卡號）</p>
-          <div className="website-update-table-scroll" tabIndex={0} role="region" aria-label={`${entry.date} 新增卡圖表，可左右捲動`}>
+          {entry.kind === 'translation' ? <p className="website-update-counts">繁中翻譯 <b>{entry.counts.translatedCards}</b> 個卡號 · <b>{entry.counts.translatedFields}</b> 個文字欄位（沒有新增卡號或卡圖）</p> : <p className="website-update-counts">新增卡號 <b>{entry.counts.newCards}</b> 張 · 新增卡圖／版本 <b>{entry.counts.newPrintings}</b> 款（其中 <b>{entry.counts.newPrintingsForExistingCards}</b> 款屬既有卡號）</p>}
+          <div className="website-update-table-scroll" tabIndex={0} role="region" aria-label={`${entry.date} ${entry.kind === 'translation' ? '翻譯更新卡片表' : '新增卡圖表'}，可左右捲動`}>
             <table className="website-update-table">
-              <caption>{entry.date} 新增卡圖明細</caption>
+              <caption>{entry.date} {entry.kind === 'translation' ? '翻譯更新卡片（既有卡圖）' : '新增卡圖明細'}</caption>
               <thead><tr><th scope="col">分類</th><th scope="col">卡圖</th><th scope="col">卡號／卡名</th><th scope="col">稀有度</th><th scope="col">收錄商品</th></tr></thead>
               <tbody>{entry.cards.map(card => <tr key={card.printingId}>
-                <td><span className={`website-update-kind ${card.kind}`}>{card.kind === 'new-card' ? '新卡號' : '既有卡新卡圖／版本'}</span>{card.preview && card.releaseDate && <small>先行公開<br />{card.releaseDate} 發售</small>}</td>
+                <td><span className={`website-update-kind ${card.kind}`}>{card.kind === 'translation' ? '翻譯更新' : card.kind === 'new-card' ? '新卡號' : '既有卡新卡圖／版本'}</span>{card.kind !== 'translation' && card.preview && card.releaseDate && <small>先行公開<br />{card.releaseDate} 發售</small>}</td>
                 <td><a href={card.image} target="_blank" rel="noopener noreferrer" aria-label={`查看 ${card.number} ${card.name} ${card.rarity} 原始卡圖`}>
                   {/* eslint-disable-next-line @next/next/no-img-element -- Firebase SPA has no Next image optimizer; official remote PNGs are intentionally lazy. */}
                   <img src={card.image} alt={`${card.number} ${card.name} ${card.rarity} 卡圖`} width={56} height={78} loading="lazy" decoding="async" />

@@ -1,10 +1,11 @@
+import { restoreTranslationBaseline } from './translation-preservation-helpers.mjs';
 import assert from 'node:assert/strict';
 import { readFileSync, mkdirSync, unlinkSync } from 'node:fs';
 import { build } from 'esbuild';
 import { JSDOM } from 'jsdom';
 import test from 'node:test';
 
-const payload = JSON.parse(readFileSync('public/website-updates.json', 'utf8'));
+const payload = JSON.parse(restoreTranslationBaseline('website/public/website-updates.json', readFileSync('public/website-updates.json', 'utf8')));
 let bundleIndex = 0;
 async function workspace(t) {
   const dom = new JSDOM('<button id="before">之前焦點</button><main id="root"></main>', { url: 'https://hololive-ocg.web.app/cards', pretendToBeVisual: true });

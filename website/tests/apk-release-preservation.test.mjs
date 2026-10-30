@@ -1,3 +1,4 @@
+import { restorePreviewReleaseBaseline } from './preview-release-preservation-helpers.mjs';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -5,7 +6,7 @@ import test from 'node:test';
 import { apkReleaseProvenance, restoreApkReleaseBaseline } from './apk-release-preservation-helpers.mjs';
 
 const hash = value => createHash('sha256').update(value).digest('hex');
-const read = path => readFileSync(new URL(`../../${path}`, import.meta.url));
+const read = path => restorePreviewReleaseBaseline(path, readFileSync(new URL(`../../${path}`, import.meta.url)));
 
 test('APK download update has exactly two reversible source paths over the deployed baseline', () => {
   assert.equal(apkReleaseProvenance.baselineSourceCommit, '6082c46f4bff1209b60037359582693c9d8e02d3');
@@ -24,7 +25,7 @@ test('APK download update has exactly two reversible source paths over the deplo
 
 test('APK update restoration rejects unrelated edits instead of widening protected runtime scope', () => {
   for (const change of apkReleaseProvenance.changes) {
-    assert.throws(() => restoreApkReleaseBaseline(change.path, `${read(change.path)}\n// Unreviewed change`), /exact approved APK-update bytes/);
+    assert.throws(() => restoreApkReleaseBaseline(change.path, `${read(change.path)}\n// Unreviewed change`), /exact approved APK-update bytes|exact verified preview release bytes/);
   }
   const untouched = Buffer.from('untouched engine bytes');
   assert.equal(restoreApkReleaseBaseline('website/lib/simulator/engine.mjs', untouched), untouched);

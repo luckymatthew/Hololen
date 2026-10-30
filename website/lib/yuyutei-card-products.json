@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "status": "verified-android-port",
+  "artworkAuditDate": "2026-10-03",
+  "source": {
+    "releaseVersion": "v1.2.8",
+    "apkSha256": "e608ddf50c6eb746e2023a87843e52ef1f01e9a1c6bf6390255f1cc8e16b0a08",
+    "assetPath": "assets/yuyutei-products.json",
+    "assetSha256": "67573177fa7448e746a05cdafc7e6aa4d21a8fe684c252c3a6113911c3415750"
+  },
+  "search": {
+    "url": "https://yuyu-tei.jp/sell/hocg/s/search",
+    "parameter": "search_word"
+  },
+  "products": [
+    {
+      "cardNumber": "hBP01-028",
+      "printingId": "2314",
+      "rarity": "C",
+      "officialImageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP01-028_C_02.png",
+      "productUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10229",
+      "artworkVerifiedAt": "2026-10-03T07:47:41Z"
+    },
+    {
+      "cardNumber": "hBP01-028",
+      "printingId": "2444",
+      "rarity": "HR",
+      "officialImageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP01-028_HR.png",
+      "productUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10240",
+      "artworkVerifiedAt": "2026-10-03T07:47:41Z"
+    },
+    {
+      "cardNumber": "hBP03-001",
+      "printingId": "565",
+      "rarity": "OSR",
+      "officialImageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP03/hBP03-001_OSR.png",
+      "productUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp03/10001",
+      "artworkVerifiedAt": "2026-10-03T07:43:16Z"
+    },
+    {
+      "cardNumber": "hBP03-001",
+      "printingId": "678",
+      "rarity": "OUR",
+      "officialImageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP03/hBP03-001_OUR.png",
+      "productUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp03/10002",
+      "artworkVerifiedAt": "2026-10-03T07:43:16Z"
+    },
+    {
+      "cardNumber": "hBP03-002",
+      "printingId": "679",
+      "rarity": "OUR",
+      "officialImageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP03/hBP03-002_OUR.png",
+      "productUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp03/10004",
+      "artworkVerifiedAt": "2026-10-03T07:43:16Z"
+    },
+    {
+      "cardNumber": "hBP03-037",
+      "printingId": "2319",
+      "rarity": "C",
+      "officialImageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP03-037_C_02.png",
+      "productUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10234",
+      "artworkVerifiedAt": "2026-10-03T07:47:41Z"
+    },
+    {
+      "cardNumber": "hBP03-040",
+      "printingId": "2320",
+      "rarity": "C",
+      "officialImageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP03-040_C_02.png",
+      "productUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10235",
+      "artworkVerifiedAt": "2026-10-03T07:47:41Z"
+    },
+    {
+      "cardNumber": "hBP07-002",
+      "printingId": "1788",
+      "rarity": "OSR",
+      "officialImageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP07/hBP07-002_OSR.png",
+      "productUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp07/10003",
+      "artworkVerifiedAt": "2026-10-03T07:43:16Z"
+    },
+    {
+      "cardNumber": "hBP07-043",
+      "printingId": "1954",
+      "rarity": "SR",
+      "officialImageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP07/hBP07-043_SR.png",
+      "productUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp07/10090",
+      "artworkVerifiedAt": "2026-10-03T07:43:16Z"
+    },
+    {
+      "cardNumber": "hBP08-001",
+      "printingId": "2204",
+      "rarity": "OSR",
+      "officialImageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-001_OSR.png",
+      "productUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10001",
+      "artworkVerifiedAt": "2026-10-03T07:43:16Z"
+    },
+    {
+      "cardNumber": "hBP08-003",
+      "printingId": "2206",
+      "rarity": "OSR",
+      "officialImageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-003_OSR.png",
+      "productUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10005",
+      "artworkVerifiedAt": "2026-10-03T07:43:16Z"
+    },
+    {
+      "cardNumber": "hBP08-003",
+      "printingId": "2326",
+      "rarity": "SEC",
+      "officialImageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-003_SEC.png",
+      "productUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10007",
+      "artworkVerifiedAt": "2026-10-03T07:47:41Z"
+    },
+    {
+      "cardNumber": "hBP08-003",
+      "printingId": "2333",
+      "rarity": "OUR",
+      "officialImageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-003_OUR.png",
+      "productUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10006",
+      "artworkVerifiedAt": "2026-10-03T07:47:41Z"
+    },
+    {
+      "cardNumber": "hBP08-018",
+      "printingId": "2339",
+      "rarity": "UR",
+      "officialImageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP08/hBP08-018_UR.png",
+      "productUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp08/10042",
+      "artworkVerifiedAt": "2026-10-03T07:43:16Z"
+    },
+    {
+      "cardNumber": "hBP09-003",
+      "printingId": "hbp09-hBP09-003_OUR",
+      "rarity": "OUR",
+      "officialImageUrl": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hBP09/hBP09-003_OUR.png",
+      "productUrl": "https://yuyu-tei.jp/sell/hocg/card/hbp09/10007",
+      "artworkVerifiedAt": "2026-10-03T07:43:16Z"
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import { restoreTranslationBaseline } from './translation-preservation-helpers.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -7,10 +8,10 @@ import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 import { appendWebsiteCardUpdate } from '../scripts/build-website-update-log.mjs';
 
-const catalogBytes = fs.readFileSync(new URL('../public/cards.json', import.meta.url));
+const catalogBytes = restoreTranslationBaseline('website/public/cards.json', fs.readFileSync(new URL('../public/cards.json', import.meta.url)));
 const catalog = JSON.parse(catalogBytes);
 const report = JSON.parse(fs.readFileSync(new URL('../docs/card-refresh-2026-10-29/report.json', import.meta.url), 'utf8'));
-const actual = JSON.parse(fs.readFileSync(new URL('../public/website-updates.json', import.meta.url), 'utf8'));
+const actual = JSON.parse(restoreTranslationBaseline('website/public/website-updates.json', fs.readFileSync(new URL('../public/website-updates.json', import.meta.url), 'utf8')));
 const script = fileURLToPath(new URL('../scripts/build-website-update-log.mjs', import.meta.url));
 const note = '網站底部新增更新記錄按鈕，可查看新增卡號及卡圖表格。';
 

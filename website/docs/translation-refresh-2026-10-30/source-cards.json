@@ -1,0 +1,1751 @@
+{
+  "catalogMeta": {
+    "generatedAt": "2026-10-29T00:57:40.362633+00:00",
+    "snapshotDate": "2026-10-29",
+    "uniqueCards": 1416,
+    "sourceUniqueCards": 1409,
+    "printings": 3038,
+    "traditionalChineseCards": 1372,
+    "note": "卡名沿用現有繁中名稱；尚未翻譯的名稱及 hBP09 新效果保留官方日文原文，並非已核准繁中翻譯。新卡實際效果及對戰支援須另行驗證；正式對戰以官方日文卡面與最新裁定為準。",
+    "latestRelease": "エクストリーマーカップ25-26 Final オフィシャルホロカコレクションB / エクストリーマーカップ25-26 Final オフィシャルホロカコレクションA（2026-10-11 發售）",
+    "latestReleasePrintings": 12,
+    "catalogVersion": "2026-10-29-official-cardlist",
+    "latestReleaseDate": "2026-10-11",
+    "hbp09": {
+      "catalogVersion": "2026-09-17-hBP09",
+      "releaseDate": "2026-09-19",
+      "set": "hBP09 ボリュームヴォルテックス / Volume Vortex",
+      "officialPrintings": 255,
+      "officialBaseCards": 125,
+      "officialParallels": 130,
+      "numberedNewCards": 111,
+      "reprintedCardNumbers": 14,
+      "newCheerNumbers": 6,
+      "sourceUrl": "https://hololive-official-cardgame.com/products/post/volume-vortex/",
+      "translationStatus": "Japanese originals; no unverified machine translation substituted"
+    },
+    "japaneseNameFallbackCards": 44,
+    "officialSourceUrl": "https://hololive-official-cardgame.com/cardlist/",
+    "officialSourcePrintings": 3039,
+    "upcomingRelease": "スタートデッキ アソビ★まわり隊！推し 熱千めら / スタートデッキ アソビ★まわり隊！推し 百灯キョーコ（2026-10-30 發售・先行公開）",
+    "upcomingReleaseDate": "2026-10-30"
+  },
+  "cards": [
+    {
+      "id": "3028",
+      "number": "hSD20-001",
+      "name": "百灯キョーコ",
+      "jpName": "百灯キョーコ",
+      "enName": "",
+      "group": "oshi",
+      "type": "推し Holomen",
+      "typeCode": "oshiCharacter",
+      "colors": [
+        "紅"
+      ],
+      "colorCodes": [
+        "red"
+      ],
+      "stage": "",
+      "hp": null,
+      "life": 5,
+      "rarity": "OSR",
+      "set": "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+      "sets": [
+        "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+      ],
+      "tags": [],
+      "illustrator": "耳ン",
+      "baton": null,
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-001_OSR.png",
+      "variants": [
+        {
+          "id": "official-hSD20-001-3028",
+          "rarity": "OSR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-001_OSR.png",
+          "sets": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3028&view=text",
+          "officialImportSchema": 2,
+          "releaseDate": "2026-10-30",
+          "preview": true
+        }
+      ],
+      "abilityText": "",
+      "extra": "",
+      "keyword": null,
+      "stageSkill": {
+        "name": "広がる情熱",
+        "effect": "自分のホロメンがコラボした時、自分のセンターが〈百灯キョーコ〉なら、自分のエールデッキの上から1枚を自分のコラボホロメンに送る。",
+        "timing": ""
+      },
+      "oshiSkill": {
+        "name": "ヒーローポリス疾走！",
+        "effect": "[ターンに1回]相手のDebut以外の[センターホロメンとコラボホロメン]に、自分のステージのエール1枚につき、特殊ダメージ10を与える。",
+        "timing": "Holo Power -3",
+        "holoPower": 3,
+        "holoPowerCost": 3
+      },
+      "spOshiSkill": null,
+      "arts": [],
+      "qaCount": 1,
+      "maxCopies": 1,
+      "unlimited": false,
+      "restricted": false,
+      "preview": true,
+      "simOnly": false,
+      "releaseDate": "2026-10-30",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3028&view=text",
+      "effectLanguage": "ja",
+      "translationStatus": "official-japanese-fallback",
+      "nameTranslationStatus": "official-japanese-fallback",
+      "simulationStatus": "not-audited",
+      "officialImportSchema": 2
+    },
+    {
+      "id": "3029",
+      "number": "hSD20-002",
+      "name": "百灯キョーコ",
+      "jpName": "百灯キョーコ",
+      "enName": "",
+      "group": "holomem",
+      "type": "Holomen",
+      "typeCode": "character",
+      "colors": [
+        "紅"
+      ],
+      "colorCodes": [
+        "red"
+      ],
+      "stage": "Debut",
+      "hp": 130,
+      "life": null,
+      "rarity": "C",
+      "set": "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+      "sets": [
+        "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+      ],
+      "tags": [
+        "#アソビ★まわり隊！"
+      ],
+      "illustrator": "",
+      "baton": 1,
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-002_C.png",
+      "variants": [
+        {
+          "id": "official-hSD20-002-3029",
+          "rarity": "C",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-002_C.png",
+          "sets": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3029&view=text",
+          "officialImportSchema": 2,
+          "releaseDate": "2026-10-30",
+          "preview": true
+        }
+      ],
+      "abilityText": "",
+      "extra": "このホロメンはデッキに何枚でも入れられる",
+      "keyword": null,
+      "stageSkill": null,
+      "oshiSkill": null,
+      "spOshiSkill": null,
+      "arts": [
+        {
+          "name": "笑顔にさせちゃっていいですか！？？",
+          "effect": "[センターポジション限定]自分のステージにエールが2枚以上あるなら、このアーツ+20。",
+          "damage": 20,
+          "damageModifier": "+",
+          "cost": [
+            "紅"
+          ],
+          "specialTargets": [],
+          "specialValues": []
+        }
+      ],
+      "qaCount": 0,
+      "maxCopies": 99,
+      "unlimited": true,
+      "restricted": false,
+      "preview": true,
+      "simOnly": false,
+      "releaseDate": "2026-10-30",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3029&view=text",
+      "effectLanguage": "ja",
+      "translationStatus": "official-japanese-fallback",
+      "nameTranslationStatus": "official-japanese-fallback",
+      "simulationStatus": "not-audited",
+      "officialImportSchema": 2
+    },
+    {
+      "id": "3030",
+      "number": "hSD20-003",
+      "name": "百灯キョーコ",
+      "jpName": "百灯キョーコ",
+      "enName": "",
+      "group": "holomem",
+      "type": "Holomen",
+      "typeCode": "character",
+      "colors": [
+        "紅"
+      ],
+      "colorCodes": [
+        "red"
+      ],
+      "stage": "Debut",
+      "hp": 130,
+      "life": null,
+      "rarity": "U",
+      "set": "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+      "sets": [
+        "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+      ],
+      "tags": [
+        "#アソビ★まわり隊！"
+      ],
+      "illustrator": "兎未枝",
+      "baton": 1,
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-003_U.png",
+      "variants": [
+        {
+          "id": "official-hSD20-003-3030",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-003_U.png",
+          "sets": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3030&view=text",
+          "officialImportSchema": 2,
+          "releaseDate": "2026-10-30",
+          "preview": true
+        }
+      ],
+      "abilityText": "",
+      "extra": "",
+      "keyword": {
+        "type": "collab",
+        "name": "即集合！",
+        "effect": "自分が後攻で最初のターンなら、自分のデッキから、[#アソビ★まわり隊！を持つDebutホロメンと1st〈百灯キョーコ〉]1枚ずつを公開し、手札に加える。そしてデッキをシャッフルする。"
+      },
+      "stageSkill": null,
+      "oshiSkill": null,
+      "spOshiSkill": null,
+      "arts": [
+        {
+          "name": "ドンチャン大騒ぎの始まり",
+          "effect": "",
+          "damage": 20,
+          "damageModifier": "",
+          "cost": [
+            "無色"
+          ],
+          "specialTargets": [],
+          "specialValues": []
+        }
+      ],
+      "qaCount": 0,
+      "maxCopies": 4,
+      "unlimited": false,
+      "restricted": false,
+      "preview": true,
+      "simOnly": false,
+      "releaseDate": "2026-10-30",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3030&view=text",
+      "effectLanguage": "ja",
+      "translationStatus": "official-japanese-fallback",
+      "nameTranslationStatus": "official-japanese-fallback",
+      "simulationStatus": "not-audited",
+      "officialImportSchema": 2
+    },
+    {
+      "id": "3031",
+      "number": "hSD20-004",
+      "name": "百灯キョーコ",
+      "jpName": "百灯キョーコ",
+      "enName": "",
+      "group": "holomem",
+      "type": "Holomen",
+      "typeCode": "character",
+      "colors": [
+        "紅"
+      ],
+      "colorCodes": [
+        "red"
+      ],
+      "stage": "1st",
+      "hp": 180,
+      "life": null,
+      "rarity": "C",
+      "set": "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+      "sets": [
+        "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+      ],
+      "tags": [
+        "#アソビ★まわり隊！"
+      ],
+      "illustrator": "鉢谷ナギ",
+      "baton": 1,
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-004_C.png",
+      "variants": [
+        {
+          "id": "official-hSD20-004-3031",
+          "rarity": "C",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-004_C.png",
+          "sets": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3031&view=text",
+          "officialImportSchema": 2,
+          "releaseDate": "2026-10-30",
+          "preview": true
+        }
+      ],
+      "abilityText": "",
+      "extra": "",
+      "keyword": null,
+      "stageSkill": null,
+      "oshiSkill": null,
+      "spOshiSkill": null,
+      "arts": [
+        {
+          "name": "出勤準備完了！",
+          "effect": "",
+          "damage": 60,
+          "damageModifier": "",
+          "cost": [
+            "紅",
+            "無色"
+          ],
+          "specialTargets": [],
+          "specialValues": []
+        },
+        {
+          "name": "拡声器いらずのビッグボイス",
+          "effect": "",
+          "damage": 140,
+          "damageModifier": "",
+          "cost": [
+            "紅",
+            "無色",
+            "無色",
+            "無色"
+          ],
+          "specialTargets": [],
+          "specialValues": []
+        }
+      ],
+      "qaCount": 0,
+      "maxCopies": 4,
+      "unlimited": false,
+      "restricted": false,
+      "preview": true,
+      "simOnly": false,
+      "releaseDate": "2026-10-30",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3031&view=text",
+      "effectLanguage": "ja",
+      "translationStatus": "official-japanese-fallback",
+      "nameTranslationStatus": "official-japanese-fallback",
+      "simulationStatus": "not-audited",
+      "officialImportSchema": 2
+    },
+    {
+      "id": "3032",
+      "number": "hSD20-005",
+      "name": "百灯キョーコ",
+      "jpName": "百灯キョーコ",
+      "enName": "",
+      "group": "holomem",
+      "type": "Holomen",
+      "typeCode": "character",
+      "colors": [
+        "紅"
+      ],
+      "colorCodes": [
+        "red"
+      ],
+      "stage": "1st",
+      "hp": 150,
+      "life": null,
+      "rarity": "U",
+      "set": "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+      "sets": [
+        "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+      ],
+      "tags": [
+        "#アソビ★まわり隊！"
+      ],
+      "illustrator": "TOH.",
+      "baton": 1,
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-005_U.png",
+      "variants": [
+        {
+          "id": "official-hSD20-005-3032",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-005_U.png",
+          "sets": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3032&view=text",
+          "officialImportSchema": 2,
+          "releaseDate": "2026-10-30",
+          "preview": true
+        }
+      ],
+      "abilityText": "",
+      "extra": "",
+      "keyword": {
+        "type": "bloom",
+        "name": "差し伸べる手",
+        "effect": "自分のステージの#アソビ★まわり隊！を持つホロメン1人を選ぶ。このターンの間、選んだホロメンのアーツ+20。"
+      },
+      "stageSkill": null,
+      "oshiSkill": null,
+      "spOshiSkill": null,
+      "arts": [
+        {
+          "name": "考えるより先に動く",
+          "effect": "",
+          "damage": 30,
+          "damageModifier": "",
+          "cost": [
+            "無色"
+          ],
+          "specialTargets": [],
+          "specialValues": []
+        }
+      ],
+      "qaCount": 0,
+      "maxCopies": 4,
+      "unlimited": false,
+      "restricted": false,
+      "preview": true,
+      "simOnly": false,
+      "releaseDate": "2026-10-30",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3032&view=text",
+      "effectLanguage": "ja",
+      "translationStatus": "official-japanese-fallback",
+      "nameTranslationStatus": "official-japanese-fallback",
+      "simulationStatus": "not-audited",
+      "officialImportSchema": 2
+    },
+    {
+      "id": "3033",
+      "number": "hSD20-006",
+      "name": "百灯キョーコ",
+      "jpName": "百灯キョーコ",
+      "enName": "",
+      "group": "holomem",
+      "type": "Holomen",
+      "typeCode": "character",
+      "colors": [
+        "紅"
+      ],
+      "colorCodes": [
+        "red"
+      ],
+      "stage": "1st",
+      "hp": 160,
+      "life": null,
+      "rarity": "R",
+      "set": "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+      "sets": [
+        "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+      ],
+      "tags": [
+        "#アソビ★まわり隊！"
+      ],
+      "illustrator": "宮波",
+      "baton": 1,
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-006_R.png",
+      "variants": [
+        {
+          "id": "official-hSD20-006-3033",
+          "rarity": "R",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-006_R.png",
+          "sets": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3033&view=text",
+          "officialImportSchema": 2,
+          "releaseDate": "2026-10-30",
+          "preview": true
+        }
+      ],
+      "abilityText": "",
+      "extra": "",
+      "keyword": {
+        "type": "collab",
+        "name": "誰にだって手を伸ばす！",
+        "effect": "自分のステージのエール1枚をアーカイブできる:自分のアーカイブの#アソビ★まわり隊！を持つホロメン1枚を手札に戻す。"
+      },
+      "stageSkill": null,
+      "oshiSkill": null,
+      "spOshiSkill": null,
+      "arts": [
+        {
+          "name": "渦巻くハイテンション",
+          "effect": "自分のステージにエールが6枚以上あるなら、このアーツ+20。",
+          "damage": 50,
+          "damageModifier": "+",
+          "cost": [
+            "紅",
+            "無色"
+          ],
+          "specialTargets": [],
+          "specialValues": []
+        }
+      ],
+      "qaCount": 1,
+      "maxCopies": 4,
+      "unlimited": false,
+      "restricted": false,
+      "preview": true,
+      "simOnly": false,
+      "releaseDate": "2026-10-30",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3033&view=text",
+      "effectLanguage": "ja",
+      "translationStatus": "official-japanese-fallback",
+      "nameTranslationStatus": "official-japanese-fallback",
+      "simulationStatus": "not-audited",
+      "officialImportSchema": 2
+    },
+    {
+      "id": "3034",
+      "number": "hSD20-007",
+      "name": "百灯キョーコ",
+      "jpName": "百灯キョーコ",
+      "enName": "",
+      "group": "holomem",
+      "type": "Holomen",
+      "typeCode": "character",
+      "colors": [
+        "紅"
+      ],
+      "colorCodes": [
+        "red"
+      ],
+      "stage": "2nd",
+      "hp": 190,
+      "life": null,
+      "rarity": "RR",
+      "set": "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+      "sets": [
+        "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+      ],
+      "tags": [
+        "#アソビ★まわり隊！"
+      ],
+      "illustrator": "gaha",
+      "baton": 2,
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-007_RR.png",
+      "variants": [
+        {
+          "id": "official-hSD20-007-3034",
+          "rarity": "RR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-007_RR.png",
+          "sets": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3034&view=text",
+          "officialImportSchema": 2,
+          "releaseDate": "2026-10-30",
+          "preview": true
+        }
+      ],
+      "abilityText": "",
+      "extra": "",
+      "keyword": {
+        "type": "gift",
+        "name": "情熱系ヒーローポリス",
+        "effect": "[センターポジション限定]自分のコラボホロメンのアーツ+20。"
+      },
+      "stageSkill": null,
+      "oshiSkill": null,
+      "spOshiSkill": null,
+      "arts": [
+        {
+          "name": "「最強」担当",
+          "effect": "自分のステージにエールが6枚以上あるなら、このアーツ+50。",
+          "damage": 150,
+          "damageModifier": "+",
+          "cost": [
+            "紅",
+            "紅",
+            "無色"
+          ],
+          "specialTargets": [
+            "綠"
+          ],
+          "specialValues": [
+            50
+          ]
+        }
+      ],
+      "qaCount": 0,
+      "maxCopies": 4,
+      "unlimited": false,
+      "restricted": false,
+      "preview": true,
+      "simOnly": false,
+      "releaseDate": "2026-10-30",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3034&view=text",
+      "effectLanguage": "ja",
+      "translationStatus": "official-japanese-fallback",
+      "nameTranslationStatus": "official-japanese-fallback",
+      "simulationStatus": "not-audited",
+      "officialImportSchema": 2
+    },
+    {
+      "id": "3035",
+      "number": "hSD20-008",
+      "name": "宙科そぴあ",
+      "jpName": "宙科そぴあ",
+      "enName": "",
+      "group": "holomem",
+      "type": "Holomen",
+      "typeCode": "character",
+      "colors": [
+        "藍"
+      ],
+      "colorCodes": [
+        "blue"
+      ],
+      "stage": "Debut",
+      "hp": 120,
+      "life": null,
+      "rarity": "C",
+      "set": "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+      "sets": [
+        "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+        "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+      ],
+      "tags": [
+        "#アソビ★まわり隊！"
+      ],
+      "illustrator": "",
+      "baton": 1,
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-008_C.png",
+      "variants": [
+        {
+          "id": "official-hSD20-008-3035",
+          "rarity": "C",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-008_C.png",
+          "sets": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3035&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "officialImportSchema": 2,
+          "releaseDate": "2026-10-30",
+          "preview": true
+        }
+      ],
+      "abilityText": "",
+      "extra": "このホロメンはデッキに何枚でも入れられる",
+      "keyword": {
+        "type": "gift",
+        "name": "夢は弾けるビッグバン！",
+        "effect": "相手のターンで、このホロメンがダウンした時、自分のデッキを1枚引く。"
+      },
+      "stageSkill": null,
+      "oshiSkill": null,
+      "spOshiSkill": null,
+      "arts": [
+        {
+          "name": "全部この目で確かめにいくよ！",
+          "effect": "",
+          "damage": 10,
+          "damageModifier": "",
+          "cost": [
+            "無色"
+          ],
+          "specialTargets": [],
+          "specialValues": []
+        }
+      ],
+      "qaCount": 0,
+      "maxCopies": 99,
+      "unlimited": true,
+      "restricted": false,
+      "preview": true,
+      "simOnly": false,
+      "releaseDate": "2026-10-30",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3035&%2Fcardlist%2Fcardsearch_ex=&view=text",
+      "effectLanguage": "ja",
+      "translationStatus": "official-japanese-fallback",
+      "nameTranslationStatus": "official-japanese-fallback",
+      "simulationStatus": "not-audited",
+      "officialImportSchema": 2
+    },
+    {
+      "id": "3036",
+      "number": "hSD20-009",
+      "name": "宙科そぴあ",
+      "jpName": "宙科そぴあ",
+      "enName": "",
+      "group": "holomem",
+      "type": "Holomen",
+      "typeCode": "character",
+      "colors": [
+        "藍"
+      ],
+      "colorCodes": [
+        "blue"
+      ],
+      "stage": "1st",
+      "hp": 160,
+      "life": null,
+      "rarity": "U",
+      "set": "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+      "sets": [
+        "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+        "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+      ],
+      "tags": [
+        "#アソビ★まわり隊！"
+      ],
+      "illustrator": "カロクチトセ",
+      "baton": 1,
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-009_U.png",
+      "variants": [
+        {
+          "id": "official-hSD20-009-3036",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-009_U.png",
+          "sets": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3036&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "officialImportSchema": 2,
+          "releaseDate": "2026-10-30",
+          "preview": true
+        }
+      ],
+      "abilityText": "",
+      "extra": "",
+      "keyword": {
+        "type": "bloom",
+        "name": "面白さの探求",
+        "effect": "自分のステージに#アソビ★まわり隊！を持つホロメンが3人以上いるなら、このホロメンのエール1枚をアーカイブできる：自分のデッキを2枚引く。"
+      },
+      "stageSkill": null,
+      "oshiSkill": null,
+      "spOshiSkill": null,
+      "arts": [
+        {
+          "name": "抑えきれない知的好奇心",
+          "effect": "",
+          "damage": 30,
+          "damageModifier": "",
+          "cost": [
+            "無色"
+          ],
+          "specialTargets": [],
+          "specialValues": []
+        }
+      ],
+      "qaCount": 0,
+      "maxCopies": 4,
+      "unlimited": false,
+      "restricted": false,
+      "preview": true,
+      "simOnly": false,
+      "releaseDate": "2026-10-30",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3036&%2Fcardlist%2Fcardsearch_ex=&view=text",
+      "effectLanguage": "ja",
+      "translationStatus": "official-japanese-fallback",
+      "nameTranslationStatus": "official-japanese-fallback",
+      "simulationStatus": "not-audited",
+      "officialImportSchema": 2
+    },
+    {
+      "id": "3037",
+      "number": "hSD20-010",
+      "name": "宙科そぴあ",
+      "jpName": "宙科そぴあ",
+      "enName": "",
+      "group": "holomem",
+      "type": "Holomen",
+      "typeCode": "character",
+      "colors": [
+        "藍"
+      ],
+      "colorCodes": [
+        "blue"
+      ],
+      "stage": "1st",
+      "hp": 130,
+      "life": null,
+      "rarity": "R",
+      "set": "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+      "sets": [
+        "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+        "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+      ],
+      "tags": [
+        "#アソビ★まわり隊！"
+      ],
+      "illustrator": "大熊まい",
+      "baton": 1,
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-010_R.png",
+      "variants": [
+        {
+          "id": "official-hSD20-010-3037",
+          "rarity": "R",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-010_R.png",
+          "sets": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3037&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "officialImportSchema": 2,
+          "releaseDate": "2026-10-30",
+          "preview": true
+        }
+      ],
+      "abilityText": "",
+      "extra": "",
+      "keyword": {
+        "type": "bloom",
+        "name": "仲間を探すぞ～！",
+        "effect": "自分のデッキの上から3枚を見る。その中から、#アソビ★まわり隊！を持つホロメン1枚を公開し、手札に加える。そして残ったカードを好きな順でデッキの下に戻す。"
+      },
+      "stageSkill": null,
+      "oshiSkill": null,
+      "spOshiSkill": null,
+      "arts": [
+        {
+          "name": "面白いもの見つけたよ！",
+          "effect": "このホロメンのエール1枚を自分の他の#アソビ★まわり隊！を持つホロメンに付け替えられる。",
+          "damage": 50,
+          "damageModifier": "",
+          "cost": [
+            "藍",
+            "無色"
+          ],
+          "specialTargets": [],
+          "specialValues": []
+        }
+      ],
+      "qaCount": 0,
+      "maxCopies": 4,
+      "unlimited": false,
+      "restricted": false,
+      "preview": true,
+      "simOnly": false,
+      "releaseDate": "2026-10-30",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3037&%2Fcardlist%2Fcardsearch_ex=&view=text",
+      "effectLanguage": "ja",
+      "translationStatus": "official-japanese-fallback",
+      "nameTranslationStatus": "official-japanese-fallback",
+      "simulationStatus": "not-audited",
+      "officialImportSchema": 2
+    },
+    {
+      "id": "3038",
+      "number": "hSD20-011",
+      "name": "宙科そぴあ",
+      "jpName": "宙科そぴあ",
+      "enName": "",
+      "group": "holomem",
+      "type": "Holomen",
+      "typeCode": "character",
+      "colors": [
+        "藍"
+      ],
+      "colorCodes": [
+        "blue"
+      ],
+      "stage": "2nd",
+      "hp": 200,
+      "life": null,
+      "rarity": "RR",
+      "set": "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+      "sets": [
+        "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+        "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+      ],
+      "tags": [
+        "#アソビ★まわり隊！"
+      ],
+      "illustrator": "夕城",
+      "baton": 2,
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-011_RR.png",
+      "variants": [
+        {
+          "id": "official-hSD20-011-3038",
+          "rarity": "RR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-011_RR.png",
+          "sets": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3038&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "officialImportSchema": 2,
+          "releaseDate": "2026-10-30",
+          "preview": true
+        }
+      ],
+      "abilityText": "",
+      "extra": "",
+      "keyword": {
+        "type": "collab",
+        "name": "（自称）天才宇宙飛行士",
+        "effect": "自分のアーカイブのエール2枚を自分の#アソビ★まわり隊！を持つホロメン1人に送れる。"
+      },
+      "stageSkill": null,
+      "oshiSkill": null,
+      "spOshiSkill": null,
+      "arts": [
+        {
+          "name": "「ひらめき」担当",
+          "effect": "このホロメンのエール1～3枚をアーカイブできる:アーカイブしたエール1枚につき、このアーツ+20。",
+          "damage": 80,
+          "damageModifier": "+",
+          "cost": [
+            "藍",
+            "無色"
+          ],
+          "specialTargets": [
+            "白"
+          ],
+          "specialValues": [
+            50
+          ]
+        }
+      ],
+      "qaCount": 2,
+      "maxCopies": 4,
+      "unlimited": false,
+      "restricted": false,
+      "preview": true,
+      "simOnly": false,
+      "releaseDate": "2026-10-30",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3038&%2Fcardlist%2Fcardsearch_ex=&view=text",
+      "effectLanguage": "ja",
+      "translationStatus": "official-japanese-fallback",
+      "nameTranslationStatus": "official-japanese-fallback",
+      "simulationStatus": "not-audited",
+      "officialImportSchema": 2
+    },
+    {
+      "id": "3039",
+      "number": "hSD20-012",
+      "name": "アソビ★まわり隊！",
+      "jpName": "アソビ★まわり隊！",
+      "enName": "",
+      "group": "support",
+      "type": "事件・LIMITED",
+      "typeCode": "supportEventLimited",
+      "colors": [],
+      "colorCodes": [],
+      "stage": "",
+      "hp": null,
+      "life": null,
+      "rarity": "U",
+      "set": "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+      "sets": [
+        "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+        "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+      ],
+      "tags": [],
+      "illustrator": "緜",
+      "baton": null,
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-012_U.png",
+      "variants": [
+        {
+          "id": "official-hSD20-012-3039",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-012_U.png",
+          "sets": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3039&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "officialImportSchema": 2,
+          "releaseDate": "2026-10-30",
+          "preview": true
+        }
+      ],
+      "abilityText": "このカードは、自分の手札がこのカードを含まずに6枚以下でなければ使えない。\n\n\n\n自分のデッキの上から4枚を見る。その中から、#アソビ★まわり隊！を持つホロメンを好きな枚数公開し、公開したホロメンを手札に加える。そして残ったカードを好きな順でデッキの下に戻す。\n\n\n\nLIMITED:ターンに1枚しか使えない。",
+      "extra": "",
+      "keyword": null,
+      "stageSkill": null,
+      "oshiSkill": null,
+      "spOshiSkill": null,
+      "arts": [],
+      "qaCount": 0,
+      "maxCopies": 4,
+      "unlimited": false,
+      "restricted": false,
+      "preview": true,
+      "simOnly": false,
+      "releaseDate": "2026-10-30",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3039&%2Fcardlist%2Fcardsearch_ex=&view=text",
+      "effectLanguage": "ja",
+      "translationStatus": "official-japanese-fallback",
+      "nameTranslationStatus": "official-japanese-fallback",
+      "simulationStatus": "not-audited",
+      "officialImportSchema": 2
+    },
+    {
+      "id": "3040",
+      "number": "hSD20-013",
+      "name": "ぐるぐるTIME！",
+      "jpName": "ぐるぐるTIME！",
+      "enName": "",
+      "group": "support",
+      "type": "事件・LIMITED",
+      "typeCode": "supportEventLimited",
+      "colors": [],
+      "colorCodes": [],
+      "stage": "",
+      "hp": null,
+      "life": null,
+      "rarity": "U",
+      "set": "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+      "sets": [
+        "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+        "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+      ],
+      "tags": [],
+      "illustrator": "deru",
+      "baton": null,
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-013_U.png",
+      "variants": [
+        {
+          "id": "official-hSD20-013-3040",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-013_U.png",
+          "sets": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3040&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "officialImportSchema": 2,
+          "releaseDate": "2026-10-30",
+          "preview": true
+        }
+      ],
+      "abilityText": "このカードは、自分のステージのホロメン全員が#アソビ★まわり隊！を持つホロメンでなければ使えない。\n\n\n\n相手のバックホロメン1人を選ぶ。選んだホロメンと相手のセンターホロメンを交代させる。その後、相手と勝敗が決まるまでじゃんけんする。自分が勝ったなら、自分のデッキを3枚引く。\n\n\n\nLIMITED:ターンに1枚しか使えない。",
+      "extra": "",
+      "keyword": null,
+      "stageSkill": null,
+      "oshiSkill": null,
+      "spOshiSkill": null,
+      "arts": [],
+      "qaCount": 0,
+      "maxCopies": 4,
+      "unlimited": false,
+      "restricted": false,
+      "preview": true,
+      "simOnly": false,
+      "releaseDate": "2026-10-30",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3040&%2Fcardlist%2Fcardsearch_ex=&view=text",
+      "effectLanguage": "ja",
+      "translationStatus": "official-japanese-fallback",
+      "nameTranslationStatus": "official-japanese-fallback",
+      "simulationStatus": "not-audited",
+      "officialImportSchema": 2
+    },
+    {
+      "id": "3041",
+      "number": "hSD20-014",
+      "name": "百灯キョーコの拡声器",
+      "jpName": "百灯キョーコの拡声器",
+      "enName": "",
+      "group": "support",
+      "type": "工具",
+      "typeCode": "supportTool",
+      "colors": [],
+      "colorCodes": [],
+      "stage": "",
+      "hp": null,
+      "life": null,
+      "rarity": "U",
+      "set": "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ",
+      "sets": [
+        "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+      ],
+      "tags": [],
+      "illustrator": "那桜",
+      "baton": null,
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-014_U.png",
+      "variants": [
+        {
+          "id": "official-hSD20-014-3041",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD20/hSD20-014_U.png",
+          "sets": [
+            "スタートデッキ アソビ★まわり隊！推し 百灯キョーコ"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3041&%2Fcardlist%2Fcardsearch_ex=&view=text",
+          "officialImportSchema": 2,
+          "releaseDate": "2026-10-30",
+          "preview": true
+        }
+      ],
+      "abilityText": "このツールが付いている〈百灯キョーコ〉のアーツ+20。\n\n\n\n◆1st以上の〈百灯キョーコ〉に付いていたら能力追加\n\nこのホロメンが相手のホロメンをダウンさせた時、自分のアーカイブのエール1枚を自分の#アソビ★まわり隊！を持つバックホロメンに送れる。\n\n\n\nツールは、自分のホロメン1人につき1枚だけ付けられる。",
+      "extra": "",
+      "keyword": null,
+      "stageSkill": null,
+      "oshiSkill": null,
+      "spOshiSkill": null,
+      "arts": [],
+      "qaCount": 0,
+      "maxCopies": 4,
+      "unlimited": false,
+      "restricted": false,
+      "preview": true,
+      "simOnly": false,
+      "releaseDate": "2026-10-30",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3041&%2Fcardlist%2Fcardsearch_ex=&view=text",
+      "effectLanguage": "ja",
+      "translationStatus": "official-japanese-fallback",
+      "nameTranslationStatus": "official-japanese-fallback",
+      "simulationStatus": "not-audited",
+      "officialImportSchema": 2
+    },
+    {
+      "id": "3043",
+      "number": "hSD21-001",
+      "name": "熱千めら",
+      "jpName": "熱千めら",
+      "enName": "",
+      "group": "oshi",
+      "type": "推し Holomen",
+      "typeCode": "oshiCharacter",
+      "colors": [
+        "紫"
+      ],
+      "colorCodes": [
+        "purple"
+      ],
+      "stage": "",
+      "hp": null,
+      "life": 5,
+      "rarity": "OSR",
+      "set": "スタートデッキ アソビ★まわり隊！推し 熱千めら",
+      "sets": [
+        "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+      ],
+      "tags": [],
+      "illustrator": "夕城",
+      "baton": null,
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-001_OSR.png",
+      "variants": [
+        {
+          "id": "official-hSD21-001-3043",
+          "rarity": "OSR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-001_OSR.png",
+          "sets": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3043&view=text",
+          "officialImportSchema": 2,
+          "releaseDate": "2026-10-30",
+          "preview": true
+        }
+      ],
+      "abilityText": "",
+      "extra": "",
+      "keyword": null,
+      "stageSkill": {
+        "name": "サラマンダーの恩返し",
+        "effect": "自分のホロメンがコラボした時、自分のセンターが〈熱千めら〉なら、自分のデッキを1枚引き、手札1枚をアーカイブする。",
+        "timing": ""
+      },
+      "oshiSkill": {
+        "name": "ご利益じゃ！",
+        "effect": "[ターンに1回]自分のステージのホロメン1人を選ぶ。自分のアーカイブのギフトを持つホロメン1枚につき、このターンの間、選んだホロメンのアーツ+10。さらに、選んだホロメンが〈熱千めら〉なら、そのホロメンのアーツに必要な無色-1。",
+        "timing": "Holo Power -2",
+        "holoPower": 2,
+        "holoPowerCost": 2
+      },
+      "spOshiSkill": null,
+      "arts": [],
+      "qaCount": 3,
+      "maxCopies": 1,
+      "unlimited": false,
+      "restricted": false,
+      "preview": true,
+      "simOnly": false,
+      "releaseDate": "2026-10-30",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3043&view=text",
+      "effectLanguage": "ja",
+      "translationStatus": "official-japanese-fallback",
+      "nameTranslationStatus": "official-japanese-fallback",
+      "simulationStatus": "not-audited",
+      "officialImportSchema": 2
+    },
+    {
+      "id": "3044",
+      "number": "hSD21-002",
+      "name": "熱千めら",
+      "jpName": "熱千めら",
+      "enName": "",
+      "group": "holomem",
+      "type": "Holomen",
+      "typeCode": "character",
+      "colors": [
+        "紫"
+      ],
+      "colorCodes": [
+        "purple"
+      ],
+      "stage": "Debut",
+      "hp": 120,
+      "life": null,
+      "rarity": "C",
+      "set": "スタートデッキ アソビ★まわり隊！推し 熱千めら",
+      "sets": [
+        "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+      ],
+      "tags": [
+        "#アソビ★まわり隊！"
+      ],
+      "illustrator": "",
+      "baton": 1,
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-002_C.png",
+      "variants": [
+        {
+          "id": "official-hSD21-002-3044",
+          "rarity": "C",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-002_C.png",
+          "sets": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3044&view=text",
+          "officialImportSchema": 2,
+          "releaseDate": "2026-10-30",
+          "preview": true
+        }
+      ],
+      "abilityText": "",
+      "extra": "このホロメンはデッキに何枚でも入れられる",
+      "keyword": {
+        "type": "gift",
+        "name": "防火対策 基礎！",
+        "effect": "このホロメンが受けるアーツダメージ-10。"
+      },
+      "stageSkill": null,
+      "oshiSkill": null,
+      "spOshiSkill": null,
+      "arts": [
+        {
+          "name": "火の用心じゃ～！",
+          "effect": "",
+          "damage": 20,
+          "damageModifier": "",
+          "cost": [
+            "無色"
+          ],
+          "specialTargets": [],
+          "specialValues": []
+        }
+      ],
+      "qaCount": 0,
+      "maxCopies": 99,
+      "unlimited": true,
+      "restricted": false,
+      "preview": true,
+      "simOnly": false,
+      "releaseDate": "2026-10-30",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3044&view=text",
+      "effectLanguage": "ja",
+      "translationStatus": "official-japanese-fallback",
+      "nameTranslationStatus": "official-japanese-fallback",
+      "simulationStatus": "not-audited",
+      "officialImportSchema": 2
+    },
+    {
+      "id": "3045",
+      "number": "hSD21-003",
+      "name": "熱千めら",
+      "jpName": "熱千めら",
+      "enName": "",
+      "group": "holomem",
+      "type": "Holomen",
+      "typeCode": "character",
+      "colors": [
+        "紫"
+      ],
+      "colorCodes": [
+        "purple"
+      ],
+      "stage": "Debut",
+      "hp": 130,
+      "life": null,
+      "rarity": "U",
+      "set": "スタートデッキ アソビ★まわり隊！推し 熱千めら",
+      "sets": [
+        "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+      ],
+      "tags": [
+        "#アソビ★まわり隊！"
+      ],
+      "illustrator": "那桜",
+      "baton": 1,
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-003_U.png",
+      "variants": [
+        {
+          "id": "official-hSD21-003-3045",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-003_U.png",
+          "sets": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3045&view=text",
+          "officialImportSchema": 2,
+          "releaseDate": "2026-10-30",
+          "preview": true
+        }
+      ],
+      "abilityText": "",
+      "extra": "",
+      "keyword": {
+        "type": "collab",
+        "name": "炎を鎮める不思議な力",
+        "effect": "自分が後攻で最初のターンなら、自分のデッキから、ギフトを持つ〈熱千めら〉2枚を公開する。その中から1枚を手札に加え、残ったカードをアーカイブする。そしてデッキをシャッフルする。"
+      },
+      "stageSkill": null,
+      "oshiSkill": null,
+      "spOshiSkill": null,
+      "arts": [
+        {
+          "name": "響く拍子木",
+          "effect": "",
+          "damage": 20,
+          "damageModifier": "",
+          "cost": [
+            "無色"
+          ],
+          "specialTargets": [],
+          "specialValues": []
+        }
+      ],
+      "qaCount": 1,
+      "maxCopies": 4,
+      "unlimited": false,
+      "restricted": false,
+      "preview": true,
+      "simOnly": false,
+      "releaseDate": "2026-10-30",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3045&view=text",
+      "effectLanguage": "ja",
+      "translationStatus": "official-japanese-fallback",
+      "nameTranslationStatus": "official-japanese-fallback",
+      "simulationStatus": "not-audited",
+      "officialImportSchema": 2
+    },
+    {
+      "id": "3046",
+      "number": "hSD21-004",
+      "name": "熱千めら",
+      "jpName": "熱千めら",
+      "enName": "",
+      "group": "holomem",
+      "type": "Holomen",
+      "typeCode": "character",
+      "colors": [
+        "紫"
+      ],
+      "colorCodes": [
+        "purple"
+      ],
+      "stage": "1st",
+      "hp": 160,
+      "life": null,
+      "rarity": "C",
+      "set": "スタートデッキ アソビ★まわり隊！推し 熱千めら",
+      "sets": [
+        "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+      ],
+      "tags": [
+        "#アソビ★まわり隊！"
+      ],
+      "illustrator": "にゃまそ",
+      "baton": 1,
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-004_C.png",
+      "variants": [
+        {
+          "id": "official-hSD21-004-3046",
+          "rarity": "C",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-004_C.png",
+          "sets": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3046&view=text",
+          "officialImportSchema": 2,
+          "releaseDate": "2026-10-30",
+          "preview": true
+        }
+      ],
+      "abilityText": "",
+      "extra": "",
+      "keyword": {
+        "type": "gift",
+        "name": "防火対策 応用！",
+        "effect": "このホロメンが受けるアーツダメージ-20。"
+      },
+      "stageSkill": null,
+      "oshiSkill": null,
+      "spOshiSkill": null,
+      "arts": [
+        {
+          "name": "元気な頑張り屋",
+          "effect": "自分のデッキを1枚引き、手札1枚をアーカイブする。",
+          "damage": 30,
+          "damageModifier": "",
+          "cost": [
+            "紫"
+          ],
+          "specialTargets": [],
+          "specialValues": []
+        }
+      ],
+      "qaCount": 0,
+      "maxCopies": 4,
+      "unlimited": false,
+      "restricted": false,
+      "preview": true,
+      "simOnly": false,
+      "releaseDate": "2026-10-30",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3046&view=text",
+      "effectLanguage": "ja",
+      "translationStatus": "official-japanese-fallback",
+      "nameTranslationStatus": "official-japanese-fallback",
+      "simulationStatus": "not-audited",
+      "officialImportSchema": 2
+    },
+    {
+      "id": "3047",
+      "number": "hSD21-005",
+      "name": "熱千めら",
+      "jpName": "熱千めら",
+      "enName": "",
+      "group": "holomem",
+      "type": "Holomen",
+      "typeCode": "character",
+      "colors": [
+        "紫"
+      ],
+      "colorCodes": [
+        "purple"
+      ],
+      "stage": "1st",
+      "hp": 170,
+      "life": null,
+      "rarity": "U",
+      "set": "スタートデッキ アソビ★まわり隊！推し 熱千めら",
+      "sets": [
+        "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+      ],
+      "tags": [
+        "#アソビ★まわり隊！"
+      ],
+      "illustrator": "gaha",
+      "baton": 1,
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-005_U.png",
+      "variants": [
+        {
+          "id": "official-hSD21-005-3047",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-005_U.png",
+          "sets": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3047&view=text",
+          "officialImportSchema": 2,
+          "releaseDate": "2026-10-30",
+          "preview": true
+        }
+      ],
+      "abilityText": "",
+      "extra": "",
+      "keyword": {
+        "type": "collab",
+        "name": "ハジけるアソビの渦",
+        "effect": "自分のアーカイブにギフトを持つホロメンが3枚以上あるなら、相手のセンターホロメンかコラボホロメンに特殊ダメージ20を与える。"
+      },
+      "stageSkill": null,
+      "oshiSkill": null,
+      "spOshiSkill": null,
+      "arts": [
+        {
+          "name": "最高の非日常へ",
+          "effect": "",
+          "damage": 40,
+          "damageModifier": "",
+          "cost": [
+            "紫"
+          ],
+          "specialTargets": [],
+          "specialValues": []
+        }
+      ],
+      "qaCount": 0,
+      "maxCopies": 4,
+      "unlimited": false,
+      "restricted": false,
+      "preview": true,
+      "simOnly": false,
+      "releaseDate": "2026-10-30",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3047&view=text",
+      "effectLanguage": "ja",
+      "translationStatus": "official-japanese-fallback",
+      "nameTranslationStatus": "official-japanese-fallback",
+      "simulationStatus": "not-audited",
+      "officialImportSchema": 2
+    },
+    {
+      "id": "3048",
+      "number": "hSD21-006",
+      "name": "熱千めら",
+      "jpName": "熱千めら",
+      "enName": "",
+      "group": "holomem",
+      "type": "Holomen",
+      "typeCode": "character",
+      "colors": [
+        "紫"
+      ],
+      "colorCodes": [
+        "purple"
+      ],
+      "stage": "1st",
+      "hp": 160,
+      "life": null,
+      "rarity": "R",
+      "set": "スタートデッキ アソビ★まわり隊！推し 熱千めら",
+      "sets": [
+        "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+      ],
+      "tags": [
+        "#アソビ★まわり隊！"
+      ],
+      "illustrator": "梅之シイ",
+      "baton": 1,
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-006_R.png",
+      "variants": [
+        {
+          "id": "official-hSD21-006-3048",
+          "rarity": "R",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-006_R.png",
+          "sets": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3048&view=text",
+          "officialImportSchema": 2,
+          "releaseDate": "2026-10-30",
+          "preview": true
+        }
+      ],
+      "abilityText": "",
+      "extra": "",
+      "keyword": {
+        "type": "gift",
+        "name": "ご利益パワー",
+        "effect": "このホロメンがダウンした時、このホロメンのエール1～2枚を選び、自分の他のホロメンに割り振って付け替えられる。"
+      },
+      "stageSkill": null,
+      "oshiSkill": null,
+      "spOshiSkill": null,
+      "arts": [
+        {
+          "name": "火消しの本領発揮じゃ！",
+          "effect": "",
+          "damage": 60,
+          "damageModifier": "",
+          "cost": [
+            "紫",
+            "無色"
+          ],
+          "specialTargets": [],
+          "specialValues": []
+        }
+      ],
+      "qaCount": 0,
+      "maxCopies": 4,
+      "unlimited": false,
+      "restricted": false,
+      "preview": true,
+      "simOnly": false,
+      "releaseDate": "2026-10-30",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3048&view=text",
+      "effectLanguage": "ja",
+      "translationStatus": "official-japanese-fallback",
+      "nameTranslationStatus": "official-japanese-fallback",
+      "simulationStatus": "not-audited",
+      "officialImportSchema": 2
+    },
+    {
+      "id": "3049",
+      "number": "hSD21-007",
+      "name": "熱千めら",
+      "jpName": "熱千めら",
+      "enName": "",
+      "group": "holomem",
+      "type": "Holomen",
+      "typeCode": "character",
+      "colors": [
+        "紫"
+      ],
+      "colorCodes": [
+        "purple"
+      ],
+      "stage": "2nd",
+      "hp": 210,
+      "life": null,
+      "rarity": "RR",
+      "set": "スタートデッキ アソビ★まわり隊！推し 熱千めら",
+      "sets": [
+        "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+      ],
+      "tags": [
+        "#アソビ★まわり隊！"
+      ],
+      "illustrator": "TOH.",
+      "baton": 2,
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-007_RR.png",
+      "variants": [
+        {
+          "id": "official-hSD21-007-3049",
+          "rarity": "RR",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-007_RR.png",
+          "sets": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3049&view=text",
+          "officialImportSchema": 2,
+          "releaseDate": "2026-10-30",
+          "preview": true
+        }
+      ],
+      "abilityText": "",
+      "extra": "",
+      "keyword": {
+        "type": "gift",
+        "name": "火消しのサラマンダー",
+        "effect": "このホロメンがダウンした時、自分のデッキを2枚引く。"
+      },
+      "stageSkill": null,
+      "oshiSkill": null,
+      "spOshiSkill": null,
+      "arts": [
+        {
+          "name": "「ご利益」担当",
+          "effect": "自分のアーカイブにギフトを持つホロメンが3枚以上あるなら、このアーツ+50。",
+          "damage": 100,
+          "damageModifier": "+",
+          "cost": [
+            "紫",
+            "無色"
+          ],
+          "specialTargets": [
+            "黃"
+          ],
+          "specialValues": [
+            50
+          ]
+        }
+      ],
+      "qaCount": 0,
+      "maxCopies": 4,
+      "unlimited": false,
+      "restricted": false,
+      "preview": true,
+      "simOnly": false,
+      "releaseDate": "2026-10-30",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3049&view=text",
+      "effectLanguage": "ja",
+      "translationStatus": "official-japanese-fallback",
+      "nameTranslationStatus": "official-japanese-fallback",
+      "simulationStatus": "not-audited",
+      "officialImportSchema": 2
+    },
+    {
+      "id": "3050",
+      "number": "hSD21-008",
+      "name": "熱千めらの拍子木",
+      "jpName": "熱千めらの拍子木",
+      "enName": "",
+      "group": "support",
+      "type": "工具",
+      "typeCode": "supportTool",
+      "colors": [],
+      "colorCodes": [],
+      "stage": "",
+      "hp": null,
+      "life": null,
+      "rarity": "U",
+      "set": "スタートデッキ アソビ★まわり隊！推し 熱千めら",
+      "sets": [
+        "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+      ],
+      "tags": [],
+      "illustrator": "にゃまそ",
+      "baton": null,
+      "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-008_U.png",
+      "variants": [
+        {
+          "id": "official-hSD21-008-3050",
+          "rarity": "U",
+          "image": "https://hololive-official-cardgame.com/wp-content/images/cardlist/hSD21/hSD21-008_U.png",
+          "sets": [
+            "スタートデッキ アソビ★まわり隊！推し 熱千めら"
+          ],
+          "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3050&view=text",
+          "officialImportSchema": 2,
+          "releaseDate": "2026-10-30",
+          "preview": true
+        }
+      ],
+      "abilityText": "このツールが付いている〈熱千めら〉のアーツ+20。\n\n\n\n◆1st以上の〈熱千めら〉に付いていたら能力追加\n\nこのホロメンが相手のホロメンをダウンさせた時、自分のデッキを1枚引き、手札1枚をアーカイブする。\n\n\n\nツールは、自分のホロメン1人につき1枚だけ付けられる。",
+      "extra": "",
+      "keyword": null,
+      "stageSkill": null,
+      "oshiSkill": null,
+      "spOshiSkill": null,
+      "arts": [],
+      "qaCount": 0,
+      "maxCopies": 4,
+      "unlimited": false,
+      "restricted": false,
+      "preview": true,
+      "simOnly": false,
+      "releaseDate": "2026-10-30",
+      "catalogVersion": "2026-10-29-official-cardlist",
+      "sourceUrl": "https://hololive-official-cardgame.com/cardlist/?id=3050&view=text",
+      "effectLanguage": "ja",
+      "translationStatus": "official-japanese-fallback",
+      "nameTranslationStatus": "official-japanese-fallback",
+      "simulationStatus": "not-audited",
+      "officialImportSchema": 2
+    }
+  ]
+}

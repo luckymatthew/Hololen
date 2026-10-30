@@ -1,9 +1,10 @@
+import { restoreTranslationBaseline } from './translation-preservation-helpers.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 import { canonical, hash, restoreV2Baseline } from './card-refresh-test-helpers.mjs';
 
-const catalogBytes = fs.readFileSync(new URL('../public/cards.json', import.meta.url));
+const catalogBytes = restoreTranslationBaseline('website/public/cards.json', fs.readFileSync(new URL('../public/cards.json', import.meta.url)));
 const catalog = JSON.parse(catalogBytes);
 const baseline = JSON.parse(fs.readFileSync(new URL('./fixtures/card-refresh-2026-10-29-baseline.json', import.meta.url), 'utf8'));
 const reportURL = new URL('../docs/card-refresh-2026-10-29/report.json', import.meta.url);
