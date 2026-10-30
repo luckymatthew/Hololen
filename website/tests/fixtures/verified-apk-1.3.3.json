@@ -1,0 +1,51 @@
+{
+  "id": 429233840,
+  "tag_name": "v1.3.3",
+  "name": "Hololens 1.3.3 preview - Android ICU startup hotfix; device startup unverified",
+  "draft": false,
+  "prerelease": true,
+  "published_at": "2026-10-30T16:22:58Z",
+  "body": "Startup hotfix for the 1.3.2 preview: replaces JDK-only regex flags in WebsiteSearch that Android ICU rejects during startup. Keep your existing installation and app data; install this same-signer APK as an in-place update. Do not uninstall or clear app data.\n\nRetains translated card-data updates with immediate browsing/scanner refresh, website-aligned card filters, primary Scan action with camera icon, 83 official characters/602 art options, and separate app-release notices. Future card/translation corrections use the user-confirmed data update channel. Artwork remains bundled; new hSD20/hSD21 battle effects are NOT enabled, and manual warnings remain. Original AI is available without login.\n\nPreview limitations: physical-device startup, camera, Android JNI and dual-device PvP remain unverified. Optional ChatGPT official Android login/account eligibility and live inference remain unverified; no OAuth grant or inference usage was performed during development.\n\nChecks: all 21 compiled search patterns plus 50 Unicode boundary cases pass native ICU validation; the original 1.3.2 pattern reproduces the failure. Host tests: 293/300 passed, seven unchanged Windows directory-channel failures, no new failures. All 69 ChatGPT tests pass offline. Android instrumentation compiles but was not executed. Release build and lint pass (0 errors/41 warnings). Original package/signer, v3 signature, 16 KiB alignment and unchanged assets/native libraries verified.",
+  "assets": [
+    {
+      "id": 692661438,
+      "name": "Hololens-1.3.3-Install.zip",
+      "state": "uploaded",
+      "size": 627919702,
+      "digest": "sha256:8ae60eaa0fd40bf3760b1997323743b97a19a7792693619e4b18fb0dac692d45",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.3/Hololens-1.3.3-Install.zip"
+    },
+    {
+      "id": 692673701,
+      "name": "Hololens-release.json",
+      "state": "uploaded",
+      "size": 1939,
+      "digest": "sha256:b3033d2b7cb5c6b37d6ba71cc80275b845d5a96f09c13d32baf218dc7411a513",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.3/Hololens-release.json"
+    },
+    {
+      "id": 692646974,
+      "name": "HoloLens.apk",
+      "state": "uploaded",
+      "size": 627915056,
+      "digest": "sha256:34735a5281c3830f9937567b575e331ae17bd45ca1ceb44da4d686d7056510e8",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.3/HoloLens.apk"
+    },
+    {
+      "id": 692673567,
+      "name": "README.txt",
+      "state": "uploaded",
+      "size": 2371,
+      "digest": "sha256:dbbaafe70cd317a5d20b994e3e0f9e6b920d6c480bfe0f26d511fc7f1d70dacb",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.3/README.txt"
+    },
+    {
+      "id": 692673823,
+      "name": "SHA256SUMS.txt",
+      "state": "uploaded",
+      "size": 337,
+      "digest": "sha256:dae295167861c7dbac07ea5dba3ad4c62dd8fd77f05df53ec70df5f3d413e08b",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.3/SHA256SUMS.txt"
+    }
+  ]
+}

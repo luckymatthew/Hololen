@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createHash} from 'node:crypto';
-export const previewReleaseProvenance=JSON.parse(fs.readFileSync(new URL('./fixtures/apk-preview-1.3.2-runtime-changes.json',import.meta.url),'utf8'));
+export const previewReleaseProvenance=JSON.parse(fs.readFileSync(new URL('./fixtures/apk-preview-1.3.3-runtime-changes.json',import.meta.url),'utf8'));
 assert.deepEqual(previewReleaseProvenance.approvedPaths,['website/lib/releases.mjs','website/app/download/DownloadClient.tsx']);
 const hash=value=>createHash('sha256').update(value).digest('hex');
 export function restorePreviewReleaseBaseline(name,input){

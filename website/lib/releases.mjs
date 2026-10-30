@@ -5,7 +5,7 @@ export const STABLE_TAG = 'v1.2.8';
 export const releaseUrl = tag => `${RELEASES_URL}/tag/${encodeURIComponent(tag)}`;
 export const apkUrl = tag => `${RELEASES_URL}/download/${encodeURIComponent(tag)}/${APK_FILENAME}`;
 export const installZipUrl = tag => `${RELEASES_URL}/download/${encodeURIComponent(tag)}/Hololens-${encodeURIComponent(tag.replace(/^v/, ''))}-Install.zip`;
-export const FEATURED_TAG = 'v1.3.2';
+export const FEATURED_TAG = 'v1.3.3';
 export const FEATURED_RELEASE_API = `https://api.github.com/repos/${RELEASE_REPOSITORY}/releases/tags/${FEATURED_TAG}`;
 export const STABLE_APK_URL = apkUrl(STABLE_TAG);
 export const APK_URL = apkUrl(FEATURED_TAG);
@@ -24,17 +24,17 @@ export const STABLE_METADATA = {
 };
 // Public preview and every asset independently streamed and verified on 2026-10-30.
 export const FEATURED_METADATA = {
-  "version": "v1.3.2",
+  "version": "v1.3.3",
   "size": 627915056,
-  "date": "2026-10-30T14:24:28Z",
+  "date": "2026-10-30T16:22:58Z",
   "preview": true,
-  "name": "Hololens 1.3.2 preview - translation and UI update; device login unverified",
+  "name": "Hololens 1.3.3 preview - Android ICU startup hotfix; device startup unverified",
   "downloads": 0,
-  "sha256": "c7c982f886fc219e587453cdcda347b4c651381340b414176dcdeb6a80b0f4b5",
+  "sha256": "34735a5281c3830f9937567b575e331ae17bd45ca1ceb44da4d686d7056510e8",
   "installZipAvailable": true,
-  "notes": "Preview: translated card-data updates and immediate browsing/scanner refresh, website-aligned card filters, primary Scan action with camera icon, 83 official characters/602 art options, and separate app-release notifications. Original AI remains available; optional ChatGPT requires official authorization on an eligible Android account and is not verified live. New hSD20/hSD21 battle effects are NOT enabled in this APK; manual warnings remain. Physical camera and dual-device PvP are unverified. No account authorization or inference usage was performed during development."
+  "notes": "Startup hotfix for the 1.3.2 preview: replaces JDK-only regex flags in WebsiteSearch that Android ICU rejects during startup. Keep your existing installation and app data; install this same-signer APK as an in-place update. Do not uninstall or clear app data.\n\nRetains translated card-data updates with immediate browsing/scanner refresh, website-aligned card filters, primary Scan action with camera icon, 83 official characters/602 art options, and separate app-release notices. Future card/translation corrections use the user-confirmed data update channel. Artwork remains bundled; new hSD20/hSD21 battle effects are NOT enabled, and manual warnings remain. Original AI is available without login.\n\nPreview limitations: physical-device startup, camera, Android JNI and dual-device PvP remain unverified. Optional ChatGPT official Android login/account eligibility and live inference remain unverified; no OAuth grant or inference usage was performed during development.\n\nChecks: all 21 compiled search patterns plus 50 Unicode boundary cases pass native ICU validation; the original 1.3.2 pattern reproduces the failure. Host tests: 293/300 passed, seven unchanged Windows directory-channel failures, no new failures. All 69 ChatGPT tests pass offline. Android instrumentation compiles but was not executed. Release build and lint pass (0 errors/41 warnings). Original package/signer, v3 signature, 16 KiB alignment and unchanged assets/native libraries verified."
 };
-const FEATURED_INSTALL_ZIP = {"size": 627918388, "sha256": "11907311b5dc7e997cb7478e6d0f4541abca0111d8e1bdf11e531efe6da28327"};
+const FEATURED_INSTALL_ZIP = {"size": 627919702, "sha256": "8ae60eaa0fd40bf3760b1997323743b97a19a7792693619e4b18fb0dac692d45"};
 const VERIFIED_INSTALL_ZIP = { size: 615465884, sha256: '894c4acd0fa06956611dec841f34b3e2286570a1e98593c177070f21b87d8950' };
 const uploadedAsset = (assets, name) => assets.find(asset => asset?.name === name && asset.state === 'uploaded' && Number.isSafeInteger(asset.size) && asset.size > 0);
 const sha256 = digest => typeof digest === 'string' && /^sha256:[a-f0-9]{64}$/i.test(digest) ? digest.slice(7).toLowerCase() : '';
