@@ -5,7 +5,7 @@ export const STABLE_TAG = 'v1.2.8';
 export const releaseUrl = tag => `${RELEASES_URL}/tag/${encodeURIComponent(tag)}`;
 export const apkUrl = tag => `${RELEASES_URL}/download/${encodeURIComponent(tag)}/${APK_FILENAME}`;
 export const installZipUrl = tag => `${RELEASES_URL}/download/${encodeURIComponent(tag)}/Hololens-${encodeURIComponent(tag.replace(/^v/, ''))}-Install.zip`;
-export const FEATURED_TAG = 'v1.3.3';
+export const FEATURED_TAG = 'v1.3.4';
 export const FEATURED_RELEASE_API = `https://api.github.com/repos/${RELEASE_REPOSITORY}/releases/tags/${FEATURED_TAG}`;
 export const STABLE_APK_URL = apkUrl(STABLE_TAG);
 export const APK_URL = apkUrl(FEATURED_TAG);
@@ -24,17 +24,17 @@ export const STABLE_METADATA = {
 };
 // Public preview and every asset independently streamed and verified on 2026-10-30.
 export const FEATURED_METADATA = {
-  "version": "v1.3.3",
+  "version": "v1.3.4",
   "size": 627915056,
-  "date": "2026-10-30T16:22:58Z",
+  "date": "2026-10-30T18:46:09Z",
   "preview": true,
-  "name": "Hololens 1.3.3 preview - Android ICU startup hotfix; device startup unverified",
+  "name": "Hololens 1.3.4 preview - original home layout and Scan/Battle swap",
   "downloads": 0,
-  "sha256": "34735a5281c3830f9937567b575e331ae17bd45ca1ceb44da4d686d7056510e8",
+  "sha256": "01fe0f70fcbe9c5ae0a03f9d864c876c082e509b9515231b564a1ef69fa3c564",
   "installZipAvailable": true,
-  "notes": "Startup hotfix for the 1.3.2 preview: replaces JDK-only regex flags in WebsiteSearch that Android ICU rejects during startup. Keep your existing installation and app data; install this same-signer APK as an in-place update. Do not uninstall or clear app data.\n\nRetains translated card-data updates with immediate browsing/scanner refresh, website-aligned card filters, primary Scan action with camera icon, 83 official characters/602 art options, and separate app-release notices. Future card/translation corrections use the user-confirmed data update channel. Artwork remains bundled; new hSD20/hSD21 battle effects are NOT enabled, and manual warnings remain. Original AI is available without login.\n\nPreview limitations: physical-device startup, camera, Android JNI and dual-device PvP remain unverified. Optional ChatGPT official Android login/account eligibility and live inference remain unverified; no OAuth grant or inference usage was performed during development.\n\nChecks: all 21 compiled search patterns plus 50 Unicode boundary cases pass native ICU validation; the original 1.3.2 pattern reproduces the failure. Host tests: 293/300 passed, seven unchanged Windows directory-channel failures, no new failures. All 69 ChatGPT tests pass offline. Android instrumentation compiles but was not executed. Release build and lint pass (0 errors/41 warnings). Original package/signer, v3 signature, 16 KiB alignment and unchanged assets/native libraries verified."
+  "notes": "Restores the original home layout and original holomem standing-art size. The large primary action is now Scan Cards with a clear camera icon; Start Battle occupies the previous Scan shortcut. Continue Match, the card-library shortcut, bottom navigation, original spacing and translucent panels are retained.\n\nIncludes the 1.3.3 Android ICU startup fix and existing card/translation data updates with immediate browsing/scanner refresh, website-aligned filters, 83 official characters / 602 artwork choices, separate app-release notices and optional ChatGPT AI alongside the original offline AI. Future card/translation corrections continue through the user-confirmed data update channel. New hSD20/hSD21 battle effects remain unsupported in this layout-only release.\n\nInstall this original-signer APK over the current app to preserve decks, collection, settings and saved matches. Do not uninstall or clear app data.\n\nValidation: seven native bitmap comparisons match the original layout outside the two changed button regions, including the 946x2048 Vivi/resumable-match view, scrolled, narrow/large-font and new-art cases. All 517 existing portrait-layout entries and 79 existing character-style entries match the original baseline. Native host suite: 294/301 passed; seven exact pre-existing Windows directory-channel/fsync failures; no new failures, errors or skips. Native ICU: 21 compiled patterns / 50 Unicode boundaries passed. Release assembly, instrumentation compilation, lint (0 errors / 40 warnings), original v3 signer, APK contents and 16 KiB alignment verified.\n\nPreview limits: this exact APK has not been visually tested on a physical Android device. Actual Android QuickJS JNI, camera, dual-device PvP and official ChatGPT Android login/account eligibility/live inference remain unverified. No live OAuth grant or inference usage was performed during development."
 };
-const FEATURED_INSTALL_ZIP = {"size": 627919702, "sha256": "8ae60eaa0fd40bf3760b1997323743b97a19a7792693619e4b18fb0dac692d45"};
+const FEATURED_INSTALL_ZIP = {"size": 627920537, "sha256": "648b0697c49e588c86ae22d1d9a5faca0306ff265ed93d732f1dececd5b3f09b"};
 const VERIFIED_INSTALL_ZIP = { size: 615465884, sha256: '894c4acd0fa06956611dec841f34b3e2286570a1e98593c177070f21b87d8950' };
 const uploadedAsset = (assets, name) => assets.find(asset => asset?.name === name && asset.state === 'uploaded' && Number.isSafeInteger(asset.size) && asset.size > 0);
 const sha256 = digest => typeof digest === 'string' && /^sha256:[a-f0-9]{64}$/i.test(digest) ? digest.slice(7).toLowerCase() : '';

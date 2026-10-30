@@ -1,0 +1,51 @@
+{
+  "id": 429364817,
+  "tag_name": "v1.3.4",
+  "name": "Hololens 1.3.4 preview - original home layout and Scan/Battle swap",
+  "draft": false,
+  "prerelease": true,
+  "published_at": "2026-10-30T18:46:09Z",
+  "body": "Restores the original home layout and original holomem standing-art size. The large primary action is now Scan Cards with a clear camera icon; Start Battle occupies the previous Scan shortcut. Continue Match, the card-library shortcut, bottom navigation, original spacing and translucent panels are retained.\n\nIncludes the 1.3.3 Android ICU startup fix and existing card/translation data updates with immediate browsing/scanner refresh, website-aligned filters, 83 official characters / 602 artwork choices, separate app-release notices and optional ChatGPT AI alongside the original offline AI. Future card/translation corrections continue through the user-confirmed data update channel. New hSD20/hSD21 battle effects remain unsupported in this layout-only release.\n\nInstall this original-signer APK over the current app to preserve decks, collection, settings and saved matches. Do not uninstall or clear app data.\n\nValidation: seven native bitmap comparisons match the original layout outside the two changed button regions, including the 946x2048 Vivi/resumable-match view, scrolled, narrow/large-font and new-art cases. All 517 existing portrait-layout entries and 79 existing character-style entries match the original baseline. Native host suite: 294/301 passed; seven exact pre-existing Windows directory-channel/fsync failures; no new failures, errors or skips. Native ICU: 21 compiled patterns / 50 Unicode boundaries passed. Release assembly, instrumentation compilation, lint (0 errors / 40 warnings), original v3 signer, APK contents and 16 KiB alignment verified.\n\nPreview limits: this exact APK has not been visually tested on a physical Android device. Actual Android QuickJS JNI, camera, dual-device PvP and official ChatGPT Android login/account eligibility/live inference remain unverified. No live OAuth grant or inference usage was performed during development.",
+  "assets": [
+    {
+      "id": 693048300,
+      "name": "Hololens-1.3.4-Install.zip",
+      "state": "uploaded",
+      "size": 627920537,
+      "digest": "sha256:648b0697c49e588c86ae22d1d9a5faca0306ff265ed93d732f1dececd5b3f09b",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.4/Hololens-1.3.4-Install.zip"
+    },
+    {
+      "id": 693059304,
+      "name": "Hololens-release.json",
+      "state": "uploaded",
+      "size": 2374,
+      "digest": "sha256:1326a6cb5312ba1a823882dfe685bcf249be1ff7115d7dbb97e13c8cd8414959",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.4/Hololens-release.json"
+    },
+    {
+      "id": 693036876,
+      "name": "HoloLens.apk",
+      "state": "uploaded",
+      "size": 627915056,
+      "digest": "sha256:01fe0f70fcbe9c5ae0a03f9d864c876c082e509b9515231b564a1ef69fa3c564",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.4/HoloLens.apk"
+    },
+    {
+      "id": 693059184,
+      "name": "README.txt",
+      "state": "uploaded",
+      "size": 2711,
+      "digest": "sha256:47d39bc90b6382425bb11c40b6e14db080bcddcc10975ab36b4a8befdcc1423e",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.4/README.txt"
+    },
+    {
+      "id": 693059433,
+      "name": "SHA256SUMS.txt",
+      "state": "uploaded",
+      "size": 341,
+      "digest": "sha256:7087fc68b47b5f8553ce52a75eb11c57a626fe76d064d37595c9c2c75e1e68d2",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.4/SHA256SUMS.txt"
+    }
+  ]
+}
