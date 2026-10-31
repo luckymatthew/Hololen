@@ -1,3 +1,4 @@
+import { restoreMobileCardUpdateBaseline } from './mobile-card-update-preservation-helpers.mjs';
 // Explicit outer proof for translation-only presentation/data/gate/log changes.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -14,6 +15,7 @@ assert.deepEqual(translationProvenance.addedFiles.map(file=>file.path),added);
 export const translationAddedPaths = translationProvenance.approvedAddedPaths;
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 export function restoreTranslationBaseline(name,input){
+ input=restoreMobileCardUpdateBaseline(name,input);
  const relative=name.includes('website/')?name.slice(name.indexOf('website/')):`website/${name.replace(/^\.\//,'')}`;
  const change=translationProvenance.changes.find(change=>change.path===relative);if(!change)return input;
  let text=String(input);const digest=hash(text);

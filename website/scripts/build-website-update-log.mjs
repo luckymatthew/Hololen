@@ -83,7 +83,7 @@ export function appendWebsiteTranslationUpdate({ report, catalogBytes, translati
     ],
     counts: { newCards: 0, newPrintings: 0, newPrintingsForExistingCards: 0, translatedCards: cards.length, translatedFields: fieldCount },
     sourceUrl: 'https://hololive-official-cardgame.com/cardlist/',
-    catalogVersion: catalog.meta?.catalogVersion || '', sourceCatalogSha256: report.sourceCatalogSha256,
+    catalogVersion: catalog.meta?.catalogVersion || '', catalogSha256: report.sourceCatalogSha256, sourceCatalogSha256: report.sourceCatalogSha256,
     translationRevision: report.translationRevision, translationSha256: report.translationSha256,
     cards,
   });

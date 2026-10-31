@@ -14,7 +14,7 @@ test('translation-only log appends real existing illustrations with zero new car
   const input = translationInput(), before = JSON.stringify(input.previous), result = appendWebsiteTranslationUpdate(input), entry = result.entries[0];
   assert.equal(result.schemaVersion, 1); assert.equal(result.entries.length, 2); assert.equal(entry.kind, 'translation');
   assert.deepEqual(entry.counts, { newCards: 0, newPrintings: 0, newPrintingsForExistingCards: 0, translatedCards: 2, translatedFields: input.report.translatedFieldCount });
-  assert.equal(entry.translationRevision, input.report.translationRevision); assert.equal(entry.translationSha256, input.report.translationSha256); assert.equal(entry.sourceCatalogSha256, input.report.sourceCatalogSha256);
+  assert.equal(entry.translationRevision, input.report.translationRevision); assert.equal(entry.translationSha256, input.report.translationSha256); assert.equal(entry.sourceCatalogSha256, input.report.sourceCatalogSha256); assert.equal(entry.catalogSha256, input.report.sourceCatalogSha256);
   assert.ok(entry.cards.every(card => card.kind === 'translation')); assert.equal(entry.cards.length, 2);
   const catalog = JSON.parse(input.catalogBytes), translations = JSON.parse(input.translationBytes);
   for (const row of entry.cards) {

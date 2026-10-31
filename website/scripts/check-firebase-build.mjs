@@ -1,3 +1,4 @@
+import { validateMobileCardUpdate } from '../lib/mobile-card-update.mjs';
 import { validateEmbeddedDisplayTranslations } from './embed-display-translations.mjs';
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -15,3 +16,6 @@ console.log('Firebase build validated. No APKs, signing keys or server runtime i
 
 validateEmbeddedDisplayTranslations({ directory: 'public' });
 validateEmbeddedDisplayTranslations({ directory: 'dist-firebase' });
+
+for (const directory of ['public', 'dist-firebase']) validateMobileCardUpdate({ log: JSON.parse(readFileSync(`${directory}/website-updates.json`, 'utf8')), catalogBytes: readFileSync(`${directory}/cards.json`) });
+if (!readFileSync('public/website-updates.json').equals(readFileSync('dist-firebase/website-updates.json'))) throw new Error('Built mobile update log does not match tested source bytes.');
