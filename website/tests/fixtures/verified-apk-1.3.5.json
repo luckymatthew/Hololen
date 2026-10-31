@@ -1,0 +1,51 @@
+{
+  "id": 429649254,
+  "tag_name": "v1.3.5",
+  "name": "Hololens 1.3.5 diagnostic preview - ChatGPT sign-in status and resume fix",
+  "draft": false,
+  "prerelease": true,
+  "published_at": "2026-10-31T02:00:15Z",
+  "body": "Fixes a confirmed stale ChatGPT sign-in display: after returning from the system browser, Hololens now refreshes the connection result instead of leaving an old waiting message visible. Fixed status text distinguishes browser callback, code exchange, identity verification and protected local storage; errors identify the stage without exposing codes, tokens or callback URLs. Cancelling an abandoned attempt prevents a delayed browser launch, and original offline AI remains usable during optional account setup.\n\nThis is a diagnostic preview. The user's underlying phone failure after consent is not yet identified, and this exact build has not completed real Android ChatGPT login or live inference testing. A successful browser consent page alone does not prove token exchange, identity verification or account storage succeeded. Connecting does not automatically fetch models or select ChatGPT as the opponent: model selection and provider selection remain explicit. No new OAuth grant, credentials or inference usage was performed during development.\n\nPreserves the original restored home layout and holomem standing-art size, Scan/Battle position swap and camera icon, startup hotfix, data/translation updates, website-aligned filters, official artwork choices, Yuyutei links and existing offline AI. New hSD20/hSD21 battle effects remain unsupported in this release; the separate 1.4.0 engine candidate is not included.\n\nInstall this original-signer APK over the existing app to preserve decks, collection, settings and saved matches. Do not uninstall or clear app data. If reporting a connection problem, provide only the displayed stage and sanitized error; never share callback URLs, authorization codes, tokens or credentials.\n\nValidation: all 82 ChatGPT tests and all seven home viewport tests passed. Full native/Robolectric suite: 307/314 passed, with seven unchanged documented Windows directory-channel/fsync failures and zero new failures, errors or skips. Release assembly, Android instrumentation Java compilation, lint (0 errors / 40 warnings), original v3 signer, APK contents and 16 KiB alignment verified. All 5,943 assets and six native libraries remain byte-identical. Native Windows ICU probe: 21 compiled patterns / 50 whitespace boundaries passed. Android instrumentation was compiled but not executed; physical-device startup, camera, actual QuickJS JNI, dual-device PvP and real ChatGPT login/inference remain unverified.",
+  "assets": [
+    {
+      "id": 694034203,
+      "name": "Hololens-1.3.5-Install.zip",
+      "state": "uploaded",
+      "size": 627917736,
+      "digest": "sha256:35a6a9cf1625cb2185ab822dcb7c86164d5535161ab786abc9e2c9a92df7a001",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.5/Hololens-1.3.5-Install.zip"
+    },
+    {
+      "id": 694043768,
+      "name": "Hololens-release.json",
+      "state": "uploaded",
+      "size": 2926,
+      "digest": "sha256:3e3febfba94797c6cf67cafc8bee02632d5b7890227f39873718fc9162fafefd",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.5/Hololens-release.json"
+    },
+    {
+      "id": 694023011,
+      "name": "HoloLens.apk",
+      "state": "uploaded",
+      "size": 627915056,
+      "digest": "sha256:8be59950a45242b169e643f6ba3b262bb3183c66c2808a3d4d88c652d4cfa0f3",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.5/HoloLens.apk"
+    },
+    {
+      "id": 694043693,
+      "name": "README.txt",
+      "state": "uploaded",
+      "size": 2279,
+      "digest": "sha256:efce7534b297b41f10bf6cf2e13972b44b6645029594ba798b1c34007a48b1ff",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.5/README.txt"
+    },
+    {
+      "id": 694043818,
+      "name": "SHA256SUMS.txt",
+      "state": "uploaded",
+      "size": 337,
+      "digest": "sha256:156d917538ee22cec5ed19c3b5399a2a0e5b5bc505c24bcb0e5766c3b5b773e6",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.5/SHA256SUMS.txt"
+    }
+  ]
+}
