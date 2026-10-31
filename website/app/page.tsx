@@ -22,6 +22,8 @@ import { SlidingTabs, StatusToast, useModalMotion } from "@/app/ui-motion";
 import FoilCardImage from "@/app/FoilCardImage";
 import ConfirmDialog from "@/app/ConfirmDialog";
 import YuyuteiCardLink from "@/app/YuyuteiCardLink";
+import { printingReleaseStatus } from "@/lib/card-release-status.mjs";
+import useJapanDate from "@/app/useJapanDate";
 
 type CardGroup = "oshi" | "holomem" | "support" | "cheer";
 
@@ -215,6 +217,7 @@ function CardModal({
   quantity,
   quantityForVariant,
   initialVariantId,
+  japanDate,
 }: {
   card: Card;
   onClose: () => void;
@@ -223,6 +226,7 @@ function CardModal({
   quantity: number;
   quantityForVariant: (variantId: string) => number;
   initialVariantId?: string;
+  japanDate?: string;
 }) {
   const translatedOfficial = officialCardTranslationReady(card);
   const officialFallback = card.officialImportSchema === 2 && card.effectLanguage === "ja" && card.translationStatus === "official-japanese-fallback" && !translatedOfficial;
@@ -230,8 +234,7 @@ function CardModal({
   const sortedVariants = useMemo(() => sortVariantsByRarity(card.variants), [card.variants]);
   const initialVariant = sortedVariants[0];
   const selectedVariant = sortedVariants.find((variant: Card["variants"][number]) => variant.id === initialVariantId) ?? initialVariant;
-  const officialPreview = Boolean(selectedVariant?.officialImportSchema === 2 ? selectedVariant.preview : card.officialImportSchema === 2 && card.preview);
-  const previewReleaseDate = selectedVariant?.officialImportSchema === 2 && selectedVariant.preview ? selectedVariant.releaseDate : card.releaseDate;
+  const { officialPreview, preview, releaseDate: previewReleaseDate } = printingReleaseStatus(card, selectedVariant, japanDate);
   const selectedImage = selectedVariant?.image ?? card.image;
   const selectedQuantity = selectedVariant ? quantityForVariant(selectedVariant.id) : quantity;
   const { dialog, requestClose } = useModalMotion(onClose);
@@ -251,7 +254,7 @@ function CardModal({
           <div className="modal-kicker">
             <code>{card.number}</code>
             <span>{cardText(card.type)}</span>
-            {(card.preview || officialPreview) && <span className="preview-badge">{officialPreview ? "官方先行公開" : "HoloSim 先行卡"}</span>}
+            {preview && <span className="preview-badge">{officialPreview ? "官方先行公開" : "HoloSim 先行卡"}</span>}
           </div>
           <h2>{displayEffect(card.name)}</h2>
           {(card.jpName !== displayEffect(card.name) || card.enName) && (
@@ -337,6 +340,7 @@ function CardModal({
           </div>
           <div className="modal-source">
             <span>{selectedVariant?.sets?.length ? selectedVariant.sets.join(" · ") : card.set}</span>
+            {previewReleaseDate && <span data-card-release-date>發售日期 · {previewReleaseDate}</span>}
             {card.illustrator && <span>Illustration · {card.illustrator}</span>}
             {card.qaCount > 0 && <span>官方 Q&amp;A · {card.qaCount} 條</span>}
           </div>
@@ -354,6 +358,7 @@ function CardModal({
 }
 
 export default function Home() {
+  const japanDate = useJapanDate();
   const [cards, setCards] = useState<Card[]>([]);
   const [meta, setMeta] = useState<CardMeta | null>(null);
   const [loading, setLoading] = useState(true);
@@ -890,7 +895,7 @@ export default function Home() {
             {catalogCards.slice(0, visibleCount).map(({ card, variant, id, label }) => {
               const quantity = variant ? quantityForVariant(card, variant.id) : quantityFor(card);
               const printingName = card.variants.length > 1 ? `${effectText(card, card.name)} ${label} 版本` : effectText(card, card.name);
-              const preview = variant?.officialImportSchema === 2 ? variant.preview : card.preview;
+              const { preview } = printingReleaseStatus(card, variant, japanDate);
               return (
                 <article className="card-tile" key={`${card.number}-${id}`} data-card-number={card.number} data-printing-id={variant?.id}>
                   <button className="card-open" type="button" onClick={() => openCard(card, variant?.id)} aria-label={`查看 ${printingName}${card.variants.length > 1 ? "" : " "}詳情`}>
@@ -956,6 +961,7 @@ export default function Home() {
           key={`${activeCard.number}-${activeVariantId || "default"}`}
           card={activeCard}
           initialVariantId={activeVariantId}
+          japanDate={japanDate}
           onClose={() => { setActiveCard(null); setActiveVariantId(""); }}
           onAdd={addCard}
           onRemove={removeCard}

@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "status": "verified-release-date-presentation",
+  "baselineSourceCommit": "554fc0cc444cd7b23af5a672e169d3a5bbfd9584",
+  "approvedPaths": [
+    "website/app/page.tsx",
+    "website/app/simulator/SimulatorClient.tsx"
+  ],
+  "approvedAddedPaths": [
+    "website/lib/card-release-status.mjs",
+    "website/app/useJapanDate.ts"
+  ],
+  "changes": [
+    {
+      "path": "website/app/page.tsx",
+      "beforeSha256": "f44f4d92fb1c74e2c1b83b8c925de04ce3901e1e75626dc11651ec8018ad3665",
+      "afterSha256": "d3b3c13b9f78703e2297bc49eee6be1a3a7ad38ed535050edbd6e1dea46e1c09",
+      "patches": [
+        {
+          "before": "import FoilCardImage from \"@/app/FoilCardImage\";\nimport ConfirmDialog from \"@/app/ConfirmDialog\";\nimport YuyuteiCardLink from \"@/app/YuyuteiCardLink\";\n\ntype CardGroup = \"oshi\" | \"holomem\" | \"support\" | \"cheer\";\n\n",
+          "after": "import FoilCardImage from \"@/app/FoilCardImage\";\nimport ConfirmDialog from \"@/app/ConfirmDialog\";\nimport YuyuteiCardLink from \"@/app/YuyuteiCardLink\";\nimport { printingReleaseStatus } from \"@/lib/card-release-status.mjs\";\nimport useJapanDate from \"@/app/useJapanDate\";\n\ntype CardGroup = \"oshi\" | \"holomem\" | \"support\" | \"cheer\";\n\n"
+        },
+        {
+          "before": "  quantity,\n  quantityForVariant,\n  initialVariantId,\n}: {\n  card: Card;\n  onClose: () => void;\n",
+          "after": "  quantity,\n  quantityForVariant,\n  initialVariantId,\n  japanDate,\n}: {\n  card: Card;\n  onClose: () => void;\n"
+        },
+        {
+          "before": "  quantity: number;\n  quantityForVariant: (variantId: string) => number;\n  initialVariantId?: string;\n}) {\n  const translatedOfficial = officialCardTranslationReady(card);\n  const officialFallback = card.officialImportSchema === 2 && card.effectLanguage === \"ja\" && card.translationStatus === \"official-japanese-fallback\" && !translatedOfficial;\n",
+          "after": "  quantity: number;\n  quantityForVariant: (variantId: string) => number;\n  initialVariantId?: string;\n  japanDate?: string;\n}) {\n  const translatedOfficial = officialCardTranslationReady(card);\n  const officialFallback = card.officialImportSchema === 2 && card.effectLanguage === \"ja\" && card.translationStatus === \"official-japanese-fallback\" && !translatedOfficial;\n"
+        },
+        {
+          "before": "  const sortedVariants = useMemo(() => sortVariantsByRarity(card.variants), [card.variants]);\n  const initialVariant = sortedVariants[0];\n  const selectedVariant = sortedVariants.find((variant: Card[\"variants\"][number]) => variant.id === initialVariantId) ?? initialVariant;\n  const officialPreview = Boolean(selectedVariant?.officialImportSchema === 2 ? selectedVariant.preview : card.officialImportSchema === 2 && card.preview);\n  const previewReleaseDate = selectedVariant?.officialImportSchema === 2 && selectedVariant.preview ? selectedVariant.releaseDate : card.releaseDate;\n  const selectedImage = selectedVariant?.image ?? card.image;\n  const selectedQuantity = selectedVariant ? quantityForVariant(selectedVariant.id) : quantity;\n  const { dialog, requestClose } = useModalMotion(onClose);\n",
+          "after": "  const sortedVariants = useMemo(() => sortVariantsByRarity(card.variants), [card.variants]);\n  const initialVariant = sortedVariants[0];\n  const selectedVariant = sortedVariants.find((variant: Card[\"variants\"][number]) => variant.id === initialVariantId) ?? initialVariant;\n  const { officialPreview, preview, releaseDate: previewReleaseDate } = printingReleaseStatus(card, selectedVariant, japanDate);\n  const selectedImage = selectedVariant?.image ?? card.image;\n  const selectedQuantity = selectedVariant ? quantityForVariant(selectedVariant.id) : quantity;\n  const { dialog, requestClose } = useModalMotion(onClose);\n"
+        },
+        {
+          "before": "          <div className=\"modal-kicker\">\n            <code>{card.number}</code>\n            <span>{cardText(card.type)}</span>\n            {(card.preview || officialPreview) && <span className=\"preview-badge\">{officialPreview ? \"官方先行公開\" : \"HoloSim 先行卡\"}</span>}\n          </div>\n          <h2>{displayEffect(card.name)}</h2>\n          {(card.jpName !== displayEffect(card.name) || card.enName) && (\n",
+          "after": "          <div className=\"modal-kicker\">\n            <code>{card.number}</code>\n            <span>{cardText(card.type)}</span>\n            {preview && <span className=\"preview-badge\">{officialPreview ? \"官方先行公開\" : \"HoloSim 先行卡\"}</span>}\n          </div>\n          <h2>{displayEffect(card.name)}</h2>\n          {(card.jpName !== displayEffect(card.name) || card.enName) && (\n"
+        },
+        {
+          "before": "          </div>\n          <div className=\"modal-source\">\n            <span>{selectedVariant?.sets?.length ? selectedVariant.sets.join(\" · \") : card.set}</span>\n            {card.illustrator && <span>Illustration · {card.illustrator}</span>}\n            {card.qaCount > 0 && <span>官方 Q&amp;A · {card.qaCount} 條</span>}\n          </div>\n",
+          "after": "          </div>\n          <div className=\"modal-source\">\n            <span>{selectedVariant?.sets?.length ? selectedVariant.sets.join(\" · \") : card.set}</span>\n            {previewReleaseDate && <span data-card-release-date>發售日期 · {previewReleaseDate}</span>}\n            {card.illustrator && <span>Illustration · {card.illustrator}</span>}\n            {card.qaCount > 0 && <span>官方 Q&amp;A · {card.qaCount} 條</span>}\n          </div>\n"
+        },
+        {
+          "before": "}\n\nexport default function Home() {\n  const [cards, setCards] = useState<Card[]>([]);\n  const [meta, setMeta] = useState<CardMeta | null>(null);\n  const [loading, setLoading] = useState(true);\n",
+          "after": "}\n\nexport default function Home() {\n  const japanDate = useJapanDate();\n  const [cards, setCards] = useState<Card[]>([]);\n  const [meta, setMeta] = useState<CardMeta | null>(null);\n  const [loading, setLoading] = useState(true);\n"
+        },
+        {
+          "before": "            {catalogCards.slice(0, visibleCount).map(({ card, variant, id, label }) => {\n              const quantity = variant ? quantityForVariant(card, variant.id) : quantityFor(card);\n              const printingName = card.variants.length > 1 ? `${effectText(card, card.name)} ${label} 版本` : effectText(card, card.name);\n              const preview = variant?.officialImportSchema === 2 ? variant.preview : card.preview;\n              return (\n                <article className=\"card-tile\" key={`${card.number}-${id}`} data-card-number={card.number} data-printing-id={variant?.id}>\n                  <button className=\"card-open\" type=\"button\" onClick={() => openCard(card, variant?.id)} aria-label={`查看 ${printingName}${card.variants.length > 1 ? \"\" : \" \"}詳情`}>\n",
+          "after": "            {catalogCards.slice(0, visibleCount).map(({ card, variant, id, label }) => {\n              const quantity = variant ? quantityForVariant(card, variant.id) : quantityFor(card);\n              const printingName = card.variants.length > 1 ? `${effectText(card, card.name)} ${label} 版本` : effectText(card, card.name);\n              const { preview } = printingReleaseStatus(card, variant, japanDate);\n              return (\n                <article className=\"card-tile\" key={`${card.number}-${id}`} data-card-number={card.number} data-printing-id={variant?.id}>\n                  <button className=\"card-open\" type=\"button\" onClick={() => openCard(card, variant?.id)} aria-label={`查看 ${printingName}${card.variants.length > 1 ? \"\" : \" \"}詳情`}>\n"
+        },
+        {
+          "before": "          key={`${activeCard.number}-${activeVariantId || \"default\"}`}\n          card={activeCard}\n          initialVariantId={activeVariantId}\n          onClose={() => { setActiveCard(null); setActiveVariantId(\"\"); }}\n          onAdd={addCard}\n          onRemove={removeCard}\n",
+          "after": "          key={`${activeCard.number}-${activeVariantId || \"default\"}`}\n          card={activeCard}\n          initialVariantId={activeVariantId}\n          japanDate={japanDate}\n          onClose={() => { setActiveCard(null); setActiveVariantId(\"\"); }}\n          onAdd={addCard}\n          onRemove={removeCard}\n"
+        }
+      ]
+    },
+    {
+      "path": "website/app/simulator/SimulatorClient.tsx",
+      "beforeSha256": "3980596871f60ae89de4ad89ea21baf4cbda5aca176b22d0a89293124c952d20",
+      "afterSha256": "a042e6ebc2f0fbe96f62362a69a84c6d1f3edafd57b0ab66c050c464c0c9ebfd",
+      "patches": [
+        {
+          "before": "import { buildCardReferenceIndex, cardReferenceTokens } from \"@/lib/simulator/log-cards.mjs\";\nimport { isActivatableOshiSkill, oshiSkillPowerCost, oshiSkillMinimumPower, oshiSkillSpecificConditionMet } from \"@/lib/simulator/oshi-skill-catalog.mjs\";\nimport FoilCardImage from \"@/app/FoilCardImage\";\n\ntype DeckState = { oshi: Record<string, number>; main: Record<string, number>; cheer: Record<string, number>; printings?: Record<string, Record<string, number>> };\ntype Skill = { name?: string; effect?: string; timing?: string; type?: string };\n",
+          "after": "import { buildCardReferenceIndex, cardReferenceTokens } from \"@/lib/simulator/log-cards.mjs\";\nimport { isActivatableOshiSkill, oshiSkillPowerCost, oshiSkillMinimumPower, oshiSkillSpecificConditionMet } from \"@/lib/simulator/oshi-skill-catalog.mjs\";\nimport FoilCardImage from \"@/app/FoilCardImage\";\nimport { printingReleaseStatus } from \"@/lib/card-release-status.mjs\";\nimport useJapanDate from \"@/app/useJapanDate\";\n\ntype DeckState = { oshi: Record<string, number>; main: Record<string, number>; cheer: Record<string, number>; printings?: Record<string, Record<string, number>> };\ntype Skill = { name?: string; effect?: string; timing?: string; type?: string };\n"
+        },
+        {
+          "before": "}\n\nfunction CardInspector({ card, cardMap, variantId, liveState, onClose, hover = false }: { card: CardInfo; cardMap: Map<string, CardInfo>; variantId?: string; liveState?: InspectorLiveState; onClose?: () => void; hover?: boolean }) {\n  const reference = projectLegacyCardReference({ number: card.number, variantId });\n  card = cardMap.get(reference.number) || card;\n  variantId = reference.variantId;\n",
+          "after": "}\n\nfunction CardInspector({ card, cardMap, variantId, liveState, onClose, hover = false }: { card: CardInfo; cardMap: Map<string, CardInfo>; variantId?: string; liveState?: InspectorLiveState; onClose?: () => void; hover?: boolean }) {\n  const japanDate = useJapanDate();\n  const reference = projectLegacyCardReference({ number: card.number, variantId });\n  card = cardMap.get(reference.number) || card;\n  variantId = reference.variantId;\n"
+        },
+        {
+          "before": "    card.keyword && { label: keywordLabel(card.keyword.type), ...card.keyword },\n  ].filter(Boolean) as ({ label: string } & Skill)[];\n  const selectedVariant = (card.variants || []).find((variant) => variant.id === variantId);\n  const officialPreview = Boolean((selectedVariant?.officialImportSchema === 2 && selectedVariant.preview) || (card.officialImportSchema === 2 && card.preview));\n  const previewReleaseDate = selectedVariant?.officialImportSchema === 2 && selectedVariant.preview ? selectedVariant.releaseDate : card.releaseDate;\n  const backImage = card.group === \"cheer\" ? \"/card-backs/cheer-oshi.png\" : \"/card-backs/main.png\";\n  const image = selectedVariant?.image || card.image || backImage;\n  const fallbackImages = [...new Set([\n",
+          "after": "    card.keyword && { label: keywordLabel(card.keyword.type), ...card.keyword },\n  ].filter(Boolean) as ({ label: string } & Skill)[];\n  const selectedVariant = (card.variants || []).find((variant) => variant.id === variantId);\n  const { officialPreview, releaseDate: previewReleaseDate } = printingReleaseStatus(card, selectedVariant, japanDate);\n  const backImage = card.group === \"cheer\" ? \"/card-backs/cheer-oshi.png\" : \"/card-backs/main.png\";\n  const image = selectedVariant?.image || card.image || backImage;\n  const fallbackImages = [...new Set([\n"
+        },
+        {
+          "before": "            {translatedOfficial && <><p role=\"note\" data-card-translation-note>繁中為 AI 翻譯，並非官方譯文，未經人工覆核；卡名使用非官方音譯，正式效果仍以日文原文及裁定為準。翻譯不代表已支援自動對戰。</p><OfficialJapaneseText card={card} /></>}\n        {officialFallback && <p role=\"note\">官方日文效果・未提供已覆核繁中翻譯。</p>}\n        {officialPreview && previewReleaseDate && <p role=\"note\">官方先行公開・{previewReleaseDate} 發售</p>}\n        {catalogOnly && <p role=\"note\" data-card-import-warning>新卡文字效果未支援，不適用自動對戰；需依官方規則另行人工處理，對戰自動結算未經驗證。</p>}\n        {skills.map((skill, index) => <section key={`${skill.label}-${index}`}><b>{skill.label}{skill.timing ? ` · ${displayEffect(skill.timing)}` : \"\"}</b>{skill.name && <strong>{displayEffect(skill.name)}</strong>}<p>{displayEffect(skill.effect)}</p></section>)}\n        {card.abilityText && <section><b>卡片效果</b><p>{displayEffect(card.abilityText)}</p></section>}\n",
+          "after": "            {translatedOfficial && <><p role=\"note\" data-card-translation-note>繁中為 AI 翻譯，並非官方譯文，未經人工覆核；卡名使用非官方音譯，正式效果仍以日文原文及裁定為準。翻譯不代表已支援自動對戰。</p><OfficialJapaneseText card={card} /></>}\n        {officialFallback && <p role=\"note\">官方日文效果・未提供已覆核繁中翻譯。</p>}\n        {officialPreview && previewReleaseDate && <p role=\"note\">官方先行公開・{previewReleaseDate} 發售</p>}\n        {!officialPreview && previewReleaseDate && <p data-card-release-date>發售日期 · {previewReleaseDate}</p>}\n        {catalogOnly && <p role=\"note\" data-card-import-warning>新卡文字效果未支援，不適用自動對戰；需依官方規則另行人工處理，對戰自動結算未經驗證。</p>}\n        {skills.map((skill, index) => <section key={`${skill.label}-${index}`}><b>{skill.label}{skill.timing ? ` · ${displayEffect(skill.timing)}` : \"\"}</b>{skill.name && <strong>{displayEffect(skill.name)}</strong>}<p>{displayEffect(skill.effect)}</p></section>)}\n        {card.abilityText && <section><b>卡片效果</b><p>{displayEffect(card.abilityText)}</p></section>}\n"
+        }
+      ]
+    }
+  ],
+  "addedFiles": [
+    {
+      "path": "website/lib/card-release-status.mjs",
+      "sha256": "27b5c53ef3b4f416a99e2060e706f5234319d849d653fa2563071f11a3d070df"
+    },
+    {
+      "path": "website/app/useJapanDate.ts",
+      "sha256": "8fea0bd21b5d0f58eaed09f3d46c5007db876cc5234729791c2bc36a7e53d74f"
+    }
+  ],
+  "unchangedFileSha256": {
+    "website/public/cards.json": "b879faeda2824affcb378e965010a13b1b50da4b473fb23819f6c6834385d3fa",
+    "website/lib/printing-catalog.mjs": "e6f14c88ae299b32aedb642b6854bbe41cc6fa4bd56c338d8f2bce3d42fec2b3",
+    "website/tests/fixtures/printing-catalog-2026-10-31-runtime-changes.json": "72eb21025ed5ee09b27a7be2cbad57f38d7d8af38a87ed2f5198dc3ea809c637",
+    "website/tests/fixtures/ui-polish-2026-10-31-runtime-changes.json": "bed7599b950a41e65d2ac9f0193d37e0b3ae65d8d02c8a5b46ff069856cc9f4d"
+  }
+}

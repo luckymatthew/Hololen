@@ -219,21 +219,35 @@ test('legacy aggregate drafts remain byte-identical until edited and chosen artw
   assert.equal(document.querySelector('dialog').dataset.printingId, lami.variants[1].id);
 });
 
-test('the selected preview printing retains its own artwork, rarity, source sets and release date', async t => {
+for (const [state, now, expectedPreview] of [
+  ['released in Japan', '2026-10-30T15:00:00.000Z', false],
+  ['still future in Japan', '2026-10-29T14:59:00.000Z', true],
+]) test(`the selected ${state} printing retains its exact artwork, rarity, source sets and date`, async t => {
+  const RealDate = globalThis.Date, fixedNow = RealDate.parse(now);
+  class FixedDate extends RealDate {
+    constructor(...args) { super(...(args.length ? args : [fixedNow])); }
+    static now() { return fixedNow; }
+  }
+  globalThis.Date = FixedDate;
+  t.after(() => { globalThis.Date = RealDate; });
   const card = catalog.cards.find(card => card.number === 'hSD14-010');
   const preview = card.variants.find(variant => variant.id === 'official-hSD14-010-3042');
   assert.equal(card.preview, false); assert.equal(preview.preview, true);
-  const ui = await workspace(t); await ui.mount(); await search(ui)(card.number);
+  const ui = await workspace(t); ui.dom.window.Date = FixedDate;
+  await ui.mount(); await search(ui)(card.number);
+  assert.equal(Boolean(tile(preview.id).querySelector('.preview-ribbon')), expectedPreview);
   await ui.click(tile(preview.id).querySelector('.card-open'));
   const dialog = document.querySelector('dialog');
   assert.equal(dialog.dataset.printingId, preview.id);
   assert.equal(dialog.querySelector('.modal-printing-id code').textContent, preview.id);
   assert.equal(dialog.querySelector('.modal-card-image img').getAttribute('src'), preview.image);
   assert.match(dialog.querySelector('.stat-grid').textContent, new RegExp(`稀有度${preview.rarity}`));
-  assert.match(dialog.querySelector('.preview-badge').textContent, /官方先行公開/);
-  assert.ok(dialog.textContent.includes(preview.releaseDate));
-  for (const set of preview.sets) assert.ok(dialog.querySelector('.effect-stack + .modal-source').textContent.includes(set), `exact preview set: ${JSON.stringify(set)}; rendered: ${JSON.stringify(dialog.querySelector('.effect-stack + .modal-source').textContent)}`);
+  assert.equal(Boolean(dialog.querySelector('.preview-badge')), expectedPreview);
+  if (expectedPreview) assert.match(dialog.querySelector('.preview-badge').textContent, /官方先行公開/);
+  assert.ok(dialog.querySelector('[data-card-release-date]').textContent.includes(preview.releaseDate));
+  for (const set of preview.sets) assert.ok(dialog.querySelector('.effect-stack + .modal-source').textContent.includes(set), `exact printing set: ${JSON.stringify(set)}; rendered: ${JSON.stringify(dialog.querySelector('.effect-stack + .modal-source').textContent)}`);
   assert.equal(dialog.querySelector('.variant-strip'), null);
+  assert.equal(card.preview, false); assert.equal(preview.preview, true, 'date presentation never rewrites canonical preview metadata');
 });
 
 test('HoloSim export and reimport preserve selected printing allocation alongside canonical numbers', async t => {

@@ -1,5 +1,6 @@
 // Test-only outer proof; this layer never modifies application data or historical fixtures.
 import assert from 'node:assert/strict';
+import { restoreReleaseDateBaseline } from './release-date-preservation-helpers.mjs';
 import fs from 'node:fs';
 import { createHash } from 'node:crypto';
 
@@ -20,11 +21,13 @@ export function restorePrintingBaseline(name, input) {
   const normalized = name.replaceAll('\\', '/');
   const relative = normalized.includes('website/') ? normalized.slice(normalized.indexOf('website/')) : `website/${normalized.replace(/^\.\//, '')}`;
   const change = printingProvenance.changes.find(item => item.path === relative);
-  if (!change) return input;
+  if (!change) return restoreReleaseDateBaseline(name, input);
   let contents = String(input);
   // A separate current-source test requires afterSha256. This exact old digest
   // permits repeated composition without accepting missing current changes.
   if (hash(contents) === change.beforeSha256) return input;
+  input = restoreReleaseDateBaseline(name, input);
+  contents = String(input);
   assert.equal(hash(contents), change.afterSha256, `${relative}: exact reviewed printing catalog bytes`);
   for (const patch of [...change.patches].reverse()) {
     assert.ok(patch.after.length > 0, `${relative}: reversal cannot match empty text`);

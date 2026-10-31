@@ -22,6 +22,8 @@ import { displayedBatonCost, suuBatonIncrease } from "@/lib/simulator/display.mj
 import { buildCardReferenceIndex, cardReferenceTokens } from "@/lib/simulator/log-cards.mjs";
 import { isActivatableOshiSkill, oshiSkillPowerCost, oshiSkillMinimumPower, oshiSkillSpecificConditionMet } from "@/lib/simulator/oshi-skill-catalog.mjs";
 import FoilCardImage from "@/app/FoilCardImage";
+import { printingReleaseStatus } from "@/lib/card-release-status.mjs";
+import useJapanDate from "@/app/useJapanDate";
 
 type DeckState = { oshi: Record<string, number>; main: Record<string, number>; cheer: Record<string, number>; printings?: Record<string, Record<string, number>> };
 type Skill = { name?: string; effect?: string; timing?: string; type?: string };
@@ -932,6 +934,7 @@ function LogMessage({ message, referenceIndex, cardRefs = [], cardMap, onInspect
 }
 
 function CardInspector({ card, cardMap, variantId, liveState, onClose, hover = false }: { card: CardInfo; cardMap: Map<string, CardInfo>; variantId?: string; liveState?: InspectorLiveState; onClose?: () => void; hover?: boolean }) {
+  const japanDate = useJapanDate();
   const reference = projectLegacyCardReference({ number: card.number, variantId });
   card = cardMap.get(reference.number) || card;
   variantId = reference.variantId;
@@ -946,8 +949,7 @@ function CardInspector({ card, cardMap, variantId, liveState, onClose, hover = f
     card.keyword && { label: keywordLabel(card.keyword.type), ...card.keyword },
   ].filter(Boolean) as ({ label: string } & Skill)[];
   const selectedVariant = (card.variants || []).find((variant) => variant.id === variantId);
-  const officialPreview = Boolean((selectedVariant?.officialImportSchema === 2 && selectedVariant.preview) || (card.officialImportSchema === 2 && card.preview));
-  const previewReleaseDate = selectedVariant?.officialImportSchema === 2 && selectedVariant.preview ? selectedVariant.releaseDate : card.releaseDate;
+  const { officialPreview, releaseDate: previewReleaseDate } = printingReleaseStatus(card, selectedVariant, japanDate);
   const backImage = card.group === "cheer" ? "/card-backs/cheer-oshi.png" : "/card-backs/main.png";
   const image = selectedVariant?.image || card.image || backImage;
   const fallbackImages = [...new Set([
@@ -989,6 +991,7 @@ function CardInspector({ card, cardMap, variantId, liveState, onClose, hover = f
             {translatedOfficial && <><p role="note" data-card-translation-note>繁中為 AI 翻譯，並非官方譯文，未經人工覆核；卡名使用非官方音譯，正式效果仍以日文原文及裁定為準。翻譯不代表已支援自動對戰。</p><OfficialJapaneseText card={card} /></>}
         {officialFallback && <p role="note">官方日文效果・未提供已覆核繁中翻譯。</p>}
         {officialPreview && previewReleaseDate && <p role="note">官方先行公開・{previewReleaseDate} 發售</p>}
+        {!officialPreview && previewReleaseDate && <p data-card-release-date>發售日期 · {previewReleaseDate}</p>}
         {catalogOnly && <p role="note" data-card-import-warning>新卡文字效果未支援，不適用自動對戰；需依官方規則另行人工處理，對戰自動結算未經驗證。</p>}
         {skills.map((skill, index) => <section key={`${skill.label}-${index}`}><b>{skill.label}{skill.timing ? ` · ${displayEffect(skill.timing)}` : ""}</b>{skill.name && <strong>{displayEffect(skill.name)}</strong>}<p>{displayEffect(skill.effect)}</p></section>)}
         {card.abilityText && <section><b>卡片效果</b><p>{displayEffect(card.abilityText)}</p></section>}

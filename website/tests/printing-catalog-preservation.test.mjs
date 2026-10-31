@@ -2,11 +2,12 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
+import { restoreReleaseDateBaseline } from './release-date-preservation-helpers.mjs';
 import { printingAddedPaths, printingProvenance, restorePrintingBaseline } from './printing-catalog-preservation-helpers.mjs';
 import { restoreTranslationBaseline } from './translation-preservation-helpers.mjs';
 
 const hash = value => createHash('sha256').update(value).digest('hex');
-const read = path => readFileSync(new URL(`../../${path}`, import.meta.url));
+const read = path => restoreReleaseDateBaseline(path, readFileSync(new URL(`../../${path}`, import.meta.url)));
 const page = 'website/app/page.tsx';
 const beforeHash = '45f8a891800e98ac1be3b296e85f70e27d8e44043f6de445c9d1bd55e30bad6d';
 const afterHash = 'f44f4d92fb1c74e2c1b83b8c925de04ce3901e1e75626dc11651ec8018ad3665';
@@ -50,11 +51,11 @@ test('printing normalization composes with frozen translation and retailer check
 
 test('additional page changes and missing printing patches cannot pass the new proof', () => {
   const current = String(read(page));
-  assert.throws(() => restorePrintingBaseline(page, current + '\nvoid 0;\n'), /exact reviewed printing catalog bytes/);
-  assert.throws(() => restorePrintingBaseline(page, current.replaceAll('\n', '\r\n')), /exact reviewed printing catalog bytes/);
+  assert.throws(() => restorePrintingBaseline(page, current + '\nvoid 0;\n'), /exact reviewed (?:printing catalog|release date presentation) bytes/);
+  assert.throws(() => restorePrintingBaseline(page, current.replaceAll('\n', '\r\n')), /exact reviewed (?:printing catalog|release date presentation) bytes/);
   for (const patch of printingProvenance.changes[0].patches) {
-    assert.throws(() => restorePrintingBaseline(page, current.replace(patch.after, patch.before)), /exact reviewed printing catalog bytes/);
-    assert.throws(() => restorePrintingBaseline(page, current.replace(patch.after, patch.after + patch.after)), /exact reviewed printing catalog bytes/);
+    assert.throws(() => restorePrintingBaseline(page, current.replace(patch.after, patch.before)), /exact reviewed (?:printing catalog|release date presentation) bytes/);
+    assert.throws(() => restorePrintingBaseline(page, current.replace(patch.after, patch.after + patch.after)), /exact reviewed (?:printing catalog|release date presentation) bytes/);
   }
 });
 
