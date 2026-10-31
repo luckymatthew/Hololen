@@ -262,6 +262,3 @@ test('HoloSim export and reimport preserve selected printing allocation alongsid
   assert.equal(quantity(variant.id), 1);
   assert.equal(quantity(restricted.variants[0].id), 0);
 });
-
-
-

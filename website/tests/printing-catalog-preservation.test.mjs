@@ -10,7 +10,7 @@ const read = path => readFileSync(new URL(`../../${path}`, import.meta.url));
 const page = 'website/app/page.tsx';
 const beforeHash = '45f8a891800e98ac1be3b296e85f70e27d8e44043f6de445c9d1bd55e30bad6d';
 const afterHash = 'f44f4d92fb1c74e2c1b83b8c925de04ce3901e1e75626dc11651ec8018ad3665';
-const helperHash = '77ce87e224a4dd81342845caf313e31b9f93f2e47be0c61ab9158e9c4c573e84';
+const helperHash = 'e6f14c88ae299b32aedb642b6854bbe41cc6fa4bd56c338d8f2bce3d42fec2b3';
 const catalogHash = 'b879faeda2824affcb378e965010a13b1b50da4b473fb23819f6c6834385d3fa';
 
 test('printing presentation has one exact reversible page patch set and one pinned new helper', () => {

@@ -80,7 +80,7 @@
   "addedFiles": [
     {
       "path": "website/lib/printing-catalog.mjs",
-      "sha256": "77ce87e224a4dd81342845caf313e31b9f93f2e47be0c61ab9158e9c4c573e84"
+      "sha256": "e6f14c88ae299b32aedb642b6854bbe41cc6fa4bd56c338d8f2bce3d42fec2b3"
     }
   ],
   "unchangedFileSha256": {
