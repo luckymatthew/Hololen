@@ -9,6 +9,7 @@ import '../app/globals.css';
 import '../app/studio.css';
 import '../app/firebase.css';
 import '../app/design-system.css';
+import '../app/polish.css';
 const Home = lazy(() => import('../app/page'));
 const Simulator = lazy(() => import('../app/simulator/SimulatorClient'));
 const Account = lazy(() => import('../app/account/FirebaseAccount'));

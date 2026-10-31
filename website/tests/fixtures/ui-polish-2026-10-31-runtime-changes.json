@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "baselineSourceCommit": "9cfbeaa78252b9fdd479ad461db605348f07b24a",
+  "approvedPaths": [
+    "website/app/layout.tsx",
+    "website/firebase/main.tsx"
+  ],
+  "approvedAddedPaths": [
+    "website/app/polish.css"
+  ],
+  "addedFiles": [
+    {
+      "path": "website/app/polish.css",
+      "sha256": "1365f5d4b8d64b2d010e84b77e6744dbcfeea43d206c106aa44eff7f8d6f212e"
+    }
+  ],
+  "changes": [
+    {
+      "path": "website/app/layout.tsx",
+      "beforeSha256": "23f054385b1844ce91dd79d6cba3cb7482a519d38c838a04affa18fb5f3411b0",
+      "afterSha256": "423b2ee8e22fd46084514c89bc4b41e7293ee54e12649178152a91ac98e942c7",
+      "patches": [
+        {
+          "before": "import \"./design-system.css\";\n",
+          "after": "import \"./design-system.css\";\nimport './polish.css';\n"
+        }
+      ]
+    },
+    {
+      "path": "website/firebase/main.tsx",
+      "beforeSha256": "719bfc50eaa930bf17f3fad7f4fbd170c3e08849c15d3282f132d16a666634e1",
+      "afterSha256": "121c220435e5a47948d4a798d6880c9f90da3f1044765a41fb3317bd7a114740",
+      "patches": [
+        {
+          "before": "import '../app/design-system.css';\n",
+          "after": "import '../app/design-system.css';\nimport '../app/polish.css';\n"
+        }
+      ]
+    }
+  ]
+}

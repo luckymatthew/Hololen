@@ -1,4 +1,5 @@
 import { restoreTranslationBaseline } from './translation-preservation-helpers.mjs';
+import { restorePolishBaseline } from './ui-polish-preservation-helpers.mjs';
 // Test-only UI provenance layer. This cannot modify runtime data or user storage.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -11,6 +12,7 @@ export const uiChangedPaths = fixture.changes.map(change => change.path);
 export const uiProvenance = fixture;
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 export function restoreUiBaseline(name, input) {
+  input = restorePolishBaseline(name, input);
   input = restoreTranslationBaseline(name, input);
   input = restoreYuyuteiBaseline(name, input);
   input = restoreApkReleaseBaseline(name, input);

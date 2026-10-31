@@ -1,0 +1,195 @@
+/* Collector workbench finishing layer. Keep the established palette and geometry. */
+:root {
+  --polish-caption: 12px;
+  --polish-radius-compact: 8px;
+  --polish-target: 44px;
+}
+
+/* CJK headings retain their natural breaks; identifiers can wrap without clipping. */
+.studio-masthead h1,
+.account-hero h1,
+.download-copy h1,
+.sim-hero-copy h1 {
+  letter-spacing: -.015em;
+  line-break: strict;
+  text-wrap: balance;
+}
+.studio-masthead p:not(.eyebrow),
+.account-hero p,
+.download-copy > p,
+.release-notes p,
+.sim-hero-copy > p:not(.eyebrow),
+.studio-card-dialog .effect-stack article p {
+  line-break: strict;
+  text-wrap: pretty;
+}
+.studio-page .card-copy h3,
+.studio-page .deck-card-copy strong,
+.studio-card-dialog .modal-copy h2,
+.website-update-table strong {
+  overflow-wrap: anywhere;
+  line-break: strict;
+}
+.catalog-snapshot,
+.studio-page .result-bar,
+.studio-page .card-meta,
+.catalog-quantity-controls output,
+.release-details dd,
+.website-update-counts {
+  font-variant-numeric: tabular-nums;
+}
+.studio-page .card-meta code,
+.studio-page .card-meta > span,
+.studio-page .deck-card-copy code {
+  font-size: var(--polish-caption);
+  line-height: 1.5;
+}
+.studio-page .card-meta {
+  align-items: baseline;
+  gap: 8px;
+}
+.studio-page .card-copy h3 {
+  margin-top: 6px;
+  line-height: 1.65;
+}
+.studio-page .card-badges {
+  gap: 4px 6px;
+}
+.studio-page .card-badges span {
+  line-height: 1.5;
+  padding: 3px 6px;
+}
+
+/* Use the same target and corner treatment for compact, frequently used actions. */
+.studio-type-tabs.t-tabs button,
+.filter-rail-heading button,
+.active-filters button,
+.website-update-trigger {
+  min-height: var(--polish-target);
+  border-radius: var(--polish-radius-compact);
+}
+.filter-rail-heading {
+  padding-bottom: 12px;
+}
+.filter-rail-heading button {
+  min-width: var(--polish-target);
+  padding: 8px;
+}
+.studio-page .result-bar {
+  gap: 12px 16px;
+}
+.result-controls {
+  align-items: center;
+  gap: 10px;
+}
+.result-controls select {
+  min-height: var(--polish-target);
+  border-radius: var(--polish-radius-compact);
+}
+.studio-page .view-switch button {
+  width: var(--polish-target);
+  min-width: var(--polish-target);
+  height: var(--polish-target);
+  border-radius: var(--polish-radius-compact);
+}
+.active-filters {
+  gap: 8px;
+}
+.active-filters button {
+  padding-inline: 12px;
+  line-height: 1.5;
+}
+.website-update-trigger {
+  font-size: 13px;
+  padding-inline: 16px;
+}
+.download-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--polish-target);
+}
+.release-details dd {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.studio-page .studio-list .card-copy p {
+  line-height: 1.8;
+}
+
+/* Inset rings remain visible inside artwork tiles and scrollable segmented bars. */
+.studio-page .card-open:focus-visible,
+.studio-page .deck-card-open:focus-visible,
+.studio-type-tabs.t-tabs button:focus-visible,
+.studio-page .view-switch button:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: -3px;
+}
+.studio-page .card-open:focus-visible,
+.studio-page .deck-card-open:focus-visible {
+  border-radius: var(--polish-radius-compact);
+}
+
+/* Local feedback only: no palette tween during theme changes or page-wide fades. */
+.studio-page .view-switch button,
+.studio-page .catalog-quantity-controls button,
+.studio-page .studio-filter-toggle,
+.studio-page .studio-primary,
+.studio-card-dialog .modal-quantity-controls button,
+.website-update-trigger,
+.download-page .apk-button {
+  transition: transform var(--duration-quick) var(--ease-smooth-out),
+    box-shadow var(--duration-quick) var(--ease-smooth-out),
+    border-color var(--duration-quick) var(--ease-smooth-out);
+}
+.studio-page .catalog-quantity-controls button:active:not(:disabled),
+.studio-page .studio-filter-toggle:active:not(:disabled),
+.studio-card-dialog .modal-quantity-controls button:active:not(:disabled) {
+  transform: scale(.97);
+}
+/* Filter text stays sharp while its existing height/opacity disclosure settles. */
+.studio-page .catalog-filter-rail .t-acc-panel-inner {
+  filter: none;
+  transition: opacity var(--duration-quick) var(--ease-smooth-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .filter-rail-heading button:hover,
+  .result-controls select:hover,
+  .studio-page .view-switch button:hover:not(:disabled) {
+    box-shadow: inset 0 0 0 1px var(--border);
+  }
+}
+
+/* Finish the existing narrow layout without introducing another composition. */
+@media (max-width: 640px) {
+  .studio-header .account-button,
+  .studio-header .studio-navigation > *,
+  .studio-type-tabs.t-tabs button {
+    min-height: var(--polish-target);
+  }
+  .studio-header .theme-control select {
+    width: var(--polish-target);
+  }
+  .studio-page .card-meta code,
+  .studio-page .card-meta > span,
+  .studio-page .card-badges span {
+    font-size: 11px;
+  }
+  .studio-page .card-meta {
+    gap: 4px;
+  }
+  .studio-page .card-copy h3 {
+    margin-top: 6px;
+  }
+  .result-controls {
+    gap: 6px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .studio-page .catalog-quantity-controls button:active:not(:disabled),
+  .studio-page .studio-filter-toggle:active:not(:disabled),
+  .studio-card-dialog .modal-quantity-controls button:active:not(:disabled) {
+    transform: none;
+  }
+}
