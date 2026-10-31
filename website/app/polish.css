@@ -139,6 +139,19 @@
   border-radius: var(--polish-radius-compact);
 }
 
+/* Put the full keyboard ring outside artwork stacking; retain inset fallback. */
+@supports selector(.card-tile:has(.card-open:focus-visible)) {
+  .studio-page .card-tile:has(.card-open:focus-visible),
+  .studio-page .deck-card-tile:has(.deck-card-open:focus-visible) {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+  }
+  .studio-page .card-open:focus-visible,
+  .studio-page .deck-card-open:focus-visible {
+    outline: none;
+  }
+}
+
 /* Local feedback only: no palette tween during theme changes or page-wide fades. */
 .studio-page .view-switch button,
 .studio-page .catalog-quantity-controls button,
