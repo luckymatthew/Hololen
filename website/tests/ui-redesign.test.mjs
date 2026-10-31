@@ -31,7 +31,7 @@ async function workspace(t, entry = 'motion', reduced = true) {
   const click = async node => { assert.ok(node, 'control exists'); node.focus(); await act(async () => { node.click(); await settle(); }); };
   const input = async (node, value) => { await act(async () => { Object.getOwnPropertyDescriptor(dom.window.HTMLInputElement.prototype, 'value').set.call(node, value); node.dispatchEvent(new dom.window.Event('input', { bubbles: true })); await settle(); }); };
   t.after(async () => { await act(async () => root.unmount()); dom.window.close(); unlinkSync(outfile); for (const [key, descriptor] of previous) { if (descriptor) Object.defineProperty(globalThis, key, descriptor); else delete globalThis[key]; } globalThis.fetch = oldFetch; globalThis.IS_REACT_ACT_ENVIRONMENT = oldAct; });
-  return { dom, module: components, h, act, useState, root, render, click, input, settle, shown: () => shown };
+  return { dom, catalog, module: components, h, act, useState, root, render, click, input, settle, shown: () => shown };
 }
 
 test('native modal opens once, repeated dismissal is safe, restores focus/overflow and never changes storage', async t => {
@@ -64,14 +64,24 @@ test('current library keeps search/filter/view/printing editing and deck navigat
   assert.equal(document.querySelectorAll('.card-tile').length, 72);
   assert.equal(document.querySelector('.catalog-layout').dataset.filtersOpen, 'true');
   await ui.input(document.querySelector('input[type="search"]'), 'hBP01-001');
-  assert.equal(document.querySelectorAll('.card-tile').length, 1);
-  assert.match(document.querySelector('.card-meta code').textContent, /hBP01-001/);
+  const card = ui.catalog.cards.find(card => card.number === 'hBP01-001');
+  const tiles = [...document.querySelectorAll('.card-tile')];
+  assert.equal(tiles.length, card.variants.length);
+  assert.deepEqual(new Set(tiles.map(tile => tile.dataset.printingId)), new Set(card.variants.map(variant => variant.id)));
+  for (const tile of tiles) {
+    const variant = card.variants.find(variant => variant.id === tile.dataset.printingId);
+    assert.equal(tile.dataset.cardNumber, card.number);
+    assert.equal(tile.querySelector('.card-art-wrap img').getAttribute('src'), variant.image);
+    assert.equal(tile.querySelector('.card-meta code').textContent, card.number);
+  }
   await ui.click(document.querySelector('[aria-label="效果列表模式"]'));
   assert.ok(document.querySelector('.studio-list')); assert.equal(document.querySelector('[aria-label="效果列表模式"]').getAttribute('aria-pressed'), 'true');
-  const opener = document.querySelector('.card-open'); await ui.click(opener);
+  const selectedTile = document.querySelectorAll('.card-tile')[tiles.length - 1];
+  const opener = selectedTile.querySelector('.card-open'); await ui.click(opener);
   assert.equal(document.querySelectorAll('dialog').length, 1);
-  const variants = [...document.querySelectorAll('.variant-strip button')]; assert.ok(variants.length > 1);
-  const variant = variants.at(-1); await ui.click(variant); assert.equal(variant.getAttribute('aria-pressed'), 'true');
+  assert.equal(document.querySelector('.studio-card-dialog').dataset.printingId, selectedTile.dataset.printingId);
+  assert.equal(document.querySelector('.modal-printing-id code').textContent, selectedTile.dataset.printingId);
+  assert.equal(document.querySelector('.variant-strip'), null);
   await ui.click(document.querySelector('.add-large'));
   assert.match(document.querySelector('.modal-quantity-controls output').textContent, /合計 1 張/);
   await ui.click(document.querySelector('.modal-close')); assert.equal(document.activeElement, opener);

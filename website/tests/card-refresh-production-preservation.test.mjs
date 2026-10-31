@@ -1,5 +1,6 @@
 import { mobileUpdateAddedPaths } from './mobile-card-update-preservation-helpers.mjs';
 import { polishAddedPaths } from './ui-polish-preservation-helpers.mjs';
+import { printingAddedPaths } from './printing-catalog-preservation-helpers.mjs';
 import { translationAddedPaths } from './translation-preservation-helpers.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -168,6 +169,6 @@ test('all unrelated production runtime, UI, engine, configuration and public fil
   const roots = ['app', 'lib', 'public', 'build', 'db', 'drizzle', 'firebase', 'worker'];
   const walk = (directory) => fs.readdirSync(path.join(root, directory), { withFileTypes: true }).flatMap((entry) => entry.isDirectory() ? walk(`${directory}/${entry.name}`) : [`${directory}/${entry.name}`]);
   const actual = roots.flatMap((directory) => walk(`website/${directory}`)).filter((name) => name !== 'website/public/cards.json').sort();
-  const expected = [...fixture.protectedRuntime.paths.filter((name) => roots.some((directory) => name.startsWith(`website/${directory}/`))), ...fixture.approvedCompatibility.addedPaths, ...approvedRefresh.approvedAddedPaths, ...uiAddedPaths, ...yuyuteiAddedPaths, ...translationAddedPaths, ...mobileUpdateAddedPaths, ...polishAddedPaths].sort();
+  const expected = [...fixture.protectedRuntime.paths.filter((name) => roots.some((directory) => name.startsWith(`website/${directory}/`))), ...fixture.approvedCompatibility.addedPaths, ...approvedRefresh.approvedAddedPaths, ...uiAddedPaths, ...yuyuteiAddedPaths, ...translationAddedPaths, ...mobileUpdateAddedPaths, ...polishAddedPaths, ...printingAddedPaths].sort();
   assert.deepEqual(actual, expected, 'Only the explicitly reviewed compatibility, catalog, redesign, retailer and polish files may be introduced');
 });

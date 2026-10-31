@@ -1,4 +1,5 @@
 import { restoreMobileCardUpdateBaseline } from './mobile-card-update-preservation-helpers.mjs';
+import { restorePrintingBaseline } from './printing-catalog-preservation-helpers.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -9,7 +10,7 @@ const read=name=>fs.readFileSync(new URL(`../../${name}`,import.meta.url));
 test('translation layer pins only explicit reviewed changes and rejects any additional runtime bytes',()=>{
  assert.equal(translationProvenance.baselineSourceCommit,'7db44c004769f0566f9271d8c78cbebfb4ae4efa');
  assert.equal(translationProvenance.baselineTree,'3057a57b827adb0da4117fd12d764951dd509077');
- for(const change of translationProvenance.changes){const current=restoreMobileCardUpdateBaseline(change.path,read(change.path));assert.equal(hash(current),change.afterSha256);assert.equal(hash(restoreTranslationBaseline(change.path,current)),change.beforeSha256);assert.throws(()=>restoreTranslationBaseline(change.path,Buffer.concat([current,Buffer.from('\nUNREVIEWED')])),/exact reviewed/);}
+ for(const change of translationProvenance.changes){const current=restorePrintingBaseline(change.path,restoreMobileCardUpdateBaseline(change.path,read(change.path)));assert.equal(hash(current),change.afterSha256);assert.equal(hash(restoreTranslationBaseline(change.path,current)),change.beforeSha256);assert.throws(()=>restoreTranslationBaseline(change.path,Buffer.concat([current,Buffer.from('\nUNREVIEWED')])),/exact reviewed/);}
  for(const added of translationProvenance.addedFiles)assert.equal(hash(read(added.path)),added.sha256);
 });
 test('only embedded display metadata changes catalog bytes; all Japanese cards/meta/printing identities stay exact',()=>{

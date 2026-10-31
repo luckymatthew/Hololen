@@ -58,21 +58,25 @@ test('real card modal follows selected artwork without changing printing quantit
   const row = productData.products.find(row => ui.catalog.cards.find(card => card.number === row.cardNumber)?.variants.length > 1) || first;
   const card = ui.catalog.cards.find(card => card.number === row.cardNumber);
   await ui.render(); await ui.input(document.querySelector('input[type="search"]'), row.cardNumber);
-  const opener = document.querySelector('.card-open'); await ui.click(opener);
-  const printing = [...document.querySelectorAll('.variant-strip button')].find(button => button.querySelector('img')?.getAttribute('src') === row.officialImageUrl);
-  if (printing) await ui.click(printing);
-  assert.equal(retailer().dataset.yuyuteiKind, 'product'); assert.equal(retailer().querySelector('a').href, row.productUrl);
-  const quantityBefore = document.querySelector('.modal-quantity-controls output').textContent;
+  const tiles = [...document.querySelectorAll('.card-tile')].filter(tile => tile.dataset.cardNumber === card.number);
+  assert.equal(tiles.length, card.variants.length);
   const expectedByImage = new Map(productData.products.filter(product => product.cardNumber === row.cardNumber).map(product => [product.officialImageUrl, product.productUrl]));
-  for (const button of document.querySelectorAll('.variant-strip button')) {
-    await ui.click(button); const image = button.querySelector('img').getAttribute('src');
+  let quantityBefore, matchedProduct = false;
+  for (const tile of tiles) {
+    const opener = tile.querySelector('.card-open'); await ui.click(opener);
+    assert.equal(document.querySelector('.studio-card-dialog').dataset.printingId, tile.dataset.printingId);
+    const image = card.variants.find(variant => variant.id === tile.dataset.printingId).image;
     const expected = expectedByImage.get(image);
-    if (expected) assert.equal(retailer().querySelector('a').href, expected); else assert.notEqual(retailer().dataset.yuyuteiKind, 'product');
+    if (expected) { matchedProduct = true; assert.equal(retailer().dataset.yuyuteiKind, 'product'); assert.equal(retailer().querySelector('a').href, expected); }
+    else assert.notEqual(retailer().dataset.yuyuteiKind, 'product');
+    quantityBefore ??= document.querySelector('.modal-quantity-controls output').textContent;
     assert.equal(document.querySelector('.modal-quantity-controls output').textContent, quantityBefore, 'a retailer selection never edits quantities');
+    await ui.click(document.querySelector('.modal-close')); assert.equal(document.activeElement, opener);
   }
+  assert.equal(matchedProduct, true, 'at least one visible printing resolves the verified exact product');
   assert.ok(card.variants.length > 0); assert.equal(localStorage.getItem('unrelated-user-deck'), 'preserve-me');
   assert.ok(!ui.requests.some(url => /yuyu-tei/i.test(url)), 'no retailer tracking or fetch before the user chooses an external link');
-  await ui.click(document.querySelector('.modal-close')); assert.equal(document.activeElement, opener);
+  const opener = tiles[0].querySelector('.card-open');
   await ui.click(opener); assert.equal(document.querySelectorAll('dialog').length, 1);
   await ui.act(async () => { document.querySelector('dialog').dispatchEvent(new ui.dom.window.Event('cancel', { cancelable: true })); await ui.settle(); });
   assert.equal(document.querySelector('dialog'), null); assert.equal(document.activeElement, opener);

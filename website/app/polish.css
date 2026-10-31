@@ -112,6 +112,16 @@
   min-width: 0;
   overflow-wrap: anywhere;
 }
+.studio-card-dialog .modal-printing-id {
+  margin: 12px 0 0;
+  color: var(--text-muted);
+  font-size: var(--polish-caption);
+  line-height: 1.7;
+}
+.studio-card-dialog .modal-printing-id code {
+  color: var(--cyan-dark);
+  overflow-wrap: anywhere;
+}
 .studio-page .studio-list .card-copy p {
   line-height: 1.8;
 }

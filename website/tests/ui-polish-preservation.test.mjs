@@ -14,7 +14,7 @@ const originalHashes = {
 test('the added polish stylesheet matches its exact reviewed bytes', () => {
   const stylesheet = {
     path: 'website/app/polish.css',
-    sha256: '1365f5d4b8d64b2d010e84b77e6744dbcfeea43d206c106aa44eff7f8d6f212e',
+    sha256: 'ed6579c8ed74aae5cb62a1610745e353d6af4b728e7487e8d267725b93229dfe',
   };
   assert.deepEqual(polishProvenance.addedFiles, [stylesheet]);
   assert.deepEqual(polishAddedPaths, [stylesheet.path]);

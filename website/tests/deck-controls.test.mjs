@@ -33,7 +33,9 @@ function button(name, scope = document) {
   assert.ok(found.length, `Missing button: ${name}`);
   return found[0];
 }
-async function click(name, scope) { await act(async () => { button(name, scope).click(); await new Promise(resolve => setTimeout(resolve, 20)); }); }
+async function clickNode(node) { assert.ok(node, 'control exists'); await act(async () => { node.click(); await new Promise(resolve => setTimeout(resolve, 20)); }); }
+async function click(name, scope) { await clickNode(button(name, scope)); }
+const printingTile = (card, id) => [...document.querySelectorAll('.card-tile')].find(tile => tile.dataset.cardNumber === card.number && tile.dataset.printingId === id);
 async function mount(Component, url = '/') {
   if (root) await act(async () => root.unmount());
   window.history.replaceState({}, '', url);
@@ -58,19 +60,22 @@ test('catalog, modal, saving and removable deck lifecycle', async t => {
     assert.equal(quantity(oshi), 0);
   });
   await t.test('modal removes the selected printing only, then removes the last printing', async () => {
-    await click(`選擇 ${member.name} 卡圖版本`);
+    await clickNode(printingTile(member, member.variants[0].id).querySelector('.card-open'));
     let dialog = document.querySelector('dialog');
-    const variants = [...dialog.querySelectorAll('.variant-strip button')];
     await act(async () => dialog.querySelector('.add-large').click());
     const firstId = Object.keys(draft().printings[member.number])[0];
-    await act(async () => variants[1].click());
+    assert.equal(firstId, member.variants[0].id);
+    await click('關閉卡片詳情');
+    await clickNode(printingTile(member, member.variants[1].id).querySelector('.card-open'));
+    dialog = document.querySelector('dialog');
+    assert.equal(dialog.dataset.printingId, member.variants[1].id);
     await act(async () => dialog.querySelector('.add-large').click());
     assert.equal(draft().main[member.number], 2);
     await click(`減少 ${member.name} 所選版本`, dialog);
     assert.deepEqual(draft().printings[member.number], { [firstId]: 1 });
     assert.equal(button(`減少 ${member.name} 所選版本`, dialog).disabled, true);
     await click('關閉卡片詳情');
-    await click(`從牌組減少 ${member.name}`);
+    await clickNode(printingTile(member, firstId).querySelector('.catalog-quantity-controls button'));
     assert.equal(draft().main[member.number], undefined);
     assert.equal(draft().printings[member.number], undefined);
   });
@@ -92,15 +97,17 @@ test('catalog, modal, saving and removable deck lifecycle', async t => {
     assert.deepEqual(draft().cheer, {});
     assert.equal(document.querySelectorAll('.deck-card-tile').length, 0);
   });
-  await t.test('mixed-printing quick minus opens a choice without removing another version', async () => {
+  await t.test('printing quick minus removes only its visible allocation and retains the other on remount', async () => {
     localStorage.setItem(store.draftKey(), JSON.stringify({ oshi: {}, main: { [member.number]: 2 }, cheer: {}, printings: { [member.number]: { [member.variants[0].id]: 1, [member.variants[1].id]: 1 } } }));
     await mount(Home);
-    await click(`從牌組減少 ${member.name}`);
-    assert.ok(document.querySelector('dialog[open]'));
-    assert.equal(draft().main[member.number], 2);
-    await click(`減少 ${member.name} 所選版本`, document.querySelector('dialog'));
+    await clickNode(printingTile(member, member.variants[0].id).querySelector('.catalog-quantity-controls button'));
+    assert.equal(document.querySelector('dialog[open]'), null);
     assert.equal(draft().main[member.number], 1);
-    await click('關閉卡片詳情');
+    assert.deepEqual(draft().printings[member.number], { [member.variants[1].id]: 1 });
+    assert.equal(printingTile(member, member.variants[0].id).querySelector('output').textContent, '0');
+    assert.equal(printingTile(member, member.variants[1].id).querySelector('output').textContent, '1');
+    await mount(Home);
+    assert.deepEqual(draft().printings[member.number], { [member.variants[1].id]: 1 });
   });
   await t.test('saved deck accepts removal of its last card and remains empty on reload', async () => {
     let saved;

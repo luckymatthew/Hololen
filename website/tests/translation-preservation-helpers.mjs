@@ -1,4 +1,5 @@
 import { restoreMobileCardUpdateBaseline } from './mobile-card-update-preservation-helpers.mjs';
+import { restorePrintingBaseline } from './printing-catalog-preservation-helpers.mjs';
 // Explicit outer proof for translation-only presentation/data/gate/log changes.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -22,6 +23,7 @@ export function restoreTranslationBaseline(name,input){
  // The UI proof can receive page bytes already reversed by the older retailer layer.
  const alreadyRetailerReversed = relative === 'website/app/page.tsx' && digest === 'fa58cc43f15ee7d45ff840e9fdf8a8305a4015ae4781cab9d032e8149b76b77c';
  if(digest===change.beforeSha256 || alreadyRetailerReversed)return input;
+ input=restorePrintingBaseline(name,input);text=String(input);
  assert.equal(hash(text),change.afterSha256,`${relative}: exact reviewed translation-only bytes`);
  if(change.kind === 'embedded-display-metadata'){ const catalog=JSON.parse(text);assert.ok(Object.hasOwn(catalog,'displayTranslations'));delete catalog.displayTranslations;text=JSON.stringify(catalog); }
  else for(const patch of [...change.patches].reverse()){assert.ok(patch.after);assert.equal(text.split(patch.after).length-1,1,`${relative}: unique translation reversal`);text=text.replace(patch.after,patch.before);}

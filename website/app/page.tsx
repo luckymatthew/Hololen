@@ -8,7 +8,7 @@ import { content as deckContent } from "@/lib/firebase/merge.mjs";
 import { firebaseBuild } from "@/lib/firebase/client";
 
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
-import { cardSearchText, matchesSearch } from "@/lib/catalog-search.mjs";
+import { catalogPrintings, filterCatalogPrintings, sortVariantsByRarity, variantLabel } from "@/lib/printing-catalog.mjs";
 import { effectAuditPending } from '@/lib/effect-corrections.mjs';
 import { cardText, cardTagText, effectText, keywordLabel } from "@/lib/card-terminology.mjs";
 import TerminologyNote from "@/app/TerminologyNote";
@@ -83,6 +83,15 @@ type Card = {
   simulationStatus?: string;
 };
 
+type CatalogPrinting = {
+  card: Card;
+  variant: Card["variants"][number] | undefined;
+  id: string;
+  label: string;
+  releaseDate: string;
+  searchText: string;
+};
+
 type CardMeta = {
   snapshotDate: string;
   uniqueCards: number;
@@ -100,24 +109,6 @@ type HoloSimCardIndex = Record<string, string[]>;
 
 const emptyDeck = (): DeckState => ({ oshi: {}, main: {}, cheer: {} });
 const storageKey = "hololive-ocg-deck-draft-v1";
-
-// Present the regular printing first, followed by increasingly special parallel printings.
-const rarityOrder = ["C", "U", "R", "RR", "OC", "OSR", "S", "SR", "SY", "UR", "HR", "OUR", "SEC", "P"];
-const rarityRank = new Map(rarityOrder.map((rarity, index) => [rarity, index]));
-
-function sortVariantsByRarity(variants: Card["variants"]) {
-  return [...variants].sort((left, right) => {
-    const leftRank = rarityRank.get(left.rarity) ?? rarityOrder.length;
-    const rightRank = rarityRank.get(right.rarity) ?? rarityOrder.length;
-    return leftRank - rightRank || left.id.localeCompare(right.id, "en", { numeric: true });
-  });
-}
-
-function variantLabel(variant: Card["variants"][number], variants: Card["variants"]) {
-  const sameRarity = variants.filter((candidate) => candidate.rarity === variant.rarity);
-  const position = sameRarity.findIndex((candidate) => candidate.id === variant.id);
-  return sameRarity.length > 1 ? `${variant.rarity} ${position + 1}` : variant.rarity;
-}
 
 function defaultVariant(card: Card) {
   return sortVariantsByRarity(card.variants)[0];
@@ -238,16 +229,15 @@ function CardModal({
   const displayEffect = (value?: string) => officialFallback ? String(value ?? "") : effectText(card, value);
   const sortedVariants = useMemo(() => sortVariantsByRarity(card.variants), [card.variants]);
   const initialVariant = sortedVariants[0];
-  const [selectedVariantId, setSelectedVariantId] = useState(initialVariantId || initialVariant?.id || "");
-  const selectedVariant = sortedVariants.find((variant) => variant.id === selectedVariantId) ?? initialVariant;
-  const officialPreview = Boolean((selectedVariant?.officialImportSchema === 2 && selectedVariant.preview) || (card.officialImportSchema === 2 && card.preview));
+  const selectedVariant = sortedVariants.find((variant: Card["variants"][number]) => variant.id === initialVariantId) ?? initialVariant;
+  const officialPreview = Boolean(selectedVariant?.officialImportSchema === 2 ? selectedVariant.preview : card.officialImportSchema === 2 && card.preview);
   const previewReleaseDate = selectedVariant?.officialImportSchema === 2 && selectedVariant.preview ? selectedVariant.releaseDate : card.releaseDate;
   const selectedImage = selectedVariant?.image ?? card.image;
   const selectedQuantity = selectedVariant ? quantityForVariant(selectedVariant.id) : quantity;
   const { dialog, requestClose } = useModalMotion(onClose);
 
   return (
-    <dialog ref={dialog} className="studio-card-dialog t-modal" onCancel={event => { event.preventDefault(); requestClose(); }} onClick={event => { if (event.target === event.currentTarget) requestClose(); }} aria-label={`${displayEffect(card.name)} 卡片詳情`}>
+    <dialog ref={dialog} className="studio-card-dialog t-modal" onCancel={event => { event.preventDefault(); requestClose(); }} onClick={event => { if (event.target === event.currentTarget) requestClose(); }} data-card-number={card.number} data-printing-id={selectedVariant?.id} aria-label={`${displayEffect(card.name)} ${selectedVariant ? `${variantLabel(selectedVariant, sortedVariants)} 版本` : ""}卡片詳情`}>
       <section
         className="card-modal"
       >
@@ -256,27 +246,6 @@ function CardModal({
         </button>
         <div className="modal-art-column">
           <CardImage card={{ ...card, image: selectedImage }} className="modal-card-image" rarity={selectedVariant?.rarity || card.rarity} />
-          {card.variants.length > 1 && (
-            <div className="variant-picker">
-              <p>卡圖版本 · 選擇後調整張數</p>
-              <div className="variant-strip" aria-label="卡圖版本">
-                {sortedVariants.map((variant) => (
-                  <button
-                    key={variant.id}
-                    className={selectedVariant?.id === variant.id ? "active" : ""}
-                    aria-pressed={selectedVariant?.id === variant.id}
-                    type="button"
-                    onClick={() => setSelectedVariantId(variant.id)}
-                    title={`${variantLabel(variant, sortedVariants)} 卡圖`}
-                  >
-                    <FoilCardImage className="variant-card-art" src={variant.image} alt={`${displayEffect(card.name)} ${variantLabel(variant, sortedVariants)} 卡圖`} rarity={variant.rarity} loading="lazy" />
-                    <span>{variantLabel(variant, sortedVariants)}{variant.officialImportSchema === 2 && variant.preview ? "・官方先行公開" : ""}</span>
-                    {quantityForVariant(variant.id) > 0 && <b>×{quantityForVariant(variant.id)}</b>}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
         <div className="modal-copy">
           <div className="modal-kicker">
@@ -290,6 +259,7 @@ function CardModal({
               {card.jpName !== displayEffect(card.name) ? card.jpName : card.enName}
             </p>
           )}
+          {selectedVariant && <p className="modal-printing-id"><span>卡圖 ID · </span><code>{selectedVariant.id}</code></p>}
           <YuyuteiCardLink cardNumber={card.number} imageUrl={selectedImage} />
           <div className="stat-grid">
             {card.colors.length > 0 && (
@@ -366,7 +336,7 @@ function CardModal({
             )}
           </div>
           <div className="modal-source">
-            <span>{card.set}</span>
+            <span>{selectedVariant?.sets?.length ? selectedVariant.sets.join(" · ") : card.set}</span>
             {card.illustrator && <span>Illustration · {card.illustrator}</span>}
             {card.qaCount > 0 && <span>官方 Q&amp;A · {card.qaCount} 條</span>}
           </div>
@@ -518,22 +488,11 @@ export default function Home() {
 
   const memberGroups = useMemo(() => groupMemberOptions(cards) as { key: string; label: string; options: { value: string; label: string }[] }[], [cards]);
 
-  const searchIndex = useMemo(() => new Map(cards.map(card => [card.number, cardSearchText(card)])), [cards]);
-  const filteredCards = useMemo(() => {
-    const results = cards.filter((card) => {
-      if (typeFilter !== "all" && card.group !== typeFilter) return false;
-      if (colorFilter !== "all" && !card.colorCodes.includes(colorFilter)) return false;
-      if (stageFilter !== "all" && card.stage !== stageFilter) return false;
-      if (setFilter !== "all" && !card.number.startsWith(`${setFilter}-`)) return false;
-      if (memberFilter !== "all" && card.jpName !== memberFilter && card.name !== memberFilter) return false;
-      return matchesSearch(searchIndex.get(card.number) || "", deferredQuery);
-    });
-    return results.sort((a, b) => {
-      if (sort === "name") return a.name.localeCompare(b.name, "zh-Hant") || a.number.localeCompare(b.number, "en", { numeric: true });
-      if (sort === "newest") return (b.releaseDate || "").localeCompare(a.releaseDate || "") || b.number.localeCompare(a.number, "en", { numeric: true });
-      return a.number.localeCompare(b.number, "en", { numeric: true });
-    });
-  }, [cards, searchIndex, colorFilter, memberFilter, deferredQuery, setFilter, stageFilter, typeFilter, sort]);
+  const printings = useMemo<CatalogPrinting[]>(() => catalogPrintings(cards), [cards]);
+  const filteredCards = useMemo<CatalogPrinting[]>(() => filterCatalogPrintings(printings, {
+    type: typeFilter, color: colorFilter, stage: stageFilter, set: setFilter,
+    member: memberFilter, query: deferredQuery, sort,
+  }), [printings, colorFilter, memberFilter, deferredQuery, setFilter, stageFilter, typeFilter, sort]);
 
   const activeFilters = [
     ...(query ? [{ label: `搜尋：${query}`, clear: () => setQuery("") }] : []),
@@ -550,8 +509,10 @@ export default function Home() {
   const cheerCount = countSection(deck.cheer);
 
   const quantityFor = (card: Card) => cardDeckCount(deck, card);
-  const catalogCards = filteredCards.filter(card => !onlyDeck || quantityFor(card) > 0);
   const quantityForVariant = (card: Card, variantId: string) => normalizedPrintingCounts(deck, card)[variantId] || 0;
+  const catalogCards = filteredCards.filter(({ card, variant }) => !onlyDeck || (variant ? quantityForVariant(card, variant.id) : quantityFor(card)) > 0);
+  const artworkCount = catalogCards.filter(({ variant }) => variant).length;
+  const imagelessCount = catalogCards.length - artworkCount;
 
   const addCard = (card: Card, requestedVariantId?: string) => {
     const section = cardSection(card);
@@ -572,6 +533,11 @@ export default function Home() {
     }
     setDeck((previous) => ({
       ...(() => {
+        // Validate the latest state as well as the visible snapshot: rapid adds
+        // across different printings still share one card-number/section limit.
+        if (section !== "oshi" && ((previous[section][card.number] || 0) >= card.maxCopies
+          || (section === "main" && countSection(previous.main) >= 50)
+          || (section === "cheer" && countSection(previous.cheer) >= 20))) return previous;
         const printings = { ...(previous.printings || {}) };
         if (section === "oshi") {
           Object.keys(previous.oshi).forEach((number) => delete printings[number]);
@@ -690,7 +656,10 @@ export default function Home() {
       setNotice(`HoloSim 1.13 尚未支援：${result.unsupported.join("、")}。請先更換這些卡再匯出。`);
       return;
     }
-    const blob = new Blob([JSON.stringify(result.deck, null, 2)], { type: "application/json" });
+    // HoloSim reads the canonical number fields; our optional allocation metadata
+    // lets a round trip restore the exact artwork without changing those fields.
+    const exportedDeck = { ...result.deck, ...(deck.printings && Object.keys(deck.printings).length > 0 ? { printings: deck.printings } : {}) };
+    const blob = new Blob([JSON.stringify(exportedDeck, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
@@ -704,7 +673,7 @@ export default function Home() {
     if (!file) return;
     try {
       const parsed = await readImportJson(file);
-      const incoming = projectLegacyPrintings(isHoloSimDeck(parsed) ? fromHoloSimDeck(parsed) : parsed.deck || parsed);
+      const incoming = projectLegacyPrintings(isHoloSimDeck(parsed) ? { ...fromHoloSimDeck(parsed), printings: parsed.printings } : parsed.deck || parsed);
       if (!incoming.oshi || !incoming.main || !incoming.cheer) throw new Error("invalid");
       const next = emptyDeck();
       let skippedCards = 0;
@@ -903,7 +872,7 @@ export default function Home() {
             <div className="catalog-content">
 
           <div className="result-bar">
-            <span role="status" aria-live="polite">{loading ? "載入中…" : <><b>{catalogCards.length.toLocaleString()}</b> 張卡片{query !== deferredQuery && " · 搜尋中…"}</>}</span>
+            <span role="status" aria-live="polite">{loading ? "載入中…" : <><b>{artworkCount.toLocaleString()}</b> 款卡圖{imagelessCount > 0 && ` · ${imagelessCount} 張未有卡圖`}{query !== deferredQuery && " · 搜尋中…"}</>}</span>
             <div className="result-controls">
               <label><span className="sr-only">卡片排序</span><select value={sort} onChange={event => setSort(event.target.value)}><option value="number">卡號順序</option><option value="newest">新卡優先</option><option value="name">名稱順序</option></select></label>
               <div className="view-switch" aria-label="卡庫顯示方式"><button type="button" aria-label="大卡圖模式" title="大卡圖模式" aria-pressed={view === "gallery"} onClick={() => setView("gallery")}><StudioIcon name="grid" /></button><button type="button" aria-label="效果列表模式" title="效果列表模式" aria-pressed={view === "list"} onClick={() => setView("list")}><StudioIcon name="list" /></button></div>
@@ -918,18 +887,20 @@ export default function Home() {
           )}
 
           <div className={`card-grid studio-${view}`} aria-busy={query !== deferredQuery}>
-            {catalogCards.slice(0, visibleCount).map((card) => {
-              const quantity = quantityFor(card);
+            {catalogCards.slice(0, visibleCount).map(({ card, variant, id, label }) => {
+              const quantity = variant ? quantityForVariant(card, variant.id) : quantityFor(card);
+              const printingName = card.variants.length > 1 ? `${effectText(card, card.name)} ${label} 版本` : effectText(card, card.name);
+              const preview = variant?.officialImportSchema === 2 ? variant.preview : card.preview;
               return (
-                <article className="card-tile" key={card.number}>
-                  <button className="card-open" type="button" onClick={() => openCard(card)} aria-label={`查看 ${effectText(card, card.name)} 詳情`}>
+                <article className="card-tile" key={`${card.number}-${id}`} data-card-number={card.number} data-printing-id={variant?.id}>
+                  <button className="card-open" type="button" onClick={() => openCard(card, variant?.id)} aria-label={`查看 ${printingName}${card.variants.length > 1 ? "" : " "}詳情`}>
                     <div className="card-art-wrap">
-                      <CardImage card={card} className="card-thumb" />
+                      <CardImage card={variant ? { ...card, image: variant.image, rarity: variant.rarity } : card} className="card-thumb" />
                       {quantity > 0 && <span className="quantity">×{quantity}</span>}
-                      {card.preview && <span className="preview-ribbon">先行</span>}
+                      {preview && <span className="preview-ribbon">先行</span>}
                     </div>
                     <div className="card-copy">
-                      <div className="card-meta"><code>{card.number}</code><span>{card.rarity}</span></div>
+                      <div className="card-meta"><code>{card.number}</code><span>{label}</span></div>
                       <h3>{effectText(card, card.name)}</h3>
                       {card.jpName && card.jpName !== effectText(card, card.name) && <span className="card-original-name">{card.jpName}</span>}
                       <div className="card-badges">
@@ -942,19 +913,14 @@ export default function Home() {
                     </div>
                   </button>
                   <div className="catalog-quantity-controls">
-                  <button type="button" disabled={quantity === 0} onClick={() => removeCard(card)} aria-label={`從牌組減少 ${effectText(card, card.name)}`} title="減少一張">−</button>
-                  <output aria-label={`${effectText(card, card.name)} 牌組張數`} aria-live="polite">{quantity}</output>
+                  <button type="button" disabled={quantity === 0} onClick={() => removeCard(card, variant?.id)} aria-label={`從牌組減少 ${printingName}`} title="減少一張">−</button>
+                  <output aria-label={`${printingName}${card.variants.length > 1 ? "" : " "}牌組張數`} aria-live="polite">{quantity}</output>
                   <button
                     className="quick-add"
                     type="button"
-                    onClick={() => {
-                      if (card.variants.length > 1) {
-                        setActiveVariantId("");
-                        setActiveCard(card);
-                      } else addCard(card, card.variants[0]?.id);
-                    }}
-                    title={card.variants.length > 1 ? "選擇卡圖並加入牌組" : "加入牌組"}
-                    aria-label={card.variants.length > 1 ? `選擇 ${effectText(card, card.name)} 卡圖版本` : `將 ${effectText(card, card.name)} 加入牌組`}
+                    onClick={() => addCard(card, variant?.id)}
+                    title={variant ? `加入 ${label} 版本` : "加入牌組"}
+                    aria-label={`將 ${printingName}${card.variants.length > 1 ? "" : " "}加入牌組`}
                   >
                     ＋
                   </button>
