@@ -1,0 +1,67 @@
+{
+  "id": 430123059,
+  "tag_name": "v1.3.8",
+  "name": "Hololens 1.3.8 diagnostic preview - visible version information",
+  "published_at": "2026-10-31T19:05:43Z",
+  "draft": false,
+  "prerelease": true,
+  "body": "Hololens 1.3.8 diagnostic preview / build38\n\nAdds the installed version/code to ChatGPT settings and connection progress. Retains the confirmed Android ICU move-validation fix from 1.3.7 and the single reconnect control for a saved disconnected account.\n\nThis is NOT a proven fix for the phone invalid-package installation failure and NOT a claim of successful phone inference. Actual Android installation, live ChatGPT login/inference, physical camera and dual-device PvP remain unverified. The existing phone-file checksum is still useful; do not repeatedly download, uninstall or clear app data.\n\nOriginal package/signing identity, exact home layout and character size, artwork, saved-data code, card/translation update channel and existing engine are preserved. The 1.4.0 engine candidate is not included.\n\nVerification: 345/352 host tests passed; seven unchanged Windows directory-sync failures remain documented, so the host suite is not all-green. ChatGPT 120/120, home viewport 7/7 and offline AI 10/10 passed. Native ICU checks cover 104 patterns across 85 main Java files. Lint: 0 errors/40 warnings. Official signature, manifest/resource parsing, ZIP alignment/CRC and DEX checksum checks passed. Android instrumentation compiled but was not run. Four unchanged native libraries retain a separate 16 KiB RELRO runtime-validation caveat.\n\nNo live OAuth, subscription inference, new credentials or device installation was performed during verification.\n\nInstallation: use HoloLens.apk, or extract Hololens-1.3.8-Install.zip and then open its APK. Do not install or rename the ZIP itself. This is intended as an in-place update using the original signer; preserve your existing app/data. Stable 1.2.8 and all previous releases remain available.\n",
+  "assets": [
+    {
+      "id": 696214812,
+      "name": "Hololens-1.3.8-Install.zip",
+      "state": "uploaded",
+      "size": 628876114,
+      "digest": "sha256:466c2aea93b95e244b99a78fbe56c2e67618d9af561ea562aa2c1a14b1b1b49f",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.8/Hololens-1.3.8-Install.zip"
+    },
+    {
+      "id": 696251836,
+      "name": "Hololens-release.json",
+      "state": "uploaded",
+      "size": 2249,
+      "digest": "sha256:7792e43b66f996604b8a6d8d89a2525adac22398c61a66bbca535fc7bb957d64",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.8/Hololens-release.json"
+    },
+    {
+      "id": 696229108,
+      "name": "Hololens-release.superseded-notes-field.json",
+      "state": "uploaded",
+      "size": 2245,
+      "digest": "sha256:b772304a28b810f1511c8e779c380f3c79bd7b89bca9cf1b47ff1d0f47d982a8",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.8/Hololens-release.superseded-notes-field.json"
+    },
+    {
+      "id": 696204819,
+      "name": "HoloLens.apk",
+      "state": "uploaded",
+      "size": 628873695,
+      "digest": "sha256:bf926c7a1e5a63b3ae190054d9ee5f548540ed12f5b1340772f73d8f80c818e2",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.8/HoloLens.apk"
+    },
+    {
+      "id": 696228988,
+      "name": "README.txt",
+      "state": "uploaded",
+      "size": 2018,
+      "digest": "sha256:3c7cd5e797b4c0503f2385aa369e3e14e32fbf0c02394321101401334fb491bf",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.8/README.txt"
+    },
+    {
+      "id": 696229214,
+      "name": "SHA256SUMS.superseded-notes-field.txt",
+      "state": "uploaded",
+      "size": 263,
+      "digest": "sha256:2a44ad76d78b3aa766b55a66a70980ac7e5ea2b5d80cdb55ba70b39e05530f5d",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.8/SHA256SUMS.superseded-notes-field.txt"
+    },
+    {
+      "id": 696251899,
+      "name": "SHA256SUMS.txt",
+      "state": "uploaded",
+      "size": 558,
+      "digest": "sha256:30d133ecf9e55f106c2f109625907879ed4d510cc0c5ef69748ad03c0c0736c2",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.8/SHA256SUMS.txt"
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import {restoreCandidateReleaseBaseline} from './candidate-release-preservation-helpers.mjs';
 // Test-only outer proof for the exact verified 1.3.7 download update.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -10,6 +11,7 @@ export function restoreInferenceReleaseBaseline(name,input){
  const normalized=name.replaceAll('\\','/');const relative=normalized.includes('website/')?normalized.slice(normalized.indexOf('website/')):'website/'+normalized.replace(/^\.\//,'');
  const change=inferenceReleaseProvenance.changes.find(item=>item.path===relative);if(!change)return input;
  let text=String(input);if(hash(text)===change.beforeSha256)return input;
+ input=restoreCandidateReleaseBaseline(name,input);text=String(input);
  assert.equal(hash(text),change.afterSha256,relative+': exact verified preview release bytes for 1.3.7 update');
  for(const patch of [...change.patches].reverse()){assert.ok(patch.after.length);assert.equal(text.split(patch.after).length-1,1);text=text.replace(patch.after,patch.before);}
  assert.equal(hash(text),change.beforeSha256);return Buffer.isBuffer(input)?Buffer.from(text):text;
