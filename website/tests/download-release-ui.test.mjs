@@ -47,11 +47,11 @@ async function workspace(t, { immediateTimeout = false } = {}) {
   return { dom, requests, respond, fail, wait, unmount };
 }
 
-function fixture({ version = 'v1.3.5', zip = false, digest = `sha256:${FEATURED_METADATA.sha256}`, body = 'Synthetic release notes; not a published future release.' } = {}) {
-  const size = version === 'v1.3.5' ? 627915056 : 627915057;
+function fixture({ version = 'v1.3.6', zip = false, digest = `sha256:${FEATURED_METADATA.sha256}`, body = 'Synthetic release notes; not a published future release.' } = {}) {
+  const size = version === 'v1.3.6' ? 628857311 : 628857312;
   return { tag_name: version, name: `Synthetic ${version} metadata`, published_at: FEATURED_METADATA.date, body, draft: false, prerelease: true, assets: [
     { name: APK_FILENAME, state: 'uploaded', size, digest, browser_download_url: apkUrl(version) },
-    ...(zip ? [{ name: `Hololens-${version.slice(1)}-Install.zip`, state: 'uploaded', size: 627917736, digest: 'sha256:35a6a9cf1625cb2185ab822dcb7c86164d5535161ab786abc9e2c9a92df7a001', browser_download_url: installZipUrl(version) }] : []),
+    ...(zip ? [{ name: `Hololens-${version.slice(1)}-Install.zip`, state: 'uploaded', size: 628860119, digest: 'sha256:202d1e7da105358bbbc4ff0b26c1f6c37f8aaa26d84e813cdf4b52f0de4e5c4e', browser_download_url: installZipUrl(version) }] : []),
   ] };
 }
 
@@ -59,18 +59,18 @@ const primary = () => document.querySelector('.apk-button');
 const zipLinks = () => [...document.querySelectorAll('.download-links a')].filter(anchor => /ZIP/i.test(anchor.textContent));
 
 function assertPinnedFallback() {
-  assert.equal(primary().getAttribute('href'), apkUrl('v1.3.5'));
-  assert.equal(document.querySelector('.release-details h2').textContent, 'v1.3.5');
-  assert.ok(document.body.textContent.includes('8be59950a45242b169e643f6ba3b262bb3183c66c2808a3d4d88c652d4cfa0f3'));
+  assert.equal(primary().getAttribute('href'), apkUrl('v1.3.6'));
+  assert.equal(document.querySelector('.release-details h2').textContent, 'v1.3.6');
+  assert.ok(document.body.textContent.includes('f8cafd0142d01de3090f1c8603918ba40cec29ad4297299a39d627bbd3f57219'));
 }
 
 test('download page retains verified pinned version, public URL and integrity information after API failure', async t => {
   const ui = await workspace(t);
   assertPinnedFallback(); assert.equal(ui.requests.length, 1);
-  assert.match(ui.requests[0].url, /releases\/tags\/v1\.3\.5$/);
+  assert.match(ui.requests[0].url, /releases\/tags\/v1\.3\.6$/);
   assert.equal(ui.requests[0].options.credentials, 'omit'); assert.equal(ui.requests[0].options.cache, 'no-store');
   assert.equal(zipLinks().length, FEATURED_METADATA.installZipAvailable ? 1 : 0);
-  await ui.fail(); assertPinnedFallback(); assert.match(document.querySelector('[role="status"]').textContent, /1\.3\.5/);
+  await ui.fail(); assertPinnedFallback(); assert.match(document.querySelector('[role="status"]').textContent, /1\.3\.6/);
   assert.equal(localStorage.getItem('preserve-unrelated-deck'), '{"deck":true}');
 });
 
@@ -93,24 +93,24 @@ test('unmount while received metadata is still decoding ignores its late JSON re
   const json = new Promise(resolve => { finishJson = resolve; });
   ui.requests[0].resolve({ ok: true, json: () => json });
   await ui.wait(); await ui.unmount();
-  finishJson(fixture({ version: 'v1.3.5' })); await ui.wait();
+  finishJson(fixture({ version: 'v1.3.6' })); await ui.wait();
   assert.equal(ui.requests[0].options.signal.aborted, true);
   assert.equal(document.getElementById('root').childElementCount, 0);
 });
 
 test('published featured preview API metadata keeps version, APK URL and verified optional ZIP paired', async t => {
   const ui = await workspace(t);
-  await ui.respond(fixture({ version: 'v1.3.5', zip: true, digest: `sha256:${FEATURED_METADATA.sha256}` }));
-  assert.equal(document.querySelector('.release-details h2').textContent, 'v1.3.5');
-  assert.equal(primary().getAttribute('href'), apkUrl('v1.3.5'));
-  assert.equal(zipLinks().length, 1); assert.equal(zipLinks()[0].getAttribute('href'), installZipUrl('v1.3.5'));
-  assert.ok(document.querySelector(`a[href="${releaseUrl('v1.3.5')}"]`));
+  await ui.respond(fixture({ version: 'v1.3.6', zip: true, digest: `sha256:${FEATURED_METADATA.sha256}` }));
+  assert.equal(document.querySelector('.release-details h2').textContent, 'v1.3.6');
+  assert.equal(primary().getAttribute('href'), apkUrl('v1.3.6'));
+  assert.equal(zipLinks().length, 1); assert.equal(zipLinks()[0].getAttribute('href'), installZipUrl('v1.3.6'));
+  assert.ok(document.querySelector(`a[href="${releaseUrl('v1.3.6')}"]`));
   assert.match(document.querySelector('.release-notes').textContent, /Synthetic release notes/);
 });
 
 test('APK-only metadata does not invent a ZIP asset or preserve a stale version ZIP link', async t => {
-  const ui = await workspace(t); await ui.respond(fixture({ version: 'v1.3.5', zip: false, digest: null }));
-  assert.equal(primary().getAttribute('href'), apkUrl('v1.3.5')); assert.equal(zipLinks().length, 0);
+  const ui = await workspace(t); await ui.respond(fixture({ version: 'v1.3.6', zip: false, digest: null }));
+  assert.equal(primary().getAttribute('href'), apkUrl('v1.3.6')); assert.equal(zipLinks().length, 0);
 });
 
 for (const [name, mutate] of [
@@ -130,7 +130,7 @@ test('backup, device/camera, dual-device PvP and unsupported manual-effects limi
   const ui = await workspace(t); await ui.fail(); const text = document.querySelector('.download-page').textContent;
   assert.match(text, /備份/); assert.match(text, /真機|實機/); assert.match(text, /相機|鏡頭/); assert.match(text, /雙機|雙裝置|雙設備/); assert.match(text, /PvP|多人對戰/); assert.match(text, /未支援|不會自動|手動/);
   assert.doesNotMatch(text, /可保留現有牌組與對局/);
-  const url = new URL(primary().href); assert.equal(url.origin, 'https://github.com'); assert.equal(url.pathname, '/luckymatthew/Hololen/releases/download/v1.3.5/HoloLens.apk');
+  const url = new URL(primary().href); assert.equal(url.origin, 'https://github.com'); assert.equal(url.pathname, '/luckymatthew/Hololen/releases/download/v1.3.6/HoloLens.apk');
   assert.equal(document.querySelector('input[type="password"], input[name="token"], iframe'), null);
 });
 
@@ -144,8 +144,8 @@ for (const [name, mutate] of [
   ['unuploaded ZIP', zip => { zip.state = 'new'; }],
   ['empty ZIP', zip => { zip.size = 0; }],
 ]) test(`unverified optional asset is hidden: ${name}`, async t => {
-  const ui = await workspace(t); const payload = fixture({ version: 'v1.3.5', zip: true, digest: null }); mutate(payload.assets[1]);
-  await ui.respond(payload); assert.equal(primary().getAttribute('href'), apkUrl('v1.3.5')); assert.equal(zipLinks().length, 0);
+  const ui = await workspace(t); const payload = fixture({ version: 'v1.3.6', zip: true, digest: null }); mutate(payload.assets[1]);
+  await ui.respond(payload); assert.equal(primary().getAttribute('href'), apkUrl('v1.3.6')); assert.equal(zipLinks().length, 0);
 });
 
 test('HTTP metadata failure leaves the known verified APK downloadable', async t => {
@@ -194,4 +194,14 @@ test('diagnostic connection notice states the remaining live-login uncertainty w
   assert.match(text, /授權成功不代表已完成連線/);
   assert.match(text, /holomem 立繪大小/); assert.match(text, /請勿解除安裝/);
   assertPinnedFallback();
+});
+
+
+test('older 1.3.5 metadata cannot replace the verified diagnostic APK',async t=>{
+ const ui=await workspace(t);
+ const previous=JSON.parse(readFileSync(new URL('./fixtures/verified-apk-1.3.5.json',import.meta.url),'utf8'));
+ await ui.respond(previous);assertPinnedFallback();
+ const text=document.querySelector('.download-page').textContent;
+ assert.match(text,/單次交換連線/);assert.match(text,/實際手機登入仍未驗證/);
+ assert.equal(document.querySelector('a[href*="/releases/download/v1.3.5/"]'),null);
 });

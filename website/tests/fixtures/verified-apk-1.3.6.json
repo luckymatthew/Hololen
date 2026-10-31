@@ -1,0 +1,51 @@
+{
+  "id": 429741822,
+  "tag_name": "v1.3.6",
+  "name": "Hololens 1.3.6 diagnostic preview - ChatGPT token transport and safe errors",
+  "published_at": "2026-10-31T05:52:36Z",
+  "draft": false,
+  "prerelease": true,
+  "body": "Improves the diagnostic path for the reported ChatGPT authorization-code exchange failure. Token traffic now uses one-shot OkHttp requests with redirects and automatic connection retry disabled. Failures expose only safe HTTP status/allowlisted OAuth codes or fixed DNS/TLS/connect/timeout categories. After a valid first callback fails, only its issued public client ID is retained in memory for an explicit fresh PKCE/state/nonce retry; authorization codes are never replayed. Original offline AI remains the default and usable without sign-in.\n\nThis is a diagnostic preview, not a confirmed phone-login fix. Complete historical Leafweave v114 source was compared with the actual compiled Hololens request paths: the official token endpoint and six form fields already match. The user's real phone exchange failure remains unidentified. A browser consent email or callback page does not prove token exchange, identity verification or storage succeeded. No live OAuth grant, client registration, account token reuse, model request or inference was performed during this work.\n\nPreserves the restored original home layout and holomem standing-art size, Scan/Battle position swap and camera icon, startup fix, card/translation updates, website-aligned filtering, official artwork choices, Yuyutei links and saved user data. New hSD20/hSD21 battle effects remain unsupported; the separate 1.4.0 engine candidate is not included.\n\nInstall this original-signer APK over the existing app. Do not uninstall or clear app data. If sign-in still fails, report only the displayed stage and sanitized error/status. Never share callback URLs, authorization codes, tokens, credentials or unfiltered logs. Model and AI-provider selection stay explicit after a verified connection.\n\nValidation: 95 ChatGPT tests and seven home viewport tests passed. Native/Robolectric suite: 320/327 passed, with seven unchanged documented Windows directory-channel/fsync failures and zero new failures. JavaScript: 690 passed, three existing fixture/device skips, no failures. An additional offline comparison passed 142 assertions across ten scenarios on released 1.3.5 and held 1.3.6, plus two source/class fingerprint guards. Historical Python data/scanner suites (24 cases) could not start because an immutable external fixture is absent; the Linux signing harness retains the same eight Windows-incompatible cases reproduced on unchanged 1.3.5. These are not all-green full-suite results.\n\nRelease assembly, original v3 signer, APK contents and 16 KiB alignment verified. Lint: zero errors / 40 warnings. All 5,943 assets and six native libraries are unchanged. Android instrumentation was compiled, not executed. Actual Android token exchange, account eligibility, camera, QuickJS JNI and dual-device PvP remain unverified. Stable 1.2.8 and earlier previews remain available.",
+  "assets": [
+    {
+      "id": 694469843,
+      "name": "Hololens-1.3.6-Install.zip",
+      "state": "uploaded",
+      "size": 628860119,
+      "digest": "sha256:202d1e7da105358bbbc4ff0b26c1f6c37f8aaa26d84e813cdf4b52f0de4e5c4e",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.6/Hololens-1.3.6-Install.zip"
+    },
+    {
+      "id": 694477298,
+      "name": "Hololens-release.json",
+      "state": "uploaded",
+      "size": 3327,
+      "digest": "sha256:91db59bb761555112111243e4549554b29efdf5f095af365524c65032cf81671",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.6/Hololens-release.json"
+    },
+    {
+      "id": 694460958,
+      "name": "HoloLens.apk",
+      "state": "uploaded",
+      "size": 628857311,
+      "digest": "sha256:f8cafd0142d01de3090f1c8603918ba40cec29ad4297299a39d627bbd3f57219",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.6/HoloLens.apk"
+    },
+    {
+      "id": 694477230,
+      "name": "README.txt",
+      "state": "uploaded",
+      "size": 2407,
+      "digest": "sha256:339223d968181f6269cfba3ec2638e51cf62600b53b897a6905a9b3c13c08b46",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.6/README.txt"
+    },
+    {
+      "id": 694477369,
+      "name": "SHA256SUMS.txt",
+      "state": "uploaded",
+      "size": 337,
+      "digest": "sha256:618bdd6d370ba86d285c4840db2ff4101a6afc866c3bfb4c0f5cf49e4d5bc5ac",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.6/SHA256SUMS.txt"
+    }
+  ]
+}

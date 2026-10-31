@@ -1,3 +1,4 @@
+import {restoreDiagnosticReleaseBaseline} from './diagnostic-release-preservation-helpers.mjs';
 // Exact outer proof for the two explicitly authorized public-preview download changes.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -9,6 +10,7 @@ export function restorePreviewReleaseBaseline(name,input){
  const relative=name.includes('website/')?name.slice(name.indexOf('website/')):`website/${name.replace(/^\.\//,'')}`;
  const change=previewReleaseProvenance.changes.find(c=>c.path===relative);if(!change)return input;
  let text=String(input);if(hash(text)===change.beforeSha256)return input;
+ input=restoreDiagnosticReleaseBaseline(name,input);text=String(input);
  assert.equal(hash(text),change.afterSha256,`${relative}: exact verified preview release bytes`);
  for(const patch of [...change.patches].reverse()){assert.ok(patch.after);assert.equal(text.split(patch.after).length-1,1);text=text.replace(patch.after,patch.before);}
  assert.equal(hash(text),change.beforeSha256);
