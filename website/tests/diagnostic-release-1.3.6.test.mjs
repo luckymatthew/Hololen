@@ -2,10 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
-import {FEATURED_METADATA,featuredReleaseMetadata} from '../lib/releases.mjs';
+import {previous136ReleaseModule,restoreInferenceReleaseBaseline} from './inference-release-preservation-helpers.mjs';
+const {FEATURED_METADATA,featuredReleaseMetadata}=await previous136ReleaseModule();
 import {diagnosticReleaseProvenance as proof,restoreDiagnosticReleaseBaseline as restore} from './diagnostic-release-preservation-helpers.mjs';
 const hash=value=>createHash('sha256').update(value).digest('hex');
-const read=name=>readFileSync(new URL('../../'+name,import.meta.url));
+const read=name=>restoreInferenceReleaseBaseline(name,readFileSync(new URL('../../'+name,import.meta.url)));
 
 test('1.3.6 reverses exactly the two download paths to the deployed translation repair',()=>{
  assert.equal(proof.baselineSourceCommit,'9cfbeaa78252b9fdd479ad461db605348f07b24a');

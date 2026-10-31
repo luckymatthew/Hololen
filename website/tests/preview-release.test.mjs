@@ -5,17 +5,17 @@ import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {FEATURED_METADATA,FEATURED_RELEASE_API,STABLE_METADATA,STABLE_APK_URL,featuredReleaseMetadata,releaseMetadata,apkUrl,installZipUrl} from '../lib/releases.mjs';
 import {restorePreviewReleaseBaseline,previewReleaseProvenance} from './preview-release-preservation-helpers.mjs';
-const verified=JSON.parse(readFileSync(new URL('./fixtures/verified-apk-1.3.6.json',import.meta.url),'utf8'));
+const verified=JSON.parse(readFileSync(new URL('./fixtures/verified-apk-1.3.7.json',import.meta.url),'utf8'));
 const hash=value=>createHash('sha256').update(value).digest('hex');
 
 test('featured preview exactly matches the publicly verified APK and ZIP while stable rollback stays available',()=>{
  const value=featuredReleaseMetadata(verified);
- assert.equal(value.version,'v1.3.6');assert.equal(value.preview,true);assert.equal(value.size,628857311);
- assert.equal(value.date,'2026-10-31T05:52:36Z');assert.equal(value.sha256,'f8cafd0142d01de3090f1c8603918ba40cec29ad4297299a39d627bbd3f57219');
+ assert.equal(value.version,'v1.3.7');assert.equal(value.preview,true);assert.equal(value.size,628873695);
+ assert.equal(value.date,'2026-10-31T14:26:41Z');assert.equal(value.sha256,'4dea8014963dbc36441fd872fbd77d62b206f25cefe025f5fc8cf4a507daaa17');
  assert.equal(value.installZipAvailable,true);assert.equal(FEATURED_METADATA.sha256,value.sha256);
- assert.equal(FEATURED_RELEASE_API,'https://api.github.com/repos/luckymatthew/Hololen/releases/tags/v1.3.6');
+ assert.equal(FEATURED_RELEASE_API,'https://api.github.com/repos/luckymatthew/Hololen/releases/tags/v1.3.7');
  assert.equal(STABLE_METADATA.version,'v1.2.8');assert.equal(STABLE_APK_URL,apkUrl('v1.2.8'));
- assert.equal(installZipUrl(value.version),'https://github.com/luckymatthew/Hololen/releases/download/v1.3.6/Hololens-1.3.6-Install.zip');
+ assert.equal(installZipUrl(value.version),'https://github.com/luckymatthew/Hololen/releases/download/v1.3.7/Hololens-1.3.7-Install.zip');
  assert.throws(()=>releaseMetadata(verified),'stable parser must keep rejecting prereleases');
 });
 
@@ -26,10 +26,10 @@ test('featured parser rejects drafts, other tags/channels, corrupt APK identity 
 
 test('optional ZIP must retain verified name, size and digest; payload URLs never select a download host',()=>{
  for(const mutate of [a=>a.size++,a=>a.digest='sha256:'+'0'.repeat(64),a=>a.name='invented.zip',a=>a.state='new']){
-  const payload=structuredClone(verified);mutate(payload.assets.find(a=>a.name==='Hololens-1.3.6-Install.zip'));assert.equal(featuredReleaseMetadata(payload).installZipAvailable,false);
+  const payload=structuredClone(verified);mutate(payload.assets.find(a=>a.name==='Hololens-1.3.7-Install.zip'));assert.equal(featuredReleaseMetadata(payload).installZipAvailable,false);
  }
  const payload=structuredClone(verified);payload.assets.find(a=>a.name==='HoloLens.apk').browser_download_url='https://example.invalid/wrong.apk';
- assert.equal(apkUrl(featuredReleaseMetadata(payload).version),'https://github.com/luckymatthew/Hololen/releases/download/v1.3.6/HoloLens.apk');
+ assert.equal(apkUrl(featuredReleaseMetadata(payload).version),'https://github.com/luckymatthew/Hololen/releases/download/v1.3.7/HoloLens.apk');
 });
 
 test('new release proof reverses only the two approved paths and preserves all older source fixtures',()=>{

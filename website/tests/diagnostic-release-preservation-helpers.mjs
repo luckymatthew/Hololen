@@ -1,3 +1,4 @@
+import {restoreInferenceReleaseBaseline} from './inference-release-preservation-helpers.mjs';
 // Test-only outer proof for the verified 1.3.6 download update.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -10,6 +11,7 @@ export function restoreDiagnosticReleaseBaseline(name,input){
  const relative=name.includes('website/')?name.slice(name.indexOf('website/')):'website/'+name.replace(/^\.\//,'');
  const change=diagnosticReleaseProvenance.changes.find(value=>value.path===relative);if(!change)return input;
  let text=String(input);if(hash(text)===change.beforeSha256)return input;
+ input=restoreInferenceReleaseBaseline(name,input);text=String(input);
  assert.equal(hash(text),change.afterSha256,relative+': exact verified preview release bytes for diagnostic update');
  for(const patch of [...change.patches].reverse()){assert.equal(text.split(patch.after).length-1,1);text=text.replace(patch.after,patch.before);}
  assert.equal(hash(text),change.beforeSha256);

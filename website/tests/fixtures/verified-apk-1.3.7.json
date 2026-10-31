@@ -1,0 +1,51 @@
+{
+  "id": 429975311,
+  "tag_name": "v1.3.7",
+  "name": "Hololens 1.3.7 preview - Android ChatGPT move validation",
+  "published_at": "2026-10-31T14:26:41Z",
+  "draft": false,
+  "prerelease": true,
+  "body": "Fixes a confirmed Android ICU regular-expression defect in battle move validation. The previous unescaped closing brace could throw even after a valid completed model answer, and that local parser failure appeared as a generic network error. The strict single-choice JSON and current legal-move checks remain enforced.\n\nSigned-in accounts no longer show duplicate Continue/re-login controls. Inference failures now show the app version and actual stage, safe HTTP status/allowlisted service code and parameter, or a fixed transport/client category. Server prose, prompts, hidden game state and credentials are not copied into errors. SSE completion/error handling is bounded; partial, illegal, stale or cancelled answers never apply a move. Original offline AI remains available with no paid API fallback.\n\nThis is a preview with a confirmed client fix, not a claim of successful phone inference. The user's previous HTTP outcome remains unknown. No live OAuth grant, registration or inference was performed during this repair. Three Android instrumentation tests were compiled, not executed; actual phone inference, QuickJS JNI, camera and dual-device PvP remain unverified. If a request still fails, report only the displayed version, stage, HTTP status and sanitized error/category; do not share callbacks, tokens or unfiltered logs or reauthorize blindly.\n\nPreserves the original home layout and holomem standing-art size, Scan/Battle swap and camera icon, translations/data updates, website-aligned filtering, Yuyutei links and saved user data. New hSD20/hSD21 battle effects remain unsupported in this release; the separate 1.4.0 engine candidate is not included.\n\nValidation: 115 ChatGPT tests, seven home viewport tests and ten external-AI JavaScript tests passed. Full native/JVM suite: 340/347 passed, with seven unchanged Windows directory-sync failures and zero new failures; these are not all-green full-suite results. Native Windows ICU72 audited all 85 Java files: 82 inline regex sites and four dynamic sites through 22 compiled patterns, plus 50 Unicode-boundary and 12 choice cases. No further regex syntax defect was found. The actual signed DEX contains all 104 audited pattern records and omits the old invalid choice pattern. The compiled protocol/bundled-engine synthetic transaction applies once, rolls back safely and rejects a stale duplicate. Lint: zero errors / 40 warnings.\n\nOriginal v3 signer, package/version, ZIP integrity and 16 KiB alignment verified. All 5,943 assets, six native libraries and app permissions are unchanged. Install this same-signer APK over the existing app; do not uninstall or clear app data. Android 15 or above, ARM64. Stable 1.2.8 and previous previews remain available.",
+  "assets": [
+    {
+      "id": 695565490,
+      "name": "Hololens-1.3.7-Install.zip",
+      "state": "uploaded",
+      "size": 628877121,
+      "digest": "sha256:0dcfcb821616bb3cafca954aafa563283602a4cd2612567a5585f9647a3e6b5f",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.7/Hololens-1.3.7-Install.zip"
+    },
+    {
+      "id": 695578059,
+      "name": "Hololens-release.json",
+      "state": "uploaded",
+      "size": 3204,
+      "digest": "sha256:01bd2702debff2ec26673d6a6632e037e38868ed9c47e85ebd1992ed3152a3da",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.7/Hololens-release.json"
+    },
+    {
+      "id": 695552786,
+      "name": "HoloLens.apk",
+      "state": "uploaded",
+      "size": 628873695,
+      "digest": "sha256:4dea8014963dbc36441fd872fbd77d62b206f25cefe025f5fc8cf4a507daaa17",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.7/HoloLens.apk"
+    },
+    {
+      "id": 695577980,
+      "name": "README.txt",
+      "state": "uploaded",
+      "size": 3025,
+      "digest": "sha256:c895e46ff80995bb2e12b751d769fc016694d2aa2e99dc586f69a7e2d0d83b77",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.7/README.txt"
+    },
+    {
+      "id": 695578126,
+      "name": "SHA256SUMS.txt",
+      "state": "uploaded",
+      "size": 337,
+      "digest": "sha256:680a4e86bbe1dcb10cccd0897e4649519f98635e19cd7da0879417116b54e8a6",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.7/SHA256SUMS.txt"
+    }
+  ]
+}

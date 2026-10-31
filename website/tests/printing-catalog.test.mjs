@@ -72,6 +72,18 @@ const minus = id => tile(id)?.querySelector('.catalog-quantity-controls button')
 const search = ui => value => ui.input(document.querySelector('input[type="search"]'), value);
 const result = () => document.querySelector('.result-bar [role="status"]').textContent.replaceAll(',', '');
 
+// Toast content is committed on requestAnimationFrame after the click's React commit.
+// Wait for the expected visible DOM message; retain all quantity/limit assertions.
+async function expectToast(ui, pattern) {
+  let actual = '';
+  for (let attempt = 0; attempt < 40; attempt++) {
+    await ui.act(async () => { await ui.settle(); });
+    actual = document.querySelector('.t-toast')?.textContent || '';
+    if (pattern.test(actual)) { assert.match(actual, pattern); return; }
+  }
+  assert.match(actual, pattern, 'Expected card-limit message did not render within the bounded wait');
+}
+
 test('catalog pagination counts real printings plus imageless entries and resets after searching, filtering and sorting', async t => {
   assert.equal(catalog.cards.length, 1416);
   assert.equal(catalog.cards.reduce((sum, card) => sum + card.variants.length, 0), 3038);
@@ -162,7 +174,7 @@ test('ordinary and restricted card-number limits apply across independently disp
   assert.deepEqual(ui.draft().printings[lami.number], { [regular.id]: 2, [parallel.id]: 2 });
   await ui.click(add(parallel.id));
   assert.equal(ui.draft().main[lami.number], 4, 'alternate artwork cannot bypass four-copy limit');
-  assert.match(document.querySelector('.t-toast').textContent, /同卡號最多 4 張/);
+  await expectToast(ui, /同卡號最多 4 張/);
   await ui.click(minus(regular.id)); await ui.click(add(parallel.id));
   assert.deepEqual(ui.draft().printings[lami.number], { [regular.id]: 1, [parallel.id]: 3 });
   await search(ui)(restricted.number);
@@ -171,7 +183,7 @@ test('ordinary and restricted card-number limits apply across independently disp
   await ui.click(add(restricted.variants[1].id));
   assert.equal(ui.draft().main[restricted.number], 1, 'restricted alternate art shares the same one-copy allowance');
   assert.deepEqual(ui.draft().printings[restricted.number], { [restricted.variants[0].id]: 1 });
-  assert.match(document.querySelector('.t-toast').textContent, /限制卡.*最多 1 張/);
+  await expectToast(ui, /限制卡.*最多 1 張/);
   await ui.click(minus(restricted.variants[0].id)); await ui.click(add(restricted.variants[1].id));
   assert.deepEqual(ui.draft().printings[restricted.number], { [restricted.variants[1].id]: 1 });
 });
