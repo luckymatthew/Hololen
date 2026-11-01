@@ -13,7 +13,7 @@ test('offline default is the verified public versioned stable APK and real insta
  assert.equal(STABLE_METADATA.sha256, digest);
  assert.equal(STABLE_METADATA.installZipAvailable, true);
  assert.equal(STABLE_APK_URL, 'https://github.com/luckymatthew/Hololen/releases/download/v1.2.8/HoloLens.apk');
- assert.equal(APK_URL, 'https://github.com/luckymatthew/Hololen/releases/download/v1.3.8/HoloLens.apk');
+ assert.equal(APK_URL, 'https://github.com/luckymatthew/Hololen/releases/download/v1.3.9/HoloLens.apk');
  assert.equal(installZipUrl(STABLE_METADATA.version), 'https://github.com/luckymatthew/Hololen/releases/download/v1.2.8/Hololens-1.2.8-Install.zip');
 });
 test('pinned public metadata retains independently verified integrity even when the API omits a digest', () => {

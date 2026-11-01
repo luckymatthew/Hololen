@@ -1,0 +1,51 @@
+{
+  "id": 430378485,
+  "tag_name": "v1.3.9",
+  "name": "Hololens 1.3.9 preview - final legal-choice parsing",
+  "published_at": "2026-11-01T05:27:18Z",
+  "draft": false,
+  "prerelease": true,
+  "body": "Hololens 1.3.9 preview / build39\n\nFixes a reproducible client bug in 1.3.8: intermediate commentary was concatenated with a valid final legal-choice JSON, causing the offered action to be rejected. The parser now selects one completed assistant final answer, freezes the offered choice IDs, requests strict choice JSON and distinguishes safe rejection reasons. Invalid, cancelled or stale choices still cannot change the match.\n\nThe phone screenshot confirms a legal-choice validation failure, but its raw response is unavailable. This reproduces a client failure mode; it does NOT prove the exact cause of that phone request or successful real-device ChatGPT battle. Selected-account/model schema support and live inference remain unverified. No re-authorization is required merely to read this update.\n\nOriginal package/signing identity, exact home layout and character size, artwork, saved-data code, catalog/translation update channel and existing engine are preserved. The separate 1.4.0 new-card engine candidate is not included.\n\nVerification: 367/374 host tests passed, with the same seven Windows directory-sync failures and no new failures/skips; the host suite is not all-green. ChatGPT 142/142 (22 new response/choice cases), home viewport 7/7, offline AI JavaScript 10/10 and 104 native ICU regex checks passed. Packaged-engine mocked decisions verify rollback, exactly-once application, stale rejection and resume. Lint: 0 errors/40 unchanged warnings. Official signature, manifest/resource parsing, ZIP alignment/CRC and DEX checks passed. Android instrumentation compiled but did not run. Physical installation, Android runtime, camera and dual-device PvP remain unverified; unchanged native dependencies retain the prior documented runtime-validation caveat.\n\nNo live OAuth, subscription inference, new credentials or device installation was performed during verification.\n\nInstallation: open HoloLens.apk, or extract Hololens-1.3.9-Install.zip and open its APK. Do not install or rename the ZIP itself. Use an in-place update with the original signer; do not uninstall or clear existing app data. Stable 1.2.8 and all previous releases remain available.\n",
+  "assets": [
+    {
+      "id": 697411201,
+      "name": "Hololens-1.3.9-Install.zip",
+      "state": "uploaded",
+      "size": 628876350,
+      "digest": "sha256:fbaf1a6f0200430671d8781ee6019af139c358249f33c1bc11edeb34dfab6654",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.9/Hololens-1.3.9-Install.zip"
+    },
+    {
+      "id": 697418528,
+      "name": "Hololens-release.json",
+      "state": "uploaded",
+      "size": 2668,
+      "digest": "sha256:fc5b8f5b9f21e4cb3b07d024bc3452e7f9f4e012adf7cec6f6f617382d1e470f",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.9/Hololens-release.json"
+    },
+    {
+      "id": 697404062,
+      "name": "HoloLens.apk",
+      "state": "uploaded",
+      "size": 628873695,
+      "digest": "sha256:0e4a5bbbd3eddf074b198cc9d21ff6709f94b16fe42584bb4f39428b47138c7c",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.9/HoloLens.apk"
+    },
+    {
+      "id": 697418475,
+      "name": "README.txt",
+      "state": "uploaded",
+      "size": 2437,
+      "digest": "sha256:d2d19438bab80af01a8f89adc6c4c09b263b8f9fe96d85cbec2f8f31c7187d34",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.9/README.txt"
+    },
+    {
+      "id": 697418556,
+      "name": "SHA256SUMS.txt",
+      "state": "uploaded",
+      "size": 337,
+      "digest": "sha256:11b7e3b74f2455df3f51adb66d39f6e21e52f6cf5bd92906a4a9be11add5b37b",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.9/SHA256SUMS.txt"
+    }
+  ]
+}

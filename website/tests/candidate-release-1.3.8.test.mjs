@@ -2,10 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
-import {FEATURED_METADATA,FEATURED_TAG,STABLE_METADATA,STABLE_APK_URL,featuredReleaseMetadata,apkUrl,installZipUrl} from '../lib/releases.mjs';
+import {previous138ReleaseModule,restoreChoiceReleaseBaseline} from './choice-release-preservation-helpers.mjs';
+const {FEATURED_METADATA,FEATURED_TAG,STABLE_METADATA,STABLE_APK_URL,featuredReleaseMetadata,apkUrl,installZipUrl}=await previous138ReleaseModule();
 import {candidateReleaseProvenance as proof,restoreCandidateReleaseBaseline as restore,previous137ReleaseModule} from './candidate-release-preservation-helpers.mjs';
 const hash=value=>createHash('sha256').update(value).digest('hex');
-const read=name=>readFileSync(new URL('../../'+name,import.meta.url));
+const read=name=>restoreChoiceReleaseBaseline(name,readFileSync(new URL('../../'+name,import.meta.url)));
 const verified=JSON.parse(readFileSync(new URL('./fixtures/verified-apk-1.3.8.json',import.meta.url),'utf8'));
 test('1.3.8 changes only the two reviewed download paths from the latest deployed source',()=>{
  assert.equal(proof.baselineSourceCommit,'f4f09b73c290a4611b061ee3109c635fcbbd7412');assert.equal(proof.baselineTree,'253845467b446c46dc615bb05b5e59b4d0fb2cbf');
