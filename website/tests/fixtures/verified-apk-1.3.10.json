@@ -1,0 +1,51 @@
+{
+  "id": 430413899,
+  "tag_name": "v1.3.10",
+  "name": "Hololens 1.3.10 RS1 diagnostic preview - battle response shape",
+  "published_at": "2026-11-01T07:07:30Z",
+  "draft": false,
+  "prerelease": true,
+  "body": "Hololens 1.3.10 RS1 diagnostic preview / build41\n\nAdds a bounded response-shape diagnostic to distinguish different completed responses that contain no accepted final action text. An RS1 line reports fixed structure codes and capped counts only. It does not retain raw replies, tokens, account identifiers, game/card/deck content or unknown field values, and it does not upload telemetry. Request construction, final-answer selection and legal-action validation are unchanged from 1.3.9. This is a diagnostic release, not a confirmed battle fix.\n\nAfter updating, manually try one battle and provide only the RS1 line shown in the error plus the selected model's display name. Do not share credentials, callback URLs, account details, raw replies or game content. Do not repeatedly authorize the account merely to collect this code. No automatic live attempt is performed.\n\nOriginal package/signing identity, exact home layout and character size, artwork, saved-data code, catalog/translation update channel and existing engine are preserved. The held 1.4.0 new-card engine is not included. Build41 deliberately avoids its reserved build40; a future engine release requires a newer version code.\n\nVerification: 385/392 host tests passed with the same seven documented Windows directory-sync failures, no new failures or skips. ChatGPT 160/160, home viewport 7/7, offline AI JavaScript 10/10 and 104 native ICU regex checks passed. Synthetic response fixtures separate six structural failure forms without changing accepted choices or request bytes. Packaged-engine mocked decisions cover rollback, exactly-once application, stale/cancel rejection and resume. Lint: 0 errors/40 unchanged warnings. Official signature, manifest/resource parsers, ZIP alignment/CRC and DEX checks passed. Android instrumentation compiled but did not run.\n\nThe exact phone response, underlying battle cause, real-device installation/runtime and successful ChatGPT battle remain unverified. Camera and dual-device PvP were not tested. Unchanged native dependencies retain the prior documented 16KiB runtime-validation caveat. No live OAuth, subscription inference, new credentials or device installation was performed during verification.\n\nInstallation: open HoloLens.apk, or extract Hololens-1.3.10-Install.zip and open its APK. Do not install or rename the ZIP itself. Use an in-place update with the original signer; do not uninstall or clear app data. Stable 1.2.8 and all previous releases remain available.\n",
+  "assets": [
+    {
+      "id": 697598814,
+      "name": "Hololens-1.3.10-Install.zip",
+      "state": "uploaded",
+      "size": 628876629,
+      "digest": "sha256:9f4a162a29bd1270387356e8982640b8999e585f1f8ba1be793e896ee32fce7d",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.10/Hololens-1.3.10-Install.zip"
+    },
+    {
+      "id": 697606878,
+      "name": "Hololens-release.json",
+      "state": "uploaded",
+      "size": 2989,
+      "digest": "sha256:eb95e5bfb9ba7c6f576bea0f5a1b87dff1ab3e75a4f8de9da6dc470c8dbb2b4e",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.10/Hololens-release.json"
+    },
+    {
+      "id": 697591021,
+      "name": "HoloLens.apk",
+      "state": "uploaded",
+      "size": 628873695,
+      "digest": "sha256:c15adf14732a6150712574d2bc17a00a40089c4e497b3f51e3e95fd6b2b2c8c1",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.10/HoloLens.apk"
+    },
+    {
+      "id": 697606850,
+      "name": "README.txt",
+      "state": "uploaded",
+      "size": 2716,
+      "digest": "sha256:eb47aa452143340a0ec3f9c04fa76c5147f244c46f8f26657df8dd0ac0411913",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.10/README.txt"
+    },
+    {
+      "id": 697606984,
+      "name": "SHA256SUMS.txt",
+      "state": "uploaded",
+      "size": 338,
+      "digest": "sha256:0d0c938be4b722854d68e78f43ed661f9fdbb03971a84545350fda21f953f5da",
+      "browser_download_url": "https://github.com/luckymatthew/Hololen/releases/download/v1.3.10/SHA256SUMS.txt"
+    }
+  ]
+}
