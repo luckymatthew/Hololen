@@ -10,7 +10,7 @@ import { firebaseBuild } from "@/lib/firebase/client";
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { catalogPrintings, filterCatalogPrintings, sortVariantsByRarity, variantLabel } from "@/lib/printing-catalog.mjs";
 import { effectAuditPending } from '@/lib/effect-corrections.mjs';
-import { cardText, cardTagText, effectText, keywordLabel } from "@/lib/card-terminology.mjs";
+import { catalogCardText, cardTagText, catalogEffectText as effectText, catalogKeywordLabel } from "@/lib/card-terminology.mjs";
 import TerminologyNote from "@/app/TerminologyNote";
 import OfficialJapaneseText from "@/app/OfficialJapaneseText";
 import { officialCardTranslationReady } from "@/lib/official-card-translations.mjs";
@@ -139,10 +139,10 @@ function normalizedPrintingCounts(deck: DeckState, card: Card) {
 
 const typeOptions: { value: "all" | CardGroup; label: string }[] = [
   { value: "all", label: "全部卡種" },
-  { value: "oshi", label: "推し Holomen" },
-  { value: "holomem", label: "Holomen" },
+  { value: "oshi", label: "主推成員" },
+  { value: "holomem", label: "成員" },
   { value: "support", label: "支援卡" },
-  { value: "cheer", label: "應援卡" },
+  { value: "cheer", label: "能量" },
 ];
 
 const colorOptions = [
@@ -181,7 +181,7 @@ function shortEffect(card: Card) {
     card.abilityText ||
     card.arts.find((art) => art.effect)?.effect ||
     card.extra ||
-    "此卡沒有額外效果文字。"
+    "無額外效果。"
   ));
 }
 
@@ -230,6 +230,8 @@ function CardModal({
 }) {
   const translatedOfficial = officialCardTranslationReady(card);
   const officialFallback = card.officialImportSchema === 2 && card.effectLanguage === "ja" && card.translationStatus === "official-japanese-fallback" && !translatedOfficial;
+  const aiTranslation = !officialFallback && (translatedOfficial || card.number.startsWith("hBP09-"));
+  const auditNote = (effectAuditPending as Record<string, string>)[card.number];
   const displayEffect = (value?: string) => officialFallback ? String(value ?? "") : effectText(card, value);
   const sortedVariants = useMemo(() => sortVariantsByRarity(card.variants), [card.variants]);
   const initialVariant = sortedVariants[0];
@@ -253,8 +255,10 @@ function CardModal({
         <div className="modal-copy">
           <div className="modal-kicker">
             <code>{card.number}</code>
-            <span>{cardText(card.type)}</span>
-            {preview && <span className="preview-badge">{officialPreview ? "官方先行公開" : "HoloSim 先行卡"}</span>}
+            <span>{catalogCardText(card.type)}</span>
+            {preview && <span className="preview-badge" role={officialPreview && previewReleaseDate ? "note" : undefined}>
+              {officialPreview ? `官方先行公開${previewReleaseDate ? `・${previewReleaseDate} 發售` : ""}` : "HoloSim 先行卡"}
+            </span>}
           </div>
           <h2>{displayEffect(card.name)}</h2>
           {(card.jpName !== displayEffect(card.name) || card.enName) && (
@@ -271,7 +275,7 @@ function CardModal({
             {card.stage && <span><small>階級</small>{card.stage}</span>}
             {card.hp !== null && <span><small>HP</small>{card.hp}</span>}
             {card.life !== null && <span><small>Life</small>{card.life}</span>}
-            {card.baton !== null && <span><small>接力</small>{card.baton}</span>}
+            {card.baton !== null && <span><small>接棒</small>{card.baton}</span>}
             <span><small>稀有度</small>{selectedVariant?.rarity || card.rarity || "—"}</span>
           </div>
           {card.tags.length > 0 && (
@@ -280,13 +284,9 @@ function CardModal({
             </div>
           )}
           <div className="effect-stack">
-            <h3 className="effect-heading">{officialFallback ? "官方日文效果" : translatedOfficial ? "繁體中文翻譯" : "繁體中文效果"} <span>{officialFallback ? "未提供已覆核繁中翻譯" : translatedOfficial ? "AI 翻譯・未經人工覆核" : "用語已統一"}</span></h3>
-            {card.officialImportSchema === 2 && card.simulationStatus === "not-audited" && <p role="note" data-card-import-warning>新卡僅供查閱／組牌；文字效果未支援，不適用自動對戰。需依官方規則另行人工處理，收錄不代表已完成模擬器驗證。</p>}
-            {officialPreview && previewReleaseDate && <p role="note">官方先行公開・{previewReleaseDate} 發售</p>}
-            {card.number.startsWith("hBP09-") && <p role="note">hBP09 譯文依官方日文卡面整理，屬 AI 翻譯，未經人工覆核。翻譯不代表對戰效果已實作。</p>}
-            {!officialFallback && !translatedOfficial && <TerminologyNote />}
-            {translatedOfficial && <><p role="note" data-card-translation-note>繁中為 AI 翻譯，並非官方譯文，未經人工覆核；卡名使用非官方音譯，正式效果仍以日文原文及裁定為準。翻譯不代表已支援自動對戰。</p><OfficialJapaneseText card={card} /></>}
-            {(effectAuditPending as Record<string, string>)[card.number] && <p role="note">校對狀態：{(effectAuditPending as Record<string, string>)[card.number]}</p>}
+            <h3 className="effect-heading">{officialFallback ? "官方日文效果" : "效果"}</h3>
+            {aiTranslation && <p role="note" data-card-translation-note>AI 翻譯，未經人工覆核。</p>}
+            {card.officialImportSchema === 2 && card.simulationStatus === "not-audited" && <p role="note" data-card-import-warning>不適用自動對戰。</p>}
             {card.stageSkill && (card.stageSkill.name || card.stageSkill.effect) && (
               <article className="stage-skill-effect">
                 <span>主推舞台技能</span>
@@ -310,7 +310,7 @@ function CardModal({
             )}
             {card.keyword && (card.keyword.name || card.keyword.effect) && (
               <article>
-                <span>{keywordLabel(card.keyword.type)}</span>
+                <span>{catalogKeywordLabel(card.keyword.type)}</span>
                 <h3>{displayEffect(card.keyword.name) || "技能效果"}</h3>
                 <p>{displayEffect(card.keyword.effect)}</p>
               </article>
@@ -323,9 +323,9 @@ function CardModal({
             )}
             {card.arts.map((art, index) => (
               <article className="art-effect" key={`${art.name}-${index}`}>
-                <span>藝能（Arts） {art.cost.length > 0 && `· ${art.cost.join(" / ")}`}</span>
+                <span>Arts {art.cost.length > 0 && `· ${art.cost.join(" / ")}`}</span>
                 <h3>
-                  {displayEffect(art.name) || `藝能 ${index + 1}`}
+                  {displayEffect(art.name) || `Arts ${index + 1}`}
                   {art.damage !== null && <b>{art.damage}{card.officialImportSchema === 2 ? art.damageModifier : ""}{art.specialValues[0] ? `＋特攻 ${art.specialValues[0]}` : ""}</b>}
                 </h3>
                 {art.effect && <p>{displayEffect(art.effect)}</p>}
@@ -337,10 +337,13 @@ function CardModal({
                 <p>{displayEffect(card.extra)}</p>
               </article>
             )}
+            {translatedOfficial && <OfficialJapaneseText card={card} />}
+            {auditNote && <details className="terminology-note"><summary>校對說明</summary><p>{auditNote}</p></details>}
+            <TerminologyNote />
           </div>
           <div className="modal-source">
             <span>{selectedVariant?.sets?.length ? selectedVariant.sets.join(" · ") : card.set}</span>
-            {previewReleaseDate && <span data-card-release-date>發售日期 · {previewReleaseDate}</span>}
+            {previewReleaseDate && !officialPreview && <span data-card-release-date>發售日期 · {previewReleaseDate}</span>}
             {card.illustrator && <span>Illustration · {card.illustrator}</span>}
             {card.qaCount > 0 && <span>官方 Q&amp;A · {card.qaCount} 條</span>}
           </div>
@@ -529,7 +532,7 @@ export default function Home() {
       return;
     }
     if (section === "cheer" && cheerCount >= 20) {
-      setNotice("應援牌組已達 20 張，請先移除卡片。");
+      setNotice("能量牌組已達 20 張。");
       return;
     }
     if (section !== "oshi" && currentCount >= card.maxCopies) {
@@ -671,7 +674,7 @@ export default function Home() {
     link.download = toHoloSimFilename(proposedName);
     link.click();
     URL.revokeObjectURL(url);
-    setNotice(deckValid ? `已匯出「${toHoloSimFilename(proposedName)}」；放入 HoloSim 1.13 的 decks 資料夾即可讀取。` : "已匯出 HoloSim 1.13 JSON；未完成牌組可能無法在模擬器開啟。");
+    setNotice(deckValid ? "已匯出。請將檔案放入 HoloSim 1.13 的 decks 資料夾。" : "已匯出；未完成的牌組可能無法在 HoloSim 開啟。");
   };
 
   const importDeck = async (file: File | undefined) => {
@@ -747,10 +750,7 @@ export default function Home() {
       <StudioHeader current={workspace} draftCount={oshiCount + mainCount + cheerCount} onWorkspace={setWorkspace} />
 
       <div className="studio-masthead">
-        <div>
-          <h1>{workspace === "library" ? "每張卡，一目了然。" : "組出你的下一場勝利。"}</h1>
-          <p>{workspace === "library" ? "查卡圖、讀繁中效果，找到適合你牌組的一張。" : "選擇卡圖版本、調整配比，保存後直接開始試牌。"}</p>
-        </div>
+        <h1>{workspace === "library" ? "卡片圖鑑" : "牌組工房"}</h1>
         <div className="studio-masthead-actions">
           {workspace === "library" && <div className="catalog-snapshot"><strong>{meta ? `${meta.uniqueCards.toLocaleString()} 卡號 / ${meta.printings.toLocaleString()} 卡圖` : '正在整理卡庫'}</strong><span>資料快照 {meta?.snapshotDate || '載入中…'}</span></div>}
           <button type="button" className="studio-primary" onClick={() => setWorkspace(workspace === "library" ? "deck" : "library")}><StudioIcon name={workspace === "library" ? "cards" : "search"} />{workspace === "library" ? `編輯牌組 · ${oshiCount + mainCount + cheerCount} 張` : "去卡庫加卡"}</button>
@@ -761,7 +761,6 @@ export default function Home() {
         {deck !== rawDeck && <p role="status">舊版應援 S 卡圖已按官方卡號顯示；原始已存牌組未改動，編輯或保存時會使用更正後的卡號。</p>}
         <div className="deck-workbench-head">
           <div>
-            <p className="eyebrow">MY DECK</p>
             <label className="deck-name-field">
               <span>牌組名稱</span>
               <input
@@ -774,24 +773,24 @@ export default function Home() {
                 aria-describedby="deck-name-help"
               />
             </label>
-            <p id="deck-name-help">草稿自動保留於此裝置；登入後可雲端保存。匯出檔放入 HoloSim 1.13 的 decks 資料夾即可讀取。</p>
+            <p id="deck-name-help">草稿自動儲存於此裝置。</p>
           </div>
           <span className={deckValid ? "valid" : ""}>{deckValid ? "牌組可用" : `${oshiCount + mainCount + cheerCount}/71`}</span>
         </div>
         <div className="validation-grid">
-          <div className={oshiCount === 1 ? "ok" : ""}><span>推し</span><b>{oshiCount}/1</b></div>
+          <div className={oshiCount === 1 ? "ok" : ""}><span>主推成員</span><b>{oshiCount}/1</b></div>
           <div className={mainCount === 50 ? "ok" : ""}><span>主牌</span><b>{mainCount}/50</b></div>
-          <div className={cheerCount === 20 ? "ok" : ""}><span>應援</span><b>{cheerCount}/20</b></div>
+          <div className={cheerCount === 20 ? "ok" : ""}><span>能量</span><b>{cheerCount}/20</b></div>
         </div>
         <div className={`deck-status ${deckValid ? "ok" : ""}`}>
           <span>{deckValid ? "✓" : "!"}</span>
-          <p><b>{deckValid ? "牌組張數完整" : "牌組尚未完成"}</b>{deckValid ? "可以保存或匯出到 HoloSim 1.13。" : "補齊三個區域；匯出時也會檢查 HoloSim 1.13 支援的卡號。"}</p>
+          <p><b>{deckValid ? "牌組張數完整" : "牌組尚未完成"}</b></p>
         </div>
 
         <div className="deck-gallery">
           {(["oshi", "main", "cheer"] as DeckSection[]).map((section) => {
             const rows = deckRows(section);
-            const title = section === "oshi" ? "推し Holomen" : section === "main" ? "主牌組" : "應援牌組";
+            const title = section === "oshi" ? "主推成員" : section === "main" ? "主牌組" : "能量牌組";
             const count = section === "oshi" ? oshiCount : section === "main" ? mainCount : cheerCount;
             return (
               <section className="deck-section" key={section}>
@@ -855,7 +854,7 @@ export default function Home() {
             <button className="studio-filter-toggle" type="button" aria-expanded={filtersOpen} aria-controls="advanced-filters" onClick={() => setFiltersOpen(value => !value)}><StudioIcon name="filter" />篩選{activeFilters.length > 0 && <b>{activeFilters.length}</b>}</button>
             </div>
             <SlidingTabs className="studio-type-tabs" label="卡片種類" selected={typeFilter}>
-              {typeOptions.map(option => <button key={option.value} className="t-tab" type="button" aria-pressed={typeFilter === option.value} onClick={() => setTypeFilter(option.value as typeof typeFilter)}>{option.value === "all" ? "全部" : option.value === "oshi" ? "推し" : option.label}</button>)}
+              {typeOptions.map(option => <button key={option.value} className="t-tab" type="button" aria-pressed={typeFilter === option.value} onClick={() => setTypeFilter(option.value as typeof typeFilter)}>{option.value === "all" ? "全部" : option.label}</button>)}
             </SlidingTabs>
 
           </div>
@@ -871,7 +870,6 @@ export default function Home() {
               <label><span>系列</span><select value={setFilter} onChange={(event) => setSetFilter(event.target.value)}><option value="all">全部系列</option>{setOptions.map((set) => <option value={set} key={set}>{set}</option>)}</select></label>
             </div>
                 <label className="deck-only-filter"><input type="checkbox" checked={onlyDeck} onChange={event => { setOnlyDeck(event.target.checked); setVisibleCount(72); }} />只顯示已加入牌組的卡片</label>
-                <p className="filter-rail-note">挑選成員、系列或卡片階級。可同時套用條件，亦可用上方關鍵字搜尋效果。</p>
               </div></div></div>
             </aside>
             <div className="catalog-content">
@@ -888,7 +886,7 @@ export default function Home() {
           {loading && <div className="studio-skeletons" aria-label="正在整理完整卡庫" role="status">{Array.from({ length: 6 }, (_, index) => <div key={index}><span /><i /><i /></div>)}</div>}
           {loadError && <div className="empty-state" role="alert"><strong>{loadError}</strong><button type="button" className="studio-primary" onClick={() => window.location.reload()}>重新載入</button></div>}
           {!loading && !loadError && filteredCards.length === 0 && (
-            <div className="empty-state"><StudioIcon name="search" /><strong>找不到符合條件的卡片</strong><p>試試較短嘅關鍵字，或者移除部分篩選。</p><button type="button" className="studio-primary" onClick={resetFilters}>顯示全部卡片</button></div>
+            <div className="empty-state"><StudioIcon name="search" /><strong>找不到符合條件的卡片</strong><p>換個關鍵字或減少篩選條件。</p><button type="button" className="studio-primary" onClick={resetFilters}>顯示全部卡片</button></div>
           )}
 
           <div className={`card-grid studio-${view}`} aria-busy={query !== deferredQuery}>
@@ -909,12 +907,12 @@ export default function Home() {
                       <h3>{effectText(card, card.name)}</h3>
                       {card.jpName && card.jpName !== effectText(card, card.name) && <span className="card-original-name">{card.jpName}</span>}
                       <div className="card-badges">
-                        <span>{cardText(card.type)}</span>
+                        <span>{catalogCardText(card.type)}</span>
                         {card.stage && <span>{card.stage}</span>}
                         {card.colors.map((color) => <span key={color}>{color}</span>)}
                       </div>
                       <p>{shortEffect(card)}</p>
-                      <small>{card.officialImportSchema === 2 ? "查看官方日文效果" : "查看中文效果"} →</small>
+                      <small>詳情 →</small>
                     </div>
                   </button>
                   <div className="catalog-quantity-controls">
@@ -935,7 +933,7 @@ export default function Home() {
             })}
           </div>
 
-          {onlyDeck && filteredCards.length > 0 && catalogCards.length === 0 && <p className="deck-filter-empty">沒有符合篩選的已加入卡片。取消「只顯示已加入牌組的卡片」即可繼續加卡。</p>}
+          {onlyDeck && filteredCards.length > 0 && catalogCards.length === 0 && <p className="deck-filter-empty">牌組內沒有符合條件的卡片。</p>}
           {visibleCount < catalogCards.length && (
             <button className="load-more" type="button" onClick={() => setVisibleCount((count) => count + 72)}>
               顯示更多卡片 <span>{visibleCount} / {catalogCards.length}</span>
@@ -946,7 +944,7 @@ export default function Home() {
       </section>
 
       <footer>
-        <div><strong>Hololive OCG 繁中卡庫・牌組工房</strong><p>非官方 Hololive OCG 閱讀與牌組構築工具。中文內容含社群及 AI 輔助翻譯，請以官方日文卡面及最新裁定為準。</p></div>
+        <div><strong>Hololive OCG 繁中卡庫・牌組工房</strong><p>非官方工具。效果以官方日文原文與裁定為準。</p></div>
         <div className="footer-links">
           <a href="/account">我的牌組</a>
           <a href="/simulator">私人 PvP 模擬器</a>

@@ -38,7 +38,7 @@ test('reviewed artwork renders an accessible safe new-tab product link, never a 
   await ui.render({ cardNumber: row.cardNumber, imageUrl: row.officialImageUrl });
   const link = retailer().querySelector('a'); assert.equal(link.href, row.productUrl); assert.equal(link.target, '_blank');
   assert.deepEqual(new Set(link.rel.split(' ')), new Set(['noopener', 'noreferrer'])); assert.match(link.getAttribute('aria-label'), /新分頁/);
-  assert.match(link.textContent, /此卡圖商品/); assert.match(retailer().textContent, /已按目前所選卡圖/);
+  assert.match(link.textContent, /此卡圖商品/); assert.match(link.getAttribute('aria-label'), /已核對卡圖商品/);
   link.focus(); assert.equal(document.activeElement, link);
   assert.equal(localStorage.getItem('preserved-deck'), 'unchanged'); assert.equal(ui.requests.length, 0);
 });
@@ -48,7 +48,7 @@ test('changing a selected printing synchronously removes an unrelated exact prod
   await ui.render({ cardNumber: row.cardNumber, imageUrl: row.officialImageUrl }); assert.equal(retailer().dataset.yuyuteiKind, 'product');
   await ui.render({ cardNumber: row.cardNumber, imageUrl: row.officialImageUrl.replace(/\.png$/, '-unmatched.png') });
   assert.notEqual(retailer().dataset.yuyuteiKind, 'product'); assert.notEqual(retailer().querySelector('a')?.href, row.productUrl);
-  assert.match(retailer().textContent, /尚未確認|未核實/);
+  assert.match(retailer().textContent, /請核對卡圖版本/);
   await ui.render({ cardNumber: row.cardNumber, imageUrl: row.officialImageUrl }); assert.equal(retailer().querySelector('a').href, row.productUrl);
   await ui.render({ cardNumber: 'invalid<script>', imageUrl: row.officialImageUrl }); assert.equal(retailer(), null);
 });

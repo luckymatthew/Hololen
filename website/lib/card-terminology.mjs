@@ -1,5 +1,5 @@
 // Display/search vocabulary only. Never feed this output into rule evaluation.
-// Short game terms were compared with HoloTCG TW; effect sentences are our own.
+// The library glossary is independent of the simulator's established vocabulary.
 import { effectCorrections } from './effect-corrections.mjs';
 import { hbp09Translation, hbp09TagText } from './hbp09-translations.mjs';
 import { officialCardTranslation, officialCardTagText } from './official-card-translations.mjs';
@@ -8,16 +8,16 @@ export const glossary = [
   ['ホロメン / Holomen', '成員'],
   ['推しホロメン', '主推成員'],
   ['推しスキル', '主推技能'],
-  ['エール / Cheer', '聲援'],
+  ['エール / Cheer', '能量'],
   ['サポート / Support', '支援卡'],
-  ['アーツ / Arts', '藝能'],
-  ['ブルーム / Bloom', '開花'],
-  ['コラボ / Collab', '聯動'],
+  ['アーツ / Arts', 'Arts'],
+  ['ブルーム / Bloom', 'Bloom'],
+  ['コラボ / Collab', 'Collab'],
   ['センター', '中央'],
   ['バック', '後備'],
   ['アーカイブ', '存檔區'],
   ['バトンタッチ', '接棒'],
-  ['ホロパワー / Holo Power', 'HOLO之力'],
+  ['ホロパワー / Holo Power', 'Holo Power'],
 ];
 
 const knownTags = ["#白上'sキャラクター", "#カエラ'sアームズ", "#FLOW GLOW", "#秘密結社holoX", "#Justice", "#ReGLOSS", "#Promise", "#Buzzグッズ", "#ホロウィッチ", "#DEV_IS", "#ハーフエルフ", "Buzzグッズ", "#Advent", "#シューター", "#ID3期生", "#ID2期生", "#ID1期生", "#ゲーマーズ", "#ベイビー", "#Myth", "#ケモミミ", "#こよラボ", "#きのこ", "#2期生", "#食べ物", "#サマー", "#1期生", "#4期生", "#3期生", "#0期生", "#5期生", "#料理", "#魔法", "#ID", "#獸耳", "#射手", "#語学", "#語言", "#トリ", "#EN", "#JP", "#食物", "きのこ", "#お酒", "#繪", "#鳥", "#絵", "#海", "#歌"];
@@ -78,7 +78,24 @@ function protectedSegments(value, names) {
 
 export function cardText(value, protectedNames = []) {
   return protectedSegments(String(value ?? ''), protectedNames).map(([text, protectedText]) =>
-    protectedText ? text : replacements.reduce((out, [pattern, replacement]) => out.replace(pattern, replacement), text)
+    protectedText ? text : normalizeTerms(text)
+  ).join('');
+}
+
+function normalizeTerms(text) {
+  return replacements.reduce((out, [pattern, replacement]) => out.replace(pattern, replacement), text);
+}
+
+// The library uses the glossary's vocabulary; the simulator and legacy search aliases keep their existing terminology.
+export function catalogCardText(value, protectedNames = []) {
+  return protectedSegments(String(value ?? ''), protectedNames).map(([text, protectedText]) => protectedText ? text : normalizeTerms(text)
+    .replace(/聲援/g, '能量')
+    .replace(/藝能/g, 'Arts')
+    .replace(/開花/g, 'Bloom')
+    .replace(/聯動/g, 'Collab')
+    .replace(/HOLO之力/g, 'Holo Power')
+    .replace(/(\p{Script=Han})(?=Arts|Bloom|Collab|Holo Power)/gu, '$1 ')
+    .replace(/(Arts|Bloom|Collab|Holo Power)(?=\p{Script=Han})/gu, '$1 ')
   ).join('');
 }
 
@@ -86,12 +103,21 @@ export function keywordLabel(type) {
   return ({ bloom_effect: '開花效果（Bloom）', collab_effect: '聯動效果（Collab）', collab: '聯動效果（Collab）', bloom: '開花效果（Bloom）', gift: 'Gift 技能' })[type] || type || '技能';
 }
 
-export function effectText(card, value) {
+export function catalogKeywordLabel(type) {
+  if (type === 'bloom_effect' || type === 'bloom') return 'Bloom 效果';
+  if (type === 'collab_effect' || type === 'collab') return 'Collab 效果';
+  return keywordLabel(type);
+}
+
+function formatEffectText(card, value, format) {
   const skills = [card.keyword, card.stageSkill, card.oshiSkill, card.spOshiSkill, ...(card.arts || [])];
   // Exact original-text guard prevents an old review overwriting a newer card revision.
   const correction = (effectCorrections[card.number] || []).find(item => item.original === value);
-  return cardText(officialCardTranslation(card, value) ?? hbp09Translation(card, value) ?? correction?.translation ?? value, [card.name, card.jpName, card.enName, ...skills.map(skill => skill?.name)]);
+  return format(officialCardTranslation(card, value) ?? hbp09Translation(card, value) ?? correction?.translation ?? value, [card.name, card.jpName, card.enName, ...skills.map(skill => skill?.name)]);
 }
+
+export function effectText(card, value) { return formatEffectText(card, value, cardText); }
+export function catalogEffectText(card, value) { return formatEffectText(card, value, catalogCardText); }
 
 // Display only: callers must retain the original tag in filters and game rules.
 export function cardTagText(tag) { return officialCardTagText(tag) ?? hbp09TagText(tag); }
