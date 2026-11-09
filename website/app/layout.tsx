@@ -3,6 +3,7 @@ import "./globals.css";
 import "./studio.css";
 import "./design-system.css";
 import './polish.css';
+import './card-reader.css';
 
 export const viewport: Viewport = {
   width: "device-width",

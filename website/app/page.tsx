@@ -8,9 +8,9 @@ import { content as deckContent } from "@/lib/firebase/merge.mjs";
 import { firebaseBuild } from "@/lib/firebase/client";
 
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
-import { catalogPrintings, filterCatalogPrintings, sortVariantsByRarity, variantLabel } from "@/lib/printing-catalog.mjs";
+import { catalogCardTags, catalogPrintings, catalogTagOptions, filterCatalogPrintings, sortVariantsByRarity, variantLabel } from "@/lib/printing-catalog.mjs";
 import { effectAuditPending } from '@/lib/effect-corrections.mjs';
-import { catalogCardText, cardTagText, catalogEffectText as effectText, catalogKeywordLabel } from "@/lib/card-terminology.mjs";
+import { catalogCardText, catalogEffectText as effectText, catalogKeywordLabel } from "@/lib/card-terminology.mjs";
 import TerminologyNote from "@/app/TerminologyNote";
 import OfficialJapaneseText from "@/app/OfficialJapaneseText";
 import { officialCardTranslationReady } from "@/lib/official-card-translations.mjs";
@@ -22,6 +22,7 @@ import { SlidingTabs, StatusToast, useModalMotion } from "@/app/ui-motion";
 import FoilCardImage from "@/app/FoilCardImage";
 import ConfirmDialog from "@/app/ConfirmDialog";
 import YuyuteiCardLink from "@/app/YuyuteiCardLink";
+import { CardEffect, CardFact, CardSymbols } from "@/app/CardDetailRows";
 import { printingReleaseStatus } from "@/lib/card-release-status.mjs";
 import useJapanDate from "@/app/useJapanDate";
 
@@ -90,6 +91,7 @@ type CatalogPrinting = {
   variant: Card["variants"][number] | undefined;
   id: string;
   label: string;
+  tags: { key: string; label: string }[];
   releaseDate: string;
   searchText: string;
 };
@@ -212,6 +214,7 @@ function CardImage({ card, className = "", rarity }: { card: Card; className?: s
 function CardModal({
   card,
   onClose,
+  onTagSelect,
   onAdd,
   onRemove,
   quantity,
@@ -221,6 +224,7 @@ function CardModal({
 }: {
   card: Card;
   onClose: () => void;
+  onTagSelect?: (tag: string) => void;
   onAdd: (card: Card, variantId?: string) => void;
   onRemove: (card: Card, variantId?: string) => void;
   quantity: number;
@@ -239,123 +243,100 @@ function CardModal({
   const { officialPreview, preview, releaseDate: previewReleaseDate } = printingReleaseStatus(card, selectedVariant, japanDate);
   const selectedImage = selectedVariant?.image ?? card.image;
   const selectedQuantity = selectedVariant ? quantityForVariant(selectedVariant.id) : quantity;
-  const { dialog, requestClose } = useModalMotion(onClose);
+  const tagOnClose = useRef("");
+  const { dialog, requestClose } = useModalMotion(() => {
+    if (tagOnClose.current) onTagSelect?.(tagOnClose.current);
+    onClose();
+  });
+  const tags = catalogCardTags(card);
+  const name = displayEffect(card.name);
+  const type = catalogCardText(card.type);
+  const originalName = card.jpName && card.jpName !== name ? card.jpName : card.enName !== name ? card.enName : "";
+  const products = selectedVariant?.sets?.length ? selectedVariant.sets : card.sets?.length ? card.sets : card.set ? [card.set] : [];
+  const skillRows = [
+    { label: "主推舞台技能", skill: card.stageSkill, kind: "skill" },
+    { label: "主推技能", skill: card.oshiSkill, kind: "skill" },
+    { label: "SP 主推技能", skill: card.spOshiSkill, kind: "sp" },
+    { label: catalogKeywordLabel(card.keyword?.type), skill: card.keyword, kind: "keyword" },
+  ] as const;
 
   return (
-    <dialog ref={dialog} className="studio-card-dialog t-modal" onCancel={event => { event.preventDefault(); requestClose(); }} onClick={event => { if (event.target === event.currentTarget) requestClose(); }} data-card-number={card.number} data-printing-id={selectedVariant?.id} aria-label={`${displayEffect(card.name)} ${selectedVariant ? `${variantLabel(selectedVariant, sortedVariants)} 版本` : ""}卡片詳情`}>
-      <section
-        className="card-modal"
-      >
-        <button className="modal-close" type="button" onClick={requestClose} aria-label="關閉卡片詳情">
-          ×
-        </button>
-        <div className="modal-art-column">
-          <CardImage card={{ ...card, image: selectedImage }} className="modal-card-image" rarity={selectedVariant?.rarity || card.rarity} />
-        </div>
-        <div className="modal-copy">
-          <div className="modal-kicker">
-            <code>{card.number}</code>
-            <span>{catalogCardText(card.type)}</span>
-            {preview && <span className="preview-badge" role={officialPreview && previewReleaseDate ? "note" : undefined}>
-              {officialPreview ? `官方先行公開${previewReleaseDate ? `・${previewReleaseDate} 發售` : ""}` : "HoloSim 先行卡"}
-            </span>}
+    <dialog ref={dialog} className="studio-card-dialog t-modal card-reader-dialog" onCancel={event => { event.preventDefault(); requestClose(); }} onClick={event => { if (event.target === event.currentTarget) requestClose(); }} data-card-number={card.number} data-printing-id={selectedVariant?.id} aria-label={`${name}${selectedVariant ? ` ${variantLabel(selectedVariant, sortedVariants)} 版本` : ""}卡片詳情`}>
+      <div className="card-reader-frame">
+        <button className="modal-close" type="button" onClick={requestClose} aria-label="關閉卡片詳情">×</button>
+        <section className="card-modal card-reader-panel">
+          <div className="card-reader-artwork">
+            <CardImage card={{ ...card, image: selectedImage }} className="modal-card-image" rarity={selectedVariant?.rarity || card.rarity} />
           </div>
-          <h2>{displayEffect(card.name)}</h2>
-          {(card.jpName !== displayEffect(card.name) || card.enName) && (
-            <p className="foreign-name">
-              {card.jpName !== displayEffect(card.name) ? card.jpName : card.enName}
-            </p>
-          )}
-          {selectedVariant && <p className="modal-printing-id"><span>卡圖 ID · </span><code>{selectedVariant.id}</code></p>}
-          <YuyuteiCardLink cardNumber={card.number} imageUrl={selectedImage} />
-          <div className="stat-grid">
-            {card.colors.length > 0 && (
-              <span><small>顏色</small>{card.colors.join("＋")}</span>
-            )}
-            {card.stage && <span><small>階級</small>{card.stage}</span>}
-            {card.hp !== null && <span><small>HP</small>{card.hp}</span>}
-            {card.life !== null && <span><small>Life</small>{card.life}</span>}
-            {card.baton !== null && <span><small>接棒</small>{card.baton}</span>}
-            <span><small>稀有度</small>{selectedVariant?.rarity || card.rarity || "—"}</span>
-          </div>
-          {card.tags.length > 0 && (
-            <div className="tag-row">
-              {card.tags.map((tag) => <span key={tag}>{cardTagText(tag.startsWith("#") ? tag : `#${tag}`)}</span>)}
+          <div className="card-reader-info">
+            <header className="card-reader-title">
+              <h2>{name}</h2>
+              {originalName && <p>{originalName}</p>}
+              {preview && <span className="preview-badge" role={officialPreview && previewReleaseDate ? "note" : undefined}>
+                {officialPreview ? `官方先行公開${previewReleaseDate ? `・${previewReleaseDate} 發售` : ""}` : "HoloSim 先行卡"}
+              </span>}
+            </header>
+            <dl className="card-reader-facts">
+              <CardFact label="卡片類型">{card.group === "support" && type !== "支援卡" ? `支援卡・${type}` : type}</CardFact>
+              {tags.length > 0 && <CardFact label="標籤"><div className="card-reader-tags">{tags.map(tag => onTagSelect ? (
+                <button key={tag.key} type="button" aria-label={`以 ${tag.label} 篩選卡片`} onClick={() => { tagOnClose.current = tag.key; requestClose(); }}>{tag.label}</button>
+              ) : <span key={tag.key}>{tag.label}</span>)}</div></CardFact>}
+              <CardFact label="稀有度">{selectedVariant?.rarity || card.rarity || "—"}</CardFact>
+              {products.length > 0 && <CardFact label="收錄商品">{products.join(" · ")}</CardFact>}
+            </dl>
+            {(card.colors.length > 0 || card.hp !== null || card.life !== null || card.stage || card.baton !== null) && <dl className="card-reader-stats" aria-label="卡片數值">
+              {card.colors.length > 0 && <CardFact label="顏色"><CardSymbols kind="type" values={card.colors} /></CardFact>}
+              {card.hp !== null && <CardFact label="HP">{card.hp}</CardFact>}
+              {card.life !== null && <CardFact label="Life">{card.life}</CardFact>}
+              {card.stage && <CardFact label="Bloom 階級">{card.stage}</CardFact>}
+              {card.baton !== null && <CardFact label="接棒">{card.baton ? <span aria-label={`${card.baton} 點能量`} role="img"><CardSymbols values={Array(card.baton).fill("無色")} /></span> : 0}</CardFact>}
+            </dl>}
+            <div className="card-reader-effects">
+              <h3 className={`effect-heading ${officialFallback ? "card-reader-language" : "sr-only"}`}>{officialFallback ? "官方日文效果" : "效果"}</h3>
+              {skillRows.map(({ label, skill, kind }) => (skill?.name || skill?.effect) && (
+                <CardEffect label={label} kind={kind} key={label} title={skill.name || skill.timing ? <>
+                  {skill.timing && <span className="card-reader-timing">{displayEffect(skill.timing)}</span>}
+                  {displayEffect(skill.name)}
+                </> : undefined}>{displayEffect(skill.effect)}</CardEffect>
+              ))}
+              {card.abilityText && <CardEffect label="卡片效果">{displayEffect(card.abilityText)}</CardEffect>}
+              {card.arts.map((art, index) => <CardEffect label="Arts" kind="art" key={`${art.name}-${index}`} title={<>
+                <CardSymbols values={art.cost} />
+                <span>{displayEffect(art.name) || `Arts ${index + 1}`}</span>
+                {art.damage !== null && <b className="card-reader-damage">{art.damage}{art.damageModifier}</b>}
+                {art.specialValues.map((bonus, i) => <span className="card-reader-bonus" title="特攻" key={i}>
+                  {art.specialTargets[i] && <CardSymbols values={[art.specialTargets[i]]} />}＋{bonus}
+                </span>)}
+              </>}>{displayEffect(art.effect)}</CardEffect>)}
+              {card.extra && <CardEffect label="Extra" kind="extra">{displayEffect(card.extra)}</CardEffect>}
             </div>
-          )}
-          <div className="effect-stack">
-            <h3 className="effect-heading">{officialFallback ? "官方日文效果" : "效果"}</h3>
-            {aiTranslation && <p role="note" data-card-translation-note>AI 翻譯，未經人工覆核。</p>}
-            {card.officialImportSchema === 2 && card.simulationStatus === "not-audited" && <p role="note" data-card-import-warning>不適用自動對戰。</p>}
-            {card.stageSkill && (card.stageSkill.name || card.stageSkill.effect) && (
-              <article className="stage-skill-effect">
-                <span>主推舞台技能</span>
-                <h3>{displayEffect(card.stageSkill.name) || "主推舞台技能"}</h3>
-                <p>{displayEffect(card.stageSkill.effect)}</p>
-              </article>
-            )}
-            {card.oshiSkill && (card.oshiSkill.name || card.oshiSkill.effect) && (
-              <article>
-                <span>主推技能 {card.oshiSkill.timing && `· ${displayEffect(card.oshiSkill.timing)}`}</span>
-                <h3>{displayEffect(card.oshiSkill.name) || "主推技能"}</h3>
-                <p>{displayEffect(card.oshiSkill.effect)}</p>
-              </article>
-            )}
-            {card.spOshiSkill && (card.spOshiSkill.name || card.spOshiSkill.effect) && (
-              <article className="sp-effect">
-                <span>SP 主推技能 {card.spOshiSkill.timing && `· ${displayEffect(card.spOshiSkill.timing)}`}</span>
-                <h3>{displayEffect(card.spOshiSkill.name) || "SP 主推技能"}</h3>
-                <p>{displayEffect(card.spOshiSkill.effect)}</p>
-              </article>
-            )}
-            {card.keyword && (card.keyword.name || card.keyword.effect) && (
-              <article>
-                <span>{catalogKeywordLabel(card.keyword.type)}</span>
-                <h3>{displayEffect(card.keyword.name) || "技能效果"}</h3>
-                <p>{displayEffect(card.keyword.effect)}</p>
-              </article>
-            )}
-            {card.abilityText && (
-              <article>
-                <span>卡片效果</span>
-                <p>{displayEffect(card.abilityText)}</p>
-              </article>
-            )}
-            {card.arts.map((art, index) => (
-              <article className="art-effect" key={`${art.name}-${index}`}>
-                <span>Arts {art.cost.length > 0 && `· ${art.cost.join(" / ")}`}</span>
-                <h3>
-                  {displayEffect(art.name) || `Arts ${index + 1}`}
-                  {art.damage !== null && <b>{art.damage}{card.officialImportSchema === 2 ? art.damageModifier : ""}{art.specialValues[0] ? `＋特攻 ${art.specialValues[0]}` : ""}</b>}
-                </h3>
-                {art.effect && <p>{displayEffect(art.effect)}</p>}
-              </article>
-            ))}
-            {card.extra && (
-              <article className="extra-effect">
-                <span>Extra</span>
-                <p>{displayEffect(card.extra)}</p>
-              </article>
-            )}
-            {translatedOfficial && <OfficialJapaneseText card={card} />}
-            {auditNote && <details className="terminology-note"><summary>校對說明</summary><p>{auditNote}</p></details>}
-            <TerminologyNote />
+            <div className="card-reader-reference">
+              <div className="card-reader-meta">
+                <span>卡號：<code>{card.number}</code></span>
+                {previewReleaseDate && !officialPreview && <span data-card-release-date>發售日期：{previewReleaseDate}</span>}
+                {card.illustrator && <span>繪師：{card.illustrator}</span>}
+                {card.qaCount > 0 && <span>官方 Q&amp;A · {card.qaCount} 條</span>}
+              </div>
+              <YuyuteiCardLink cardNumber={card.number} imageUrl={selectedImage} />
+              {(aiTranslation || (card.officialImportSchema === 2 && card.simulationStatus === "not-audited")) && <div className="card-reader-notes">
+                {aiTranslation && <p role="note" data-card-translation-note>AI 翻譯，未經人工覆核。</p>}
+                {card.officialImportSchema === 2 && card.simulationStatus === "not-audited" && <p role="note" data-card-import-warning>不適用自動對戰。</p>}
+              </div>}
+              {translatedOfficial && <OfficialJapaneseText card={card} />}
+              {auditNote && <details className="terminology-note"><summary>校對說明</summary><p>{auditNote}</p></details>}
+              <TerminologyNote />
+              {selectedVariant && <details className="terminology-note"><summary>卡圖資訊</summary><p>卡圖 ID：<code>{selectedVariant.id}</code></p></details>}
+            </div>
           </div>
-          <div className="modal-source">
-            <span>{selectedVariant?.sets?.length ? selectedVariant.sets.join(" · ") : card.set}</span>
-            {previewReleaseDate && !officialPreview && <span data-card-release-date>發售日期 · {previewReleaseDate}</span>}
-            {card.illustrator && <span>Illustration · {card.illustrator}</span>}
-            {card.qaCount > 0 && <span>官方 Q&amp;A · {card.qaCount} 條</span>}
-          </div>
-          <div className="modal-quantity-controls">
+        </section>
+        <div className="modal-quantity-controls card-reader-actions">
           <button className="remove-large" type="button" disabled={selectedQuantity === 0} onClick={() => onRemove(card, selectedVariant?.id)} aria-label={`減少 ${displayEffect(card.name)} 所選版本`}>− 減少一張</button>
           <output aria-live="polite">此版本 {selectedQuantity} 張 · 合計 {quantity} 張</output>
           <button className="add-large" type="button" onClick={() => onAdd(card, selectedVariant?.id)}>
             {selectedVariant ? `＋ 加入 ${variantLabel(selectedVariant, sortedVariants)} 版本${selectedQuantity ? ` · 此版本 ${selectedQuantity}` : ""}` : quantity > 0 ? `加入牌組 · 現有 ${quantity}` : "＋ 加入牌組"}
           </button>
-          </div>
         </div>
-      </section>
+      </div>
     </dialog>
   );
 }
@@ -384,6 +365,7 @@ export default function Home() {
   const [stageFilter, setStageFilter] = useState("all");
   const [setFilter, setSetFilter] = useState("all");
   const [memberFilter, setMemberFilter] = useState("all");
+  const [tagFilter, setTagFilter] = useState("");
   const [visibleCount, setVisibleCount] = useState(72);
   const [activeCard, setActiveCard] = useState<Card | null>(null);
   const [activeVariantId, setActiveVariantId] = useState("");
@@ -440,7 +422,7 @@ export default function Home() {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reset pagination whenever the filter contract changes
     setVisibleCount(72);
-  }, [query, typeFilter, colorFilter, stageFilter, setFilter, memberFilter, sort]);
+  }, [query, typeFilter, colorFilter, stageFilter, setFilter, memberFilter, tagFilter, sort]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -497,10 +479,11 @@ export default function Home() {
   const memberGroups = useMemo(() => groupMemberOptions(cards) as { key: string; label: string; options: { value: string; label: string }[] }[], [cards]);
 
   const printings = useMemo<CatalogPrinting[]>(() => catalogPrintings(cards), [cards]);
+  const tagOptions = useMemo(() => catalogTagOptions(printings), [printings]);
   const filteredCards = useMemo<CatalogPrinting[]>(() => filterCatalogPrintings(printings, {
     type: typeFilter, color: colorFilter, stage: stageFilter, set: setFilter,
-    member: memberFilter, query: deferredQuery, sort,
-  }), [printings, colorFilter, memberFilter, deferredQuery, setFilter, stageFilter, typeFilter, sort]);
+    member: memberFilter, tag: tagFilter, query: deferredQuery, sort,
+  }), [printings, colorFilter, memberFilter, deferredQuery, setFilter, stageFilter, tagFilter, typeFilter, sort]);
 
   const activeFilters = [
     ...(query ? [{ label: `搜尋：${query}`, clear: () => setQuery("") }] : []),
@@ -509,8 +492,16 @@ export default function Home() {
     ...(colorFilter !== "all" ? [{ label: colorOptions.find(option => option[0] === colorFilter)?.[1] || colorFilter, clear: () => setColorFilter("all") }] : []),
     ...(stageFilter !== "all" ? [{ label: stageFilter, clear: () => setStageFilter("all") }] : []),
     ...(setFilter !== "all" ? [{ label: setFilter, clear: () => setSetFilter("all") }] : []),
+    ...(tagFilter ? [{ label: `標籤：${tagOptions.find(tag => tag.key === tagFilter)?.label || tagFilter}`, clear: () => setTagFilter("") }] : []),
   ];
-  const resetFilters = () => { setQuery(""); setMemberFilter("all"); setTypeFilter("all"); setColorFilter("all"); setStageFilter("all"); setSetFilter("all"); setOnlyDeck(false); };
+  const resetFilters = () => { setQuery(""); setMemberFilter("all"); setTypeFilter("all"); setColorFilter("all"); setStageFilter("all"); setSetFilter("all"); setTagFilter(""); setOnlyDeck(false); };
+  const browseTag = (tag: string) => {
+    resetFilters();
+    setTagFilter(tag);
+    setVisibleCount(72);
+    setWorkspace("library");
+    requestAnimationFrame(() => document.getElementById("library")?.focus());
+  };
 
   const oshiCount = countSection(deck.oshi);
   const mainCount = countSection(deck.main);
@@ -846,7 +837,7 @@ export default function Home() {
                 type="search"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="卡號、成員、技能或效果關鍵字…"
+                placeholder="卡號、成員、標籤或效果…"
               />
               {query && <button type="button" onClick={() => setQuery("")} aria-label="清除搜尋">×</button>}
               {!query && <kbd>/</kbd>}
@@ -868,6 +859,7 @@ export default function Home() {
               <label><span>顏色</span><select value={colorFilter} onChange={(event) => setColorFilter(event.target.value)}>{colorOptions.map(([value, label]) => <option value={value} key={value}>{label}</option>)}</select></label>
               <label><span>階級</span><select value={stageFilter} onChange={(event) => setStageFilter(event.target.value)}>{stageOptions.map(([value, label]) => <option value={value} key={value}>{label}</option>)}</select></label>
               <label><span>系列</span><select value={setFilter} onChange={(event) => setSetFilter(event.target.value)}><option value="all">全部系列</option>{setOptions.map((set) => <option value={set} key={set}>{set}</option>)}</select></label>
+              <label><span>標籤</span><select value={tagFilter} onChange={event => setTagFilter(event.target.value)}><option value="">全部標籤</option>{tagOptions.map(tag => <option key={tag.key} value={tag.key}>{tag.label}</option>)}</select></label>
             </div>
                 <label className="deck-only-filter"><input type="checkbox" checked={onlyDeck} onChange={event => { setOnlyDeck(event.target.checked); setVisibleCount(72); }} />只顯示已加入牌組的卡片</label>
               </div></div></div>
@@ -877,7 +869,7 @@ export default function Home() {
           <div className="result-bar">
             <span role="status" aria-live="polite">{loading ? "載入中…" : <><b>{artworkCount.toLocaleString()}</b> 款卡圖{imagelessCount > 0 && ` · ${imagelessCount} 張未有卡圖`}{query !== deferredQuery && " · 搜尋中…"}</>}</span>
             <div className="result-controls">
-              <label><span className="sr-only">卡片排序</span><select value={sort} onChange={event => setSort(event.target.value)}><option value="number">卡號順序</option><option value="newest">新卡優先</option><option value="name">名稱順序</option></select></label>
+              <label><span className="sr-only">卡片排序</span><select value={sort} onChange={event => setSort(event.target.value)}><option value="number">卡號順序</option><option value="newest">新卡優先</option><option value="name">名稱順序</option><option value="tag">標籤順序</option></select></label>
               <div className="view-switch" aria-label="卡庫顯示方式"><button type="button" aria-label="大卡圖模式" title="大卡圖模式" aria-pressed={view === "gallery"} onClick={() => setView("gallery")}><StudioIcon name="grid" /></button><button type="button" aria-label="效果列表模式" title="效果列表模式" aria-pressed={view === "list"} onClick={() => setView("list")}><StudioIcon name="list" /></button></div>
             </div>
           </div>
@@ -890,7 +882,7 @@ export default function Home() {
           )}
 
           <div className={`card-grid studio-${view}`} aria-busy={query !== deferredQuery}>
-            {catalogCards.slice(0, visibleCount).map(({ card, variant, id, label }) => {
+            {catalogCards.slice(0, visibleCount).map(({ card, variant, id, label, tags }) => {
               const quantity = variant ? quantityForVariant(card, variant.id) : quantityFor(card);
               const printingName = card.variants.length > 1 ? `${effectText(card, card.name)} ${label} 版本` : effectText(card, card.name);
               const { preview } = printingReleaseStatus(card, variant, japanDate);
@@ -910,6 +902,7 @@ export default function Home() {
                         <span>{catalogCardText(card.type)}</span>
                         {card.stage && <span>{card.stage}</span>}
                         {card.colors.map((color) => <span key={color}>{color}</span>)}
+                        {sort === "tag" && tags[0] && <span className="catalog-primary-tag">{tags[0].label}</span>}
                       </div>
                       <p>{shortEffect(card)}</p>
                       <small>詳情 →</small>
@@ -961,6 +954,7 @@ export default function Home() {
           initialVariantId={activeVariantId}
           japanDate={japanDate}
           onClose={() => { setActiveCard(null); setActiveVariantId(""); }}
+          onTagSelect={browseTag}
           onAdd={addCard}
           onRemove={removeCard}
           quantity={quantityFor(activeCard)}

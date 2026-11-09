@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { catalogPrintings, filterCatalogPrintings, sortVariantsByRarity, variantLabel } from '../lib/printing-catalog.mjs';
+import { catalogPrintings, catalogTagOptions, filterCatalogPrintings, sortVariantsByRarity, variantLabel } from '../lib/printing-catalog.mjs';
 
 const catalog = JSON.parse(readFileSync('public/cards.json', 'utf8'));
 
@@ -61,4 +61,31 @@ test('newest ordering uses each printing release date before its parent card dat
   assert.deepEqual(filterCatalogPrintings(entries, { sort: 'newest' }).map(entry => entry.id), ['printing-10', 'printing-3', 'printing-2']);
   assert.equal(entries.find(entry => entry.id === 'printing-3').releaseDate, card.releaseDate);
   assert.equal(card.releaseDate, '2026-01-01');
+});
+
+test('tag options use the displayed translations and exact tag matches compose with the other filters', () => {
+  const botan = catalog.cards.find(card => card.number === 'hBP03-016');
+  const mera = catalog.cards.find(card => card.number === 'hSD21-007');
+  const entries = catalogPrintings([botan, mera]);
+  const tags = catalogTagOptions(entries);
+  const group = tags.find(tag => tag.label === '#玩樂★巡遊隊！');
+  assert.ok(group, 'the tag visible in the reader is also present in the filter');
+  assert.deepEqual(filterCatalogPrintings(entries, { tag: group.key }).map(entry => entry.card.number), [mera.number]);
+  assert.equal(filterCatalogPrintings(entries, { tag: group.key, color: 'green' }).length, 0);
+  const fifth = tags.find(tag => tag.label === '#5期生');
+  assert.equal(filterCatalogPrintings(entries, { tag: fifth.key, color: 'green' }).length, botan.variants.length);
+  assert.equal(filterCatalogPrintings(entries, { tag: '#5期' }).length, 0, 'the tag filter is not a substring search');
+});
+
+test('tag sort uses the first tag, keeps each printing, and places untagged cards last', () => {
+  const fixture = catalog.cards.find(card => card.number === 'hBP03-016');
+  const cards = [
+    { ...fixture, number: 'hBP01-001', tags: [] },
+    { ...fixture, number: 'hBP01-002', tags: ['＃10期生', '#2期生'] },
+    { ...fixture, number: 'hBP01-003', tags: ['#2期生', '#JP'] },
+  ];
+  const entries = catalogPrintings(cards);
+  assert.deepEqual(filterCatalogPrintings(entries, { sort: 'tag' }).map(entry => entry.card.number),
+    ['hBP01-003', 'hBP01-002', 'hBP01-001'].flatMap(number => fixture.variants.map(() => number)));
+  assert.equal(catalogTagOptions(entries).filter(tag => tag.label === '#2期生').length, 1);
 });
