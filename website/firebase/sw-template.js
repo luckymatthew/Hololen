@@ -13,7 +13,7 @@ self.addEventListener('fetch', event => {
   if (url.pathname.startsWith('/assets/')) {
     event.respondWith(caches.match(event.request).then(cached => cached || fetch(event.request).then(response => { if (response.ok) { const copy = response.clone(); event.waitUntil(caches.open(VERSION).then(cache => cache.put(event.request, copy))); } return response; }))); return;
   }
-  if (['/cards.json', '/holosim-card-index.json'].includes(url.pathname)) {
+  if (['/cards.json', '/holosim-card-index.json', '/deck-photo-index.v1.json'].includes(url.pathname)) {
     event.respondWith(fetch(event.request).then(response => { if (response.ok) { const copy = response.clone(); event.waitUntil(caches.open(VERSION).then(cache => cache.put(event.request, copy))); } return response; }).catch(() => caches.match(event.request)));
   }
 });
