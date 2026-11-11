@@ -11,6 +11,7 @@ import '../app/firebase.css';
 import '../app/design-system.css';
 import '../app/polish.css';
 import '../app/card-reader.css';
+import '../app/deck-photo.css';
 const Home = lazy(() => import('../app/page'));
 const Simulator = lazy(() => import('../app/simulator/SimulatorClient'));
 const Account = lazy(() => import('../app/account/FirebaseAccount'));

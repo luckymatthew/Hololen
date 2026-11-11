@@ -70,6 +70,10 @@ npm run test:sites        # 原 Sites build + 原 SSR HTML 測試
 
 執行自動啟動模擬器的測試前，先關閉手動啟動的同埠模擬器。已在執行時可直接 `node --test tests/firebase-rules.test.mjs` 及 `node scripts/test-integration.mjs`。測試不會寫入 `hololive-ocg`。
 
+### 牌組相片辨識索引
+
+新增或更換卡圖時，在 repo 根目錄執行 `python3 website/scripts/build-deck-photo-index.py --cache /path/to/art-cache --fetch-missing`，並提交更新後的 `website/public/deck-photo-index.v1.json`。腳本需要 Pillow，會重用 repo 內的卡圖和已有索引，只下載缺少的官方參考卡圖。網站建置可直接使用已提交的索引。
+
 原平台仍可用 `npm run dev:sites`、`npm run build:sites`。保留 `.openai/hosting.json`、Worker、D1 schema/migrations 及舊帳號 API；原 Vite config 強制使用 Sites adapter，避免讀到 Firebase `.env.local` 後誤用新後端。
 
 ## 使用者資料與遷移

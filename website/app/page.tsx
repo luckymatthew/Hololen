@@ -7,7 +7,7 @@ import { draftKey } from "@/lib/firebase/store";
 import { content as deckContent } from "@/lib/firebase/merge.mjs";
 import { firebaseBuild } from "@/lib/firebase/client";
 
-import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { catalogCardTags, catalogPrintings, catalogTagOptions, filterCatalogPrintings, sortVariantsByRarity, variantLabel } from "@/lib/printing-catalog.mjs";
 import { effectAuditPending } from '@/lib/effect-corrections.mjs';
 import { catalogCardText, catalogEffectText as effectText, catalogKeywordLabel } from "@/lib/card-terminology.mjs";
@@ -25,6 +25,9 @@ import YuyuteiCardLink from "@/app/YuyuteiCardLink";
 import { CardEffect, CardFact, CardSymbols } from "@/app/CardDetailRows";
 import { printingReleaseStatus } from "@/lib/card-release-status.mjs";
 import useJapanDate from "@/app/useJapanDate";
+import type { SavedPhotoDeck } from "@/app/DeckPhotoImport";
+
+const DeckPhotoImport = lazy(() => import("@/app/DeckPhotoImport"));
 
 type CardGroup = "oshi" | "holomem" | "support" | "cheer";
 
@@ -353,6 +356,7 @@ export default function Home() {
   const [workspace, setWorkspace] = useState<"library" | "deck">("library");
   const [onlyDeck, setOnlyDeck] = useState(false);
   const [clearRequested, setClearRequested] = useState(false);
+  const [photoImportOpen, setPhotoImportOpen] = useState(false);
   const [view, setView] = useState<"gallery" | "list">("gallery");
   const [sort, setSort] = useState("number");
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -427,14 +431,14 @@ export default function Home() {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement;
-      if (event.key === "/" && !event.ctrlKey && !event.metaKey && !event.altKey && !activeCard && !target.closest("input, textarea, select, [contenteditable='true']")) {
+      if (event.key === "/" && !event.ctrlKey && !event.metaKey && !event.altKey && !activeCard && !photoImportOpen && !target.closest("input, textarea, select, [contenteditable='true']")) {
         event.preventDefault(); setWorkspace("library");
         requestAnimationFrame(() => searchInput.current?.focus());
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [activeCard]);
+  }, [activeCard, photoImportOpen]);
 
   useEffect(() => {
     if (!notice) return;
@@ -717,6 +721,17 @@ export default function Home() {
     }
   };
 
+  const openPhotoDeck = (saved: SavedPhotoDeck) => {
+    setDeck(saved.deck);
+    setDeckName(saved.name);
+    setActiveDeckId(saved.id);
+    setEditorBase(deckContent(saved));
+    setWorkspace("deck");
+    setPhotoImportOpen(false);
+    window.history.replaceState({}, "", `/?deck=${encodeURIComponent(saved.id)}`);
+    setNotice(`已開啟「${saved.name}」。`);
+  };
+
   const invalidCopies = (Object.entries(deck.main) as [string, number][]).filter(([number, count]) => {
     const card = cardMap.get(number);
     return card && count > card.maxCopies;
@@ -819,6 +834,8 @@ export default function Home() {
           <button className="save-button" type="button" onClick={() => void saveDeck()} disabled={saving}>{saving ? "保存中…" : activeDeckId ? "更新保存" : firebaseBuild ? "保存牌組" : "雲端儲存"}</button>
           <button className="export-button" type="button" onClick={exportDeck}>匯出 HoloSim 1.13 JSON</button>
           <a className="saved-decks-link simulator-deck-link" href="/simulator">用這副牌組開私人房間 →</a>
+          <button className="photo-import-trigger" type="button" aria-haspopup="dialog" onClick={() => setPhotoImportOpen(true)}
+            disabled={!deckReady || !cards.length || saving}><StudioIcon name="scan" />從相片匯入</button>
           <label className="import-button">匯入 JSON<input type="file" accept="application/json,.json" onChange={(event) => { void importDeck(event.target.files?.[0]); event.target.value = ""; }} /></label>
           <button className="clear-button" type="button" onClick={() => setClearRequested(true)}>清空</button>
           <a className="saved-decks-link" href="/account">查看已保存牌組 →</a>
@@ -962,6 +979,10 @@ export default function Home() {
         />
       )}
       <StatusToast message={notice} />
+      {photoImportOpen && <Suspense fallback={<StatusToast message="正在開啟相片匯入…" />}>
+        <DeckPhotoImport printings={printings} hasDeckInEditor={oshiCount + mainCount + cheerCount > 0}
+          onClose={() => setPhotoImportOpen(false)} onOpen={openPhotoDeck} />
+      </Suspense>}
       {clearRequested && <ConfirmDialog title="清空目前草稿？" description="草稿內所有卡片將會移除。已保存的牌組仍可在「我的牌組」載入；如要刪除已保存牌組，請到該頁操作。" confirmLabel="清空草稿" onConfirm={clearDeck} onCancel={() => setClearRequested(false)} />}
     </main>
   );

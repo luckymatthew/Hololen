@@ -4,6 +4,7 @@ import "./studio.css";
 import "./design-system.css";
 import './polish.css';
 import './card-reader.css';
+import './deck-photo.css';
 
 export const viewport: Viewport = {
   width: "device-width",

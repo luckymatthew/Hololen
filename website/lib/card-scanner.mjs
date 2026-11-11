@@ -6,6 +6,12 @@ export function normalizeScanText(value = "") {
     .replace(/[^\p{L}\p{N}]/gu, "");
 }
 
+export function scanCardNumbers(value) {
+  const text = String(value).normalize("NFKC").toLowerCase();
+  return [...text.matchAll(/h\s*(?:bp|bd|sd|eb|pr|ys|y)\s*\d{0,2}\s*[-‐‑–—ー]?\s*\d{3}(?!\d)/gi)]
+    .map(match => normalizeScanText(match[0]));
+}
+
 function grams(text, size = 3) {
   return new Set(Array.from({ length: Math.max(0, text.length - size + 1) }, (_, i) => text.slice(i, i + size)));
 }
@@ -29,7 +35,7 @@ export function matchScanText(index, rawText) {
   const text = normalizeScanText(String(rawText).slice(0, 12000));
   if (text.length < 3) return { matches: [], autoNumber: null };
   const raw = String(rawText).normalize("NFKC").toLowerCase();
-  const codes = [...raw.matchAll(/h\s*(?:bp|bd|sd|eb|pr|ys|y)\s*\d{0,2}\s*[-‐‑–—ー]?\s*\d{3}(?!\d)/gi)].map(m => normalizeScanText(m[0]));
+  const codes = scanCardNumbers(raw);
   const hp = raw.match(/hp\s*[:：]?\s*(\d{2,3})/i)?.[1];
   const stage = raw.match(/\b(debut|1st|2nd|spot)\b/i)?.[1]?.toLowerCase();
   const textGrams = grams(text);
